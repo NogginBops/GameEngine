@@ -35,6 +35,9 @@ public final class FPSCounter {
 	 */
 	public static long framesTot = 0;
 	
+	/**
+	 * 
+	 */
 	public static long averageFPS = 0;
 
 	private static long frames = 0;

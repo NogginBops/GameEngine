@@ -4,6 +4,7 @@ import game.controller.event.EventListener;
 import game.controller.event.EventMachine;
 import game.controller.event.GameEvent;
 
+@SuppressWarnings("javadoc")
 public class Test2 {
 	
 	public static void main(String[] args){

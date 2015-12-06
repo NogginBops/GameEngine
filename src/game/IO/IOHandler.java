@@ -14,7 +14,6 @@ import game.IO.save.SaveRequest;
 import game.IO.save.Saver;
 import game.IO.save.defaultSavers.ImageSaver;
 import game.IO.save.defaultSavers.StringSaver;
-import game.util.GameObjectHandler;
 import game.util.ID;
 import game.util.IDHandler;
 
@@ -28,33 +27,26 @@ public class IOHandler {
 	// JAVADOC: IOHandeler
 	
 	//TODO: Set up static loading methods and non static exit save methods
-
-	private GameObjectHandler gameObjectHandeler;
 	
 	private static IDHandler<Loader<?>> loaderIDHandler;
 	
 	private static IDHandler<Saver<?>> saverIDHandler;
-
-	/**
-	 * @param gameObjectHandeler
-	 */
-	public IOHandler(GameObjectHandler gameObjectHandeler) {
-		this.gameObjectHandeler = gameObjectHandeler;
+	
+	static {
 		IOHandler.loaderIDHandler = new IDHandler<Loader<?>>();
 		IOHandler.saverIDHandler = new IDHandler<Saver<?>>();
 		setUpDefaultLoaders();
 		setUpDefaultSavers();
-		
 	}
 	
-	private void setUpDefaultLoaders() {
+	private static void setUpDefaultLoaders() {
 		loaderIDHandler.addObject(new ID<Loader<?>>("Default String Loader", 0, new StringLoader()));
 		loaderIDHandler.addObject(new ID<Loader<?>>("Default Image Loader", 1, new BufferedImageLoader()));
 		loaderIDHandler.addObject(new ID<Loader<?>>("Default Sound Loader", 2, new SoundLoader()));
 		loaderIDHandler.addObject(new ID<Loader<?>>("Default Music Loader", 3, new MusicLoader()));
 	}
 	
-	private void setUpDefaultSavers() {
+	private static void setUpDefaultSavers() {
 		saverIDHandler.addObject(new ID<Saver<?>>("Default String Saver", 0, new StringSaver()));
 		saverIDHandler.addObject(new ID<Saver<?>>("Default PNG Saver", 1, new ImageSaver(ImageSaver.Mode.PNG)));
 		saverIDHandler.addObject(new ID<Saver<?>>("Default BMP Saver", 2, new ImageSaver(ImageSaver.Mode.BMP)));
@@ -77,16 +69,6 @@ public class IOHandler {
 	public void addLoader(Loader<?> loader, String name){
 		loaderIDHandler.addObject(loader, name);
 	}
-	
-	
-	
-	/*public void load() {
-		CopyOnWriteArrayList<LoadRequester> loaders = gameObjectHandeler.getAllGameObjectsExtending(LoadRequester.class);
-		for (LoadRequester loader : loaders) {
-			LoadResultQueue results = load(loader.requestLoad());
-			loader.loadResults(results);
-		}
-	}*/
 	
 	/**
 	 * @param requests 
@@ -141,52 +123,6 @@ public class IOHandler {
 		throw new IOException("Couldn't load request: " + request.ID);
 	}
 	
-	/*private LoadResultQueue load(LoadRequestQueue queue) {
-		LoadResult<?>[] results = new LoadResult<?>[queue.size()];
-		for (int i = 0; i < queue.size(); i++) {
-			LoadRequest<?> request = queue.next();
-			if(!request.file.canRead()){
-				try {
-					throw new IOException("Couldn't read file: " + request.file);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if(request.preferredLoader != null){
-				Loader<?> preferedLoader = loaderIDHandler.getObject(request.preferredLoader);
-				if(preferedLoader != null){
-					if(request.dataType == preferedLoader.getSupportedDataType()){
-						results[i] = new LoadResult<>(request.ID, preferedLoader.load(request));
-						if(results[i].result == null){
-							try {
-								throw new IOException("Couldn't load request: " + request.ID);
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}else{
-							continue;
-						}
-					}
-				}
-			}
-			for(Loader<?> loader : loaderIDHandler.getAllObjects()){
-				if(request.dataType == loader.getSupportedDataType()){
-					results[i] = new LoadResult<>(request.ID, loader.load(request));
-					if(results[i].result == null){
-						try {
-							throw new IOException("Couldn't load request: " + request.ID);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}else{
-						break;
-					}
-				}
-			}
-		}
-		return new LoadResultQueue(results);
-	}*/
-	
 	/**
 	 * @param saveRequestQueue
 	 * @return
@@ -205,7 +141,7 @@ public class IOHandler {
 					}
 				}
 			}
-			//TODO: Normal saver find
+			//FIXME: Normal saver find
 			return false;
 		}
 		return success;

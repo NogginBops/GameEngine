@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import game.IO.IOHandler;
 import game.debug.IDHandlerDebugFrame;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
@@ -43,6 +42,14 @@ import game.util.Updater;
  */
 public class Game extends Updater {
 	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args){
+		Game game = new Game();
+		game.run();
+	}
+	
 	//TODO: Clean up
 	
 	// JAVADOC: Game
@@ -57,8 +64,6 @@ public class Game extends Updater {
 	private static boolean paused = false;
 
 	private GameObjectHandler gameObjectHandler;
-	
-	private IOHandler ioHandler;
 	
 	private PhysicsEngine physicsEngine;
 	
@@ -117,8 +122,6 @@ public class Game extends Updater {
 		addUpdateListener(physicsEngine);
 		
 		AudioEngine.init(camera);
-		
-		ioHandler = new IOHandler(gameObjectHandler);
 		
 		Game.game = this;
 	}

@@ -54,6 +54,9 @@ public final class ScreenManager {
 	
 	private static BufferStrategy strategy;
 	
+	/**
+	 * The number of frames dropped since the start of the program.
+	 */
 	public static int framesDropped = 0;
 
 	/**

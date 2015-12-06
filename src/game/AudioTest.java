@@ -7,7 +7,6 @@ import game.sound.AudioEngine;
 import game.sound.AudioSource;
 import kuusisto.tinysound.Sound;
 import kuusisto.tinysound.TinySound;
-import town.recources.RecourcePool;
 
 /**
  * @author Julius Häger
