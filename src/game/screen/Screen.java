@@ -10,7 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 /**
- * A screen object manages repainting of a full screen window
+ * A screen object manages repainting of a window
  * 
  * @version 1.0
  * @author Julius Häger
@@ -54,6 +54,8 @@ public class Screen implements Runnable {
 	private void resetDisplay() {
 		ScreenManager.closeFrame();
 	}
+	
+	//TODO: Add better debugging system
 
 	private void loop() {
 		long currentTime = System.nanoTime();
