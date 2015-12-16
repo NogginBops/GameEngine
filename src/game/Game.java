@@ -1,10 +1,14 @@
 package game;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import game.UI.UI;
+import game.UI.elements.containers.BasicUIContainer;
+import game.UI.elements.text.UILabel;
 import game.debug.IDHandlerDebugFrame;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
@@ -84,13 +88,34 @@ public class Game extends Updater {
 		basicSetup();
 		
 		//test();
-		test2();
+		//test2();
 		//test2WithAudio();
 		//pong();
 		//pong44();
 		//breakout();
 		
-		completeSetup();
+		UITest();
+		
+		//completeSetup();
+	}
+	
+	private void UITest(){
+		screen.setTitle("UI Test");
+		screen.setDebugEnabled(true);
+		
+		camera.receiveKeyboardInput(true);
+		
+		BasicUIContainer container = new BasicUIContainer(50, 50);
+		
+		container.setBorderSize(5);
+		
+		UILabel lable = new UILabel("Test label");
+		
+		container.addUIElement(lable);
+		
+		UI hud = new UI(new Rectangle(10, 10, 100, 100), container);
+		
+		gameObjectHandler.addGameObject(hud);
 	}
 
 	private void basicSetup(){
