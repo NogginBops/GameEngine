@@ -3,9 +3,9 @@ package game.UI.elements.containers;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import game.UI.UISorter;
 import game.UI.border.Border;
 import game.UI.border.SolidBorder;
 import game.UI.elements.UIElement;
@@ -23,22 +23,37 @@ public abstract class UIContainer extends UIElement {
 	public UIContainer(UIElement... elements) {
 		super();
 		this.children = new CopyOnWriteArrayList<UIElement>(elements);
+		sortChildren();
 		containedArea = new Rectangle();
 		border = new SolidBorder(5);
 	}
 	
 	public UIContainer(int width, int height, UIElement ... elements){
+		super(width, height);
 		this.children = new CopyOnWriteArrayList<UIElement>(elements);
+		sortChildren();
 		border = new SolidBorder(5);
-		area = new Rectangle(0, 0, width, height);
 		computeContainerArea();
 	}
 	
 	public UIContainer(int x, int y, int width, int height, UIElement ... elements){
+		super(x, y, width, height);
 		this.children = new CopyOnWriteArrayList<UIElement>(elements);
+		sortChildren();
 		border = new SolidBorder(5);
-		area = new Rectangle(x, y, width, height);
 		computeContainerArea();
+	}
+	
+	public UIContainer(int x, int y, int width, int height, Border border, UIElement ... elements){
+		super(x, y, width, height);
+		this.children = new CopyOnWriteArrayList<UIElement>(elements);
+		sortChildren();
+		this.border = border;
+		computeContainerArea();
+	}
+	
+	public void sortChildren(){
+		children.sort(UISorter.instance);
 	}
 
 	public Border getBorder() {
@@ -47,21 +62,28 @@ public abstract class UIContainer extends UIElement {
 
 	public void setBorder(Border border) {
 		this.border = border;
+		computeContainerArea();
 	}
 	
 	public void setBorderSize(int width) {
 		border.setWidth(width);
+		computeContainerArea();
 	}
 
 	public void setBorderColor(Color color) {
 		border.setColor(color);
+		computeContainerArea();
 	}
-
+	
+	boolean result;
 	public boolean addUIElement(UIElement element) {
-		return children.add(element);
+		result = children.add(element);
+		sortChildren();
+		return result;
 	}
 
 	public boolean removeUIElement(UIElement element) {
+		sortChildren();
 		return children.remove(element);
 	}
 
@@ -90,8 +112,13 @@ public abstract class UIContainer extends UIElement {
 		}
 	}
 
-	public void computeContainerArea() {
-		containedArea = border.getInnerArea(area);
+	/**
+	 * <b>Note:</b><br>
+	 * This method updates the containedArea member variable.
+	 * @return
+	 */
+	protected Rectangle computeContainerArea() {
+		return containedArea = border.getInnerArea(area);
 	}
 
 	public Rectangle getContainerArea() {

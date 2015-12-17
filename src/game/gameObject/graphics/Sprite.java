@@ -1,11 +1,10 @@
 package game.gameObject.graphics;
 
+import java.awt.Rectangle;
+
 import game.gameObject.GameObject;
-import game.gameObject.physics.Collidable;
 import game.gameObject.physics.Movable;
 import game.util.UpdateListener;
-
-import java.awt.Rectangle;
 
 /**
  * 
@@ -92,11 +91,7 @@ public abstract class Sprite implements Paintable, Movable, UpdateListener {
 
 	@Override
 	public int compareTo(GameObject object) {
-		if (zOrder == object.getZOrder()) {
-			return 0;
-		} else {
-			return zOrder > object.getZOrder() ? 1 : -1;
-		}
+		return zOrder - object.getZOrder();
 	}
 
 	@Override
