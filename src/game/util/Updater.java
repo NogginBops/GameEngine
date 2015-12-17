@@ -15,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Julius Häger
  */
 public abstract class Updater {
-	
+
 	// JAVADOC: Updater
 
 	private CopyOnWriteArrayList<UpdateListener> listeners;
@@ -46,7 +46,8 @@ public abstract class Updater {
 	}
 
 	/**
-	 * Called to propagate a update call to all registered {@link UpdateListener UpdateListeners}.
+	 * Called to propagate a update call to all registered {@link UpdateListener
+	 * UpdateListeners}.
 	 * 
 	 * @param timeNano
 	 *            time since last update (in milliseconds)

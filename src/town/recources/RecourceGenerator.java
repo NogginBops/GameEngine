@@ -5,13 +5,13 @@ package town.recources;
  *
  */
 public class RecourceGenerator {
-	
+
 	private float genRate;
-	
+
 	/**
 	 * @return
 	 */
-	public float genRate(){
+	public float genRate() {
 		return genRate;
 	}
 }

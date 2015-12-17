@@ -17,25 +17,25 @@ import java.awt.event.MouseWheelEvent;
 import java.io.File;
 import java.util.Random;
 
-public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseListener{
-	
+public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseListener {
+
 	private int ZOrder = Integer.MAX_VALUE - 8;
-	
+
 	private GameObjectHandler gameObjectHandler;
-	
+
 	private Random rand;
-	
+
 	private Rectangle bounds = new Rectangle(10, 10);
-	
+
 	private Sound sound;
-	
+
 	public GameObjectAdderWithAudio(int x, int y, GameObjectHandler objectHandler) {
 		gameObjectHandler = objectHandler;
 		rand = new Random();
 		sound = TinySound.loadSound(new File("./res/robot.mp3"));
 		bounds = new Rectangle(x, y, 10, 10);
 	}
-	
+
 	@Override
 	public Rectangle getBounds() {
 		return bounds;
@@ -43,7 +43,7 @@ public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseLis
 
 	@Override
 	public void updateBounds() {
-		
+
 	}
 
 	@Override
@@ -53,21 +53,22 @@ public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseLis
 
 	@Override
 	public int compareTo(GameObject object) {
-		if(ZOrder == object.getZOrder()){
+		if (ZOrder == object.getZOrder()) {
 			return 0;
-		}else{
+		} else {
 			return ZOrder > object.getZOrder() ? 1 : -1;
 		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		OtherPaintable p = new OtherPaintable(e.getX(), e.getY(), rand.nextInt(200), rand.nextInt(200), 0, new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)));
+		OtherPaintable p = new OtherPaintable(e.getX(), e.getY(), rand.nextInt(200), rand.nextInt(200), 0,
+				new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)));
 		gameObjectHandler.addGameObject(p);
 		AudioSource source = new AudioSource(e.getX(), e.getY(), sound);
 		AudioEngine.playSound(source);
@@ -75,32 +76,32 @@ public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseLis
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseWeelMoved(MouseWheelEvent e) {
-		
+
 	}
 
 	@Override

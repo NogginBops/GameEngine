@@ -7,7 +7,7 @@ import town.recources.RecourceHandler;
  *
  */
 public class GameMaster {
-	
+
 	private static RecourceHandler money, metal, electricity;
 
 	/**
@@ -39,6 +39,5 @@ public class GameMaster {
 	public static RecourceHandler getElectricityHandler() {
 		return electricity;
 	}
-	
-	
+
 }

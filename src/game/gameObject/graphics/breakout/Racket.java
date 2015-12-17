@@ -12,18 +12,18 @@ import java.awt.event.KeyEvent;
  * @author Julius Häger
  *
  */
-public class Racket extends Sprite implements KeyListener{
-	
+public class Racket extends Sprite implements KeyListener {
+
 	private boolean moveLeft;
 	private boolean moveRight;
-	
+
 	/**
 	 * 
 	 */
 	public int movementSpeed = 250;
-	
+
 	private Rectangle outerBounds;
-	
+
 	/**
 	 * @param x
 	 * @param y
@@ -40,16 +40,16 @@ public class Racket extends Sprite implements KeyListener{
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.WHITE);
 		g2d.fillRoundRect(bounds.x, bounds.y, bounds.width, bounds.height, 10, 10);
-		//g2d.fill(bounds);
+		// g2d.fill(bounds);
 	}
-	
+
 	@Override
 	public void update(long timeMillis) {
 		super.update(timeMillis);
-		if(!outerBounds.contains(bounds)){
-			if(bounds.x + bounds.width > outerBounds.x + outerBounds.width){
-				setX((int)outerBounds.getMaxX() - bounds.width);
-			}else if(bounds.x < outerBounds.x){
+		if (!outerBounds.contains(bounds)) {
+			if (bounds.x + bounds.width > outerBounds.x + outerBounds.width) {
+				setX((int) outerBounds.getMaxX() - bounds.width);
+			} else if (bounds.x < outerBounds.x) {
 				setX(outerBounds.x);
 			}
 		}
@@ -57,7 +57,7 @@ public class Racket extends Sprite implements KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class Racket extends Sprite implements KeyListener{
 		}
 		updateMovement();
 	}
-	
+
 	@Override
 	public void keyReleased(KeyEvent e) {
 		switch (e.getKeyCode()) {
@@ -89,8 +89,8 @@ public class Racket extends Sprite implements KeyListener{
 		}
 		updateMovement();
 	}
-	
-	private void updateMovement(){
+
+	private void updateMovement() {
 		int dx = 0;
 		dx += moveLeft ? -movementSpeed : 0;
 		dx += moveRight ? movementSpeed : 0;

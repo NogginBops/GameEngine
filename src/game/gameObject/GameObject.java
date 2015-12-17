@@ -8,7 +8,7 @@ import java.awt.Rectangle;
  * @author Julius Häger
  */
 public interface GameObject extends Comparable<GameObject> {
-	
+
 	// JAVADOC: GameObject
 
 	/**

@@ -10,8 +10,8 @@ import kuusisto.tinysound.TinySound;
  * @version 1.0
  */
 public class SoundLoader implements Loader<Sound> {
-	
-	//JAVADOC: SoundLoader
+
+	// JAVADOC: SoundLoader
 
 	@Override
 	public Sound load(LoadRequest<?> request) {

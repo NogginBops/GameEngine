@@ -16,13 +16,13 @@ import java.awt.Graphics2D;
  * @author Julius Häger
  */
 public class Screen implements Runnable {
-	
+
 	// JAVADOC: Screen
-	
-	//TODO: Multiple cameras (Painters) with viewport rectangles
+
+	// TODO: Multiple cameras (Painters) with viewport rectangles
 
 	private boolean isRunning = false;
-	
+
 	private boolean debug = false;
 
 	private Graphics2D g2d;
@@ -54,8 +54,8 @@ public class Screen implements Runnable {
 	private void resetDisplay() {
 		ScreenManager.closeFrame();
 	}
-	
-	//TODO: Add better debugging system
+
+	// TODO: Add better debugging system
 
 	private void loop() {
 		long currentTime = System.nanoTime();
@@ -68,7 +68,7 @@ public class Screen implements Runnable {
 			if (painter != null) {
 				painter.paint(g2d);
 			}
-			if(debug){
+			if (debug) {
 				g2d.setColor(Color.GREEN.brighter());
 				g2d.drawString(("Frame: " + FPSCounter.framesTot), 20, 20);
 				g2d.drawString(("Updates: " + UpdateCounter.updatesTot), 20, 40);
@@ -79,8 +79,8 @@ public class Screen implements Runnable {
 				g2d.drawString("Frames dropped: " + ScreenManager.framesDropped, 20, 140);
 				g2d.drawString(("UPS: " + UpdateCounter.ups), 20, 160);
 				g2d.drawString(("Average UPS: " + UpdateCounter.averageUPS), 20, 180);
-				g2d.drawString("Camera X: " + ((Camera)painter).getBounds().x, 20, 200);
-				g2d.drawString("Camera Y: " + ((Camera)painter).getBounds().y, 20, 220);
+				g2d.drawString("Camera X: " + ((Camera) painter).getBounds().x, 20, 200);
+				g2d.drawString("Camera Y: " + ((Camera) painter).getBounds().y, 20, 220);
 				g2d.drawString("Objects: " + Game.getGameObjectHandler().numberOfGameObjects(), 20, 240);
 			}
 
@@ -89,7 +89,7 @@ public class Screen implements Runnable {
 			// Update the ScreenManagers BufferStrategy
 			ScreenManager.update();
 
-			FPSCounter.update(elapsedTime/1000000000f);
+			FPSCounter.update(elapsedTime / 1000000000f);
 		}
 	}
 
@@ -100,7 +100,7 @@ public class Screen implements Runnable {
 		isRunning = false;
 		resetDisplay();
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -118,37 +118,37 @@ public class Screen implements Runnable {
 	public void setPainter(Painter painter) {
 		this.painter = painter;
 	}
-	
+
 	/**
 	 * 
 	 * @param enabled
 	 */
-	public void setDebugEnabled(boolean enabled){
+	public void setDebugEnabled(boolean enabled) {
 		debug = enabled;
 	}
-	
+
 	/**
 	 * 
 	 * @param title
 	 */
-	public void setTitle(String title){
+	public void setTitle(String title) {
 		ScreenManager.setTitle(title);
 	}
-	
+
 	/**
 	 * 
 	 * @param state
 	 */
-	public void setState(int state){
+	public void setState(int state) {
 		ScreenManager.setState(state);
 	}
-	
+
 	/**
 	 * 
 	 * @param width
 	 * @param height
 	 */
-	public void setResolution(int width, int height){
+	public void setResolution(int width, int height) {
 		ScreenManager.setRes(width, height);
 	}
 }

@@ -17,13 +17,13 @@ import kuusisto.tinysound.Sound;
  * @author Julius Häger
  *
  */
-public class Pad extends Sprite implements KeyListener, Collidable{
-	
+public class Pad extends Sprite implements KeyListener, Collidable {
+
 	/**
 	 * @author Julius Häger
 	 *
 	 */
-	public enum Side{
+	public enum Side {
 		/**
 		 * 
 		 */
@@ -33,23 +33,23 @@ public class Pad extends Sprite implements KeyListener, Collidable{
 		 */
 		RIGHT
 	}
-	
+
 	private Side side;
-	
+
 	private Rectangle outerBounds;
-	
+
 	private int upKeyCode;
 	private int downKeyCode;
-	
+
 	private int padMovmentSpeed = 200;
-	
+
 	private boolean moveUp;
 	private boolean moveDown;
-	
+
 	private int maxInclenationChange = 50;
-	
+
 	private int speedChange = 0;
-	
+
 	private Sound beep;
 
 	/**
@@ -78,14 +78,14 @@ public class Pad extends Sprite implements KeyListener, Collidable{
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == upKeyCode){
+		if (e.getKeyCode() == upKeyCode) {
 			moveUp = true;
-		}else if(e.getKeyCode() == downKeyCode){
+		} else if (e.getKeyCode() == downKeyCode) {
 			moveDown = true;
 		}
 		updateMovement();
@@ -93,28 +93,28 @@ public class Pad extends Sprite implements KeyListener, Collidable{
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if(e.getKeyCode() == upKeyCode){
+		if (e.getKeyCode() == upKeyCode) {
 			moveUp = false;
-		}else if(e.getKeyCode() == downKeyCode){
+		} else if (e.getKeyCode() == downKeyCode) {
 			moveDown = false;
 		}
 		updateMovement();
 	}
-	
-	private void updateMovement(){
+
+	private void updateMovement() {
 		int dy = 0;
 		dy += moveUp ? -padMovmentSpeed : 0;
 		dy += moveDown ? padMovmentSpeed : 0;
 		setDY(dy);
 	}
-	
+
 	@Override
 	public void update(long timeMillis) {
 		super.update(timeMillis);
-		if(!outerBounds.contains(bounds)){
-			if(bounds.y + bounds.height > outerBounds.y + outerBounds.height){
-				setY((int)outerBounds.getMaxY() - bounds.height);
-			}else if(bounds.y < outerBounds.y){
+		if (!outerBounds.contains(bounds)) {
+			if (bounds.y + bounds.height > outerBounds.y + outerBounds.height) {
+				setY((int) outerBounds.getMaxY() - bounds.height);
+			} else if (bounds.y < outerBounds.y) {
 				setY(outerBounds.y);
 			}
 		}
@@ -124,17 +124,17 @@ public class Pad extends Sprite implements KeyListener, Collidable{
 	public boolean shouldReceiveKeyboardInput() {
 		return true;
 	}
-	
+
 	@Override
 	public void hasCollided(Collidable collisionObject) {
 		Rectangle2D ballBounds = collisionObject.getBounds();
-		float inclenation = (float)(ballBounds.getY() - bounds.y) / bounds.height;
+		float inclenation = (float) (ballBounds.getY() - bounds.y) / bounds.height;
 		inclenation = inclenation < 0 ? 0 : inclenation;
 		float newDX = Math.abs(collisionObject.getDX()) + speedChange;
 		float newDY = maxInclenationChange * inclenation * 2 - maxInclenationChange;
-		if(side == Side.LEFT){
+		if (side == Side.LEFT) {
 			collisionObject.setDX(newDX);
-		}else if(side == Side.RIGHT){
+		} else if (side == Side.RIGHT) {
 			collisionObject.setDX(-newDX);
 		}
 		collisionObject.setDY(collisionObject.getDY() + newDY);
@@ -150,18 +150,18 @@ public class Pad extends Sprite implements KeyListener, Collidable{
 	@Override
 	public void willCollide(Collidable collisionObject) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void willNoLongerCollide(Collidable collidedObject) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void noLongerColliding(Collidable collidedObject) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

@@ -21,23 +21,23 @@ import game.input.Input;
  * @author Julius Häger
  */
 public final class ScreenManager {
-	
+
 	// JAVADOC: ScreenManager
 
 	/**
 	 * 
 	 */
 	public static final int NORMAL = 0x00;
-	
+
 	/**
 	 * 
 	 */
 	public static final int FULL_SCREEN = 0x01;
 
 	private static JFrame frame;
-	
+
 	private static Input inputListener;
-	
+
 	private static Insets insets;
 
 	private static int width;
@@ -49,11 +49,11 @@ public final class ScreenManager {
 	private static int fullScreenHeight;
 
 	private static int currentState;
-	
+
 	private static int state;
-	
+
 	private static BufferStrategy strategy;
-	
+
 	/**
 	 * The number of frames dropped since the start of the program.
 	 */
@@ -69,13 +69,14 @@ public final class ScreenManager {
 	 * @param state
 	 *            the state of the window
 	 * @param title
-	 * 			  the title of the frame
+	 *            the title of the frame
 	 */
 	public static void createFrame(int width, int height, int state, String title) {
 		frame = new JFrame(title);
 		ScreenManager.width = width;
 		ScreenManager.height = height;
-		DisplayMode fullScreenDisplayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
+		DisplayMode fullScreenDisplayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDisplayMode();
 		fullScreenWidth = fullScreenDisplayMode.getWidth();
 		fullScreenHeight = fullScreenDisplayMode.getHeight();
 		setState(state);
@@ -105,19 +106,19 @@ public final class ScreenManager {
 		ScreenManager.state = state;
 		UpdateFrame();
 	}
-	
+
 	/**
 	 * 
 	 * @param width
 	 * @param height
 	 */
-	public static void setRes(int width, int height){
+	public static void setRes(int width, int height) {
 		ScreenManager.width = width;
 		ScreenManager.height = height;
 		UpdateFrame();
 	}
-	
-	private static void UpdateFrame(){
+
+	private static void UpdateFrame() {
 		String title = frame.getTitle();
 		frame.dispose();
 		frame = new JFrame(title);
@@ -140,7 +141,7 @@ public final class ScreenManager {
 		frame.setLocationRelativeTo(null);
 		frame.createBufferStrategy(2);
 		addInputListener(inputListener);
-		
+
 		insets = frame.getInsets();
 	}
 
@@ -209,7 +210,7 @@ public final class ScreenManager {
 			strategy = frame.getBufferStrategy();
 			if (!strategy.contentsLost()) {
 				strategy.show();
-			}else{
+			} else {
 				framesDropped++;
 			}
 		}
@@ -223,24 +224,24 @@ public final class ScreenManager {
 	public static Insets getInsets() {
 		return insets;
 	}
-	
+
 	/**
 	 * 
 	 * @param inputListener
 	 */
-	public static void addInputListener(Input inputListener){
+	public static void addInputListener(Input inputListener) {
 		ScreenManager.inputListener = inputListener;
 		frame.addKeyListener(inputListener);
 		frame.addMouseListener(inputListener);
 		frame.addMouseMotionListener(inputListener);
 		frame.addMouseWheelListener(inputListener);
 	}
-	
+
 	/**
 	 * 
 	 * @param title
 	 */
-	public static void setTitle(String title){
+	public static void setTitle(String title) {
 		frame.setTitle(title);
 	}
 }

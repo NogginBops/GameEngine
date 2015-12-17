@@ -13,50 +13,50 @@ import game.gameObject.graphics.Paintable;
  * @author Julius Häger
  * @version 1.0
  */
-public class UI extends UIContainer implements Paintable{
-	
-	//TODO: UIPainter
-	
+public class UI extends UIContainer implements Paintable {
+
+	// TODO: UIPainter
+
 	// JAVADOC: UIPainter
-	
+
 	private Graphics2D translatedGraphics;
-	
+
 	private CopyOnWriteArrayList<UIElement> UIElements;
-	
+
 	/**
-	 * @param area 
+	 * @param area
 	 * @param elements
 	 */
-	public UI(Rectangle area, UIElement ... elements){
+	public UI(Rectangle area, UIElement... elements) {
 		this.area = area;
 		UIElements = new CopyOnWriteArrayList<UIElement>(elements);
 	}
-	
+
 	/**
 	 * @param element
-	 * @return 
+	 * @return
 	 */
 	@Override
-	public boolean addUIElement(UIElement element){
+	public boolean addUIElement(UIElement element) {
 		return UIElements.add(element);
 	}
-	
+
 	/**
 	 * @param element
-	 * @return 
+	 * @return
 	 */
 	@Override
-	public boolean removeUIElement(UIElement element){
+	public boolean removeUIElement(UIElement element) {
 		return UIElements.remove(element);
 	}
-	
+
 	/**
 	 * @param g2d
 	 */
 	@Override
 	public void paint(Graphics2D g2d) {
 		translatedGraphics = (Graphics2D) g2d.create(area.x, area.y, area.width, area.height);
-		for(UIElement element : UIElements){
+		for (UIElement element : UIElements) {
 			element.paint(translatedGraphics);
 		}
 	}
@@ -68,14 +68,14 @@ public class UI extends UIContainer implements Paintable{
 
 	@Override
 	public void updateBounds() {
-		
+
 	}
 
 	@Override
 	public int compareTo(GameObject object) {
 		return 0;
 	}
-	
+
 	@Override
 	public int getZOrder() {
 		return super.getZOrder();

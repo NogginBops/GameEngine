@@ -21,22 +21,22 @@ import game.input.keys.KeyListener;
  * @author Julius Häger
  *
  */
-public class Score extends Sprite implements KeyListener{
+public class Score extends Sprite implements KeyListener {
 
 	/**
 	 * 
 	 */
 	public static int left = 0;
-	
+
 	/**
 	 * 
 	 */
 	public static int right = 0;
-	
+
 	private Rectangle devider;
-	
+
 	private int deviderWidth = 4;
-	
+
 	@SuppressWarnings("unused")
 	private BufferedImage img;
 
@@ -45,7 +45,8 @@ public class Score extends Sprite implements KeyListener{
 	 */
 	public Score(Rectangle bounds) {
 		super(bounds);
-		devider = new Rectangle((int) (bounds.getWidth()/2 - deviderWidth/2), bounds.y, deviderWidth, bounds.height);
+		devider = new Rectangle((int) (bounds.getWidth() / 2 - deviderWidth / 2), bounds.y, deviderWidth,
+				bounds.height);
 		zOrder = 0;
 	}
 
@@ -53,7 +54,7 @@ public class Score extends Sprite implements KeyListener{
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.BLACK);
 		g2d.fill(bounds);
-		//g2d.drawImage(img, (int)x, (int)y, null);
+		// g2d.drawImage(img, (int)x, (int)y, null);
 		g2d.setColor(Color.WHITE);
 		g2d.fill(devider);
 		g2d.drawString("" + left, devider.x - 50, 40);
@@ -62,16 +63,16 @@ public class Score extends Sprite implements KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		switch(e.getKeyCode()){
+		switch (e.getKeyCode()) {
 		case KeyEvent.VK_SPACE:
-			if(!Game.isPaused()){
+			if (!Game.isPaused()) {
 				Game.pause();
-			}else{
+			} else {
 				Game.resume();
 			}
 			break;
@@ -79,9 +80,11 @@ public class Score extends Sprite implements KeyListener{
 			Game.stop();
 			break;
 		case KeyEvent.VK_B:
-			if(IOHandler.save(new ArrayList<SaveRequest<?>>(Arrays.asList(new SaveRequest<String>("P1: " + left + " P2: " + right, String.class, new File("./res/ayyy/Score.txt"), "Default String Saver"))))){
+			if (IOHandler.save(
+					new ArrayList<SaveRequest<?>>(Arrays.asList(new SaveRequest<String>("P1: " + left + " P2: " + right,
+							String.class, new File("./res/ayyy/Score.txt"), "Default String Saver"))))) {
 				System.out.println("Save sucsessfull");
-			}else{
+			} else {
 				System.out.println("Save failed");
 			}
 			break;
@@ -90,7 +93,7 @@ public class Score extends Sprite implements KeyListener{
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
+
 	}
 
 	@Override

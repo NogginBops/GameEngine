@@ -15,7 +15,7 @@ package game.util;
  * @author Julius Häger
  */
 public final class FPSCounter {
-	
+
 	// JAVADOC: FPSCounter
 
 	/**
@@ -34,19 +34,24 @@ public final class FPSCounter {
 	 * 
 	 */
 	public static long framesTot = 0;
-	
+
 	/**
 	 * 
 	 */
 	public static long averageFPS = 0;
 
 	private static long frames = 0;
-	
+
 	/**
-	 * <p>Use this to update the counter with one measurement</p>
-	 * <p><i>Time is measured in seconds</i></p>
+	 * <p>
+	 * Use this to update the counter with one measurement
+	 * </p>
+	 * <p>
+	 * <i>Time is measured in seconds</i>
+	 * </p>
 	 * 
-	 * @param elapsedTime the time since last {@link #update(float)} method call
+	 * @param elapsedTime
+	 *            the time since last {@link #update(float)} method call
 	 */
 	public static void update(float elapsedTime) {
 		timeTot += elapsedTime;

@@ -14,7 +14,7 @@ import town.buildings.Building;
  *
  */
 public class House extends Building {
-	
+
 	protected BufferedImage outline, building, built;
 
 	/**
@@ -27,28 +27,31 @@ public class House extends Building {
 		super(x, y, width, height);
 		load();
 	}
-	
-	private void load(){
+
+	private void load() {
 		try {
-			built = IOHandler.load(new LoadRequest<BufferedImage>("Built", new File("res/town/House_Built.png"), BufferedImage.class, "Default Image Loader")).result;
-			building = IOHandler.load(new LoadRequest<BufferedImage>("Building", new File("res/town/House_Building.png"), BufferedImage.class, "Default Image Loader")).result;
-			outline = IOHandler.load(new LoadRequest<BufferedImage>("Outline", new File("res/town/House_outline.png"), BufferedImage.class, "Default Image Loader")).result;
+			built = IOHandler.load(new LoadRequest<BufferedImage>("Built", new File("res/town/House_Built.png"),
+					BufferedImage.class, "Default Image Loader")).result;
+			building = IOHandler.load(new LoadRequest<BufferedImage>("Building",
+					new File("res/town/House_Building.png"), BufferedImage.class, "Default Image Loader")).result;
+			outline = IOHandler.load(new LoadRequest<BufferedImage>("Outline", new File("res/town/House_outline.png"),
+					BufferedImage.class, "Default Image Loader")).result;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void paint(Graphics2D g2d) {
 		switch (mode) {
 		case OUTLINE:
-			g2d.drawImage(outline, (int)x, (int)y, null);
+			g2d.drawImage(outline, (int) x, (int) y, null);
 			break;
 		case BUILDING:
-			g2d.drawImage(building, (int)x, (int)y, null);
+			g2d.drawImage(building, (int) x, (int) y, null);
 			break;
 		case BUILT:
-			g2d.drawImage(built, (int)x, (int)y, null);
+			g2d.drawImage(built, (int) x, (int) y, null);
 			break;
 		default:
 			break;

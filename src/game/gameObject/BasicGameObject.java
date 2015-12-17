@@ -3,7 +3,7 @@ package game.gameObject;
 import java.awt.Rectangle;
 
 public class BasicGameObject implements GameObject {
-	
+
 	/**
 	 * 
 	 */
@@ -12,7 +12,7 @@ public class BasicGameObject implements GameObject {
 	 * 
 	 */
 	protected float y;
-	
+
 	/**
 	 * 
 	 */
@@ -21,11 +21,11 @@ public class BasicGameObject implements GameObject {
 	 * 
 	 */
 	protected float height;
-	
+
 	protected Rectangle bounds;
-	
+
 	protected int zOrder;
-	
+
 	public BasicGameObject(int x, int y, int width, int height, int zOrder) {
 		this.x = x;
 		this.y = y;
@@ -42,7 +42,7 @@ public class BasicGameObject implements GameObject {
 
 	@Override
 	public void updateBounds() {
-		bounds = new Rectangle((int)x, (int)y, (int)width, (int)height);
+		bounds = new Rectangle((int) x, (int) y, (int) width, (int) height);
 	}
 
 	@Override
@@ -52,9 +52,9 @@ public class BasicGameObject implements GameObject {
 
 	@Override
 	public int compareTo(GameObject object) {
-		if(zOrder == object.getZOrder()){
+		if (zOrder == object.getZOrder()) {
 			return 0;
-		}else{
+		} else {
 			return zOrder > object.getZOrder() ? 1 : -1;
 		}
 	}

@@ -8,10 +8,10 @@ import game.util.UpdateListener;
  * @author Julius Häger
  *
  */
-public class RecourceHandler implements UpdateListener{
-	
+public class RecourceHandler implements UpdateListener {
+
 	private ArrayList<RecourcePool> pools;
-	
+
 	private ArrayList<RecourceGenerator> generators;
 
 	/**
@@ -21,68 +21,68 @@ public class RecourceHandler implements UpdateListener{
 		pools = new ArrayList<>();
 		generators = new ArrayList<>();
 	}
-	
+
 	@Override
 	public void update(long timeNano) {
 		float time = timeNano / 1000000000f;
 		float carry = 0;
-		for(RecourceGenerator generator : generators){
-			for(RecourcePool pool : pools){
+		for (RecourceGenerator generator : generators) {
+			for (RecourcePool pool : pools) {
 				carry = pool.addRecources(generator.genRate() * time + carry);
-				if(carry == 0){
+				if (carry == 0) {
 					break;
 				}
 			}
 		}
-		//TODO: Add to game metrics
+		// TODO: Add to game metrics
 	}
-	
+
 	/**
 	 * @param pool
 	 */
-	public void addRecourcePool(RecourcePool pool){
+	public void addRecourcePool(RecourcePool pool) {
 		pools.add(pool);
 	}
-	
+
 	/**
 	 * @param pool
 	 */
-	public void removeRecourcePool(RecourcePool pool){
+	public void removeRecourcePool(RecourcePool pool) {
 		pools.remove(pool);
 	}
-	
+
 	/**
 	 * @param generator
 	 */
-	public void addRecourceGenerator(RecourceGenerator generator){
+	public void addRecourceGenerator(RecourceGenerator generator) {
 		generators.add(generator);
 	}
-	
+
 	/**
 	 * @param generator
 	 */
-	public void removeRecourceGenerator(RecourceGenerator generator){
+	public void removeRecourceGenerator(RecourceGenerator generator) {
 		generators.remove(generator);
 	}
-	
+
 	/**
 	 * @return
 	 */
-	public float getCurrentAmount(){
+	public float getCurrentAmount() {
 		float amount = 0;
-		for(RecourcePool pool : pools){
+		for (RecourcePool pool : pools) {
 			amount += pool.getCurrentCapacity();
 		}
 		return amount;
 	}
-	
+
 	/**
 	 * @param amount
 	 * @return
 	 */
-	public float useRecources(float amount){
-		for(RecourcePool pool : pools){
-			if(amount == (amount = pool.useRecource(amount))){
+	public float useRecources(float amount) {
+		for (RecourcePool pool : pools) {
+			if (amount == (amount = pool.useRecource(amount))) {
 				break;
 			}
 		}

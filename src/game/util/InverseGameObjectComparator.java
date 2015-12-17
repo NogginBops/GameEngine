@@ -5,12 +5,13 @@ import game.gameObject.GameObject;
 import java.util.Comparator;
 
 /**
- * This {@link Comparator} is used to sort {@link GameObject GameObjects} in reverse Z-order.
+ * This {@link Comparator} is used to sort {@link GameObject GameObjects} in
+ * reverse Z-order.
  * 
  * @version 1.0
  * @author Julius Häger
  */
-public class InverseGameObjectComparator implements Comparator<GameObject>{
+public class InverseGameObjectComparator implements Comparator<GameObject> {
 
 	@Override
 	public int compare(GameObject o1, GameObject o2) {

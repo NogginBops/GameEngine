@@ -15,12 +15,12 @@ import javax.swing.event.MouseInputListener;
  * @version 1.0
  * @author Julius Häger
  */
-public class Input implements KeyListener, MouseInputListener, MouseWheelListener, UpdateListener{
-	
+public class Input implements KeyListener, MouseInputListener, MouseWheelListener, UpdateListener {
+
 	private MouseInputHandler mouseHandler;
-	
+
 	private KeyInputHandler keyHandler;
-	
+
 	/**
 	 * @param mouseHandeler
 	 * @param keyHandeler

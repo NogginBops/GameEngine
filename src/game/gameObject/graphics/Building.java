@@ -8,26 +8,26 @@ import java.awt.Rectangle;
  * @author Julius Häger
  *
  */
-public abstract class Building implements Paintable{
-	
-	//TODO: Building: Remove
-	
+public abstract class Building implements Paintable {
+
+	// TODO: Building: Remove
+
 	protected int x;
 	protected int y;
-	
+
 	protected int width;
 	protected int height;
-	
+
 	/**
 	 * The bounds of the Building. (Used for painting)
 	 */
 	protected Rectangle bounds;
-	
+
 	/**
 	 * The Z-Order of the building (Default = 1)
 	 */
 	protected int ZOrder = 1;
-	
+
 	/**
 	 * @param x
 	 * @param y
@@ -42,28 +42,28 @@ public abstract class Building implements Paintable{
 		this.height = height;
 		bounds = new Rectangle(x, y, width, height);
 	}
-	
+
 	@Override
 	public int getZOrder() {
 		return ZOrder;
 	}
-	
+
 	@Override
 	public int compareTo(GameObject object) {
-		if(ZOrder == object.getZOrder()){
+		if (ZOrder == object.getZOrder()) {
 			return 0;
-		}else{
+		} else {
 			return ZOrder > object.getZOrder() ? 1 : -1;
 		}
 	}
-	
+
 	@Override
 	public Rectangle getBounds() {
 		return bounds;
 	}
-	
+
 	@Override
 	public void updateBounds() {
-		
+
 	}
 }

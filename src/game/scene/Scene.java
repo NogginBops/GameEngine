@@ -6,9 +6,9 @@ package game.scene;
  * @author Julius Häger
  */
 public class Scene {
-	
-	//TODO: Scene
-	
+
+	// TODO: Scene
+
 	// JAVADOC: Scene
 
 }

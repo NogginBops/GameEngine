@@ -7,7 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class OtherPaintable extends Building implements Paintable {
-	
+
 	private Color color;
 
 	public OtherPaintable(int x, int y, int width, int height, int z, Color color) {
