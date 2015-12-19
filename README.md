@@ -29,7 +29,7 @@ The `Painter` is an abstract class that defines a base behavour for painting gam
 The `Updater` class is a abstract class that handles and provides updates to a list of `UpdateListeners`. The `propagateUpdate(long)` is called from the `Updater` subclass with time since the last update and the `Updater` handles the propagation of the update to all registered `UpdateListeners`. Currently all updates are handled by the `Game` class whitch extends `Updater`. The `UpdateListener` only contains the `update(long)` method definition. Unlike most interfaces in this game engine the `UpdateListener` is not a subinterface to the `GameObject` interface to allow for other components that are not game objects to recive updates like the `Input` class and `PhysicsEngine` class. This introduces a problem, because when you add a game object to the `GameObjectHandler` the `Updater` does not know about this and has no way of knowing this as the `GameObjectHandler` only handles `GameObjects`. This is currently not solved so atm you just have to manually add the object to the `Updater`.
 
 ###The `Movable` interface:
-
+The `Movable` interface can be implemented to provide functions for a moving `Gameobject`. In the future this movement will be handled by the `PhysicsEngine` but currently is just temporarily implemented by also implementing the `UpdateListener`.
 
 ###The `Collidable` interface and the `PhysicsEngine` class:
 ######Note!!! Both the `Colidable` interface and `PhysicsEngine` class are makeshift! Expect lots of changes to be made.
