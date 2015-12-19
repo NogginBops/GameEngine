@@ -20,7 +20,8 @@ public class GameObjectHandler {
 	// JAVADOC: GameObjectHandeler
 
 	private ConcurrentSkipListMap<Integer, CopyOnWriteArrayList<GameObject>> gameObjectMap;
-
+	
+	//FIXME: Remove gameObjects list.
 	private CopyOnWriteArrayList<GameObject> gameObjects;
 
 	private CopyOnWriteArrayList<Integer> zLevels;
@@ -95,9 +96,11 @@ public class GameObjectHandler {
 			zLevels.add(id.object.getZOrder());
 			zLevels.sort(null);
 		}
-		idHandler.addObject(id);
+		idHandler.addID(id);
 		objectsChanged = true;
 	}
+	
+	//TODO: Clean up add and remove methods.
 
 	/**
 	 * 
@@ -115,6 +118,7 @@ public class GameObjectHandler {
 		if (!zLevels.contains(gameObject.getZOrder())) {
 			zLevels.remove(gameObject.getZOrder());
 		}
+		idHandler.removeObject(gameObject);
 		objectsChanged = true;
 	}
 
@@ -132,6 +136,7 @@ public class GameObjectHandler {
 		if (!zLevels.contains(id.object.getZOrder())) {
 			zLevels.remove(id.object.getZOrder());
 		}
+		idHandler.removeID(id);
 		objectsChanged = true;
 	}
 
@@ -194,7 +199,7 @@ public class GameObjectHandler {
 	 * @param classT
 	 * @return
 	 */
-	public <T extends GameObject> CopyOnWriteArrayList<T> getAllGameObjectsAtZLevelGameObjectExtending(int zLevel,
+	public <T extends GameObject> CopyOnWriteArrayList<T> getAllGameObjectsAtZLevelExtending(int zLevel,
 			Class<T> classT) {
 		// System.out.println("Called
 		// getAllGameObjectsAtZLevelGameObjectExtending() with arguments: " +

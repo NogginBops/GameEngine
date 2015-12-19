@@ -39,7 +39,7 @@ public class IDHandler<T> {
 	 * @param nameID
 	 */
 	public void addObject(T object, String nameID) {
-		addObject(new ID<T>(nameID, 0, object));
+		addID(new ID<T>(nameID, 0, object));
 		// IDs.add(findFirstAvailableID(new ID<T>(nameID, 0, object)));
 	}
 
@@ -47,8 +47,24 @@ public class IDHandler<T> {
 	 * 
 	 * @param id
 	 */
-	public void addObject(ID<T> id) {
+	public void addID(ID<T> id) {
 		IDs.add(findFirstAvailableID(id));
+	}
+	
+	/**
+	 * 
+	 * @param object
+	 */
+	public void removeObject(T object){
+		IDs.remove(getID(object));
+	}
+	
+	/**
+	 * 
+	 * @param id
+	 */
+	public void removeID(ID<T> id){
+		IDs.remove(id);
 	}
 
 	/**

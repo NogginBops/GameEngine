@@ -1,4 +1,4 @@
-package town.recources;
+package demos.town.recources;
 
 import java.util.ArrayList;
 

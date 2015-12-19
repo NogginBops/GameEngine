@@ -88,8 +88,8 @@ public interface Movable extends GameObject {
 	 * </p>
 	 * 
 	 * @param timeMillis
-	 *            time since last update (in milliseconds)
+	 *            time since last update (in nanoseconds)
 	 */
-	public void update(long timeMillis);
+	public void update(long timeNano);
 
 }

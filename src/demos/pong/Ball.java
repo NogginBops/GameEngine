@@ -1,4 +1,4 @@
-package game.gameObject.graphics.pong;
+package demos.pong;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

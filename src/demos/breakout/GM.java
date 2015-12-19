@@ -1,4 +1,4 @@
-package game.gameObject.graphics.breakout;
+package demos.breakout;
 
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;

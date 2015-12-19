@@ -40,18 +40,18 @@ public class IOHandler {
 	}
 
 	private static void setUpDefaultLoaders() {
-		loaderIDHandler.addObject(new ID<Loader<?>>("Default String Loader", 0, new StringLoader()));
-		loaderIDHandler.addObject(new ID<Loader<?>>("Default Image Loader", 1, new BufferedImageLoader()));
-		loaderIDHandler.addObject(new ID<Loader<?>>("Default Sound Loader", 2, new SoundLoader()));
-		loaderIDHandler.addObject(new ID<Loader<?>>("Default Music Loader", 3, new MusicLoader()));
+		loaderIDHandler.addID(new ID<Loader<?>>("Default String Loader", 0, new StringLoader()));
+		loaderIDHandler.addID(new ID<Loader<?>>("Default Image Loader", 1, new BufferedImageLoader()));
+		loaderIDHandler.addID(new ID<Loader<?>>("Default Sound Loader", 2, new SoundLoader()));
+		loaderIDHandler.addID(new ID<Loader<?>>("Default Music Loader", 3, new MusicLoader()));
 	}
 
 	private static void setUpDefaultSavers() {
-		saverIDHandler.addObject(new ID<Saver<?>>("Default String Saver", 0, new StringSaver()));
-		saverIDHandler.addObject(new ID<Saver<?>>("Default PNG Saver", 1, new ImageSaver(ImageSaver.Mode.PNG)));
-		saverIDHandler.addObject(new ID<Saver<?>>("Default BMP Saver", 2, new ImageSaver(ImageSaver.Mode.BMP)));
-		saverIDHandler.addObject(new ID<Saver<?>>("Default JPG Saver", 3, new ImageSaver(ImageSaver.Mode.JPG)));
-		saverIDHandler.addObject(new ID<Saver<?>>("Default GIF Saver", 4, new ImageSaver(ImageSaver.Mode.GIF)));
+		saverIDHandler.addID(new ID<Saver<?>>("Default String Saver", 0, new StringSaver()));
+		saverIDHandler.addID(new ID<Saver<?>>("Default PNG Saver", 1, new ImageSaver(ImageSaver.Mode.PNG)));
+		saverIDHandler.addID(new ID<Saver<?>>("Default BMP Saver", 2, new ImageSaver(ImageSaver.Mode.BMP)));
+		saverIDHandler.addID(new ID<Saver<?>>("Default JPG Saver", 3, new ImageSaver(ImageSaver.Mode.JPG)));
+		saverIDHandler.addID(new ID<Saver<?>>("Default GIF Saver", 4, new ImageSaver(ImageSaver.Mode.GIF)));
 	}
 
 	/**

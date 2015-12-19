@@ -20,6 +20,8 @@ public class Screen implements Runnable {
 	// JAVADOC: Screen
 
 	// TODO: Multiple cameras (Painters) with viewport rectangles
+	
+	// TODO: Add better debugging system
 
 	private boolean isRunning = false;
 
@@ -54,8 +56,6 @@ public class Screen implements Runnable {
 	private void resetDisplay() {
 		ScreenManager.closeFrame();
 	}
-
-	// TODO: Add better debugging system
 
 	private void loop() {
 		long currentTime = System.nanoTime();

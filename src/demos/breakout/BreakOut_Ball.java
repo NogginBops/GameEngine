@@ -1,4 +1,4 @@
-package game.gameObject.graphics.breakout;
+package demos.breakout;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

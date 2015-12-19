@@ -1,4 +1,4 @@
-package game.gameObject.graphics.breakout;
+package demos.breakout;
 
 import game.gameObject.graphics.Sprite;
 import game.input.keys.KeyListener;

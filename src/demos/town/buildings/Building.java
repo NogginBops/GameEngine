@@ -1,4 +1,4 @@
-package town.buildings;
+package demos.town.buildings;
 
 import game.gameObject.graphics.Sprite;
 import game.util.UpdateListener;

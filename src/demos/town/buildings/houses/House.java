@@ -1,13 +1,13 @@
-package town.buildings.houses;
+package demos.town.buildings.houses;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import demos.town.buildings.Building;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
-import town.buildings.Building;
 
 /**
  * @author Julius Häger

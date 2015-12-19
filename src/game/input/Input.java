@@ -20,6 +20,8 @@ public class Input implements KeyListener, MouseInputListener, MouseWheelListene
 	private MouseInputHandler mouseHandler;
 
 	private KeyInputHandler keyHandler;
+	
+	//TODO: Key-binding system
 
 	/**
 	 * @param mouseHandeler

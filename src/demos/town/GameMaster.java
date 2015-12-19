@@ -1,6 +1,6 @@
-package town;
+package demos.town;
 
-import town.recources.RecourceHandler;
+import demos.town.recources.RecourceHandler;
 
 /**
  * @author Julius Häger

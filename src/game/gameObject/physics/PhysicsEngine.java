@@ -34,7 +34,7 @@ public class PhysicsEngine implements UpdateListener {
 			// long startTime = System.nanoTime();
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 			for (int z : gameObjectHandeler.getZLevels()) {
-				collidables.add(gameObjectHandeler.getAllGameObjectsAtZLevelGameObjectExtending(z, Collidable.class));
+				collidables.add(gameObjectHandeler.getAllGameObjectsAtZLevelExtending(z, Collidable.class));
 			}
 			// long endTime = System.nanoTime();
 			// System.out.println("Fetching gameObjects: " + (endTime -
