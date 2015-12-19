@@ -4,6 +4,7 @@ import game.util.GameObjectHandler;
 import game.util.UpdateListener;
 
 import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -17,7 +18,10 @@ public class PhysicsEngine implements UpdateListener {
 	// TODO: PhysicsEngine
 
 	private GameObjectHandler gameObjectHandeler;
+	
+	private HashMap<Integer, CopyOnWriteArrayList<Collidable>> collidablesMap = new HashMap<>();
 
+	//TODO: Use the HashMap instead.
 	private CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>> collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 
 	/**
@@ -29,19 +33,14 @@ public class PhysicsEngine implements UpdateListener {
 
 	@Override
 	public void update(long timeMillis) {
-		// int checks = 0;
 		if (gameObjectHandeler.haveObjectsChanged()) {
-			// long startTime = System.nanoTime();
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
+			//FIXME: Change to not consider empty z levels.
 			for (int z : gameObjectHandeler.getZLevels()) {
 				collidables.add(gameObjectHandeler.getAllGameObjectsAtZLevelExtending(z, Collidable.class));
 			}
-			// long endTime = System.nanoTime();
-			// System.out.println("Fetching gameObjects: " + (endTime -
-			// startTime)/1000000000f);
 		}
 
-		// long startTime = System.nanoTime();
 		for (CopyOnWriteArrayList<Collidable> collidablesInLayer : collidables) {
 			for (int c1 = 0; c1 < collidablesInLayer.size(); c1++) {
 				for (int c2 = c1 + 1; c2 < collidablesInLayer.size(); c2++) {
@@ -51,15 +50,8 @@ public class PhysicsEngine implements UpdateListener {
 							collidablesInLayer.get(c1).hasCollided(collidablesInLayer.get(c2));
 						}
 					}
-					// checks++;
 				}
 			}
 		}
-		// long endTime = System.nanoTime();
-		// System.out.println("Collition check: " + (endTime -
-		// startTime)/1000000000f);
-
-		// System.out.println("PhysicsEngine.update() made " + checks + "
-		// collition checks");
 	}
 }

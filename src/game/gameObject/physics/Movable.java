@@ -74,6 +74,8 @@ public interface Movable extends GameObject {
 	 * @param dy
 	 */
 	public void setDY(float dy);
+	
+	//TODO: Make movement be updated by the PhysicsEngine
 
 	/**
 	 * <p>

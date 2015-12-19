@@ -49,6 +49,10 @@ public class AudioEngine {
 	 * @param source
 	 */
 	public static void playSound(AudioSource source) {
+		if(!TinySound.isInitialized()){
+			return;
+		}
+		
 		listenerLocation = new Point2D.Double(listener.getBounds().getBounds().getCenterX(),
 				listener.getBounds().getBounds().getCenterY());
 		Point2D vector = AudioUtil.getVector(source.getLocation(), listenerLocation);

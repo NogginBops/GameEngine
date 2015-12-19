@@ -41,7 +41,7 @@ public abstract class Updater {
 	 * @param listener
 	 *            the listener to remove
 	 */
-	public void removeListener(UpdateListener listener) {
+	public void removeUpdateListener(UpdateListener listener) {
 		listeners.remove(listener);
 	}
 

@@ -3,9 +3,14 @@ package demos.pong;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
+import game.IO.IOHandler;
+import game.IO.load.LoadRequest;
 import game.gameObject.graphics.Sprite;
+import game.gameObject.physics.Collidable;
 import game.sound.AudioEngine;
 import game.sound.AudioSource;
 import kuusisto.tinysound.Sound;
@@ -14,7 +19,7 @@ import kuusisto.tinysound.Sound;
  * @author Julius Häger
  *
  */
-public class Ball extends Sprite {
+public class Ball extends Sprite implements Collidable{
 
 	private int minDX = 150;
 
@@ -32,6 +37,11 @@ public class Ball extends Sprite {
 	public Ball(int x, int y, int width, int height, Rectangle outerBounds) {
 		super(x, y, width, height);
 		this.outerBounds = outerBounds;
+		try {
+			beep = IOHandler.load(new LoadRequest<Sound>("BeepSound", new File("./res/pongbeep.wav"), Sound.class, "DefaultSoundLoader")).result;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -80,5 +90,10 @@ public class Ball extends Sprite {
 				setDX(minDX);
 			}
 		}
+	}
+
+	@Override
+	public void hasCollided(Collidable collisionObject) {
+		return;
 	}
 }

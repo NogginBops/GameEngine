@@ -33,27 +33,7 @@ public class Brick extends Sprite implements Collidable {
 	}
 
 	@Override
-	public int getMass() {
-		return 0;
-	}
-
-	@Override
-	public void willCollide(Collidable collisionObject) {
-
-	}
-
-	@Override
 	public void hasCollided(Collidable collisionObject) {
-
-	}
-
-	@Override
-	public void willNoLongerCollide(Collidable collidedObject) {
-
-	}
-
-	@Override
-	public void noLongerColliding(Collidable collidedObject) {
 
 	}
 }

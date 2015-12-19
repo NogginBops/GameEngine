@@ -5,7 +5,11 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.IOException;
 
+import game.IO.IOHandler;
+import game.IO.load.LoadRequest;
 import game.gameObject.graphics.Sprite;
 import game.gameObject.physics.Collidable;
 import game.input.keys.KeyListener;
@@ -68,6 +72,12 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 		this.downKeyCode = downKeyCode;
 		this.outerBounds = outerBounds;
 		this.side = side;
+		
+		try {
+			beep = IOHandler.load(new LoadRequest<Sound>("BeepSound", new File("./res/pongbeep.wav"), Sound.class, "DefaultSoundLoader")).result;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -127,6 +137,8 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 
 	@Override
 	public void hasCollided(Collidable collisionObject) {
+		System.out.println("Collided: " + this);
+		
 		Rectangle2D ballBounds = collisionObject.getBounds();
 		float inclenation = (float) (ballBounds.getY() - bounds.y) / bounds.height;
 		inclenation = inclenation < 0 ? 0 : inclenation;
@@ -139,29 +151,5 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 		}
 		collisionObject.setDY(collisionObject.getDY() + newDY);
 		AudioEngine.playSound(new AudioSource(x, y, beep));
-	}
-
-	@Override
-	public int getMass() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void willCollide(Collidable collisionObject) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void willNoLongerCollide(Collidable collidedObject) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void noLongerColliding(Collidable collidedObject) {
-		// TODO Auto-generated method stub
-
 	}
 }

@@ -124,28 +124,4 @@ public class BreakOut_Ball extends Sprite implements KeyListener, Collidable {
 			setDX(newDX);
 		}
 	}
-
-	@Override
-	public int getMass() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void willCollide(Collidable collisionObject) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void willNoLongerCollide(Collidable collidedObject) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void noLongerColliding(Collidable collidedObject) {
-		// TODO Auto-generated method stub
-
-	}
 }

@@ -156,10 +156,12 @@ public class Game extends Updater {
 
 	private void basicSetup() {
 		gameObjectHandler = new GameObjectHandler();
+		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
+		
 		addUpdateListener(physicsEngine);
 
-		screen = new Screen(800, 600, ScreenManager.NORMAL, "Game");
+		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
 
 		camera = new Camera(gameObjectHandler, 0, 0, ScreenManager.getWidth() - ScreenManager.getInsets().right,
 				ScreenManager.getHeight() - ScreenManager.getInsets().top);
