@@ -2,7 +2,7 @@
 A 2D Java game engine I have been working on.
 
 ##Summary:
-This is a little fun project I started on a whim while on a trip where I had no internet. First I just thought of it as a little fun thing to test how far I would get and to see my skills. But after the trip I just couldn't leave it, it was just so fun doing. And so here I am...
+This is a little fun project I started on a whim while on a trip where I had no internet. First I just thought of it as a little fun thing to test how far I would get and to see my skills. But after the trip I just couldn't leave it, it was just so fun doing it. And so here I am...
 
 ##The Idea:
 The idea of the engine is to be a object oriented easy to use and easily extended game engine. Some of the things I want to achive with this engine is that almost all parts are interchangable or rewritable. This would mean that any part of the game engine e.g. the paint routine can be entierly replaced by just extending a class or inplementing an interface. In my opinion this is a really nice thing to be able to do.
