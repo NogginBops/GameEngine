@@ -18,10 +18,10 @@ public class StringSaver implements Saver<String> {
 
 	@Override
 	public boolean save(SaveRequest<?> request) {
-		if(SaverUtil.makeFileUsable(request.location)){
+		if (SaverUtil.makeFileUsable(request.location)) {
 			try {
 				FileWriter writer = new FileWriter(request.location);
-				writer.write((String)request.object);
+				writer.write((String) request.object);
 				writer.flush();
 				writer.close();
 				return true;

@@ -17,13 +17,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Julius Häger
  */
 public class MouseInputHandler {
-	
+
 	// JAVADOC: MouseInputHandler
 
 	private GameObjectHandler gameObjectHandeler;
-	
+
 	private CopyOnWriteArrayList<MouseListener> listeners;
-	
+
 	private CopyOnWriteArrayList<MouseListener> enteredListeners;
 
 	private Camera camera;
@@ -36,7 +36,7 @@ public class MouseInputHandler {
 	 * 
 	 * 
 	 * @param gameObjectHandeler
-	 * @param camera 
+	 * @param camera
 	 */
 	public MouseInputHandler(GameObjectHandler gameObjectHandeler, Camera camera) {
 		this.gameObjectHandeler = gameObjectHandeler;
@@ -96,7 +96,8 @@ public class MouseInputHandler {
 	 * @param e
 	 */
 	public void mouseEntered(MouseEvent e) {
-		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right, (int) camera.getY() - ScreenManager.getInsets().top);
+		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
+				(int) camera.getY() - ScreenManager.getInsets().top);
 		lastEvent = e;
 	}
 
@@ -105,7 +106,8 @@ public class MouseInputHandler {
 	 * @param e
 	 */
 	public void mouseExited(MouseEvent e) {
-		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right, (int) camera.getY() - ScreenManager.getInsets().top);
+		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
+				(int) camera.getY() - ScreenManager.getInsets().top);
 		lastEvent = e;
 	}
 
@@ -114,8 +116,9 @@ public class MouseInputHandler {
 	 * @param e
 	 */
 	public void mouseDragged(MouseEvent e) {
-		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right, (int) camera.getY() - ScreenManager.getInsets().top);
-		if(gameObjectHandeler.haveObjectsChanged()){
+		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
+				(int) camera.getY() - ScreenManager.getInsets().top);
+		if (gameObjectHandeler.haveObjectsChanged()) {
 			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
 		}
 		for (MouseListener listener : listeners) {
@@ -129,8 +132,9 @@ public class MouseInputHandler {
 	 * @param e
 	 */
 	public void mouseMoved(MouseEvent e) {
-		e.translatePoint((int)camera.getX() - ScreenManager.getInsets().right, (int)camera.getY() - ScreenManager.getInsets().top);
-		if(gameObjectHandeler.haveObjectsChanged()){
+		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
+				(int) camera.getY() - ScreenManager.getInsets().top);
+		if (gameObjectHandeler.haveObjectsChanged()) {
 			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
 		}
 		listeners.sort(invComparator);
@@ -166,18 +170,19 @@ public class MouseInputHandler {
 		}
 		lastEvent = e;
 	}
-	
+
 	/**
 	 * 
 	 */
 	public void computeEnteredListeners() {
 		if (lastEvent != null) {
-			if(gameObjectHandeler.haveObjectsChanged()){
+			if (gameObjectHandeler.haveObjectsChanged()) {
 				listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
 			}
 			listeners.sort(invComparator);
 			for (MouseListener listener : listeners) {
-				if (listener.getBounds().contains(lastEvent.getX(), lastEvent.getY()) || listener.souldReceiveMouseInput()) {
+				if (listener.getBounds().contains(lastEvent.getX(), lastEvent.getY())
+						|| listener.souldReceiveMouseInput()) {
 					if (!enteredListeners.contains(listener)) {
 						listener.mouseEntered(lastEvent);
 						enteredListeners.add(listener);

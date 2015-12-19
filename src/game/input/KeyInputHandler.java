@@ -13,15 +13,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Julius Häger
  */
 public class KeyInputHandler {
-	
+
 	// JAVADOC: KeyInputHandler
-	
+
 	private KeyListener selectedListener;
-	
+
 	private GameObjectHandler gameObjectHandeler;
-	
+
 	private CopyOnWriteArrayList<KeyListener> listeners = new CopyOnWriteArrayList<KeyListener>();
-	
+
 	/**
 	 * 
 	 * @param gameObjectHandeler
@@ -29,49 +29,49 @@ public class KeyInputHandler {
 	public KeyInputHandler(GameObjectHandler gameObjectHandeler) {
 		this.gameObjectHandeler = gameObjectHandeler;
 	}
-	
+
 	/**
 	 * 
 	 * 
 	 * @param listener
 	 */
-	public void selectListener(KeyListener listener){
+	public void selectListener(KeyListener listener) {
 		selectedListener = listener;
 	}
-	
+
 	/**
 	 * 
 	 * 
 	 * @param e
 	 */
 	public void keyTyped(KeyEvent e) {
-		if(selectedListener != null){
+		if (selectedListener != null) {
 			selectedListener.keyTyped(e);
 		}
-		if(gameObjectHandeler.haveObjectsChanged()){
+		if (gameObjectHandeler.haveObjectsChanged()) {
 			listeners = gameObjectHandeler.getAllGameObjectsExtending(KeyListener.class);
 		}
-		for(KeyListener listener : listeners){
-			if(listener.shouldReceiveKeyboardInput()){
+		for (KeyListener listener : listeners) {
+			if (listener.shouldReceiveKeyboardInput()) {
 				listener.keyTyped(e);
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * 
 	 * @param e
 	 */
 	public void keyPressed(KeyEvent e) {
-		if(selectedListener != null){
+		if (selectedListener != null) {
 			selectedListener.keyPressed(e);
 		}
-		if(gameObjectHandeler.haveObjectsChanged()){
+		if (gameObjectHandeler.haveObjectsChanged()) {
 			listeners = gameObjectHandeler.getAllGameObjectsExtending(KeyListener.class);
 		}
-		for(KeyListener listener : listeners){
-			if(listener.shouldReceiveKeyboardInput()){
+		for (KeyListener listener : listeners) {
+			if (listener.shouldReceiveKeyboardInput()) {
 				listener.keyPressed(e);
 			}
 		}
@@ -83,14 +83,14 @@ public class KeyInputHandler {
 	 * @param e
 	 */
 	public void keyReleased(KeyEvent e) {
-		if(selectedListener != null){
+		if (selectedListener != null) {
 			selectedListener.keyReleased(e);
 		}
-		if(gameObjectHandeler.haveObjectsChanged()){
+		if (gameObjectHandeler.haveObjectsChanged()) {
 			listeners = gameObjectHandeler.getAllGameObjectsExtending(KeyListener.class);
 		}
-		for(KeyListener listener : listeners){
-			if(listener.shouldReceiveKeyboardInput()){
+		for (KeyListener listener : listeners) {
+			if (listener.shouldReceiveKeyboardInput()) {
 				listener.keyReleased(e);
 			}
 		}

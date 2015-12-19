@@ -8,41 +8,41 @@ import java.io.IOException;
  * @version 1.0
  */
 public final class SaverUtil {
-	 
+
 	/**
 	 * 
 	 * @param file
 	 * @return
 	 */
-	public static boolean makeFileUsable(File file){
-		if(file.exists()){
-			if(file.isFile()){
-				if(file.canWrite()){
+	public static boolean makeFileUsable(File file) {
+		if (file.exists()) {
+			if (file.isFile()) {
+				if (file.canWrite()) {
 					return true;
-				}else{
+				} else {
 					System.err.println("Can't write");
 					return false;
 				}
-			}else{
+			} else {
 				System.err.println("Is't a file");
 				return false;
 			}
-		}else{
-			if(file.getParentFile().exists()){
+		} else {
+			if (file.getParentFile().exists()) {
 				try {
-					if(file.createNewFile()){
-						if(file.isFile()){
-							if(file.canWrite()){
+					if (file.createNewFile()) {
+						if (file.isFile()) {
+							if (file.canWrite()) {
 								return true;
-							}else{
+							} else {
 								System.err.println("Can't write");
 								return false;
 							}
-						}else{
+						} else {
 							System.err.println("Is't a file");
 							return false;
 						}
-					}else{
+					} else {
 						System.err.println("Failed to create file");
 						return false;
 					}
@@ -50,22 +50,22 @@ public final class SaverUtil {
 					e.printStackTrace();
 					return false;
 				}
-			}else{
-				if(file.getParentFile().mkdirs()){
+			} else {
+				if (file.getParentFile().mkdirs()) {
 					try {
-						if(file.createNewFile()){
-							if(file.isFile()){
-								if(file.canWrite()){
+						if (file.createNewFile()) {
+							if (file.isFile()) {
+								if (file.canWrite()) {
 									return true;
-								}else{
+								} else {
 									System.err.println("Can't write");
 									return false;
 								}
-							}else{
+							} else {
 								System.err.println("Is't a file");
 								return false;
 							}
-						}else{
+						} else {
 							System.err.println("Failed to create file");
 							return false;
 						}
@@ -73,7 +73,7 @@ public final class SaverUtil {
 						e.printStackTrace();
 						return false;
 					}
-				}else{
+				} else {
 					System.err.println("Failed mkdir");
 					return false;
 				}

@@ -10,14 +10,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
-public class TestInputSprite extends Sprite implements MouseListener, KeyListener{
-	
+public class TestInputSprite extends Sprite implements MouseListener, KeyListener {
+
 	private Color color;
-	
+
 	private Color secColor;
-	
+
 	private boolean absorb;
-	
+
 	private int lastXInSpriteBounds, lastYInSpriteBounds;
 
 	/**
@@ -41,35 +41,33 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(color);
-		g2d.fillRect((int)x, (int)y, (int)width, (int)height);
+		g2d.fillRect((int) x, (int) y, (int) width, (int) height);
 		g2d.setColor(color.darker());
-		g2d.fillOval((int)x, (int)y, (int)width, (int)height);
+		g2d.fillOval((int) x, (int) y, (int) width, (int) height);
 		g2d.setColor(Color.YELLOW);
-		if(lastXInSpriteBounds < x){
-			lastXInSpriteBounds = (int)x;
+		if (lastXInSpriteBounds < x) {
+			lastXInSpriteBounds = (int) x;
 		}
-		if(lastYInSpriteBounds < y){
-			lastYInSpriteBounds = (int)y;
+		if (lastYInSpriteBounds < y) {
+			lastYInSpriteBounds = (int) y;
 		}
-		if(lastXInSpriteBounds > x + width){
+		if (lastXInSpriteBounds > x + width) {
 			lastXInSpriteBounds = (int) (x + width);
 		}
-		if(lastYInSpriteBounds > y + height){
+		if (lastYInSpriteBounds > y + height) {
 			lastYInSpriteBounds = (int) (y + height);
 		}
 		g2d.fillRect(lastXInSpriteBounds - 5, lastYInSpriteBounds - 5, 10, 10);
 	}
-	
-	
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if(bounds.contains(e.getPoint())){
+		if (bounds.contains(e.getPoint())) {
 			Color tempColor = color;
 			color = secColor;
 			secColor = tempColor;
@@ -78,22 +76,22 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if(bounds.contains(e.getX(), e.getY())){
+		if (bounds.contains(e.getX(), e.getY())) {
 			lastXInSpriteBounds = e.getX();
 			lastYInSpriteBounds = e.getY();
 		}
@@ -101,22 +99,22 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		if(bounds.contains(e.getX(), e.getY())){
+		if (bounds.contains(e.getX(), e.getY())) {
 			lastXInSpriteBounds = e.getX();
 			lastYInSpriteBounds = e.getY();
 		}
 	}
-	
+
 	@Override
 	public void mouseWeelMoved(MouseWheelEvent e) {
-		
+
 	}
 
 	@Override
 	public boolean absorb() {
 		return absorb;
 	}
-	
+
 	@Override
 	public boolean souldReceiveMouseInput() {
 		return true;
@@ -124,19 +122,19 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		
+
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
+
 	}
-	
+
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
 		return false;

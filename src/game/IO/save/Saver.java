@@ -3,20 +3,20 @@ package game.IO.save;
 /**
  * @author Julius Häger
  * @version 1.0
- * @param <T> 
+ * @param <T>
  */
-public interface Saver<T>{
-	
-	//TODO: General Output
-	
-	//TODO: Save: interface
-	
+public interface Saver<T> {
+
+	// TODO: General Output
+
+	// TODO: Save: interface
+
 	/**
-	 * @param request 
-	 * @return 
+	 * @param request
+	 * @return
 	 */
 	public boolean save(SaveRequest<?> request);
-	
+
 	/**
 	 * @return
 	 */

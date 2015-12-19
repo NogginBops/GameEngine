@@ -8,9 +8,9 @@ import game.gameObject.GameObject;
  * @author Julius Häger
  */
 public interface Networked extends GameObject {
-	
-	//TODO: Networked interface
-	
+
+	// TODO: Networked interface
+
 	// JAVADOC: Networked
 
 }

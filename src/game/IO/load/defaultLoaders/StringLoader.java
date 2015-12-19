@@ -13,8 +13,8 @@ import game.IO.load.Loader;
  *
  */
 public class StringLoader implements Loader<String> {
-	
-	//JAVADOC: StringLoader
+
+	// JAVADOC: StringLoader
 
 	@Override
 	public String load(LoadRequest<?> request) {
@@ -22,7 +22,7 @@ public class StringLoader implements Loader<String> {
 			FileReader reader = new FileReader(request.file);
 			int i = 0;
 			String string = "";
-			while((i = reader.read()) != -1){
+			while ((i = reader.read()) != -1) {
 				string += (char) i;
 			}
 			reader.close();

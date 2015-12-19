@@ -6,27 +6,27 @@ import java.io.File;
  * 
  * @version 1.0
  * @author Julius Häger
- * @param <T> 
+ * @param <T>
  */
 public class LoadRequest<T> {
-	
+
 	// JAVADOC: LoadRequest<T>
-	
+
 	/**
 	 * 
 	 */
 	public final String ID;
-	
+
 	/**
 	 * 
 	 */
 	public final File file;
-	
+
 	/**
 	 * 
 	 */
 	public final Class<T> dataType;
-	
+
 	/**
 	 * 
 	 */
@@ -45,7 +45,7 @@ public class LoadRequest<T> {
 		this.dataType = returnClassType;
 		preferredLoader = null;
 	}
-	
+
 	/**
 	 * @param ID
 	 * @param file

@@ -1,4 +1,4 @@
-package game.gameObject.graphics.breakout;
+package demos.breakout;
 
 import game.gameObject.graphics.Sprite;
 import game.gameObject.physics.Collidable;
@@ -10,8 +10,8 @@ import java.awt.Graphics2D;
  * @author Julius Häger
  *
  */
-public class Brick extends Sprite implements Collidable{
-	
+public class Brick extends Sprite implements Collidable {
+
 	private Color color = Color.PINK;
 
 	/**
@@ -23,7 +23,7 @@ public class Brick extends Sprite implements Collidable{
 	 */
 	public Brick(int x, int y, int width, int height, Color color) {
 		super(x, y, width, height);
-		this.color = color;	
+		this.color = color;
 	}
 
 	@Override
@@ -33,27 +33,7 @@ public class Brick extends Sprite implements Collidable{
 	}
 
 	@Override
-	public int getMass() {
-		return 0;
-	}
-
-	@Override
-	public void willCollide(Collidable collisionObject) {
-		
-	}
-
-	@Override
 	public void hasCollided(Collidable collisionObject) {
-		
-	}
 
-	@Override
-	public void willNoLongerCollide(Collidable collidedObject) {
-		
-	}
-
-	@Override
-	public void noLongerColliding(Collidable collidedObject) {
-		
 	}
 }

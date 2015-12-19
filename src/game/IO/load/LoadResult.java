@@ -1,22 +1,21 @@
 package game.IO.load;
 
-
 /**
  * 
  * 
  * @version 1.0
  * @author Julius Häger
- * @param <T> 
+ * @param <T>
  */
 public class LoadResult<T> {
-	
+
 	// JAVADOC: LoadResult<T>
-	
+
 	/**
 	 * 
 	 */
 	public final String resultID;
-	
+
 	/**
 	 * 
 	 */

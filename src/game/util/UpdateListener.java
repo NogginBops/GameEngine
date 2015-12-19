@@ -6,13 +6,14 @@ package game.util;
  * @version 1.0
  * @author Julius Häger
  */
-public interface UpdateListener{
-	
+public interface UpdateListener {
+
 	/**
 	 * Called by a Updater to update a UpdateListener.
 	 * 
-	 * @param timeNano this time since the last update. <br>
-	 * (in nanoseconds)
+	 * @param timeNano
+	 *            this time since the last update. <br>
+	 *            (in nanoseconds)
 	 */
 	public void update(long timeNano);
 

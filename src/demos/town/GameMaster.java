@@ -1,13 +1,13 @@
-package town;
+package demos.town;
 
-import town.recources.RecourceHandler;
+import demos.town.recources.RecourceHandler;
 
 /**
  * @author Julius Häger
  *
  */
 public class GameMaster {
-	
+
 	private static RecourceHandler money, metal, electricity;
 
 	/**
@@ -39,6 +39,5 @@ public class GameMaster {
 	public static RecourceHandler getElectricityHandler() {
 		return electricity;
 	}
-	
-	
+
 }

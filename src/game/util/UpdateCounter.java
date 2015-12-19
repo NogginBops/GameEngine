@@ -6,8 +6,8 @@ package game.util;
  * @version 1.0
  */
 public class UpdateCounter {
-	
-	//  JAVADOC: UpdateCounter
+
+	// JAVADOC: UpdateCounter
 
 	/**
 	 * 
@@ -25,7 +25,7 @@ public class UpdateCounter {
 	 * 
 	 */
 	public static long updatesTot = 0;
-	
+
 	/**
 	 * 
 	 */

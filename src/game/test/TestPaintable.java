@@ -6,10 +6,10 @@ import game.gameObject.graphics.Paintable;
 import java.awt.Graphics2D;
 
 public class TestPaintable extends Building implements Paintable {
-	
+
 	public TestPaintable(int x, int y, int width, int height) {
 		super(x, y, width, height);
-		
+
 	}
 
 	@Override
