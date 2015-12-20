@@ -12,7 +12,7 @@ import kuusisto.tinysound.TinySound;
 public class MusicLoader implements Loader<Music> {
 
 	// JAVADOC: MusicLoader
-	
+
 	@Override
 	public Music load(LoadRequest<?> request) {
 		return TinySound.loadMusic(request.file);

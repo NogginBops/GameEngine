@@ -19,31 +19,31 @@ public class ImageSaver implements Saver<BufferedImage> {
 	 * @author Julius Häger
 	 *
 	 */
-	public enum Mode{
-		
+	public enum Mode {
+
 		/**
 		 * 
 		 */
 		PNG,
-		
+
 		/**
 		 * 
 		 */
 		BMP,
-		
+
 		/**
 		 * 
 		 */
 		JPG,
-		
+
 		/**
 		 * 
 		 */
 		GIF;
 	}
-	
+
 	private Mode mode;
-	
+
 	/**
 	 * @param mode
 	 */

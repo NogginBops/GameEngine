@@ -25,9 +25,9 @@ public abstract class Painter {
 	 * will not be painted.
 	 */
 	protected Rectangle bounds;
-	
+
 	private Graphics2D translatedGraphics;
-	
+
 	/**
 	 * <p>
 	 * Called to paint to a Graphics2D object.
@@ -41,14 +41,14 @@ public abstract class Painter {
 	 *            the Graphics2D object to paint to
 	 */
 	public void paint(Graphics2D g2d) {
-		if(paintables != null && paintables.size() > 0){
-			translatedGraphics = (Graphics2D)g2d.create();
+		if (paintables != null && paintables.size() > 0) {
+			translatedGraphics = (Graphics2D) g2d.create();
 			translatedGraphics.translate(-bounds.x, -bounds.y);
-				for (Paintable paintable : paintables) {
-					if (paintable.getBounds().intersects(bounds)) {
-						paintable.paint(translatedGraphics);
-					}
+			for (Paintable paintable : paintables) {
+				if (paintable.getBounds().intersects(bounds)) {
+					paintable.paint(translatedGraphics);
 				}
+			}
 			translatedGraphics.dispose();
 		}
 	}

@@ -1,4 +1,4 @@
-package game.gameObject.graphics.breakout;
+package demos.breakout;
 
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -12,11 +12,11 @@ import game.util.UpdateListener;
  * @author Julius Häger
  *
  */
-public class GM implements GameObject, UpdateListener, KeyListener{
-	
+public class GM implements GameObject, UpdateListener, KeyListener {
+
 	@Override
 	public void update(long timeMillis) {
-		
+
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class GM implements GameObject, UpdateListener, KeyListener{
 
 	@Override
 	public void updateBounds() {
-		
+
 	}
 
 	@Override
@@ -41,25 +41,24 @@ public class GM implements GameObject, UpdateListener, KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			Game.stop();
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
+
 	}
 
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
 		return true;
 	}
-	
-	
+
 }

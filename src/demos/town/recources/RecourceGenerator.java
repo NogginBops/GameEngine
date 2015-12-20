@@ -1,17 +1,17 @@
-package town.recources;
+package demos.town.recources;
 
 /**
  * @author Julius Häger
  *
  */
 public class RecourceGenerator {
-	
+
 	private float genRate;
-	
+
 	/**
 	 * @return
 	 */
-	public float genRate(){
+	public float genRate() {
 		return genRate;
 	}
 }

@@ -10,27 +10,27 @@ import game.gameObject.GameObject;
  * @author Julius Häger
  */
 public interface KeyListener extends GameObject {
-	
+
 	// JAVADOC: KeyListener
-	
+
 	/**
 	 * 
 	 * @param e
 	 */
 	public void keyTyped(KeyEvent e);
-	
+
 	/**
 	 * 
 	 * @param e
 	 */
 	public void keyPressed(KeyEvent e);
-	
+
 	/**
 	 * 
 	 * @param e
 	 */
 	public void keyReleased(KeyEvent e);
-	
+
 	/**
 	 * 
 	 * @return

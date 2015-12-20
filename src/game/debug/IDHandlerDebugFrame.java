@@ -18,16 +18,16 @@ import game.util.IDHandler;
 
 /**
  * @author Julius Häger
- * @param <T> 
+ * @param <T>
  *
  */
-public class IDHandlerDebugFrame<T> extends JFrame implements Runnable{
+public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6735343486517710772L;
-	
+
 	private JPanel contentPane;
 	private JPanel panel;
 	private JScrollPane scrollPane;
@@ -36,7 +36,8 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable{
 
 	/**
 	 * Launch the application.
-	 * @param args 
+	 * 
+	 * @param args
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -55,10 +56,11 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable{
 
 	/**
 	 * Create the frame.
-	 * @param handler 
+	 * 
+	 * @param handler
 	 */
 	public IDHandlerDebugFrame(IDHandler<T> handler) {
-		
+
 		setTitle("ID Handler Debug Window");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -66,40 +68,33 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		
+
 		panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
-		
+
 		scrollPane = new JScrollPane();
 		panel.add(scrollPane, BorderLayout.CENTER);
-		
+
 		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null},
-			},
-			new String[] {
-				"Name", "ID", "Type"
-			}
-		) {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 5104580526478729182L;
-			@SuppressWarnings("rawtypes")
-			Class[] columnTypes = new Class[] {
-				String.class, Integer.class, String.class
-			};
-			@SuppressWarnings({ "unchecked", "rawtypes" })
-			@Override
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
+		table.setModel(
+				new DefaultTableModel(new Object[][] { { null, null, null }, }, new String[] { "Name", "ID", "Type" }) {
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 5104580526478729182L;
+					@SuppressWarnings("rawtypes")
+					Class[] columnTypes = new Class[] { String.class, Integer.class, String.class };
+
+					@SuppressWarnings({ "unchecked", "rawtypes" })
+					@Override
+					public Class getColumnClass(int columnIndex) {
+						return columnTypes[columnIndex];
+					}
+				});
 		table.setAutoCreateRowSorter(true);
 		scrollPane.setViewportView(table);
-		
+
 		btnRefresh = new JButton("Refresh");
 		btnRefresh.addActionListener(new ActionListener() {
 			@Override
@@ -108,52 +103,48 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable{
 			}
 		});
 		panel.add(btnRefresh, BorderLayout.NORTH);
-		
+
 		updateIDs(handler.getAllIDs());
 	}
-	
+
 	/**
 	 * 
 	 */
-	public void stoppDebug(){
+	public void stoppDebug() {
 		dispose();
 	}
-	
+
 	/**
-	 * @param ids 
+	 * @param ids
 	 * 
 	 */
 	@SuppressWarnings("rawtypes")
-	private void updateIDs(ID[] ids){
+	private void updateIDs(ID[] ids) {
 		Object[][] tableData = new Object[ids.length][3];
-		for(int x = 0; x < tableData.length; x++){
+		for (int x = 0; x < tableData.length; x++) {
 			tableData[x][0] = ids[x].name;
 			tableData[x][1] = ids[x].id;
 			tableData[x][2] = ids[x].object.getClass().getName();
 		}
-		DefaultTableModel model = new DefaultTableModel(tableData, new String[] {
-				"Name", "ID", "Type"
-			}) {
-			
+		DefaultTableModel model = new DefaultTableModel(tableData, new String[] { "Name", "ID", "Type" }) {
+
 			/**
 			 * 
 			 */
 			private static final long serialVersionUID = 650289327416122528L;
-				
-			Class[] columnTypes = new Class[] {
-					String.class, Integer.class, String.class
-				};
-			
+
+			Class[] columnTypes = new Class[] { String.class, Integer.class, String.class };
+
 			@SuppressWarnings("unchecked")
 			@Override
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
-			
+
 			@Override
-				public boolean isCellEditable(int row, int column) {
-					return false;
-				}
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
 		};
 		table.setModel(model);
 	}

@@ -11,7 +11,7 @@ import game.gameObject.physics.Collidable;
  *
  */
 public class TestSprite extends Sprite {
-	
+
 	/**
 	 * @param x
 	 * @param y
@@ -25,6 +25,6 @@ public class TestSprite extends Sprite {
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.CYAN);
-		g2d.fillRect((int)x, (int)y, (int)width, (int)height);
+		g2d.fillRect((int) x, (int) y, (int) width, (int) height);
 	}
 }

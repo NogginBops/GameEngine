@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
  * @author Julius Häger
  * @version 1.0
  */
-public class BufferedImageLoader implements Loader<BufferedImage>{
+public class BufferedImageLoader implements Loader<BufferedImage> {
 
 	@Override
 	public BufferedImage load(LoadRequest<?> request) {

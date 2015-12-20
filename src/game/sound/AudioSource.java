@@ -4,20 +4,19 @@ import java.awt.geom.Point2D;
 
 import kuusisto.tinysound.Sound;
 
-
 /**
  * 
  * @version 1.0
  * @author Julius Häger
  */
 public class AudioSource {
-	
-	//JAVADOC: AudioSource
-	
+
+	// JAVADOC: AudioSource
+
 	private Point2D location;
-	
+
 	private Sound sound;
-	
+
 	/**
 	 * @param x
 	 * @param y
