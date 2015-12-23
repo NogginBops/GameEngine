@@ -10,14 +10,11 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import demos.breakout.BreakOut_Ball;
-import demos.breakout.Brick;
-import demos.breakout.GM;
-import demos.breakout.Racket;
 import demos.pong.Ball;
 import demos.pong.Pad;
-import demos.pong.Score;
 import demos.pong.Pad.Side;
+import demos.verticalScroller.Ship;
+import demos.pong.Score;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.UI.UI;
@@ -30,6 +27,7 @@ import game.debug.IDHandlerDebugFrame;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.Paintable;
+import game.gameObject.graphics.UniformSpriteSheet;
 import game.gameObject.physics.PhysicsEngine;
 import game.input.Input;
 import game.input.KeyInputHandler;
@@ -102,56 +100,39 @@ public class Game extends Updater {
 		// pong();
 		// pong44();
 		// breakout();
-
-		UITest();
+		// UITest();
+		
+		verticalScroller();
 
 		//completeSetup();
 	}
-
-	private void UITest() {
-		screen.setTitle("UI Test");
-		screen.setDebugEnabled(true);
-
-		camera.receiveKeyboardInput(true);
-
-		BasicUIContainer container = new BasicUIContainer(200, 300);
-
-		Border border = new SolidBorder(20, Color.MAGENTA);
-
-		container.setBorder(border);
-
-		BasicUIContainer container2 = new BasicUIContainer(100, 100);
-
-		Border border2 = new SolidBorder(10, Color.CYAN);
-
-		container2.setBorder(border2);
-
-		container.addUIElement(container2);
-
-		UILabel lable = new UILabel("Test label");
-
-		lable.setColor(Color.WHITE);
-
-		container2.addUIElement(lable);
+	
+	private void verticalScroller(){
+		screen.setResolution(400, 600);
 		
-		Image image;
+		camera.setSize(400, 600);
+		
+		screen.setDebugEnabled(true);
+		camera.receiveKeyboardInput(false);
+		
+		BufferedImage image = null;
+		
 		try {
-			image = IOHandler.load(new LoadRequest<BufferedImage>("Image", new File("./res/Background.png"), BufferedImage.class, "DefaultPNGLoader")).result;
+			image = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/verticalScroller/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
 		} catch (IOException e) {
-			image = null;
+			e.printStackTrace();
 		}
 		
-		UIImage UIimg = new UIImage(0, 0, 40, 100, image);
+		UniformSpriteSheet sheet = new UniformSpriteSheet(image, 12, 14);
 		
-		UIimg.setNativeSize();
+		System.out.println("Horizontal tiles: " + sheet.getHorizontalTiles() + " Vertical tiles: " + sheet.getVerticalTiles());
 		
-		UIimg.setZOrder(2);
+		BufferedImage shipImage = sheet.getSprite(3, 2);
 		
-		container.addUIElement(UIimg);
-
-		UI hud = new UI(new Rectangle(400, 200, 400, 400), container);
-
-		gameObjectHandler.addGameObject(hud);
+		Ship ship = new Ship(camera.getWidth()/2 - 6 * 3, camera.getHeight() - 120, shipImage, 3);
+		
+		gameObjectHandler.addGameObject(ship, "PlayerShip");
+		addUpdateListener(ship);
 	}
 
 	private void basicSetup() {
@@ -198,6 +179,52 @@ public class Game extends Updater {
 
 	private void onQuit() {
 		IDDebug.stoppDebug();
+	}
+	
+	private void UITest() {
+		screen.setTitle("UI Test");
+		screen.setDebugEnabled(true);
+
+		camera.receiveKeyboardInput(true);
+
+		BasicUIContainer container = new BasicUIContainer(200, 300);
+
+		Border border = new SolidBorder(20, Color.MAGENTA);
+
+		container.setBorder(border);
+
+		BasicUIContainer container2 = new BasicUIContainer(100, 100);
+
+		Border border2 = new SolidBorder(10, Color.CYAN);
+
+		container2.setBorder(border2);
+
+		container.addUIElement(container2);
+
+		UILabel lable = new UILabel("Test label");
+
+		lable.setColor(Color.WHITE);
+
+		container2.addUIElement(lable);
+		
+		Image image;
+		try {
+			image = IOHandler.load(new LoadRequest<BufferedImage>("Image", new File("./res/Background.png"), BufferedImage.class, "DefaultPNGLoader")).result;
+		} catch (IOException e) {
+			image = null;
+		}
+		
+		UIImage UIimg = new UIImage(0, 0, 40, 100, image);
+		
+		UIimg.setNativeSize();
+		
+		UIimg.setZOrder(2);
+		
+		container.addUIElement(UIimg);
+
+		UI hud = new UI(new Rectangle(400, 200, 400, 400), container);
+
+		gameObjectHandler.addGameObject(hud);
 	}
 
 	@SuppressWarnings("unused")
@@ -275,31 +302,6 @@ public class Game extends Updater {
 
 		gameObjectHandler.addGameObject(score, "Score");
 		addUpdateListener(score);
-	}
-
-	@SuppressWarnings("unused")
-	private void breakout() {
-		screen.setTitle("Breakout");
-
-		GM gameMaster = new GM();
-
-		gameObjectHandler.addGameObject(gameMaster);
-		addUpdateListener(gameMaster);
-
-		Racket rac = new Racket(50, camera.getHeight() - 50, 100, 20, camera.getBounds());
-
-		gameObjectHandler.addGameObject(rac, "Racket");
-		addUpdateListener(rac);
-
-		BreakOut_Ball ball = new BreakOut_Ball(0, 0, 20, 20, camera.getBounds(), rac);
-
-		gameObjectHandler.addGameObject(ball, "Ball");
-		addUpdateListener(ball);
-
-		Brick brick = new Brick(20, 20, 100, 20, Color.GREEN);
-
-		gameObjectHandler.addGameObject(brick, "Brick");
-		addUpdateListener(brick);
 	}
 
 	@SuppressWarnings("unused")

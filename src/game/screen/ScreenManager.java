@@ -75,8 +75,7 @@ public final class ScreenManager {
 		frame = new JFrame(title);
 		ScreenManager.width = width;
 		ScreenManager.height = height;
-		DisplayMode fullScreenDisplayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
-				.getDisplayMode();
+		DisplayMode fullScreenDisplayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
 		fullScreenWidth = fullScreenDisplayMode.getWidth();
 		fullScreenHeight = fullScreenDisplayMode.getHeight();
 		setState(state);
@@ -126,7 +125,7 @@ public final class ScreenManager {
 		if (state == NORMAL) {
 			frame.setUndecorated(false);
 			frame.setExtendedState(JFrame.NORMAL);
-			frame.setPreferredSize(new Dimension(width, height));
+			frame.getContentPane().setPreferredSize(new Dimension(width, height));
 			currentState = NORMAL;
 		} else if (state == FULL_SCREEN) {
 			frame.setUndecorated(true);

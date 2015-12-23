@@ -28,11 +28,11 @@ public abstract class Sprite implements Paintable, Movable, UpdateListener {
 	/**
 	 * 
 	 */
-	protected float width;
+	protected int width;
 	/**
 	 * 
 	 */
-	protected float height;
+	protected int height;
 
 	/**
 	 * 
@@ -65,7 +65,7 @@ public abstract class Sprite implements Paintable, Movable, UpdateListener {
 	 * @param height
 	 *            the height of the Sprite (in pixels)
 	 */
-	public Sprite(float x, float y, float width, float height) {
+	public Sprite(float x, float y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -110,7 +110,7 @@ public abstract class Sprite implements Paintable, Movable, UpdateListener {
 	 */
 	@Override
 	public void updateBounds() {
-		bounds = new Rectangle((int) x, (int) y, (int) width, (int) height);
+		bounds = new Rectangle((int) x, (int) y, width, height);
 	}
 
 	@Override

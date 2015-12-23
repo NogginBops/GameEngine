@@ -29,7 +29,7 @@ public abstract class Building extends Sprite implements UpdateListener {
 	 * @param height
 	 * 
 	 */
-	public Building(float x, float y, float width, float height) {
+	public Building(float x, float y, int width, int height) {
 		super(x, y, width, height);
 		centerMarginX = width / 2;
 		centerMarginY = height / 2;

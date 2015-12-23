@@ -23,7 +23,7 @@ public class House extends Building {
 	 * @param width
 	 * @param height
 	 */
-	public House(float x, float y, float width, float height) {
+	public House(float x, float y, int width, int height) {
 		super(x, y, width, height);
 		load();
 	}
