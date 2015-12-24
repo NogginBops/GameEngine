@@ -3,11 +3,7 @@ package demos.verticalScroller;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import game.IO.IOHandler;
-import game.IO.load.LoadRequest;
 import game.gameObject.graphics.Sprite;
 import game.gameObject.physics.Collidable;
 import game.input.keys.KeyListener;
@@ -20,21 +16,10 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 
 	private BufferedImage image;
 	
-	private float movementSpeed = 100;
+	private float movementSpeedHorizontal = 150;
+	private float movementSpeedVertical = 100;
 	
 	private float scale = 1;
-
-	/**
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 */
-	public Ship(float x, float y, int width, int height) {
-		super(x, y, width, height);
-		
-		loadRecources();
-	}
 	
 	/**
 	 * @param x 
@@ -43,41 +28,36 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 	 * @param scale 
 	 */
 	public Ship(float x, float y, BufferedImage image, float scale){
-		super(x, y, image.getWidth(), image.getHeight());
+		super(x, y, (int)(image.getWidth() * scale), (int)(image.getHeight() * scale));
 		this.scale = scale;
 		this.image = image;
 	}
 	
-	@Override
-	public void update(long timeMillis) {
-		super.update(timeMillis);
-	}
-	
-	//TODO: Sprite sheet support
-	
-	private void loadRecources(){
-		try {
-			image = IOHandler.load(new LoadRequest<BufferedImage>("Ship", new File("./res/verticalScroller/Ship.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	/**
+	 * @param scale
+	 */
+	public void setScale(float scale){
+		this.scale = scale;
+		width = (int)(image.getWidth() * scale);
+		height = (int)(image.getHeight() * scale);
+		updateBounds();
 	}
 
 	@Override
 	public void paint(Graphics2D g2d) {
-		g2d.drawImage(image, (int)x, (int)y, (int)(width * scale), (int)(height * scale), null);
+		g2d.drawImage(image, (int)x, (int)y, (int)(width), (int)(height), null);
 	}
 	
 	private boolean moveLeft, moveRight, moveUp, moveDown;
 	
 	private void updateMovement() {
 		int dx = 0;
-		dx += moveLeft ? -movementSpeed : 0;
-		dx += moveRight ? movementSpeed : 0;
+		dx += moveLeft ? -movementSpeedHorizontal : 0;
+		dx += moveRight ? movementSpeedHorizontal : 0;
 		setDX(dx);
 		int dy = 0;
-		dy += moveUp ? -movementSpeed : 0;
-		dy += moveDown ? movementSpeed : 0;
+		dy += moveUp ? -movementSpeedVertical : 0;
+		dy += moveDown ? movementSpeedVertical : 0;
 		setDY(dy);
 	}
 	
@@ -120,6 +100,6 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
-		return true;
+		return false;
 	}
 }

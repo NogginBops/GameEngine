@@ -38,6 +38,7 @@ import game.sound.AudioEngine;
 import game.test.GameObjectAdder;
 import game.test.GameObjectAdderWithAudio;
 import game.test.OtherPaintable;
+import game.test.TestAnimationSprite;
 import game.test.TestInputSprite;
 import game.test.TestSprite;
 import game.util.GameObjectHandler;
@@ -113,7 +114,9 @@ public class Game extends Updater {
 		camera.setSize(400, 600);
 		
 		screen.setDebugEnabled(true);
-		camera.receiveKeyboardInput(false);
+		camera.receiveKeyboardInput(true);
+		
+		camera.setBackgroundColor(new Color(60, 91, 120));
 		
 		BufferedImage image = null;
 		
@@ -123,16 +126,31 @@ public class Game extends Updater {
 			e.printStackTrace();
 		}
 		
-		UniformSpriteSheet sheet = new UniformSpriteSheet(image, 12, 14);
+		UniformSpriteSheet sheet = new UniformSpriteSheet(image, 12, 14, new Color(191, 220, 191));
 		
 		System.out.println("Horizontal tiles: " + sheet.getHorizontalTiles() + " Vertical tiles: " + sheet.getVerticalTiles());
 		
-		BufferedImage shipImage = sheet.getSprite(3, 2);
+		BufferedImage shipImage = null;
 		
-		Ship ship = new Ship(camera.getWidth()/2 - 6 * 3, camera.getHeight() - 120, shipImage, 3);
+		for(int x = 0; x < sheet.getHorizontalTiles(); x++){
+			for(int y = 0; y < sheet.getVerticalTiles(); y++){
+				shipImage = sheet.getSprite(x, y);
+				Ship ship = new Ship(x * 13, y * 15, shipImage, 1);
+				gameObjectHandler.addGameObject(ship, "PlayerShip");
+				addUpdateListener(ship);
+			}
+		}
+		
+		//TestAnimationSprite anim = new TestAnimationSprite(150, 150, 100, 100, 0.1f, sheet.getSprite(14, 11), sheet.getSprite(14, 12), sheet.getSprite(14, 13), sheet.getSprite(14, 14), sheet.getSprite(14, 15));
+		
+		//gameObjectHandler.addGameObject(anim, "TestAnim");
+		//addUpdateListener(anim);
+		
+		/*
+		Ship ship = new Ship(camera.getWidth()/2 - 6 * 3, camera.getHeight() - 120, shipImage, 5);
 		
 		gameObjectHandler.addGameObject(ship, "PlayerShip");
-		addUpdateListener(ship);
+		addUpdateListener(ship);*/
 	}
 
 	private void basicSetup() {

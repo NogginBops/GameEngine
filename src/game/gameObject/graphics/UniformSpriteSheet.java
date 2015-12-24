@@ -2,6 +2,8 @@ package game.gameObject.graphics;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 
 /**
  * @author Julius Häger
@@ -66,6 +68,35 @@ public class UniformSpriteSheet {
 		
 		calculateHorizontalTiles();
 		calcualteVerticalTiles();
+	}
+	
+	/**
+	 * @param sheet
+	 * @param width
+	 * @param height
+	 * @param transparentColor
+	 */
+	public UniformSpriteSheet(BufferedImage sheet, int width, int height, Color transparentColor) {
+		if(sheet == null){
+			throw new NullPointerException("Sheet can not be a null pointer");
+		}
+		this.sheet = sheet;
+		
+		if(width <= 0 || height <= 0){
+			throw new IllegalArgumentException("Size in any dimention can not be less than zero.\n Width: " + width + " Height: " + height);
+		}
+		
+		if(sheet.getWidth() < width || sheet.getHeight() < height) {
+			throw new IllegalArgumentException("Size can not be bigger than the actual width of the sheet.\n Image width:" + sheet.getWidth() + ", Width: " + width + " Height: " + height);
+		}
+		
+		this.width = width;
+		this.height = height;
+		
+		calculateHorizontalTiles();
+		calcualteVerticalTiles();
+		
+		this.transparentColor = transparentColor;
 	}
 	
 	/**
@@ -140,7 +171,44 @@ public class UniformSpriteSheet {
 		}
 		int xCoord = padding - margin + ((width + margin) * x);
 		int yCoord = padding - margin + ((height + margin) * y);
-		System.out.println("xCoord: " + xCoord + " yCoord: " + yCoord + " width: " + width + " height: " + height);
-		return sheet.getSubimage(xCoord, yCoord, width, height);
+		return copyImageAndRemoveColor(sheet.getSubimage(xCoord, yCoord, width, height), transparentColor);
+	}
+	
+	public BufferedImage getSprite(int startX, int startY, int endX, int endY){
+		if(startX < 0 || startY < 0 || endX < 0 || endY < 0){
+			throw new IllegalArgumentException("Index out of bounds! Index can't be a negative value." + (startX < 0 ? " startX: " + startX : "") + (startY < 0 ? " startY: " + startY : "") + (endX < 0 ? " endX: " + endX : "") + (endY < 0 ? " endY: " + endY : ""));
+		}
+		if(startX > horizontalTiles || startY > verticalTiles || endX > horizontalTiles || endY > verticalTiles){
+			throw new IllegalArgumentException("Index out of bounds! The arguments startX: " + startX + ", startY: " + startY + ", endX: " + endX + " and endY: " + endY + ". Bounds width: " + horizontalTiles + " height: " + verticalTiles);
+		}
+		if(startX > endX || startY > endY){
+			throw new IllegalArgumentException("Start value must be less than end value! " + (startX > endX ? " startX: " + startX + " endX: " + endX : "") + (startY > endY ? " startY: " + startY + " endY: " + endY : ""));
+		}
+		//FIXME: Implement!!!!
+		return null;
+	}
+	
+	private BufferedImage copyImageAndRemoveColor(BufferedImage image, Color color){
+		BufferedImage copyImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		if(color != null){
+			int rgb;
+			for (int x = 0; x < image.getWidth(); x++) {
+				for (int y = 0; y < image.getHeight(); y++) {
+					rgb = image.getRGB(x, y);
+					if(rgb == color.getRGB()){
+						copyImage.setRGB(x, y, new Color(0, 0, 0, 0).getRGB());
+					}else{
+						copyImage.setRGB(x, y, image.getRGB(x, y));
+					}
+				}
+			}
+		}else{
+			for (int x = 0; x < image.getWidth(); x++) {
+				for (int y = 0; y < image.getHeight(); y++) {
+					copyImage.setRGB(x, y, image.getRGB(x, y));
+				}
+			}
+		}
+		return copyImage;
 	}
 }
