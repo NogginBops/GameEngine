@@ -1,9 +1,12 @@
 package demos.verticalScroller;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+import demos.verticalScroller.projectiles.BasicProjectile;
+import game.Game;
 import game.gameObject.graphics.Sprite;
 import game.gameObject.physics.Collidable;
 import game.input.keys.KeyListener;
@@ -13,13 +16,19 @@ import game.input.keys.KeyListener;
  *
  */
 public class Ship extends Sprite implements Collidable, KeyListener{
-
-	private BufferedImage image;
 	
-	private float movementSpeedHorizontal = 150;
-	private float movementSpeedVertical = 100;
+	private BufferedImage farLeft, left, center, right, farRight, projectile;
+	
+	private float movementSpeedHorizontal = 200;
+	private float movementSpeedVertical = 150;
 	
 	private float scale = 1;
+	
+	private float timer = 0;
+	
+	private float delay = 0.1f;
+	
+	private boolean isSpaceDown = false;
 	
 	/**
 	 * @param x 
@@ -27,10 +36,15 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 	 * @param image
 	 * @param scale 
 	 */
-	public Ship(float x, float y, BufferedImage image, float scale){
-		super(x, y, (int)(image.getWidth() * scale), (int)(image.getHeight() * scale));
+	public Ship(float x, float y,  BufferedImage farLeft, BufferedImage left, BufferedImage center, BufferedImage right, BufferedImage farRight, BufferedImage projectile, float scale){
+		super(x, y, (int)(center.getWidth() * scale), (int)(center.getHeight() * scale));
 		this.scale = scale;
-		this.image = image;
+		this.farLeft = farLeft;
+		this.left = left;
+		this.center = center;
+		this.right = right;
+		this.farRight = farRight;
+		this.projectile = projectile;
 	}
 	
 	/**
@@ -38,14 +52,34 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 	 */
 	public void setScale(float scale){
 		this.scale = scale;
-		width = (int)(image.getWidth() * scale);
-		height = (int)(image.getHeight() * scale);
+		width = (int)(center.getWidth() * scale);
+		height = (int)(center.getHeight() * scale);
 		updateBounds();
 	}
 
 	@Override
 	public void paint(Graphics2D g2d) {
-		g2d.drawImage(image, (int)x, (int)y, (int)(width), (int)(height), null);
+		if(moveLeft && !moveRight){
+			g2d.drawImage(left, (int)x, (int)y, (int)(width), (int)(height), null);
+		}else if(!moveLeft && moveRight){
+			g2d.drawImage(right, (int)x, (int)y, (int)(width), (int)(height), null);
+		}else{
+			g2d.drawImage(center, (int)x, (int)y, (int)(width), (int)(height), null);
+		}
+	}
+	
+	@Override
+	public void update(long timeNano) {
+		super.update(timeNano);
+		timer += timeNano / 1000000000f;
+		if(isSpaceDown){
+			if(timer > delay){
+				BasicProjectile projectileGO = new BasicProjectile(projectile, x + ((width - projectile.getWidth())/2), y, 0, -350);
+				Game.getGameObjectHandler().addGameObject(projectileGO);
+				Game.game.addUpdateListener(projectileGO);
+				timer = 0;
+			}
+		}
 	}
 	
 	private boolean moveLeft, moveRight, moveUp, moveDown;
@@ -77,6 +111,18 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 			moveDown = true;
 		}
 		updateMovement();
+		
+		isSpaceDown  = e.getKeyCode() == KeyEvent.VK_SPACE ? true : isSpaceDown;
+		
+		if(e.getKeyCode() == KeyEvent.VK_SPACE){
+			
+		/*	if(timer > delay){
+				BasicProjectile projectileGO = new BasicProjectile(projectile, x + ((width - projectile.getWidth())/2), y, 0, -200);
+				Game.getGameObjectHandler().addGameObject(projectileGO);
+				Game.game.addUpdateListener(projectileGO);
+				timer = 0;
+			}*/
+		}
 	}
 
 	@Override
@@ -91,6 +137,8 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 			moveDown = false;
 		}
 		updateMovement();
+		
+		isSpaceDown = e.getKeyCode() == KeyEvent.VK_SPACE ? false : isSpaceDown;
 	}
 	
 	@Override
@@ -100,6 +148,6 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
-		return false;
+		return true;
 	}
 }

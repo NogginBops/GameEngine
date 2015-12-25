@@ -1,6 +1,7 @@
 package game.gameObject.graphics;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -174,6 +175,7 @@ public class UniformSpriteSheet {
 		return copyImageAndRemoveColor(sheet.getSubimage(xCoord, yCoord, width, height), transparentColor);
 	}
 	
+	//Might change endXY to width/height
 	public BufferedImage getSprite(int startX, int startY, int endX, int endY){
 		if(startX < 0 || startY < 0 || endX < 0 || endY < 0){
 			throw new IllegalArgumentException("Index out of bounds! Index can't be a negative value." + (startX < 0 ? " startX: " + startX : "") + (startY < 0 ? " startY: " + startY : "") + (endX < 0 ? " endX: " + endX : "") + (endY < 0 ? " endY: " + endY : ""));
@@ -184,8 +186,16 @@ public class UniformSpriteSheet {
 		if(startX > endX || startY > endY){
 			throw new IllegalArgumentException("Start value must be less than end value! " + (startX > endX ? " startX: " + startX + " endX: " + endX : "") + (startY > endY ? " startY: " + startY + " endY: " + endY : ""));
 		}
-		//FIXME: Implement!!!!
-		return null;
+		int imgWidth = endX - startX;
+		int imgHeight = endY - startY;
+		BufferedImage image = new BufferedImage(imgWidth * width, imgHeight * height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = (Graphics2D) image.getGraphics();
+		for(int x = startX; x <= endX; x++){
+			for(int y = startY; y <= endY; y++){
+				g2d.drawImage(getSprite(x, y), (x - startX) * width, (y - startY) * height, null);
+			}
+		}
+		return image;
 	}
 	
 	private BufferedImage copyImageAndRemoveColor(BufferedImage image, Color color){

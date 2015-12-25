@@ -14,6 +14,7 @@ import demos.pong.Ball;
 import demos.pong.Pad;
 import demos.pong.Pad.Side;
 import demos.verticalScroller.Ship;
+import demos.verticalScroller.ShipFactory;
 import demos.pong.Score;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
@@ -114,43 +115,36 @@ public class Game extends Updater {
 		camera.setSize(400, 600);
 		
 		screen.setDebugEnabled(true);
-		camera.receiveKeyboardInput(true);
+		camera.receiveKeyboardInput(false);
 		
 		camera.setBackgroundColor(new Color(60, 91, 120));
 		
-		BufferedImage image = null;
+		BufferedImage shipSheetImage = null;
+		
+		BufferedImage projectileSheetImage = null;
 		
 		try {
-			image = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/verticalScroller/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
+			shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/verticalScroller/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
+			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/verticalScroller/ProjectileSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		UniformSpriteSheet sheet = new UniformSpriteSheet(image, 12, 14, new Color(191, 220, 191));
+		UniformSpriteSheet shipSheet = new UniformSpriteSheet(shipSheetImage, 12, 14, new Color(191, 220, 191));
 		
-		System.out.println("Horizontal tiles: " + sheet.getHorizontalTiles() + " Vertical tiles: " + sheet.getVerticalTiles());
+		UniformSpriteSheet projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
 		
-		BufferedImage shipImage = null;
+		System.out.println("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles());
 		
-		for(int x = 0; x < sheet.getHorizontalTiles(); x++){
-			for(int y = 0; y < sheet.getVerticalTiles(); y++){
-				shipImage = sheet.getSprite(x, y);
-				Ship ship = new Ship(x * 13, y * 15, shipImage, 1);
-				gameObjectHandler.addGameObject(ship, "PlayerShip");
-				addUpdateListener(ship);
-			}
-		}
+		ShipFactory.createShip("Standard", 
+				shipSheet.getSprite(0, 6, 2, 8), shipSheet.getSprite(2, 6, 4, 8), shipSheet.getSprite(4, 6, 6, 8), shipSheet.getSprite(6, 6, 8, 8), shipSheet.getSprite(8, 6, 10, 8), projectileSheet.getSprite(3, 4));
 		
-		//TestAnimationSprite anim = new TestAnimationSprite(150, 150, 100, 100, 0.1f, sheet.getSprite(14, 11), sheet.getSprite(14, 12), sheet.getSprite(14, 13), sheet.getSprite(14, 14), sheet.getSprite(14, 15));
+		Ship ship = ShipFactory.getShip("Standard");
 		
-		//gameObjectHandler.addGameObject(anim, "TestAnim");
-		//addUpdateListener(anim);
-		
-		/*
-		Ship ship = new Ship(camera.getWidth()/2 - 6 * 3, camera.getHeight() - 120, shipImage, 5);
+		ship.setLocation(130, 100);
 		
 		gameObjectHandler.addGameObject(ship, "PlayerShip");
-		addUpdateListener(ship);*/
+		addUpdateListener(ship);
 	}
 
 	private void basicSetup() {

@@ -184,13 +184,7 @@ public class GameObjectHandler {
 	public CopyOnWriteArrayList<GameObject> getAllGameObjectsAtZLevel(int zLevel) {
 		// System.out.println("Called getAllGameObjectsAtZLevel() with
 		// arguments: " + zLevel);
-		CopyOnWriteArrayList<GameObject> returnList = new CopyOnWriteArrayList<GameObject>();
-		for (int i = 0; i < gameObjects.size(); i++) {
-			if (gameObjects.get(i).getZOrder() == zLevel) {
-				returnList.add(gameObjects.get(i));
-			}
-		}
-		return returnList;
+		return gameObjectMap.get(zLevel);
 	}
 
 	/**
@@ -205,17 +199,9 @@ public class GameObjectHandler {
 		// getAllGameObjectsAtZLevelGameObjectExtending() with arguments: " +
 		// zLevel + " and " + classT);
 		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
-		for (int i = 0; i < gameObjects.size(); i++) {
-			if (gameObjects.get(i).getZOrder() == zLevel) {
-				if (classT.isAssignableFrom(gameObjects.get(i).getClass())) {
-					try {
-						returnList.add(classT.cast(gameObjects.get(i)));
-					} catch (ClassCastException e) {
-						returnList.remove(returnList.size() - 1);
-						System.err.println("ClassCastExeption ocurred in " + this + ": " + e.getMessage());
-						continue;
-					}
-				}
+		for (GameObject object : getAllGameObjectsAtZLevel(zLevel)) {
+			if (classT.isAssignableFrom(object.getClass())) {
+				returnList.add(classT.cast(object));
 			}
 		}
 		return returnList;

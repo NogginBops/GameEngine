@@ -41,6 +41,7 @@ public class TestAnimationSprite extends Sprite{
 	public void paint(Graphics2D g2d) {
 		g2d.drawImage(images[current], (int)x, (int)y, width, height, null);
 	}
+	
 	int temp = 0;
 	@Override
 	public void update(long timeMillis) {

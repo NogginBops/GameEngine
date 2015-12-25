@@ -114,9 +114,9 @@ public abstract class Sprite implements Paintable, Movable, UpdateListener {
 	}
 
 	@Override
-	public void update(long timeMillis) {
-		x += (dx * timeMillis) / 1000000000;
-		y += (dy * timeMillis) / 1000000000;
+	public void update(long timeNano) {
+		x += (dx * timeNano) / 1000000000;
+		y += (dy * timeNano) / 1000000000;
 		updateBounds();
 	}
 
@@ -137,6 +137,11 @@ public abstract class Sprite implements Paintable, Movable, UpdateListener {
 
 	@Override
 	public void setY(float y) {
+		this.y = y;
+	}
+	
+	public void setLocation(float x, float y){
+		this.x = x;
 		this.y = y;
 	}
 
