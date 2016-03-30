@@ -36,7 +36,6 @@ public class GameObjectAdder implements GameObject, MouseListener {
 		rand = new Random();
 		currentBuilding = new House(0, 0, 24, 30);
 		gameObjectHandler.addGameObject(currentBuilding, "House");
-		Game.game.addUpdateListener(currentBuilding);
 	}
 
 	@Override
@@ -78,7 +77,6 @@ public class GameObjectAdder implements GameObject, MouseListener {
 		currentBuilding.updateBounds();
 		currentBuilding = new House(e.getX(), e.getY(), 24, 30);
 		gameObjectHandler.addGameObject(currentBuilding, "House");
-		Game.game.addUpdateListener(currentBuilding);
 	}
 
 	@Override

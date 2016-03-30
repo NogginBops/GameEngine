@@ -2,13 +2,14 @@ package demos.town.recources;
 
 import java.util.ArrayList;
 
+import game.gameObject.BasicGameObject;
 import game.util.UpdateListener;
 
 /**
  * @author Julius Häger
  *
  */
-public class RecourceHandler implements UpdateListener {
+public class RecourceHandler extends BasicGameObject implements UpdateListener {
 
 	private ArrayList<RecourcePool> pools;
 
@@ -18,6 +19,7 @@ public class RecourceHandler implements UpdateListener {
 	 * 
 	 */
 	public RecourceHandler() {
+		super(0, 0, 0, 0, 0);
 		pools = new ArrayList<>();
 		generators = new ArrayList<>();
 	}

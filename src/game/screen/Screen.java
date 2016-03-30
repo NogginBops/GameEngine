@@ -18,6 +18,8 @@ import java.awt.Graphics2D;
 public class Screen implements Runnable {
 
 	// JAVADOC: Screen
+	
+	//TODO: Merge with ScreenManager
 
 	// TODO: Multiple cameras (Painters) with viewport rectangles
 	
@@ -150,5 +152,9 @@ public class Screen implements Runnable {
 	 */
 	public void setResolution(int width, int height) {
 		ScreenManager.setRes(width, height);
+	}
+	
+	public void requestFocus(){
+		ScreenManager.requestFocus();
 	}
 }

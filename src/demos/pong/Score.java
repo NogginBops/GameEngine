@@ -83,8 +83,10 @@ public class Score extends Sprite implements KeyListener {
 			if (IOHandler.save(
 					new ArrayList<SaveRequest<?>>(Arrays.asList(new SaveRequest<String>("P1: " + left + " P2: " + right,
 							String.class, new File("./res/ayyy/Score.txt"), "Default String Saver"))))) {
+				Game.log.logMessage("Save sucsessfull", "Pong", "Score", "IO", "Save");
 				System.out.println("Save sucsessfull");
 			} else {
+				Game.log.logError("Save sucsessfull", "Pong", "Score", "IO", "Save");
 				System.out.println("Save failed");
 			}
 			break;

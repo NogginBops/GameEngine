@@ -1,6 +1,5 @@
 package demos.verticalScroller.projectiles;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -8,8 +7,8 @@ public class BasicProjectile extends Projectile {
 
 	private float baseDX, baseDY;
 	
-	public BasicProjectile(BufferedImage image, float x, float y, float dx, float dy) {
-		super(x, y, image);
+	public BasicProjectile(BufferedImage image, float lifetime, float x, float y, float dx, float dy) {
+		super(x, y, image, lifetime);
 		baseDX = dx;
 		baseDY = dy;
 	}

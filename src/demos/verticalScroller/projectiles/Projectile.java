@@ -3,6 +3,7 @@ package demos.verticalScroller.projectiles;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import game.Game;
 import game.gameObject.graphics.Sprite;
 import game.gameObject.physics.Collidable;
 
@@ -10,9 +11,24 @@ public abstract class Projectile extends Sprite implements Collidable{
 
 	protected BufferedImage image;
 	
-	public Projectile(float x, float y, BufferedImage image) {
+	protected float lifetime;
+	
+	private float timer;
+	
+	public Projectile(float x, float y, BufferedImage image, float lifetime) {
 		super(x, y, image.getWidth(), image.getHeight());
 		this.image = image;
+		this.lifetime = lifetime;
+		timer = 0;
+	}
+	
+	@Override
+	public void update(long timeNano) {
+		super.update(timeNano);
+		timer += timeNano / 1000000000f;
+		if(timer > lifetime){
+			Game.getGameObjectHandler().removeGameObject(this);
+		}
 	}
 
 	@Override

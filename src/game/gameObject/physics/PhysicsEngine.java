@@ -1,5 +1,6 @@
 package game.gameObject.physics;
 
+import game.gameObject.BasicGameObject;
 import game.util.GameObjectHandler;
 import game.util.UpdateListener;
 
@@ -11,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * 
  * @author Julius Häger
  */
-public class PhysicsEngine implements UpdateListener {
+public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 
 	// JAVADOC: PhysicsEngine
 
@@ -28,6 +29,7 @@ public class PhysicsEngine implements UpdateListener {
 	 * @param gameObjectHandeler
 	 */
 	public PhysicsEngine(GameObjectHandler gameObjectHandeler) {
+		super(0, 0, 0, 0, 0);
 		this.gameObjectHandeler = gameObjectHandeler;
 	}
 

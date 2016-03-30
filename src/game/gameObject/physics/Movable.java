@@ -82,7 +82,7 @@ public interface Movable extends GameObject {
 	 * Used to update the movement based on the time passed since the last
 	 * update.
 	 * </p>
-	 * 
+	 * <p>Divide by 1000000000 for seconds.</p>
 	 * <p>
 	 * <b>Note:</b> <br>
 	 * Should be implemented so that the Dynamic x and y equal to pixels per

@@ -74,9 +74,8 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 		timer += timeNano / 1000000000f;
 		if(isSpaceDown){
 			if(timer > delay){
-				BasicProjectile projectileGO = new BasicProjectile(projectile, x + ((width - projectile.getWidth())/2), y, 0, -350);
+				BasicProjectile projectileGO = new BasicProjectile(projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -350);
 				Game.getGameObjectHandler().addGameObject(projectileGO);
-				Game.game.addUpdateListener(projectileGO);
 				timer = 0;
 			}
 		}
@@ -113,16 +112,6 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 		updateMovement();
 		
 		isSpaceDown  = e.getKeyCode() == KeyEvent.VK_SPACE ? true : isSpaceDown;
-		
-		if(e.getKeyCode() == KeyEvent.VK_SPACE){
-			
-		/*	if(timer > delay){
-				BasicProjectile projectileGO = new BasicProjectile(projectile, x + ((width - projectile.getWidth())/2), y, 0, -200);
-				Game.getGameObjectHandler().addGameObject(projectileGO);
-				Game.game.addUpdateListener(projectileGO);
-				timer = 0;
-			}*/
-		}
 	}
 
 	@Override

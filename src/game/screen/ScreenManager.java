@@ -243,4 +243,8 @@ public final class ScreenManager {
 	public static void setTitle(String title) {
 		frame.setTitle(title);
 	}
+	
+	public static void requestFocus(){
+		frame.requestFocus();
+	}
 }

@@ -13,9 +13,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import demos.pong.Ball;
 import demos.pong.Pad;
 import demos.pong.Pad.Side;
+import demos.pong.Score;
 import demos.verticalScroller.Ship;
 import demos.verticalScroller.ShipFactory;
-import demos.pong.Score;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.UI.UI;
@@ -25,6 +25,8 @@ import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.image.UIImage;
 import game.UI.elements.text.UILabel;
 import game.debug.IDHandlerDebugFrame;
+import game.debug.log.Log;
+import game.debug.log.frame.LogFrame;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.Paintable;
@@ -39,12 +41,12 @@ import game.sound.AudioEngine;
 import game.test.GameObjectAdder;
 import game.test.GameObjectAdderWithAudio;
 import game.test.OtherPaintable;
-import game.test.TestAnimationSprite;
 import game.test.TestInputSprite;
 import game.test.TestSprite;
 import game.util.GameObjectHandler;
 import game.util.IDHandler;
 import game.util.UpdateCounter;
+import game.util.UpdateListener;
 import game.util.Updater;
 
 /**
@@ -71,6 +73,8 @@ public class Game extends Updater {
 	 * 
 	 */
 	public static Game game;
+	
+	public static Log log;
 
 	private static boolean running = false;
 	private static boolean closeRequested = false;
@@ -86,6 +90,8 @@ public class Game extends Updater {
 
 	private long initTime;
 
+	private LogFrame LogFrame;
+	
 	private IDHandlerDebugFrame<GameObject> IDDebug;
 
 	/**
@@ -99,14 +105,14 @@ public class Game extends Updater {
 		// test();
 		// test2();
 		// test2WithAudio();
-		// pong();
+		 pong();
 		// pong44();
 		// breakout();
 		// UITest();
 		
-		verticalScroller();
+		//verticalScroller();
 
-		//completeSetup();
+		completeSetup();
 	}
 	
 	private void verticalScroller(){
@@ -134,6 +140,7 @@ public class Game extends Updater {
 		
 		UniformSpriteSheet projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
 		
+		log.logMessage("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles(), "VerticalScroller");
 		System.out.println("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles());
 		
 		ShipFactory.createShip("Standard", 
@@ -144,23 +151,21 @@ public class Game extends Updater {
 		ship.setLocation(130, 100);
 		
 		gameObjectHandler.addGameObject(ship, "PlayerShip");
-		addUpdateListener(ship);
 	}
 
 	private void basicSetup() {
+		log = new Log();
+		
 		gameObjectHandler = new GameObjectHandler();
 		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
-		
-		addUpdateListener(physicsEngine);
 
 		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
 
-		camera = new Camera(gameObjectHandler, 0, 0, ScreenManager.getWidth() - ScreenManager.getInsets().right,
-				ScreenManager.getHeight() - ScreenManager.getInsets().top);
+		camera = new Camera(gameObjectHandler, 0, 0, ScreenManager.getWidth(),
+				ScreenManager.getHeight());
 
 		gameObjectHandler.addGameObject(camera, "Main camera");
-		addUpdateListener(camera);
 
 		screen.setPainter(camera);
 
@@ -170,20 +175,18 @@ public class Game extends Updater {
 
 		Input inputHandeler = new Input(mouseHandeler, keyHandeler);
 
-		addUpdateListener(inputHandeler);
-
 		ScreenManager.addInputListener(inputHandeler);
 
 		PhysicsEngine physicsEngine = new PhysicsEngine(gameObjectHandler);
-
-		addUpdateListener(physicsEngine);
-
+		gameObjectHandler.addGameObject(physicsEngine);
+		
 		AudioEngine.init(camera);
 
 		Game.game = this;
 	}
 
 	private void completeSetup() {
+		addDebugLog();
 		addIDHandlerDebug();
 	}
 
@@ -247,25 +250,21 @@ public class Game extends Updater {
 				camera.getBounds(), Side.RIGHT);
 
 		gameObjectHandler.addGameObject(rightPad, "RightPad");
-		addUpdateListener(rightPad);
 
 		Pad leftPad = new Pad(50, 40, 10, 50, KeyEvent.VK_W, KeyEvent.VK_S, camera.getBounds(), Side.LEFT);
 
 		gameObjectHandler.addGameObject(leftPad, "LeftPad");
-		addUpdateListener(leftPad);
 
 		Ball ball = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
 				camera.getBounds());
 
 		gameObjectHandler.addGameObject(ball, "Ball");
-		addUpdateListener(ball);
 
 		ball.resetBall();
 
 		Score score = new Score(camera.getBounds());
 
 		gameObjectHandler.addGameObject(score, "Score");
-		addUpdateListener(score);
 	}
 
 	@SuppressWarnings("unused")
@@ -276,35 +275,29 @@ public class Game extends Updater {
 				camera.getBounds(), Side.RIGHT);
 
 		gameObjectHandler.addGameObject(rightPad, "RightPad");
-		addUpdateListener(rightPad);
 
 		Pad rightPad2 = new Pad(ScreenManager.getWidth() - 100, 40, 10, 50, KeyEvent.VK_O, KeyEvent.VK_L,
 				camera.getBounds(), Side.RIGHT);
 
 		gameObjectHandler.addGameObject(rightPad2, "RightPad2");
-		addUpdateListener(rightPad2);
 
 		Pad leftPad = new Pad(50, 40, 10, 50, KeyEvent.VK_W, KeyEvent.VK_S, camera.getBounds(), Side.LEFT);
 
 		gameObjectHandler.addGameObject(leftPad, "LeftPad");
-		addUpdateListener(leftPad);
 
 		Pad leftPad2 = new Pad(100, 40, 10, 50, KeyEvent.VK_T, KeyEvent.VK_G, camera.getBounds(), Side.LEFT);
 
 		gameObjectHandler.addGameObject(leftPad2, "LeftPad2");
-		addUpdateListener(leftPad2);
 
 		Ball ball = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
 				camera.getBounds());
 
 		gameObjectHandler.addGameObject(ball, "Ball");
-		addUpdateListener(ball);
 
 		Ball ball2 = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
 				camera.getBounds());
 
 		gameObjectHandler.addGameObject(ball2, "Ball2");
-		addUpdateListener(ball2);
 
 		ball.resetBall();
 
@@ -313,7 +306,6 @@ public class Game extends Updater {
 		Score score = new Score(camera.getBounds());
 
 		gameObjectHandler.addGameObject(score, "Score");
-		addUpdateListener(score);
 	}
 
 	@SuppressWarnings("unused")
@@ -339,7 +331,6 @@ public class Game extends Updater {
 		TestSprite t = new TestSprite(50, 50, 100, 70);
 
 		gameObjectHandler.addGameObject(t, "TestSprite1");
-		addUpdateListener(t);
 
 		t.setDX(30);
 		t.setDY(3);
@@ -347,7 +338,6 @@ public class Game extends Updater {
 		TestSprite t2 = new TestSprite(400, 50, 20, 20);
 
 		gameObjectHandler.addGameObject(t2, "TestSprite2");
-		addUpdateListener(t2);
 
 		t2.setDX(-60);
 		t2.setDY(-1);
@@ -355,12 +345,10 @@ public class Game extends Updater {
 		TestInputSprite testInput = new TestInputSprite(100, 100, 100, 100, 10, false);
 
 		gameObjectHandler.addGameObject(testInput, "TestInputSprite1");
-		addUpdateListener(testInput);
 
 		TestInputSprite testInput2 = new TestInputSprite(200, 150, 100, 100, 9, false);
 
 		gameObjectHandler.addGameObject(testInput2, "TestInuptSprite2");
-		addUpdateListener(testInput2);
 
 		Random rand = new Random();
 
@@ -368,7 +356,7 @@ public class Game extends Updater {
 			for (int y = 0; y < 30; y++) {
 				TestSprite test = new TestSprite(x * 30, y * 30, 20, 20);
 				gameObjectHandler.addGameObject(test);
-				addUpdateListener(test);
+				
 				test.setDX(rand.nextFloat() * 50);
 				test.setDY(rand.nextFloat() * 50);
 			}
@@ -402,6 +390,10 @@ public class Game extends Updater {
 		AudioEngine.setAudioListener(adder);
 	}
 
+	private void addDebugLog(){
+		new Thread(LogFrame = new LogFrame(log)).start();
+	}
+	
 	private void addIDHandlerDebug() {
 		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler())).start();
 	}
@@ -420,15 +412,18 @@ public class Game extends Updater {
 	 * Starts the main loop of the game
 	 */
 	public void run() {
+		log.logMessage("Starting...", "System");
 		System.out.println("Starting...");
 
 		new Thread(screen).start();
 		long startTime = System.nanoTime();
 		long currTime = startTime;
 		long elapsedTime;
-
+		
+		log.logMessage("Pre run time: " + (startTime - initTime) / 1000000000f, "System");
 		System.out.println("Pre run time: " + (startTime - initTime) / 1000000000f);
 
+		log.logMessage("Running!", "System");
 		System.out.println("Running!");
 		running = true;
 		while (running) {
@@ -442,10 +437,14 @@ public class Game extends Updater {
 
 			if (paused)
 				continue;
+			
+			if(gameObjectHandler.haveObjectsChanged()){
+				listeners = gameObjectHandler.getAllGameObjectsExtending(UpdateListener.class);
+			}
 
 			boolean objectsChangedBefore = gameObjectHandler.haveObjectsChanged();
 
-			propogateUpdate(elapsedTime);
+			propagateUpdate(elapsedTime);
 
 			boolean objectsChangedAfter = gameObjectHandler.haveObjectsChanged();
 
@@ -456,6 +455,7 @@ public class Game extends Updater {
 			}
 		}
 		onQuit();
+		log.logMessage("Stopped.", "System");
 		System.out.println("Stopped.");
 	}
 
@@ -464,6 +464,7 @@ public class Game extends Updater {
 	 */
 	public static void stop() {
 		closeRequested = true;
+		log.logMessage("Close requested.", "System");
 		System.out.println("Close requested.");
 	}
 
@@ -473,6 +474,7 @@ public class Game extends Updater {
 	public static void pause() {
 		// TODO: Game: Pause
 		paused = true;
+		log.logMessage("Game paused", "System");
 		System.out.println("Game paused");
 	}
 
@@ -484,6 +486,7 @@ public class Game extends Updater {
 		if (paused) {
 			// TODO: Game: Resume
 			paused = false;
+			log.logMessage("Game resumed", "System");
 			System.out.println("Game resumed");
 		}
 	}
