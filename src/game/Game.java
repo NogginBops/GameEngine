@@ -144,7 +144,12 @@ public class Game extends Updater {
 		System.out.println("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles());
 		
 		ShipFactory.createShip("Standard", 
-				shipSheet.getSprite(0, 6, 2, 8), shipSheet.getSprite(2, 6, 4, 8), shipSheet.getSprite(4, 6, 6, 8), shipSheet.getSprite(6, 6, 8, 8), shipSheet.getSprite(8, 6, 10, 8), projectileSheet.getSprite(3, 4));
+				shipSheet.getSprite(0, 6, 2, 8),
+				shipSheet.getSprite(2, 6, 4, 8),
+				shipSheet.getSprite(4, 6, 6, 8),
+				shipSheet.getSprite(6, 6, 8, 8),
+				shipSheet.getSprite(8, 6, 10, 8),
+				projectileSheet.getSprite(3, 4));
 		
 		Ship ship = ShipFactory.getShip("Standard");
 		

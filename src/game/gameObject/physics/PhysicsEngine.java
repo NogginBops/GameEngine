@@ -32,14 +32,21 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 		super(0, 0, 0, 0, 0);
 		this.gameObjectHandeler = gameObjectHandeler;
 	}
-
+	
+	CopyOnWriteArrayList<Collidable> tempList;
+	
 	@Override
 	public void update(long timeMillis) {
 		if (gameObjectHandeler.haveObjectsChanged()) {
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
-			//FIXME: Change to not consider empty z levels.
 			for (int z : gameObjectHandeler.getZLevels()) {
-				collidables.add(gameObjectHandeler.getAllGameObjectsAtZLevelExtending(z, Collidable.class));
+				tempList = gameObjectHandeler.getAllGameObjectsAtZLevelExtending(z, Collidable.class);
+				if(tempList.size() > 1){
+					collidables.add(tempList);
+				}
+			}
+			if(collidables.size() < 2){
+				return;
 			}
 		}
 
