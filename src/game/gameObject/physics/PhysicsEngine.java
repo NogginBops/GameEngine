@@ -1,5 +1,7 @@
 package game.gameObject.physics;
 
+import game.Game;
+import game.debug.log.LogMessage.LogImportance;
 import game.gameObject.BasicGameObject;
 import game.util.GameObjectHandler;
 import game.util.UpdateListener;
@@ -31,6 +33,8 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	public PhysicsEngine(GameObjectHandler gameObjectHandeler) {
 		super(0, 0, 0, 0, 0);
 		this.gameObjectHandeler = gameObjectHandeler;
+		
+		Game.log.logMessage("PhysicsEngine created", "Physics");
 	}
 	
 	CopyOnWriteArrayList<Collidable> tempList;
@@ -38,6 +42,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	@Override
 	public void update(long timeMillis) {
 		if (gameObjectHandeler.haveObjectsChanged()) {
+			//Game.log.logMessage("PhysicsEngine objects changed", "Physics");
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 			for (int z : gameObjectHandeler.getZLevels()) {
 				tempList = gameObjectHandeler.getAllGameObjectsAtZLevelExtending(z, Collidable.class);
@@ -56,6 +61,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 					if (c1 != c2) {
 						if (collidablesInLayer.get(c1).getBounds()
 								.intersects((Rectangle2D) collidablesInLayer.get(c2).getBounds())) {
+							//Game.log.log("Collition!", LogImportance.DEBUG, "Physics");
 							collidablesInLayer.get(c1).hasCollided(collidablesInLayer.get(c2));
 						}
 					}

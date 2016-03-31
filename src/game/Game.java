@@ -164,6 +164,7 @@ public class Game extends Updater {
 		gameObjectHandler = new GameObjectHandler();
 		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
+		gameObjectHandler.addGameObject(physicsEngine);
 
 		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
 
@@ -181,9 +182,6 @@ public class Game extends Updater {
 		Input inputHandeler = new Input(mouseHandeler, keyHandeler);
 
 		ScreenManager.addInputListener(inputHandeler);
-
-		PhysicsEngine physicsEngine = new PhysicsEngine(gameObjectHandler);
-		gameObjectHandler.addGameObject(physicsEngine);
 		
 		AudioEngine.init(camera);
 
@@ -249,6 +247,8 @@ public class Game extends Updater {
 
 	@SuppressWarnings("unused")
 	private void pong() {
+		screen.setDebugEnabled(true);
+		
 		screen.setTitle("Pong");
 
 		Pad rightPad = new Pad(ScreenManager.getWidth() - 60, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
@@ -448,7 +448,7 @@ public class Game extends Updater {
 			}
 
 			boolean objectsChangedBefore = gameObjectHandler.haveObjectsChanged();
-
+			
 			propagateUpdate(elapsedTime);
 
 			boolean objectsChangedAfter = gameObjectHandler.haveObjectsChanged();
