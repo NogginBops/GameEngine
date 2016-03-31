@@ -1,8 +1,8 @@
-package game.debug.logTool;
+package game.debug.log;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import game.debug.logTool.LogMessage.LogImportance;
+import game.debug.log.LogMessage.LogImportance;
 
 public class Log {
 	

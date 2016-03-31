@@ -3,9 +3,9 @@ package game;
 import game.controller.event.EventListener;
 import game.controller.event.EventMachine;
 import game.controller.event.GameEvent;
-import game.debug.logTool.Log;
-import game.debug.logTool.LogMessage;
-import game.debug.logTool.LogMessage.LogImportance;
+import game.debug.log.Log;
+import game.debug.log.LogMessage;
+import game.debug.log.LogMessage.LogImportance;
 
 @SuppressWarnings("javadoc")
 public class Test2 {

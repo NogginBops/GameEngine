@@ -1,4 +1,4 @@
-package game.debug.logTool;
+package game.debug.log;
 
 import java.time.Instant;
 import java.util.Date;

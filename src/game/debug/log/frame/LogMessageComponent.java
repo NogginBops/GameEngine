@@ -1,4 +1,4 @@
-package game.debug.logTool.frame;
+package game.debug.log.frame;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -12,7 +12,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import game.debug.logTool.LogMessage;
+import game.debug.log.LogMessage;
 
 public class LogMessageComponent extends JPanel {
 

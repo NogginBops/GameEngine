@@ -1,4 +1,4 @@
-package game.debug.logTool.frame;
+package game.debug.log.frame;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -20,9 +20,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import game.debug.logTool.Log;
-import game.debug.logTool.LogMessage;
-import game.debug.logTool.LogMessage.LogImportance;
+import game.debug.log.Log;
+import game.debug.log.LogMessage;
+import game.debug.log.LogMessage.LogImportance;
 
 public class LogFrame extends JFrame implements Runnable{
 

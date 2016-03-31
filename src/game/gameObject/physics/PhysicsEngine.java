@@ -1,7 +1,7 @@
 package game.gameObject.physics;
 
 import game.Game;
-import game.debug.logTool.LogMessage.LogImportance;
+import game.debug.log.LogMessage.LogImportance;
 import game.gameObject.BasicGameObject;
 import game.util.GameObjectHandler;
 import game.util.UpdateListener;
