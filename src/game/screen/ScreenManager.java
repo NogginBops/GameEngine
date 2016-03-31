@@ -244,6 +244,9 @@ public final class ScreenManager {
 		frame.setTitle(title);
 	}
 	
+	/**
+	 * 
+	 */
 	public static void requestFocus(){
 		frame.requestFocus();
 	}

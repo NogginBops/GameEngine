@@ -23,6 +23,7 @@ import game.UI.border.Border;
 import game.UI.border.SolidBorder;
 import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.image.UIImage;
+import game.UI.elements.input.UIButton;
 import game.UI.elements.text.UILabel;
 import game.debug.IDHandlerDebugFrame;
 import game.debug.log.Log;
@@ -74,6 +75,9 @@ public class Game extends Updater {
 	 */
 	public static Game game;
 	
+	/**
+	 * The debug log associated with the game
+	 */
 	public static Log log;
 
 	private static boolean running = false;
@@ -102,19 +106,22 @@ public class Game extends Updater {
 
 		basicSetup();
 
-		//test();
+		// test();
 		// test2();
 		// test2WithAudio();
-		 pong();
+		// pong();
 		// pong44();
 		// breakout();
 		// UITest();
 		
-		//verticalScroller();
+		// verticalScroller();
 
 		completeSetup();
+		
+		AudioEngine.setMasterVolume(0.2);
 	}
 	
+	@SuppressWarnings("unused")
 	private void verticalScroller(){
 		screen.setResolution(400, 600);
 		
@@ -200,30 +207,27 @@ public class Game extends Updater {
 		LogFrame.stopDebug();
 	}
 	
+	@SuppressWarnings("unused")
 	private void UITest() {
 		screen.setTitle("UI Test");
 		screen.setDebugEnabled(true);
 
 		camera.receiveKeyboardInput(true);
+		
+		UI hud = new UI(new Rectangle(200, 100, 400, 400));
 
 		BasicUIContainer container = new BasicUIContainer(200, 300);
-
 		Border border = new SolidBorder(20, Color.MAGENTA);
-
 		container.setBorder(border);
+		hud.addUIElement(container);
 
 		BasicUIContainer container2 = new BasicUIContainer(100, 100);
-
 		Border border2 = new SolidBorder(10, Color.CYAN);
-
 		container2.setBorder(border2);
-
 		container.addUIElement(container2);
 
 		UILabel lable = new UILabel("Test label");
-
 		lable.setColor(Color.WHITE);
-
 		container2.addUIElement(lable);
 		
 		Image image;
@@ -234,15 +238,15 @@ public class Game extends Updater {
 		}
 		
 		UIImage UIimg = new UIImage(0, 0, 40, 100, image);
-		
 		UIimg.setNativeSize();
-		
 		UIimg.setZOrder(2);
-		
 		container.addUIElement(UIimg);
-
-		UI hud = new UI(new Rectangle(400, 200, 400, 400), container);
-
+		
+		UIButton button = new UIButton(40, 40, 100, 40);
+		gameObjectHandler.addGameObject(button);
+		button.setZOrder(10);
+		container.addUIElement(button);
+		
 		gameObjectHandler.addGameObject(hud);
 	}
 

@@ -21,7 +21,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 
 	private GameObjectHandler gameObjectHandeler;
 	
-	private HashMap<Integer, CopyOnWriteArrayList<Collidable>> collidablesMap = new HashMap<>();
+	private HashMap<Integer, CopyOnWriteArrayList<Collidable>> collidablesMap = new HashMap<Integer, CopyOnWriteArrayList<Collidable>>();
 
 	//TODO: Use the HashMap instead.
 	private CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>> collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();

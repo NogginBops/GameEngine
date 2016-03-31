@@ -154,6 +154,9 @@ public class Screen implements Runnable {
 		ScreenManager.setRes(width, height);
 	}
 	
+	/**
+	 * 
+	 */
 	public void requestFocus(){
 		ScreenManager.requestFocus();
 	}

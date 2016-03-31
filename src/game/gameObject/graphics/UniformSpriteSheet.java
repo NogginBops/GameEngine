@@ -173,7 +173,14 @@ public class UniformSpriteSheet {
 		return copyImageAndRemoveColor(sheet.getSubimage(xCoord, yCoord, width, height), transparentColor);
 	}
 	
-	//Might change endXY to width/height
+	//NOTE: Might change endXY to width/height
+	/**
+	 * @param startX
+	 * @param startY
+	 * @param endX
+	 * @param endY
+	 * @return
+	 */
 	public BufferedImage getSprite(int startX, int startY, int endX, int endY){
 		if(startX < 0 || startY < 0 || endX < 0 || endY < 0){
 			throw new IllegalArgumentException("Index out of bounds! Index can't be a negative value." + (startX < 0 ? " startX: " + startX : "") + (startY < 0 ? " startY: " + startY : "") + (endX < 0 ? " endX: " + endX : "") + (endY < 0 ? " endY: " + endY : ""));

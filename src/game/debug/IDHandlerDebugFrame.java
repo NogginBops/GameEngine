@@ -158,7 +158,7 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	public void run() {
 		this.setVisible(true);
 		
-		//TODO: Make use of the eventsystem instead than a infinite loop
+		//FIXME: Make use of the eventsystem instead than a infinite loop
 		while(!closeRequested){
 			updateIDs(handler.getAllIDs());
 			

@@ -16,38 +16,35 @@ import game.gameObject.graphics.Paintable;
 public class UI extends UIContainer implements Paintable {
 
 	// TODO: UIPainter
+	
+	// TODO: UI position anchors
 
 	// JAVADOC: UIPainter
 
 	private Graphics2D translatedGraphics;
-
-	private CopyOnWriteArrayList<UIElement> UIElements;
 
 	/**
 	 * @param area
 	 * @param elements
 	 */
 	public UI(Rectangle area, UIElement... elements) {
+		super(elements);
 		this.area = area;
-		UIElements = new CopyOnWriteArrayList<UIElement>(elements);
 	}
-
+	
+	boolean result;
+	
 	/**
 	 * @param element
 	 * @return
 	 */
 	@Override
 	public boolean addUIElement(UIElement element) {
-		return UIElements.add(element);
-	}
-
-	/**
-	 * @param element
-	 * @return
-	 */
-	@Override
-	public boolean removeUIElement(UIElement element) {
-		return UIElements.remove(element);
+		result = children.add(element);
+		element.setRoot(this);
+		element.setParent(this);
+		sortChildren();
+		return result;
 	}
 
 	/**
@@ -56,7 +53,7 @@ public class UI extends UIContainer implements Paintable {
 	@Override
 	public void paint(Graphics2D g2d) {
 		translatedGraphics = (Graphics2D) g2d.create(area.x, area.y, area.width, area.height);
-		for (UIElement element : UIElements) {
+		for (UIElement element : children) {
 			element.paint(translatedGraphics);
 		}
 	}
@@ -73,7 +70,7 @@ public class UI extends UIContainer implements Paintable {
 
 	@Override
 	public int compareTo(GameObject object) {
-		return 0;
+		return getZOrder() - object.getZOrder();
 	}
 
 	@Override

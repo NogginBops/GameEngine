@@ -12,14 +12,16 @@ import java.util.Arrays;
 import game.Game;
 import game.IO.IOHandler;
 import game.IO.save.SaveRequest;
-import game.gameObject.graphics.Sprite;
+import game.UI.UI;
+import game.UI.elements.image.UIRect;
+import game.UI.elements.text.UILabel;
 import game.input.keys.KeyListener;
 
 /**
  * @author Julius Häger
  *
  */
-public class Score extends Sprite implements KeyListener {
+public class Score extends UI implements KeyListener {
 
 	/**
 	 * 
@@ -31,32 +33,43 @@ public class Score extends Sprite implements KeyListener {
 	 */
 	public static int right = 0;
 
-	private Rectangle devider;
+	private Rectangle deviderRect;
 
 	private int deviderWidth = 4;
+	
+	private UILabel player1Score, player2Score;
+	
+	private UIRect devider;
 
 	@SuppressWarnings("unused")
 	private BufferedImage img;
 
 	/**
-	 * @param bounds
+	 * @param area
 	 */
-	public Score(Rectangle bounds) {
-		super(bounds);
-		devider = new Rectangle((int) (bounds.getWidth() / 2 - deviderWidth / 2), bounds.y, deviderWidth,
-				bounds.height);
-		zOrder = 0;
+	public Score(Rectangle area) {
+		super(area);
+		deviderRect = new Rectangle((int) (area.getWidth() / 2 - deviderWidth / 2), area.y, deviderWidth,
+				area.height);
+		
+		devider = new UIRect(deviderRect, Color.WHITE);
+		
+		setZOrder(0);
+		
+		player1Score = new UILabel("Player 1: 0");
+		player1Score.setPosition(devider.getX() - 55, 20);
+		player2Score = new UILabel("Player 2: 0");
+		player2Score.setPosition(devider.getX() + 50, 20);
+		
+		addUIElements(player1Score, player2Score, devider);
 	}
 
 	@Override
 	public void paint(Graphics2D g2d) {
-		g2d.setColor(Color.BLACK);
-		g2d.fill(bounds);
-		// g2d.drawImage(img, (int)x, (int)y, null);
-		g2d.setColor(Color.WHITE);
-		g2d.fill(devider);
-		g2d.drawString("" + left, devider.x - 50, 40);
-		g2d.drawString("" + right, devider.x + 50, 40);
+		//Not elegant but will work for now
+		player1Score.setText("" + left);
+		player2Score.setText("" + right);
+		super.paint(g2d);
 	}
 
 	@Override
@@ -80,12 +93,10 @@ public class Score extends Sprite implements KeyListener {
 		case KeyEvent.VK_B:
 			if (IOHandler.save(
 					new ArrayList<SaveRequest<?>>(Arrays.asList(new SaveRequest<String>("P1: " + left + " P2: " + right,
-							String.class, new File("./res/ayyy/Score.txt"), "Default String Saver"))))) {
+							String.class, new File("./res/Score.txt"), "Default String Saver"))))) {
 				Game.log.logMessage("Save sucsessfull", "Pong", "Score", "IO", "Save");
-				System.out.println("Save sucsessfull");
 			} else {
 				Game.log.logError("Save sucsessfull", "Pong", "Score", "IO", "Save");
-				System.out.println("Save failed");
 			}
 			break;
 		}

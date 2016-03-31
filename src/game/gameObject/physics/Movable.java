@@ -88,9 +88,8 @@ public interface Movable extends GameObject {
 	 * Should be implemented so that the Dynamic x and y equal to pixels per
 	 * second.
 	 * </p>
-	 * 
-	 * @param timeMillis
-	 *            time since last update (in nanoseconds)
+	 * @param timeNano 
+	 * time since last update (in nanoseconds)
 	 */
 	public void update(long timeNano);
 

@@ -14,6 +14,11 @@ import javax.swing.border.LineBorder;
 
 import game.debug.log.LogMessage;
 
+/**
+ * 
+ * 
+ * @author Julius Häger
+ */
 public class LogMessageComponent extends JPanel {
 
 	/**
@@ -23,6 +28,7 @@ public class LogMessageComponent extends JPanel {
 
 	/**
 	 * Create the panel.
+	 * @param message The message the component should display
 	 */
 	public LogMessageComponent(LogMessage message) {
 		

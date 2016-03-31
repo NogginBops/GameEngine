@@ -3,6 +3,7 @@ package game.UI.elements.text;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 import game.UI.elements.UIElement;
 

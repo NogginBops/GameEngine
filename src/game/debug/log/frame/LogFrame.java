@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -25,6 +24,10 @@ import game.debug.log.Log;
 import game.debug.log.LogMessage;
 import game.debug.log.LogMessage.LogImportance;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class LogFrame extends JFrame implements Runnable{
 
 	/**
@@ -40,12 +43,13 @@ public class LogFrame extends JFrame implements Runnable{
 
 	/**
 	 * Create the frame.
+	 * @param log the log to display
 	 */
 	public LogFrame(Log log) {
 		this.log = log;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 300, 450, 300);
+		setBounds(100, 400, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -118,6 +122,7 @@ public class LogFrame extends JFrame implements Runnable{
 		contentPane.add(btnTestmessage, BorderLayout.SOUTH);
 		
 		btnTestmessage.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				log.addMessage(new LogMessage("TestMessage" + i++, LogImportance.DEBUG, "test"));
 				updateMessages();
@@ -185,6 +190,9 @@ public class LogFrame extends JFrame implements Runnable{
 	
 	private LogMessageComponent lastMessage;
 	
+	/**
+	 * Updates to see if any new messages has been added to the log.
+	 */
 	public void updateMessages(){
 		if(currentTagFilter.length <= 0){
 			messages = log.getMessages(currentImpotrance);
@@ -232,6 +240,9 @@ public class LogFrame extends JFrame implements Runnable{
 		}
 	}
 	
+	/**
+	 * Forces a update to all messages by removing all messages and recreating them.
+	 */
 	public void forceUpdate(){
 		if(currentTagFilter.length <= 0){
 			messages = log.getMessages(currentImpotrance);
@@ -260,6 +271,9 @@ public class LogFrame extends JFrame implements Runnable{
 		oldMessages = newMessages;
 	}
 	
+	/**
+	 * Stops the debugger.
+	 */
 	public void stopDebug(){
 		closeRequested = true;
 		dispose();
