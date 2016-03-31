@@ -25,8 +25,8 @@ import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.image.UIImage;
 import game.UI.elements.text.UILabel;
 import game.debug.IDHandlerDebugFrame;
-import game.debug.log.Log;
-import game.debug.log.frame.LogFrame;
+import game.debug.logTool.Log;
+import game.debug.logTool.frame.LogFrame;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.Paintable;
@@ -102,10 +102,10 @@ public class Game extends Updater {
 
 		basicSetup();
 
-		// test();
+		test();
 		// test2();
 		// test2WithAudio();
-		 pong();
+		// pong();
 		// pong44();
 		// breakout();
 		// UITest();
@@ -164,7 +164,7 @@ public class Game extends Updater {
 		gameObjectHandler = new GameObjectHandler();
 		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
-		gameObjectHandler.addGameObject(physicsEngine);
+		gameObjectHandler.addGameObject(physicsEngine, "Physics Engine");
 
 		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
 
@@ -196,7 +196,8 @@ public class Game extends Updater {
 	// TODO: Fix proper onStart onExit and other similar methods
 
 	private void onQuit() {
-		IDDebug.stoppDebug();
+		IDDebug.stopDebug();
+		LogFrame.stopDebug();
 	}
 	
 	private void UITest() {

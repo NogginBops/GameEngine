@@ -35,6 +35,8 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	private JScrollPane scrollPane;
 	private JTable table;
 	private JButton btnRefresh;
+	
+	private boolean closeRequested = false;
 
 	/**
 	 * Launch the application.
@@ -113,7 +115,8 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	/**
 	 * 
 	 */
-	public void stoppDebug() {
+	public void stopDebug() {
+		closeRequested = true;
 		dispose();
 	}
 
@@ -156,7 +159,7 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 		this.setVisible(true);
 		
 		//TODO: Make use of the eventsystem instead than a infinite loop
-		while(true){
+		while(!closeRequested){
 			updateIDs(handler.getAllIDs());
 			
 			try {
