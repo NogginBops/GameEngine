@@ -3,11 +3,9 @@ package game.test;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.Random;
 
 import demos.town.buildings.Building;
 import demos.town.buildings.houses.House;
-import game.Game;
 import game.gameObject.GameObject;
 import game.input.mouse.MouseListener;
 import game.util.GameObjectHandler;
@@ -22,8 +20,6 @@ public class GameObjectAdder implements GameObject, MouseListener {
 
 	private GameObjectHandler gameObjectHandler;
 
-	private Random rand;
-
 	private Rectangle bounds = new Rectangle(10, 10);
 
 	private Building currentBuilding;
@@ -33,7 +29,6 @@ public class GameObjectAdder implements GameObject, MouseListener {
 	 */
 	public GameObjectAdder(GameObjectHandler objectHandler) {
 		gameObjectHandler = objectHandler;
-		rand = new Random();
 		currentBuilding = new House(0, 0, 24, 30);
 		gameObjectHandler.addGameObject(currentBuilding, "House");
 	}

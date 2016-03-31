@@ -18,6 +18,8 @@ public abstract class Updater {
 
 	// JAVADOC: Updater
 
+	//TODO: Merge with Game.java
+	
 	protected CopyOnWriteArrayList<UpdateListener> listeners;
 
 	/**

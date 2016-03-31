@@ -102,10 +102,10 @@ public class Game extends Updater {
 
 		basicSetup();
 
-		test();
+		//test();
 		// test2();
 		// test2WithAudio();
-		// pong();
+		 pong();
 		// pong44();
 		// breakout();
 		// UITest();

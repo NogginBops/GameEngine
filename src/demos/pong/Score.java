@@ -11,8 +11,6 @@ import java.util.Arrays;
 
 import game.Game;
 import game.IO.IOHandler;
-import game.IO.load.LoadRequest;
-import game.IO.load.LoadResult;
 import game.IO.save.SaveRequest;
 import game.gameObject.graphics.Sprite;
 import game.input.keys.KeyListener;

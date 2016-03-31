@@ -1,14 +1,13 @@
 package game.gameObject.physics;
 
-import game.Game;
-import game.debug.log.LogMessage.LogImportance;
-import game.gameObject.BasicGameObject;
-import game.util.GameObjectHandler;
-import game.util.UpdateListener;
-
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import game.Game;
+import game.gameObject.BasicGameObject;
+import game.util.GameObjectHandler;
+import game.util.UpdateListener;
 
 /**
  * 
@@ -50,7 +49,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 					collidables.add(tempList);
 				}
 			}
-			if(collidables.size() < 2){
+			if(collidables.size() < 1){
 				return;
 			}
 		}

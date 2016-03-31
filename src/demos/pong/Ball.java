@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+import game.Game;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.gameObject.graphics.Sprite;
@@ -63,9 +64,11 @@ public class Ball extends Sprite implements Collidable{
 			}
 			if (bounds.getMinX() < outerBounds.getMinX()) {
 				Score.right++;
+				Game.log.logMessage("Right player scored", "Pong", "Score");
 				resetBall();
 			} else if (bounds.getMaxX() > outerBounds.getMaxX()) {
 				Score.left++;
+				Game.log.logMessage("Left player scored", "Pong", "Score");
 				resetBall();
 			}
 			AudioEngine.playSound(new AudioSource(x, y, beep));

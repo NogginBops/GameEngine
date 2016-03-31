@@ -1,10 +1,10 @@
 package game.debug.log.frame;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,6 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -38,22 +39,6 @@ public class LogFrame extends JFrame implements Runnable{
 	private JComboBox<LogImportance> importanceComboBox;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					LogFrame frame = new LogFrame(new Log());
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 */
 	public LogFrame(Log log) {
@@ -66,7 +51,7 @@ public class LogFrame extends JFrame implements Runnable{
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
-		JScrollPane scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		contentPane.add(scrollPane, BorderLayout.CENTER);
 		
 		logMessagePanel = new JPanel();
@@ -143,7 +128,8 @@ public class LogFrame extends JFrame implements Runnable{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setCurrentFilter();
-				updateMessages();
+				//updateMessages();
+				forceUpdate();
 			}
 		};
 		
@@ -195,6 +181,9 @@ public class LogFrame extends JFrame implements Runnable{
 	
 	private LogImportance currentImpotrance;
 	private String[] currentTagFilter;
+	private JScrollPane scrollPane;
+	
+	private LogMessageComponent lastMessage;
 	
 	public void updateMessages(){
 		if(currentTagFilter.length <= 0){
@@ -207,24 +196,68 @@ public class LogFrame extends JFrame implements Runnable{
 		
 		if(oldMessages < newMessages){
 			for (int i = oldMessages; i < messages.size(); i++) {
-				logMessagePanel.add(new LogMessageComponent(messages.get(i)));
+				lastMessage = new LogMessageComponent(messages.get(i));
+				logMessagePanel.add(lastMessage);
 			}
-			
+					
 			logMessagePanel.revalidate();
+			
+			JScrollBar scroll = scrollPane.getVerticalScrollBar();
+			
+			scroll.setValue(scroll.getMaximum() - scroll.getModel().getExtent());
+			
+			scrollPane.revalidate();
+			scrollPane.repaint();	
 			
 			oldMessages = newMessages;
 			
 		}else if(oldMessages > newMessages){
 			logMessagePanel.removeAll();
 			
-			for (int i = 0; i < messages.size(); i++) {
-				logMessagePanel.add(new LogMessageComponent(messages.get(i)));
+			for (LogMessage logMessage : messages) {
+				lastMessage = new LogMessageComponent(logMessage);
+				logMessagePanel.add(lastMessage);
 			}
 			
 			logMessagePanel.revalidate();
 			
+			JScrollBar scroll = scrollPane.getVerticalScrollBar();
+			
+			scroll.setValue(scroll.getMaximum() - scroll.getModel().getExtent());
+			
+			scrollPane.revalidate();
+			scrollPane.repaint();
+			
 			oldMessages = newMessages;
 		}
+	}
+	
+	public void forceUpdate(){
+		if(currentTagFilter.length <= 0){
+			messages = log.getMessages(currentImpotrance);
+		}else{
+			messages = log.getMessages(currentImpotrance, currentTagFilter);
+		}
+		
+		newMessages = messages.size();
+		
+		logMessagePanel.removeAll();
+		
+		for (LogMessage logMessage : messages) {
+			lastMessage = new LogMessageComponent(logMessage);
+			logMessagePanel.add(lastMessage);
+		}
+		
+		logMessagePanel.revalidate();
+		
+		JScrollBar scroll = scrollPane.getVerticalScrollBar();
+		
+		scroll.setValue(scroll.getMaximum() - scroll.getModel().getExtent());
+		
+		scrollPane.revalidate();
+		scrollPane.repaint();
+		
+		oldMessages = newMessages;
 	}
 	
 	public void stopDebug(){
