@@ -48,6 +48,8 @@ public class LogFrame extends JFrame implements Runnable{
 	public LogFrame(Log log) {
 		this.log = log;
 		
+		setTitle("Debug log");
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 400, 450, 300);
 		contentPane = new JPanel();

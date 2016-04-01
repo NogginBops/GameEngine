@@ -190,7 +190,7 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	 * 
 	 * <p>
 	 * This methods only updates {@link #paintables} array when
-	 * {@link GameObjectHandler#haveObjectsChanged()} method
+	 * {@link GameObjectHandler#shouldUpdateObjects()} method
 	 * returns true.
 	 * </p>
 	 */
@@ -199,7 +199,7 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 		g2d.setBackground(backgroundColor);
 		g2d.setColor(backgroundColor);
 		g2d.fillRect(0, 0, width, height);
-		if (gameObjectHandler.haveObjectsChanged()) {
+		if (gameObjectHandler.shouldUpdateObjects()) {
 			paintables = gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
 		}
 		super.paint(g2d);

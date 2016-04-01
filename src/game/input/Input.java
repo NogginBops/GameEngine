@@ -1,5 +1,6 @@
 package game.input;
 
+import game.Game;
 import game.gameObject.BasicGameObject;
 import game.util.UpdateListener;
 
@@ -92,5 +93,9 @@ public class Input extends BasicGameObject implements KeyListener, MouseInputLis
 	@Override
 	public void update(long timeMillis) {
 		mouseHandler.computeEnteredListeners();
+		
+		if(Game.getGameObjectHandler().shouldUpdateObjects()){
+			keyHandler.updateListeners();
+		}
 	}
 }

@@ -28,6 +28,8 @@ public class GameObjectHandler {
 
 	private IDHandler<GameObject> idHandler;
 
+	private boolean shouldUpdateObjects = true;
+	
 	private boolean objectsChanged = false;
 
 	/**
@@ -228,7 +230,15 @@ public class GameObjectHandler {
 	 * 
 	 * @return
 	 */
-	public boolean haveObjectsChanged() {
+	public boolean shouldUpdateObjects() {
+		return shouldUpdateObjects;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean haveObjectsChanged(){
 		return objectsChanged;
 	}
 
@@ -236,6 +246,7 @@ public class GameObjectHandler {
 	 * 
 	 */
 	public void clearChange() {
+		shouldUpdateObjects = objectsChanged;
 		objectsChanged = false;
 	}
 

@@ -40,7 +40,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	
 	@Override
 	public void update(long timeMillis) {
-		if (gameObjectHandeler.haveObjectsChanged()) {
+		if (gameObjectHandeler.shouldUpdateObjects()) {
 			//Game.log.logMessage("PhysicsEngine objects changed", "Physics");
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 			for (int z : gameObjectHandeler.getZLevels()) {

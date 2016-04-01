@@ -44,6 +44,7 @@ import game.test.GameObjectAdderWithAudio;
 import game.test.OtherPaintable;
 import game.test.TestInputSprite;
 import game.test.TestSprite;
+import game.util.FPSCounter;
 import game.util.GameObjectHandler;
 import game.util.IDHandler;
 import game.util.UpdateCounter;
@@ -109,16 +110,16 @@ public class Game extends Updater {
 		// test();
 		// test2();
 		// test2WithAudio();
-		// pong();
+		 pong();
 		// pong44();
 		// breakout();
-		// UITest();
+		//UITest();
 		
 		// verticalScroller();
 
 		completeSetup();
 		
-		AudioEngine.setMasterVolume(0.2);
+		AudioEngine.setMasterVolume(0);
 	}
 	
 	@SuppressWarnings("unused")
@@ -166,33 +167,31 @@ public class Game extends Updater {
 	}
 
 	private void basicSetup() {
+		Game.game = this;
+		
 		log = new Log();
 		
 		gameObjectHandler = new GameObjectHandler();
 		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
-		gameObjectHandler.addGameObject(physicsEngine, "Physics Engine");
-
-		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
-
-		camera = new Camera(gameObjectHandler, 0, 0, ScreenManager.getWidth(),
-				ScreenManager.getHeight());
-
-		gameObjectHandler.addGameObject(camera, "Main camera");
-
-		screen.setPainter(camera);
-
-		MouseInputHandler mouseHandeler = new MouseInputHandler(gameObjectHandler, camera);
-
-		KeyInputHandler keyHandeler = new KeyInputHandler(gameObjectHandler);
-
-		Input inputHandeler = new Input(mouseHandeler, keyHandeler);
-
-		ScreenManager.addInputListener(inputHandeler);
 		
-		AudioEngine.init(camera);
+		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
+		camera = new Camera(gameObjectHandler, 0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+		
+		MouseInputHandler mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
+		KeyInputHandler keyHandler = new KeyInputHandler(gameObjectHandler);
+		Input inputHandler = new Input(mouseHandler, keyHandler);
+		
+		screen.setPainter(camera);
+		screen.addInputListener(inputHandler);
 
-		Game.game = this;
+		AudioEngine.init(camera);
+		
+		gameObjectHandler.addGameObject(physicsEngine, "Physics Engine");
+		
+		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
+		
+		gameObjectHandler.addGameObject(camera, "Main camera");
 	}
 
 	private void completeSetup() {
@@ -279,6 +278,8 @@ public class Game extends Updater {
 
 	@SuppressWarnings("unused")
 	private void pong44() {
+		screen.setDebugEnabled(true);
+		
 		screen.setTitle("Pong44");
 
 		Pad rightPad = new Pad(ScreenManager.getWidth() - 50, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
@@ -401,11 +402,11 @@ public class Game extends Updater {
 	}
 
 	private void addDebugLog(){
-		new Thread(LogFrame = new LogFrame(log)).start();
+		new Thread(LogFrame = new LogFrame(log), "Debug log").start();
 	}
 	
 	private void addIDHandlerDebug() {
-		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler())).start();
+		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler()), "ID Handler Debug").start();
 	}
 
 	/**
@@ -422,10 +423,12 @@ public class Game extends Updater {
 	 * Starts the main loop of the game
 	 */
 	public void run() {
+		Thread.currentThread().setName("Game");
+		
 		log.logMessage("Starting...", "System");
 		System.out.println("Starting...");
 
-		new Thread(screen).start();
+		new Thread(screen, "Graphics").start();
 		long startTime = System.nanoTime();
 		long currTime = startTime;
 		long elapsedTime;
@@ -445,28 +448,40 @@ public class Game extends Updater {
 				running = false;
 			}
 
-			if (paused)
+			if (paused){
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				continue;
+			}
 			
-			if(gameObjectHandler.haveObjectsChanged()){
+			boolean shouldUpdate = gameObjectHandler.shouldUpdateObjects();
+			
+			if(shouldUpdate){
 				listeners = gameObjectHandler.getAllGameObjectsExtending(UpdateListener.class);
 			}
-
-			boolean objectsChangedBefore = gameObjectHandler.haveObjectsChanged();
 			
 			propagateUpdate(elapsedTime);
-
-			boolean objectsChangedAfter = gameObjectHandler.haveObjectsChanged();
-
+			
 			UpdateCounter.update(elapsedTime / 1000000000f);
 
-			if (objectsChangedBefore && !objectsChangedAfter) {
-				gameObjectHandler.clearChange();
+			boolean objectsChanged = gameObjectHandler.haveObjectsChanged();
+
+			gameObjectHandler.clearChange();
+			
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 		onQuit();
 		log.logMessage("Stopped.", "System");
 		System.out.println("Stopped.");
+		
+		System.out.println(FPSCounter.framesTot);
 	}
 
 	/**

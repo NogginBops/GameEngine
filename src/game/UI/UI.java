@@ -47,17 +47,6 @@ public class UI extends UIContainer implements Paintable {
 		return result;
 	}
 
-	/**
-	 * @param g2d
-	 */
-	@Override
-	public void paint(Graphics2D g2d) {
-		translatedGraphics = (Graphics2D) g2d.create(area.x, area.y, area.width, area.height);
-		for (UIElement element : children) {
-			element.paint(translatedGraphics);
-		}
-	}
-
 	@Override
 	public Rectangle getBounds() {
 		return area;

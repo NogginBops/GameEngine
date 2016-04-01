@@ -130,10 +130,12 @@ public abstract class UIContainer extends UIElement {
 	public void paint(Graphics2D g2d) {
 		computeContainerArea();
 		border.paint(g2d, area);
-		translatedGraphics = (Graphics2D) g2d.create(containedArea.x, containedArea.y, containedArea.width,
-				containedArea.height);
-		for (UIElement element : children) {
-			element.paint(translatedGraphics);
+		if(children.size() > 0){
+			translatedGraphics = (Graphics2D) g2d.create(containedArea.x, containedArea.y, containedArea.width,
+					containedArea.height);
+			for (UIElement element : children) {
+				element.paint(translatedGraphics);
+			}
 		}
 	}
 
