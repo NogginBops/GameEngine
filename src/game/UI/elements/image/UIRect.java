@@ -11,6 +11,8 @@ import game.UI.elements.UIElement;
  *
  */
 public class UIRect extends UIElement {
+	
+	//JAVADOC: UIRect
 
 	protected Color color = Color.LIGHT_GRAY;
 	

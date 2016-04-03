@@ -21,7 +21,12 @@ public class GameObjectHandler {
 
 	private ConcurrentSkipListMap<Integer, CopyOnWriteArrayList<GameObject>> gameObjectMap;
 	
-	//FIXME: Remove gameObjects list.
+	/*
+	 * NOTE: 
+	 * This list might not be needed but it is kept as convenience
+	 * as some methods can not use the SkipListMap effectively due to the
+	 * map not being able to quickly list all of the keys or values contained in it.
+	 */
 	private CopyOnWriteArrayList<GameObject> gameObjects;
 
 	private CopyOnWriteArrayList<Integer> zLevels;

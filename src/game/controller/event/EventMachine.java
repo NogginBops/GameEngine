@@ -1,5 +1,6 @@
 package game.controller.event;
 
+import java.util.Comparator;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -8,7 +9,12 @@ public class EventMachine {
 	public ConcurrentSkipListMap<Class<? extends GameEvent>, CopyOnWriteArrayList<EventListener>> eventListenerMap;
 
 	public EventMachine() {
-		eventListenerMap = new ConcurrentSkipListMap<>();
+		eventListenerMap = new ConcurrentSkipListMap<Class<? extends GameEvent>, CopyOnWriteArrayList<EventListener>>(new Comparator<Class<? extends GameEvent>>() {
+			@Override
+			public int compare(Class<? extends GameEvent> o1, Class<? extends GameEvent> o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
 	}
 
 	public void addEventListener(Class<? extends GameEvent> event, EventListener listener) {
@@ -28,7 +34,7 @@ public class EventMachine {
 	}
 
 	public <T extends GameEvent> void fireEvent(T event) {
-		CopyOnWriteArrayList<EventListener> listeners = eventListenerMap.get(event);
+		CopyOnWriteArrayList<EventListener> listeners = eventListenerMap.get(event.getClass());
 		for (EventListener listener : listeners) {
 			listener.eventFired(event);
 		}

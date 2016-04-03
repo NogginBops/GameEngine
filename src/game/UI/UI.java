@@ -2,7 +2,6 @@ package game.UI;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.UI.elements.UIElement;
 import game.UI.elements.containers.UIContainer;
@@ -15,20 +14,19 @@ import game.gameObject.graphics.Paintable;
  */
 public class UI extends UIContainer implements Paintable {
 
-	// TODO: UIPainter
+	// TODO: UIPainter?
 	
 	// TODO: UI position anchors
 
 	// JAVADOC: UIPainter
-
-	private Graphics2D translatedGraphics;
-
+	
 	/**
 	 * @param area
 	 * @param elements
 	 */
 	public UI(Rectangle area, UIElement... elements) {
 		super(elements);
+		setBorder(null);
 		this.area = area;
 	}
 	

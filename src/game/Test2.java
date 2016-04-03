@@ -11,8 +11,8 @@ import game.debug.log.LogMessage.LogImportance;
 public class Test2 {
 
 	public static void main(String[] args) {
-		//new Test2();
-		logTest();
+		new Test2();
+		//logTest();
 	}
 	
 	public static void logTest(){
@@ -55,13 +55,8 @@ public class Test2 {
 		public final String message;
 
 		public CustomEvent(Object origin, String message) {
-			super(origin);
+			super(origin, "Test");
 			this.message = message;
-		}
-
-		@Override
-		public int compareTo(GameEvent arg0) {
-			return 0;
 		}
 	}
 }

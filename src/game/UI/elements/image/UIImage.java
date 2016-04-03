@@ -8,6 +8,8 @@ import game.UI.elements.UIElement;
 
 public class UIImage extends UIElement {
 	
+	//JAVADOC: UIImage
+	
 	protected Image image;
 	
 	public UIImage(Image image, int x, int y) {

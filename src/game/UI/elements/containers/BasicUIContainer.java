@@ -7,6 +7,8 @@ import game.UI.elements.UIElement;
 
 public class BasicUIContainer extends UIContainer {
 	
+	//JAVADOC: BasicUIContainer
+	
 	protected Color color = Color.GRAY;	
 
 	public BasicUIContainer(UIContainer container) {

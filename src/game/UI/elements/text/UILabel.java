@@ -8,6 +8,10 @@ import java.awt.Rectangle;
 import game.UI.elements.UIElement;
 
 public class UILabel extends UIElement {
+	
+	//TODO: Manage go get width and height of the label
+	
+	//JAVADOC: UILable
 
 	protected String text;
 

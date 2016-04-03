@@ -110,12 +110,12 @@ public class Game extends Updater {
 		// test();
 		// test2();
 		// test2WithAudio();
-		 pong();
+		// pong();
 		// pong44();
 		// breakout();
 		//UITest();
 		
-		// verticalScroller();
+		verticalScroller();
 
 		completeSetup();
 		
@@ -202,8 +202,13 @@ public class Game extends Updater {
 	// TODO: Fix proper onStart onExit and other similar methods
 
 	private void onQuit() {
+		if(IDDebug != null){
 		IDDebug.stopDebug();
-		LogFrame.stopDebug();
+		}
+		
+		if(LogFrame != null){
+			LogFrame.stopDebug();
+		}
 	}
 	
 	@SuppressWarnings("unused")
@@ -480,8 +485,6 @@ public class Game extends Updater {
 		onQuit();
 		log.logMessage("Stopped.", "System");
 		System.out.println("Stopped.");
-		
-		System.out.println(FPSCounter.framesTot);
 	}
 
 	/**

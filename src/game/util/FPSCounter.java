@@ -17,6 +17,8 @@ package game.util;
 public final class FPSCounter {
 
 	// JAVADOC: FPSCounter
+	
+	// TODO: Merge with UpdateCounter
 
 	/**
 	 * 

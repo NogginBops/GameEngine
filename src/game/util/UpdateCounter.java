@@ -8,6 +8,8 @@ package game.util;
 public class UpdateCounter {
 
 	// JAVADOC: UpdateCounter
+	
+	// TODO: Merge with FPSCounter
 
 	/**
 	 * 

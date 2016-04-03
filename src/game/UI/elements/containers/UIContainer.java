@@ -12,6 +12,8 @@ import game.UI.border.SolidBorder;
 import game.UI.elements.UIElement;
 
 public abstract class UIContainer extends UIElement {
+	
+	//JAVADOC: UIContainer
 
 	protected Rectangle containedArea;
 
@@ -129,7 +131,9 @@ public abstract class UIContainer extends UIElement {
 	@Override
 	public void paint(Graphics2D g2d) {
 		computeContainerArea();
-		border.paint(g2d, area);
+		if(border != null){
+			border.paint(g2d, area);
+		}
 		if(children.size() > 0){
 			translatedGraphics = (Graphics2D) g2d.create(containedArea.x, containedArea.y, containedArea.width,
 					containedArea.height);
@@ -145,7 +149,11 @@ public abstract class UIContainer extends UIElement {
 	 * @return
 	 */
 	protected Rectangle computeContainerArea() {
-		return containedArea = border.getInnerArea(area);
+		if(border != null){
+			return containedArea = border.getInnerArea(area);
+		}else{
+			return containedArea = area;
+		}
 	}
 
 	public Rectangle getContainerArea() {

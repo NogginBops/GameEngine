@@ -2,8 +2,15 @@ package game.UI.elements.input;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 import game.UI.elements.UIElement;
 import game.gameObject.GameObject;
@@ -15,16 +22,44 @@ import game.input.mouse.MouseListener;
  */
 public class UIButton extends UIElement implements MouseListener {
 	
+	//JAVADOC: UIButton
+	
+	/**
+	 * 
+	 * @author Julius Häger
+	 */
 	protected enum ButtonState{
+		/**
+		 * 
+		 */
 		INACTIVE,
+		/**
+		 * 
+		 */
 		IDLE,
+		/**
+		 * 
+		 */
 		HOVER,
+		/**
+		 * 
+		 */
 		ACTIVE;
 	}
 	
+	/**
+	 * 
+	 */
 	protected ButtonState state = ButtonState.IDLE;
 	
+	/**
+	 * 
+	 */
 	protected Color color = Color.BLACK;
+	
+	protected ArrayList<ActionListener> listeners;
+	
+	protected Action event;
 	
 	/**
 	 * @param x 
@@ -34,6 +69,10 @@ public class UIButton extends UIElement implements MouseListener {
 	 */
 	public UIButton(int x, int y, int width, int height) {
 		super(x, y, width, height);
+		
+		
+		
+		listeners.get(0).actionPerformed(new ActionEvent(this, 1, ""));
 	}
 	
 	/**

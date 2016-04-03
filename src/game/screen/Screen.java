@@ -95,7 +95,7 @@ public class Screen implements Runnable {
 			FPSCounter.update(elapsedTime / 1000000000f);
 			
 			try {
-				Thread.sleep(0);
+				Thread.sleep(1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
