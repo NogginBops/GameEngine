@@ -2,6 +2,7 @@ package game.gameObject.graphics;
 
 import java.awt.Rectangle;
 
+import game.gameObject.BasicGameObject;
 import game.gameObject.GameObject;
 import game.gameObject.physics.Movable;
 import game.util.UpdateListener;
@@ -12,46 +13,18 @@ import game.util.UpdateListener;
  * @version 1.0
  * @author Julius Häger
  */
-public abstract class Sprite implements Paintable, Movable, UpdateListener {
+public abstract class Sprite extends BasicGameObject implements Paintable, Movable, UpdateListener {
 
 	// JAVADOC: Sprite
 
 	/**
-	 * 
-	 */
-	protected float x;
-	/**
-	 * 
-	 */
-	protected float y;
-
-	/**
-	 * 
-	 */
-	protected float width;
-	/**
-	 * 
-	 */
-	protected float height;
-
-	/**
-	 * 
+	 * The dynamic-x (The movement in the x-axis measured in pixels/second)
 	 */
 	protected float dx;
 	/**
-	 * 
+	 * The dynamic-x (The movement in the y-axis measured in pixels/second)
 	 */
 	protected float dy;
-
-	/**
-	 * 
-	 */
-	protected Rectangle bounds;
-
-	/**
-	 * The current Z-order of the Sprite
-	 */
-	protected int zOrder = 5;
 
 	/**
 	 * 
@@ -65,23 +38,17 @@ public abstract class Sprite implements Paintable, Movable, UpdateListener {
 	 * @param height
 	 *            the height of the Sprite (in pixels)
 	 */
-	public Sprite(float x, float y, float width, float height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		bounds = new Rectangle((int) x, (int) y, (int) width, (int) height);
+	public Sprite(float x, float y, int width, int height) {
+		super(x, y, width, height, 5);
 	}
+	
+	//TODO: Add sorting layers for sprites and such
 
 	/**
 	 * @param bounds
 	 */
 	public Sprite(Rectangle bounds) {
-		this.x = bounds.x;
-		this.y = bounds.y;
-		this.width = bounds.width;
-		this.height = bounds.height;
-		this.bounds = bounds;
+		super(bounds, 5);
 	}
 
 	@Override
@@ -110,13 +77,13 @@ public abstract class Sprite implements Paintable, Movable, UpdateListener {
 	 */
 	@Override
 	public void updateBounds() {
-		bounds = new Rectangle((int) x, (int) y, (int) width, (int) height);
+		bounds = new Rectangle((int) x, (int) y, width, height);
 	}
 
 	@Override
-	public void update(long timeMillis) {
-		x += (dx * timeMillis) / 1000000000;
-		y += (dy * timeMillis) / 1000000000;
+	public void update(long timeNano) {
+		x += (dx * timeNano) / 1000000000;
+		y += (dy * timeNano) / 1000000000;
 		updateBounds();
 	}
 
@@ -137,6 +104,17 @@ public abstract class Sprite implements Paintable, Movable, UpdateListener {
 
 	@Override
 	public void setY(float y) {
+		this.y = y;
+	}
+	
+	/**
+	 * Sets the location of the sprite.
+	 * 
+	 * @param x The x coordinate
+	 * @param y The y coordinate
+	 */
+	public void setLocation(float x, float y){
+		this.x = x;
 		this.y = y;
 	}
 

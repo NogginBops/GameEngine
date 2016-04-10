@@ -3,6 +3,7 @@ package game.screen;
 import game.Game;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.Painter;
+import game.input.Input;
 import game.util.FPSCounter;
 import game.util.UpdateCounter;
 
@@ -18,6 +19,8 @@ import java.awt.Graphics2D;
 public class Screen implements Runnable {
 
 	// JAVADOC: Screen
+	
+	//TODO: Merge with ScreenManager
 
 	// TODO: Multiple cameras (Painters) with viewport rectangles
 	
@@ -90,6 +93,12 @@ public class Screen implements Runnable {
 			ScreenManager.update();
 
 			FPSCounter.update(elapsedTime / 1000000000f);
+			
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -150,5 +159,19 @@ public class Screen implements Runnable {
 	 */
 	public void setResolution(int width, int height) {
 		ScreenManager.setRes(width, height);
+	}
+	
+	/**
+	 * 
+	 */
+	public void requestFocus(){
+		ScreenManager.requestFocus();
+	}
+
+	/**
+	 * @param inputHandler
+	 */
+	public void addInputListener(Input inputHandler) {
+		ScreenManager.addInputListener(inputHandler);
 	}
 }

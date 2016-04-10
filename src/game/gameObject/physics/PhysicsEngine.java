@@ -1,17 +1,19 @@
 package game.gameObject.physics;
 
-import game.util.GameObjectHandler;
-import game.util.UpdateListener;
-
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import game.Game;
+import game.gameObject.BasicGameObject;
+import game.util.GameObjectHandler;
+import game.util.UpdateListener;
 
 /**
  * 
  * @author Julius Häger
  */
-public class PhysicsEngine implements UpdateListener {
+public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 
 	// JAVADOC: PhysicsEngine
 
@@ -19,7 +21,7 @@ public class PhysicsEngine implements UpdateListener {
 
 	private GameObjectHandler gameObjectHandeler;
 	
-	private HashMap<Integer, CopyOnWriteArrayList<Collidable>> collidablesMap = new HashMap<>();
+	private HashMap<Integer, CopyOnWriteArrayList<Collidable>> collidablesMap = new HashMap<Integer, CopyOnWriteArrayList<Collidable>>();
 
 	//TODO: Use the HashMap instead.
 	private CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>> collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
@@ -28,16 +30,27 @@ public class PhysicsEngine implements UpdateListener {
 	 * @param gameObjectHandeler
 	 */
 	public PhysicsEngine(GameObjectHandler gameObjectHandeler) {
+		super(0, 0, 0, 0, 0);
 		this.gameObjectHandeler = gameObjectHandeler;
+		
+		Game.log.logMessage("PhysicsEngine created", "Physics");
 	}
-
+	
+	CopyOnWriteArrayList<Collidable> tempList;
+	
 	@Override
 	public void update(long timeMillis) {
-		if (gameObjectHandeler.haveObjectsChanged()) {
+		if (gameObjectHandeler.shouldUpdateObjects()) {
+			//Game.log.logMessage("PhysicsEngine objects changed", "Physics");
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
-			//FIXME: Change to not consider empty z levels.
 			for (int z : gameObjectHandeler.getZLevels()) {
-				collidables.add(gameObjectHandeler.getAllGameObjectsAtZLevelExtending(z, Collidable.class));
+				tempList = gameObjectHandeler.getAllGameObjectsAtZLevelExtending(z, Collidable.class);
+				if(tempList.size() > 1){
+					collidables.add(tempList);
+				}
+			}
+			if(collidables.size() < 1){
+				return;
 			}
 		}
 
@@ -47,6 +60,7 @@ public class PhysicsEngine implements UpdateListener {
 					if (c1 != c2) {
 						if (collidablesInLayer.get(c1).getBounds()
 								.intersects((Rectangle2D) collidablesInLayer.get(c2).getBounds())) {
+							//Game.log.log("Collition!", LogImportance.DEBUG, "Physics");
 							collidablesInLayer.get(c1).hasCollided(collidablesInLayer.get(c2));
 						}
 					}

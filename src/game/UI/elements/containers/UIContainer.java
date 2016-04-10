@@ -5,12 +5,15 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import game.UI.UI;
 import game.UI.UISorter;
 import game.UI.border.Border;
 import game.UI.border.SolidBorder;
 import game.UI.elements.UIElement;
 
 public abstract class UIContainer extends UIElement {
+	
+	//JAVADOC: UIContainer
 
 	protected Rectangle containedArea;
 
@@ -76,15 +79,39 @@ public abstract class UIContainer extends UIElement {
 	}
 	
 	boolean result;
+	
 	public boolean addUIElement(UIElement element) {
 		result = children.add(element);
+		element.setRoot(root);
+		element.setParent(this);
 		sortChildren();
 		return result;
+	}
+	
+	public void addUIElements(UIElement ... elements){
+		for (UIElement element : elements) {
+			addUIElement(element);
+		}
 	}
 
 	public boolean removeUIElement(UIElement element) {
 		sortChildren();
+		element.setParent(null);
+		element.setRoot(null);
 		return children.remove(element);
+	}
+	
+	public boolean contains(UIElement element){
+		for (UIElement uiElement : children) {
+			if(uiElement == element){
+				return true;
+			}else if(uiElement instanceof UIContainer){
+				if(((UIContainer)uiElement).contains(element)){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public CopyOnWriteArrayList<UIElement> getChildern() {
@@ -104,11 +131,15 @@ public abstract class UIContainer extends UIElement {
 	@Override
 	public void paint(Graphics2D g2d) {
 		computeContainerArea();
-		border.paint(g2d, area);
-		translatedGraphics = (Graphics2D) g2d.create(containedArea.x, containedArea.y, containedArea.width,
-				containedArea.height);
-		for (UIElement element : children) {
-			element.paint(translatedGraphics);
+		if(border != null){
+			border.paint(g2d, area);
+		}
+		if(children.size() > 0){
+			translatedGraphics = (Graphics2D) g2d.create(containedArea.x, containedArea.y, containedArea.width,
+					containedArea.height);
+			for (UIElement element : children) {
+				element.paint(translatedGraphics);
+			}
 		}
 	}
 
@@ -118,11 +149,22 @@ public abstract class UIContainer extends UIElement {
 	 * @return
 	 */
 	protected Rectangle computeContainerArea() {
-		return containedArea = border.getInnerArea(area);
+		if(border != null){
+			return containedArea = border.getInnerArea(area);
+		}else{
+			return containedArea = area;
+		}
 	}
 
 	public Rectangle getContainerArea() {
 		return containedArea;
+	}
+	
+	@Override
+	public Rectangle getBounds() {
+		Rectangle parentArea = parent.getBounds();
+		computeContainerArea();
+		return new Rectangle(containedArea.x + parentArea.x, containedArea.y + parentArea.y, containedArea.width, containedArea.height);
 	}
 
 	public void setPos(int x, int y) {

@@ -21,13 +21,20 @@ public class GameObjectHandler {
 
 	private ConcurrentSkipListMap<Integer, CopyOnWriteArrayList<GameObject>> gameObjectMap;
 	
-	//FIXME: Remove gameObjects list.
+	/*
+	 * NOTE: 
+	 * This list might not be needed but it is kept as convenience
+	 * as some methods can not use the SkipListMap effectively due to the
+	 * map not being able to quickly list all of the keys or values contained in it.
+	 */
 	private CopyOnWriteArrayList<GameObject> gameObjects;
 
 	private CopyOnWriteArrayList<Integer> zLevels;
 
 	private IDHandler<GameObject> idHandler;
 
+	private boolean shouldUpdateObjects = true;
+	
 	private boolean objectsChanged = false;
 
 	/**
@@ -184,13 +191,7 @@ public class GameObjectHandler {
 	public CopyOnWriteArrayList<GameObject> getAllGameObjectsAtZLevel(int zLevel) {
 		// System.out.println("Called getAllGameObjectsAtZLevel() with
 		// arguments: " + zLevel);
-		CopyOnWriteArrayList<GameObject> returnList = new CopyOnWriteArrayList<GameObject>();
-		for (int i = 0; i < gameObjects.size(); i++) {
-			if (gameObjects.get(i).getZOrder() == zLevel) {
-				returnList.add(gameObjects.get(i));
-			}
-		}
-		return returnList;
+		return gameObjectMap.get(zLevel);
 	}
 
 	/**
@@ -205,17 +206,9 @@ public class GameObjectHandler {
 		// getAllGameObjectsAtZLevelGameObjectExtending() with arguments: " +
 		// zLevel + " and " + classT);
 		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
-		for (int i = 0; i < gameObjects.size(); i++) {
-			if (gameObjects.get(i).getZOrder() == zLevel) {
-				if (classT.isAssignableFrom(gameObjects.get(i).getClass())) {
-					try {
-						returnList.add(classT.cast(gameObjects.get(i)));
-					} catch (ClassCastException e) {
-						returnList.remove(returnList.size() - 1);
-						System.err.println("ClassCastExeption ocurred in " + this + ": " + e.getMessage());
-						continue;
-					}
-				}
+		for (GameObject object : getAllGameObjectsAtZLevel(zLevel)) {
+			if (classT.isAssignableFrom(object.getClass())) {
+				returnList.add(classT.cast(object));
 			}
 		}
 		return returnList;
@@ -242,7 +235,15 @@ public class GameObjectHandler {
 	 * 
 	 * @return
 	 */
-	public boolean haveObjectsChanged() {
+	public boolean shouldUpdateObjects() {
+		return shouldUpdateObjects;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean haveObjectsChanged(){
 		return objectsChanged;
 	}
 
@@ -250,6 +251,7 @@ public class GameObjectHandler {
 	 * 
 	 */
 	public void clearChange() {
+		shouldUpdateObjects = objectsChanged;
 		objectsChanged = false;
 	}
 

@@ -145,6 +145,38 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	public int getHeight() {
 		return height;
 	}
+	
+	/**
+	 * Sets the width of the camera.
+	 * 
+	 * @param width
+	 */
+	public void setWidth(int width){
+		this.width = width;
+		updateBounds();
+	}
+	
+	/**
+	 * Sets the height of the camera.
+	 * 
+	 * @param height
+	 */
+	public void setHeight(int height){
+		this.height = height;
+		updateBounds();
+	}
+	
+	/**
+	 * Sets the width and height of the camera.
+	 * 
+	 * @param width
+	 * @param height
+	 */
+	public void setSize(int width, int height){
+		this.width = width;
+		this.height = height;
+		updateBounds();
+	}
 
 	@Override
 	public void update(long timeNano) {
@@ -158,7 +190,7 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	 * 
 	 * <p>
 	 * This methods only updates {@link #paintables} array when
-	 * {@link GameObjectHandler#haveObjectsChanged() haveObjectsChanged} method
+	 * {@link GameObjectHandler#shouldUpdateObjects()} method
 	 * returns true.
 	 * </p>
 	 */
@@ -167,7 +199,7 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 		g2d.setBackground(backgroundColor);
 		g2d.setColor(backgroundColor);
 		g2d.fillRect(0, 0, width, height);
-		if (gameObjectHandler.haveObjectsChanged()) {
+		if (gameObjectHandler.shouldUpdateObjects()) {
 			paintables = gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
 		}
 		super.paint(g2d);

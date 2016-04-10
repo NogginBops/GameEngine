@@ -1,17 +1,36 @@
 package game.controller.event;
 
+import java.util.Comparator;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * 
+ * @author Julius Häger
+ *
+ */
 public class EventMachine {
 
-	public ConcurrentSkipListMap<Class<? extends GameEvent>, CopyOnWriteArrayList<EventListener>> eventListenerMap;
+	private ConcurrentSkipListMap<Class<? extends GameEvent<?>>, CopyOnWriteArrayList<EventListener>> eventListenerMap;
 
+	/**
+	 * 
+	 */
 	public EventMachine() {
-		eventListenerMap = new ConcurrentSkipListMap<>();
+		eventListenerMap = new ConcurrentSkipListMap<Class<? extends GameEvent<?>>, CopyOnWriteArrayList<EventListener>>(new Comparator<Class<? extends GameEvent<?>>>() {
+			@Override
+			public int compare(Class<? extends GameEvent<?>> o1, Class<? extends GameEvent<?>> o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
 	}
 
-	public void addEventListener(Class<? extends GameEvent> event, EventListener listener) {
+	/**
+	 * 
+	 * @param event
+	 * @param listener
+	 */
+	public void addEventListener(Class<? extends GameEvent<?>> event, EventListener listener) {
 		CopyOnWriteArrayList<EventListener> listeners = eventListenerMap.get(event);
 		if (listeners == null) {
 			eventListenerMap.put(event, listeners = new CopyOnWriteArrayList<EventListener>());
@@ -19,7 +38,12 @@ public class EventMachine {
 		listeners.add(listener);
 	}
 
-	public void removeEventListener(Class<? extends GameEvent> event, EventListener listener) {
+	/**
+	 * 
+	 * @param event
+	 * @param listener
+	 */
+	public void removeEventListener(Class<? extends GameEvent<?>> event, EventListener listener) {
 		CopyOnWriteArrayList<EventListener> eventListeners = eventListenerMap.get(event);
 		eventListeners.remove(listener);
 		if (eventListeners.size() <= 0) {
@@ -27,8 +51,15 @@ public class EventMachine {
 		}
 	}
 
-	public <T extends GameEvent> void fireEvent(T event) {
-		CopyOnWriteArrayList<EventListener> listeners = eventListenerMap.get(event);
+	/**
+	 * 
+	 * @param event
+	 */
+	public <T extends GameEvent<?>> void fireEvent(T event) {
+		CopyOnWriteArrayList<EventListener> listeners = eventListenerMap.get(event.getClass());
+		if(listeners == null || listeners.size() <= 0){
+			return;
+		}
 		for (EventListener listener : listeners) {
 			listener.eventFired(event);
 		}

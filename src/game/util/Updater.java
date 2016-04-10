@@ -18,7 +18,9 @@ public abstract class Updater {
 
 	// JAVADOC: Updater
 
-	private CopyOnWriteArrayList<UpdateListener> listeners;
+	//TODO: Merge with Game.java
+	
+	protected CopyOnWriteArrayList<UpdateListener> listeners;
 
 	/**
 	 * 
@@ -28,31 +30,13 @@ public abstract class Updater {
 	}
 
 	/**
-	 * 
-	 * @param listener
-	 *            the listener to add
-	 */
-	public void addUpdateListener(UpdateListener listener) {
-		listeners.add(listener);
-	}
-
-	/**
-	 * 
-	 * @param listener
-	 *            the listener to remove
-	 */
-	public void removeUpdateListener(UpdateListener listener) {
-		listeners.remove(listener);
-	}
-
-	/**
-	 * Called to propagate a update call to all registered {@link UpdateListener
-	 * UpdateListeners}.
+	 * Called to propagate a update call to all {@link UpdateListener
+	 * UpdateListeners} in the protected {@link #listeners} list.
 	 * 
 	 * @param timeNano
 	 *            time since last update (in milliseconds)
 	 */
-	protected void propogateUpdate(long timeNano) {
+	protected void propagateUpdate(long timeNano) {
 		for (UpdateListener listener : listeners) {
 			listener.update(timeNano);
 		}

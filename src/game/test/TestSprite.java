@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import game.gameObject.graphics.Sprite;
-import game.gameObject.physics.Collidable;
 
 /**
  * @author Julius Häger

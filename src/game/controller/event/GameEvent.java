@@ -1,16 +1,36 @@
 package game.controller.event;
 
-import java.lang.Comparable;
+/**
+ * @author Julius Häger
+ *
+ */
+public abstract class GameEvent<T>{
+	
+	//JAVADOC: GameEvent
+	
+	/**
+	 * 
+	 */
+	public final T origin;
+	
+	//TODO: Explore a safer solution
+	/**
+	 * <b>NOTE:</b> The class should specify which commands are valid through public static final strings
+	 */
+	public final String command;
 
-public abstract class GameEvent implements Comparable<GameEvent> {
-
-	public Object origin;
-
-	public GameEvent(Object origin) {
+	/**
+	 * 
+	 * @param origin
+	 * @param command
+	 */
+	public GameEvent(T origin, String command) {
 		this.origin = origin;
+		this.command = command;
 	}
 
+	@Override
 	public String toString() {
-		return "GameEvent[Origin=" + origin + "]";
+		return "GameEvent[Origin=" + origin + ", Command: " + command + "]";
 	}
 }

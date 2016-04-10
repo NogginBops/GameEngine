@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 
+import game.Game;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.gameObject.graphics.Sprite;
@@ -137,7 +138,8 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 
 	@Override
 	public void hasCollided(Collidable collisionObject) {
-		System.out.println("Collided: " + this);
+		//Game.log.logMessage("Collided: " + this, "Pong", "Pad");
+		//System.out.println("Collided: " + this);
 		
 		Rectangle2D ballBounds = collisionObject.getBounds();
 		float inclenation = (float) (ballBounds.getY() - bounds.y) / bounds.height;

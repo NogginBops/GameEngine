@@ -118,7 +118,7 @@ public class MouseInputHandler {
 	public void mouseDragged(MouseEvent e) {
 		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
 				(int) camera.getY() - ScreenManager.getInsets().top);
-		if (gameObjectHandeler.haveObjectsChanged()) {
+		if (gameObjectHandeler.shouldUpdateObjects()) {
 			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
 		}
 		for (MouseListener listener : listeners) {
@@ -134,7 +134,7 @@ public class MouseInputHandler {
 	public void mouseMoved(MouseEvent e) {
 		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
 				(int) camera.getY() - ScreenManager.getInsets().top);
-		if (gameObjectHandeler.haveObjectsChanged()) {
+		if (gameObjectHandeler.shouldUpdateObjects()) {
 			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
 		}
 		listeners.sort(invComparator);
@@ -175,10 +175,11 @@ public class MouseInputHandler {
 	 * 
 	 */
 	public void computeEnteredListeners() {
+		if (gameObjectHandeler.shouldUpdateObjects()) {
+			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
+		}
+		
 		if (lastEvent != null) {
-			if (gameObjectHandeler.haveObjectsChanged()) {
-				listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
-			}
 			listeners.sort(invComparator);
 			for (MouseListener listener : listeners) {
 				if (listener.getBounds().contains(lastEvent.getX(), lastEvent.getY())

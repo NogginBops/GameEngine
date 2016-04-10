@@ -10,14 +10,12 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import demos.breakout.BreakOut_Ball;
-import demos.breakout.Brick;
-import demos.breakout.GM;
-import demos.breakout.Racket;
 import demos.pong.Ball;
 import demos.pong.Pad;
-import demos.pong.Score;
 import demos.pong.Pad.Side;
+import demos.pong.Score;
+import demos.verticalScroller.Ship;
+import demos.verticalScroller.ShipFactory;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.UI.UI;
@@ -25,11 +23,18 @@ import game.UI.border.Border;
 import game.UI.border.SolidBorder;
 import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.image.UIImage;
+import game.UI.elements.input.UIButton;
 import game.UI.elements.text.UILabel;
+import game.controller.event.EventMachine;
+import game.controller.event.engineEvents.GameQuitEvent;
+import game.controller.event.engineEvents.GameStartEvent;
 import game.debug.IDHandlerDebugFrame;
+import game.debug.log.Log;
+import game.debug.log.frame.LogFrame;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.Paintable;
+import game.gameObject.graphics.UniformSpriteSheet;
 import game.gameObject.physics.PhysicsEngine;
 import game.input.Input;
 import game.input.KeyInputHandler;
@@ -45,6 +50,7 @@ import game.test.TestSprite;
 import game.util.GameObjectHandler;
 import game.util.IDHandler;
 import game.util.UpdateCounter;
+import game.util.UpdateListener;
 import game.util.Updater;
 
 /**
@@ -71,21 +77,35 @@ public class Game extends Updater {
 	 * 
 	 */
 	public static Game game;
+	
+	/**
+	 * The debug log associated with the game
+	 */
+	public static Log log;
+	
+	/**
+	 * The main EventMachine
+	 */
+	public static EventMachine eventMachine;
 
 	private static boolean running = false;
 	private static boolean closeRequested = false;
 	private static boolean paused = false;
+	
+	private String name = "Game";
 
 	private GameObjectHandler gameObjectHandler;
 
 	private PhysicsEngine physicsEngine;
-
+	
 	private Camera camera;
 
 	private Screen screen;
 
 	private long initTime;
 
+	private LogFrame LogFrame;
+	
 	private IDHandlerDebugFrame<GameObject> IDDebug;
 
 	/**
@@ -99,39 +119,140 @@ public class Game extends Updater {
 		// test();
 		// test2();
 		// test2WithAudio();
-		// pong();
+		 pong();
 		// pong44();
 		// breakout();
+		//UITest();
+		
+		//verticalScroller();
 
-		UITest();
-
-		//completeSetup();
+		completeSetup();
+		
+		addDebug();
+		
+		//AudioEngine.setMasterVolume(0);
+	}
+	
+	@SuppressWarnings("unused")
+	private void verticalScroller(){
+		name = "VerticalScroller";
+		
+		screen.setResolution(400, 600);
+		
+		camera.setSize(400, 600);
+		
+		screen.setDebugEnabled(true);
+		camera.receiveKeyboardInput(false);
+		
+		camera.setBackgroundColor(new Color(60, 91, 120));
+		
+		BufferedImage shipSheetImage = null;
+		
+		BufferedImage projectileSheetImage = null;
+		
+		try {
+			shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/verticalScroller/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
+			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/verticalScroller/ProjectileSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		UniformSpriteSheet shipSheet = new UniformSpriteSheet(shipSheetImage, 12, 14, new Color(191, 220, 191));
+		
+		UniformSpriteSheet projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
+		
+		log.logMessage("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles(), "VerticalScroller");
+		System.out.println("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles());
+		
+		ShipFactory.createShip("Standard", 
+				shipSheet.getSprite(0, 6, 2, 8),
+				shipSheet.getSprite(2, 6, 4, 8),
+				shipSheet.getSprite(4, 6, 6, 8),
+				shipSheet.getSprite(6, 6, 8, 8),
+				shipSheet.getSprite(8, 6, 10, 8),
+				projectileSheet.getSprite(3, 4));
+		
+		Ship ship = ShipFactory.getShip("Standard");
+		
+		ship.setLocation(130, 100);
+		
+		gameObjectHandler.addGameObject(ship, "PlayerShip");
 	}
 
+	private void basicSetup() {
+		Game.game = this;
+		
+		eventMachine = new EventMachine();
+		
+		log = new Log();
+		
+		gameObjectHandler = new GameObjectHandler();
+		
+		physicsEngine = new PhysicsEngine(gameObjectHandler);
+		
+		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
+		camera = new Camera(gameObjectHandler, 0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+		
+		MouseInputHandler mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
+		KeyInputHandler keyHandler = new KeyInputHandler(gameObjectHandler);
+		Input inputHandler = new Input(mouseHandler, keyHandler);
+		
+		screen.setPainter(camera);
+		screen.addInputListener(inputHandler);
+
+		AudioEngine.init(camera);
+		
+		gameObjectHandler.addGameObject(physicsEngine, "Physics Engine");
+		
+		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
+		
+		gameObjectHandler.addGameObject(camera, "Main camera");
+	}
+
+	private void completeSetup() {
+		
+	}
+	
+	private void addDebug(){
+		addDebugLog();
+		addIDHandlerDebug();
+	}
+
+	// TODO: Fix proper onStart onExit and other similar methods
+
+	private void onQuit() {
+		if(IDDebug != null){
+		IDDebug.stopDebug();
+		}
+		
+		if(LogFrame != null){
+			LogFrame.stopDebug();
+		}
+		
+		eventMachine.fireEvent(new GameQuitEvent(this, name));
+	}
+	
+	@SuppressWarnings("unused")
 	private void UITest() {
 		screen.setTitle("UI Test");
 		screen.setDebugEnabled(true);
 
 		camera.receiveKeyboardInput(true);
+		
+		UI hud = new UI(new Rectangle(200, 100, 400, 400));
 
 		BasicUIContainer container = new BasicUIContainer(200, 300);
-
 		Border border = new SolidBorder(20, Color.MAGENTA);
-
 		container.setBorder(border);
+		hud.addUIElement(container);
 
 		BasicUIContainer container2 = new BasicUIContainer(100, 100);
-
 		Border border2 = new SolidBorder(10, Color.CYAN);
-
 		container2.setBorder(border2);
-
 		container.addUIElement(container2);
 
 		UILabel lable = new UILabel("Test label");
-
 		lable.setColor(Color.WHITE);
-
 		container2.addUIElement(lable);
 		
 		Image image;
@@ -142,130 +263,78 @@ public class Game extends Updater {
 		}
 		
 		UIImage UIimg = new UIImage(0, 0, 40, 100, image);
-		
 		UIimg.setNativeSize();
-		
 		UIimg.setZOrder(2);
-		
 		container.addUIElement(UIimg);
-
-		UI hud = new UI(new Rectangle(400, 200, 400, 400), container);
-
+		
+		UIButton button = new UIButton(40, 40, 100, 40);
+		gameObjectHandler.addGameObject(button);
+		button.setZOrder(10);
+		container.addUIElement(button);
+		
 		gameObjectHandler.addGameObject(hud);
-	}
-
-	private void basicSetup() {
-		gameObjectHandler = new GameObjectHandler();
-		
-		physicsEngine = new PhysicsEngine(gameObjectHandler);
-		
-		addUpdateListener(physicsEngine);
-
-		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
-
-		camera = new Camera(gameObjectHandler, 0, 0, ScreenManager.getWidth() - ScreenManager.getInsets().right,
-				ScreenManager.getHeight() - ScreenManager.getInsets().top);
-
-		gameObjectHandler.addGameObject(camera, "Main camera");
-		addUpdateListener(camera);
-
-		screen.setPainter(camera);
-
-		MouseInputHandler mouseHandeler = new MouseInputHandler(gameObjectHandler, camera);
-
-		KeyInputHandler keyHandeler = new KeyInputHandler(gameObjectHandler);
-
-		Input inputHandeler = new Input(mouseHandeler, keyHandeler);
-
-		addUpdateListener(inputHandeler);
-
-		ScreenManager.addInputListener(inputHandeler);
-
-		PhysicsEngine physicsEngine = new PhysicsEngine(gameObjectHandler);
-
-		addUpdateListener(physicsEngine);
-
-		AudioEngine.init(camera);
-
-		Game.game = this;
-	}
-
-	private void completeSetup() {
-		addIDHandlerDebug();
-	}
-
-	// TODO: Fix proper onStart onExit and other similar methods
-
-	private void onQuit() {
-		IDDebug.stoppDebug();
 	}
 
 	@SuppressWarnings("unused")
 	private void pong() {
+		screen.setDebugEnabled(true);
+		
 		screen.setTitle("Pong");
 
 		Pad rightPad = new Pad(ScreenManager.getWidth() - 60, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
 				camera.getBounds(), Side.RIGHT);
 
 		gameObjectHandler.addGameObject(rightPad, "RightPad");
-		addUpdateListener(rightPad);
 
 		Pad leftPad = new Pad(50, 40, 10, 50, KeyEvent.VK_W, KeyEvent.VK_S, camera.getBounds(), Side.LEFT);
 
 		gameObjectHandler.addGameObject(leftPad, "LeftPad");
-		addUpdateListener(leftPad);
 
 		Ball ball = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
 				camera.getBounds());
 
 		gameObjectHandler.addGameObject(ball, "Ball");
-		addUpdateListener(ball);
 
 		ball.resetBall();
 
 		Score score = new Score(camera.getBounds());
 
 		gameObjectHandler.addGameObject(score, "Score");
-		addUpdateListener(score);
 	}
 
 	@SuppressWarnings("unused")
 	private void pong44() {
+		screen.setDebugEnabled(true);
+		
 		screen.setTitle("Pong44");
 
 		Pad rightPad = new Pad(ScreenManager.getWidth() - 50, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
 				camera.getBounds(), Side.RIGHT);
 
 		gameObjectHandler.addGameObject(rightPad, "RightPad");
-		addUpdateListener(rightPad);
 
 		Pad rightPad2 = new Pad(ScreenManager.getWidth() - 100, 40, 10, 50, KeyEvent.VK_O, KeyEvent.VK_L,
 				camera.getBounds(), Side.RIGHT);
 
 		gameObjectHandler.addGameObject(rightPad2, "RightPad2");
-		addUpdateListener(rightPad2);
 
 		Pad leftPad = new Pad(50, 40, 10, 50, KeyEvent.VK_W, KeyEvent.VK_S, camera.getBounds(), Side.LEFT);
 
 		gameObjectHandler.addGameObject(leftPad, "LeftPad");
-		addUpdateListener(leftPad);
 
 		Pad leftPad2 = new Pad(100, 40, 10, 50, KeyEvent.VK_T, KeyEvent.VK_G, camera.getBounds(), Side.LEFT);
 
 		gameObjectHandler.addGameObject(leftPad2, "LeftPad2");
-		addUpdateListener(leftPad2);
 
 		Ball ball = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
 				camera.getBounds());
 
 		gameObjectHandler.addGameObject(ball, "Ball");
-		addUpdateListener(ball);
 
 		Ball ball2 = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
 				camera.getBounds());
 
 		gameObjectHandler.addGameObject(ball2, "Ball2");
-		addUpdateListener(ball2);
 
 		ball.resetBall();
 
@@ -274,32 +343,6 @@ public class Game extends Updater {
 		Score score = new Score(camera.getBounds());
 
 		gameObjectHandler.addGameObject(score, "Score");
-		addUpdateListener(score);
-	}
-
-	@SuppressWarnings("unused")
-	private void breakout() {
-		screen.setTitle("Breakout");
-
-		GM gameMaster = new GM();
-
-		gameObjectHandler.addGameObject(gameMaster);
-		addUpdateListener(gameMaster);
-
-		Racket rac = new Racket(50, camera.getHeight() - 50, 100, 20, camera.getBounds());
-
-		gameObjectHandler.addGameObject(rac, "Racket");
-		addUpdateListener(rac);
-
-		BreakOut_Ball ball = new BreakOut_Ball(0, 0, 20, 20, camera.getBounds(), rac);
-
-		gameObjectHandler.addGameObject(ball, "Ball");
-		addUpdateListener(ball);
-
-		Brick brick = new Brick(20, 20, 100, 20, Color.GREEN);
-
-		gameObjectHandler.addGameObject(brick, "Brick");
-		addUpdateListener(brick);
 	}
 
 	@SuppressWarnings("unused")
@@ -325,7 +368,6 @@ public class Game extends Updater {
 		TestSprite t = new TestSprite(50, 50, 100, 70);
 
 		gameObjectHandler.addGameObject(t, "TestSprite1");
-		addUpdateListener(t);
 
 		t.setDX(30);
 		t.setDY(3);
@@ -333,7 +375,6 @@ public class Game extends Updater {
 		TestSprite t2 = new TestSprite(400, 50, 20, 20);
 
 		gameObjectHandler.addGameObject(t2, "TestSprite2");
-		addUpdateListener(t2);
 
 		t2.setDX(-60);
 		t2.setDY(-1);
@@ -341,12 +382,10 @@ public class Game extends Updater {
 		TestInputSprite testInput = new TestInputSprite(100, 100, 100, 100, 10, false);
 
 		gameObjectHandler.addGameObject(testInput, "TestInputSprite1");
-		addUpdateListener(testInput);
 
 		TestInputSprite testInput2 = new TestInputSprite(200, 150, 100, 100, 9, false);
 
 		gameObjectHandler.addGameObject(testInput2, "TestInuptSprite2");
-		addUpdateListener(testInput2);
 
 		Random rand = new Random();
 
@@ -354,7 +393,7 @@ public class Game extends Updater {
 			for (int y = 0; y < 30; y++) {
 				TestSprite test = new TestSprite(x * 30, y * 30, 20, 20);
 				gameObjectHandler.addGameObject(test);
-				addUpdateListener(test);
+				
 				test.setDX(rand.nextFloat() * 50);
 				test.setDY(rand.nextFloat() * 50);
 			}
@@ -388,8 +427,12 @@ public class Game extends Updater {
 		AudioEngine.setAudioListener(adder);
 	}
 
+	private void addDebugLog(){
+		new Thread(LogFrame = new LogFrame(log), "Debug log").start();
+	}
+	
 	private void addIDHandlerDebug() {
-		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler())).start();
+		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler()), "ID Handler Debug").start();
 	}
 
 	/**
@@ -406,15 +449,22 @@ public class Game extends Updater {
 	 * Starts the main loop of the game
 	 */
 	public void run() {
+		Thread.currentThread().setName(name);
+		
+		log.logMessage("Starting...", "System");
 		System.out.println("Starting...");
+		//Maybe onStart method?
+		eventMachine.fireEvent(new GameStartEvent(this, name));
 
-		new Thread(screen).start();
+		new Thread(screen, "Graphics").start();
 		long startTime = System.nanoTime();
 		long currTime = startTime;
 		long elapsedTime;
-
+		
+		log.logMessage("Pre run time: " + (startTime - initTime) / 1000000000f, "System");
 		System.out.println("Pre run time: " + (startTime - initTime) / 1000000000f);
 
+		log.logMessage("Running!", "System");
 		System.out.println("Running!");
 		running = true;
 		while (running) {
@@ -426,22 +476,37 @@ public class Game extends Updater {
 				running = false;
 			}
 
-			if (paused)
+			if (paused){
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				continue;
-
-			boolean objectsChangedBefore = gameObjectHandler.haveObjectsChanged();
-
-			propogateUpdate(elapsedTime);
-
-			boolean objectsChangedAfter = gameObjectHandler.haveObjectsChanged();
-
+			}
+			
+			boolean shouldUpdate = gameObjectHandler.shouldUpdateObjects();
+			
+			if(shouldUpdate){
+				listeners = gameObjectHandler.getAllGameObjectsExtending(UpdateListener.class);
+			}
+			
+			propagateUpdate(elapsedTime);
+			
 			UpdateCounter.update(elapsedTime / 1000000000f);
 
-			if (objectsChangedBefore && !objectsChangedAfter) {
-				gameObjectHandler.clearChange();
+			boolean objectsChanged = gameObjectHandler.haveObjectsChanged();
+
+			gameObjectHandler.clearChange();
+			
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 		onQuit();
+		log.logMessage("Stopped.", "System");
 		System.out.println("Stopped.");
 	}
 
@@ -450,6 +515,7 @@ public class Game extends Updater {
 	 */
 	public static void stop() {
 		closeRequested = true;
+		log.logMessage("Close requested.", "System");
 		System.out.println("Close requested.");
 	}
 
@@ -459,6 +525,7 @@ public class Game extends Updater {
 	public static void pause() {
 		// TODO: Game: Pause
 		paused = true;
+		log.logMessage("Game paused", "System");
 		System.out.println("Game paused");
 	}
 
@@ -470,6 +537,7 @@ public class Game extends Updater {
 		if (paused) {
 			// TODO: Game: Resume
 			paused = false;
+			log.logMessage("Game resumed", "System");
 			System.out.println("Game resumed");
 		}
 	}
