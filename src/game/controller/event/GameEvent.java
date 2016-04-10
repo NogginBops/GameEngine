@@ -4,14 +4,14 @@ package game.controller.event;
  * @author Julius Häger
  *
  */
-public abstract class GameEvent{
+public abstract class GameEvent<T>{
 	
 	//JAVADOC: GameEvent
 	
 	/**
 	 * 
 	 */
-	public final Object origin;
+	public final T origin;
 	
 	//TODO: Explore a safer solution
 	/**
@@ -24,7 +24,7 @@ public abstract class GameEvent{
 	 * @param origin
 	 * @param command
 	 */
-	public GameEvent(Object origin, String command) {
+	public GameEvent(T origin, String command) {
 		this.origin = origin;
 		this.command = command;
 	}

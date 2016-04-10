@@ -25,6 +25,9 @@ import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.image.UIImage;
 import game.UI.elements.input.UIButton;
 import game.UI.elements.text.UILabel;
+import game.controller.event.EventMachine;
+import game.controller.event.engineEvents.GameQuitEvent;
+import game.controller.event.engineEvents.GameStartEvent;
 import game.debug.IDHandlerDebugFrame;
 import game.debug.log.Log;
 import game.debug.log.frame.LogFrame;
@@ -44,7 +47,6 @@ import game.test.GameObjectAdderWithAudio;
 import game.test.OtherPaintable;
 import game.test.TestInputSprite;
 import game.test.TestSprite;
-import game.util.FPSCounter;
 import game.util.GameObjectHandler;
 import game.util.IDHandler;
 import game.util.UpdateCounter;
@@ -80,15 +82,22 @@ public class Game extends Updater {
 	 * The debug log associated with the game
 	 */
 	public static Log log;
+	
+	/**
+	 * The main EventMachine
+	 */
+	public static EventMachine eventMachine;
 
 	private static boolean running = false;
 	private static boolean closeRequested = false;
 	private static boolean paused = false;
+	
+	private String name = "Game";
 
 	private GameObjectHandler gameObjectHandler;
 
 	private PhysicsEngine physicsEngine;
-
+	
 	private Camera camera;
 
 	private Screen screen;
@@ -110,20 +119,24 @@ public class Game extends Updater {
 		// test();
 		// test2();
 		// test2WithAudio();
-		// pong();
+		 pong();
 		// pong44();
 		// breakout();
 		//UITest();
 		
-		verticalScroller();
+		//verticalScroller();
 
 		completeSetup();
 		
-		AudioEngine.setMasterVolume(0);
+		addDebug();
+		
+		//AudioEngine.setMasterVolume(0);
 	}
 	
 	@SuppressWarnings("unused")
 	private void verticalScroller(){
+		name = "VerticalScroller";
+		
 		screen.setResolution(400, 600);
 		
 		camera.setSize(400, 600);
@@ -169,6 +182,8 @@ public class Game extends Updater {
 	private void basicSetup() {
 		Game.game = this;
 		
+		eventMachine = new EventMachine();
+		
 		log = new Log();
 		
 		gameObjectHandler = new GameObjectHandler();
@@ -195,6 +210,10 @@ public class Game extends Updater {
 	}
 
 	private void completeSetup() {
+		
+	}
+	
+	private void addDebug(){
 		addDebugLog();
 		addIDHandlerDebug();
 	}
@@ -209,6 +228,8 @@ public class Game extends Updater {
 		if(LogFrame != null){
 			LogFrame.stopDebug();
 		}
+		
+		eventMachine.fireEvent(new GameQuitEvent(this, name));
 	}
 	
 	@SuppressWarnings("unused")
@@ -428,10 +449,12 @@ public class Game extends Updater {
 	 * Starts the main loop of the game
 	 */
 	public void run() {
-		Thread.currentThread().setName("Game");
+		Thread.currentThread().setName(name);
 		
 		log.logMessage("Starting...", "System");
 		System.out.println("Starting...");
+		//Maybe onStart method?
+		eventMachine.fireEvent(new GameStartEvent(this, name));
 
 		new Thread(screen, "Graphics").start();
 		long startTime = System.nanoTime();

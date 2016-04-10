@@ -9,12 +9,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import demos.pong.Pad.Side;
+import demos.pong.event.PlayerScoreEvent;
 import game.Game;
 import game.IO.IOHandler;
 import game.IO.save.SaveRequest;
 import game.UI.UI;
 import game.UI.elements.image.UIRect;
 import game.UI.elements.text.UILabel;
+import game.controller.event.EventListener;
+import game.controller.event.GameEvent;
 import game.input.keys.KeyListener;
 
 /**
@@ -23,15 +27,9 @@ import game.input.keys.KeyListener;
  */
 public class Score extends UI implements KeyListener {
 
-	/**
-	 * 
-	 */
-	public static int left = 0;
+	private int left = 0;
 
-	/**
-	 * 
-	 */
-	public static int right = 0;
+	private int right = 0;
 
 	private Rectangle deviderRect;
 
@@ -62,6 +60,20 @@ public class Score extends UI implements KeyListener {
 		player2Score.setPosition(devider.getX() + 50, 20);
 		
 		addUIElements(player1Score, player2Score, devider);
+		
+		Game.eventMachine.addEventListener(PlayerScoreEvent.class, new EventListener() {
+			
+			@Override
+			public <T extends GameEvent<?>> void eventFired(T event) {
+				if(event instanceof PlayerScoreEvent){
+					if(((PlayerScoreEvent)event).side == Side.RIGHT){
+						right++;
+					}else{
+						left++;
+					}
+				}
+			}
+		});
 	}
 
 	@Override

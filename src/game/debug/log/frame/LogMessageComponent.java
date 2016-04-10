@@ -21,6 +21,8 @@ import game.debug.log.LogMessage;
  */
 public class LogMessageComponent extends JPanel {
 
+	//FIXME: Remove this. This class is a bad adhoc solution
+	
 	/**
 	 * 
 	 */
