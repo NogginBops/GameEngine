@@ -1,6 +1,5 @@
 package game.UI;
 
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 import game.UI.elements.UIElement;

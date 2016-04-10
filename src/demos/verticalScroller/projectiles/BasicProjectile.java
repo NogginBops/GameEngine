@@ -3,20 +3,28 @@ package demos.verticalScroller.projectiles;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class BasicProjectile extends Projectile {
-
-	private float baseDX, baseDY;
 	
+	/**
+	 * @param image
+	 * @param lifetime
+	 * @param x
+	 * @param y
+	 * @param dx
+	 * @param dy
+	 */
 	public BasicProjectile(BufferedImage image, float lifetime, float x, float y, float dx, float dy) {
 		super(x, y, image, lifetime);
-		baseDX = dx;
-		baseDY = dy;
+		setDX(dx);
+		setDY(dy);
 	}
 	
 	@Override
 	public void update(long timeMillis) {
-		setDX(baseDX);
-		setDY(baseDY);
 		super.update(timeMillis);
 	}
 	

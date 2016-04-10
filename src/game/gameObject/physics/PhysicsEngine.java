@@ -21,6 +21,8 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 
 	private GameObjectHandler gameObjectHandeler;
 	
+	//TODO: Explore if this solution is better than the one currently in use
+	@SuppressWarnings("unused")
 	private HashMap<Integer, CopyOnWriteArrayList<Collidable>> collidablesMap = new HashMap<Integer, CopyOnWriteArrayList<Collidable>>();
 
 	//TODO: Use the HashMap instead.
@@ -41,7 +43,6 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	@Override
 	public void update(long timeMillis) {
 		if (gameObjectHandeler.shouldUpdateObjects()) {
-			//Game.log.logMessage("PhysicsEngine objects changed", "Physics");
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 			for (int z : gameObjectHandeler.getZLevels()) {
 				tempList = gameObjectHandeler.getAllGameObjectsAtZLevelExtending(z, Collidable.class);
@@ -60,7 +61,6 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 					if (c1 != c2) {
 						if (collidablesInLayer.get(c1).getBounds()
 								.intersects((Rectangle2D) collidablesInLayer.get(c2).getBounds())) {
-							//Game.log.log("Collition!", LogImportance.DEBUG, "Physics");
 							collidablesInLayer.get(c1).hasCollided(collidablesInLayer.get(c2));
 						}
 					}

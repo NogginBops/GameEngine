@@ -5,12 +5,15 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import game.UI.UI;
 import game.UI.UISorter;
 import game.UI.border.Border;
 import game.UI.border.SolidBorder;
 import game.UI.elements.UIElement;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public abstract class UIContainer extends UIElement {
 	
 	//JAVADOC: UIContainer
@@ -23,6 +26,9 @@ public abstract class UIContainer extends UIElement {
 
 	protected Border border;
 
+	/**
+	 * @param elements
+	 */
 	public UIContainer(UIElement... elements) {
 		super();
 		this.children = new CopyOnWriteArrayList<UIElement>(elements);
@@ -31,6 +37,11 @@ public abstract class UIContainer extends UIElement {
 		border = new SolidBorder(5);
 	}
 	
+	/**
+	 * @param width
+	 * @param height
+	 * @param elements
+	 */
 	public UIContainer(int width, int height, UIElement ... elements){
 		super(width, height);
 		this.children = new CopyOnWriteArrayList<UIElement>(elements);
@@ -39,6 +50,13 @@ public abstract class UIContainer extends UIElement {
 		computeContainerArea();
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param elements
+	 */
 	public UIContainer(int x, int y, int width, int height, UIElement ... elements){
 		super(x, y, width, height);
 		this.children = new CopyOnWriteArrayList<UIElement>(elements);
@@ -47,6 +65,14 @@ public abstract class UIContainer extends UIElement {
 		computeContainerArea();
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param border
+	 * @param elements
+	 */
 	public UIContainer(int x, int y, int width, int height, Border border, UIElement ... elements){
 		super(x, y, width, height);
 		this.children = new CopyOnWriteArrayList<UIElement>(elements);
@@ -55,24 +81,39 @@ public abstract class UIContainer extends UIElement {
 		computeContainerArea();
 	}
 	
+	/**
+	 * 
+	 */
 	public void sortChildren(){
 		children.sort(UISorter.instance);
 	}
 
+	/**
+	 * @return
+	 */
 	public Border getBorder() {
 		return border;
 	}
 
+	/**
+	 * @param border
+	 */
 	public void setBorder(Border border) {
 		this.border = border;
 		computeContainerArea();
 	}
 	
+	/**
+	 * @param width
+	 */
 	public void setBorderSize(int width) {
 		border.setWidth(width);
 		computeContainerArea();
 	}
 
+	/**
+	 * @param color
+	 */
 	public void setBorderColor(Color color) {
 		border.setColor(color);
 		computeContainerArea();
@@ -80,6 +121,10 @@ public abstract class UIContainer extends UIElement {
 	
 	boolean result;
 	
+	/**
+	 * @param element
+	 * @return
+	 */
 	public boolean addUIElement(UIElement element) {
 		result = children.add(element);
 		element.setRoot(root);
@@ -88,12 +133,19 @@ public abstract class UIContainer extends UIElement {
 		return result;
 	}
 	
+	/**
+	 * @param elements
+	 */
 	public void addUIElements(UIElement ... elements){
 		for (UIElement element : elements) {
 			addUIElement(element);
 		}
 	}
 
+	/**
+	 * @param element
+	 * @return
+	 */
 	public boolean removeUIElement(UIElement element) {
 		sortChildren();
 		element.setParent(null);
@@ -101,6 +153,10 @@ public abstract class UIContainer extends UIElement {
 		return children.remove(element);
 	}
 	
+	/**
+	 * @param element
+	 * @return
+	 */
 	public boolean contains(UIElement element){
 		for (UIElement uiElement : children) {
 			if(uiElement == element){
@@ -114,6 +170,9 @@ public abstract class UIContainer extends UIElement {
 		return false;
 	}
 
+	/**
+	 * @return
+	 */
 	public CopyOnWriteArrayList<UIElement> getChildern() {
 		return children;
 	}
@@ -156,6 +215,9 @@ public abstract class UIContainer extends UIElement {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public Rectangle getContainerArea() {
 		return containedArea;
 	}
@@ -167,10 +229,18 @@ public abstract class UIContainer extends UIElement {
 		return new Rectangle(containedArea.x + parentArea.x, containedArea.y + parentArea.y, containedArea.width, containedArea.height);
 	}
 
+	/**
+	 * @param x
+	 * @param y
+	 */
 	public void setPos(int x, int y) {
 		area.setLocation(x, y);
 	}
 
+	/**
+	 * @param width
+	 * @param height
+	 */
 	public void setSize(int width, int height) {
 		this.area.setSize(width, height);
 	}

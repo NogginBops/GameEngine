@@ -3,10 +3,13 @@ package game.UI.elements.text;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 
 import game.UI.elements.UIElement;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class UILabel extends UIElement {
 	
 	//TODO: Manage go get width and height of the label
@@ -19,15 +22,24 @@ public class UILabel extends UIElement {
 
 	private FontMetrics fontMetrics;
 
+	/**
+	 * @param text
+	 */
 	public UILabel(String text) {
 		super();
 		this.text = text;
 	}
 
+	/**
+	 * @param text
+	 */
 	public void setText(String text) {
 		this.text = text;
 	}
 
+	/**
+	 * @param color
+	 */
 	public void setColor(Color color) {
 		this.color = color;
 	}

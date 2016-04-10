@@ -119,12 +119,12 @@ public class Game extends Updater {
 		// test();
 		// test2();
 		// test2WithAudio();
-		 pong();
+		// pong();
 		// pong44();
 		// breakout();
 		//UITest();
 		
-		//verticalScroller();
+		verticalScroller();
 
 		completeSetup();
 		
@@ -135,7 +135,7 @@ public class Game extends Updater {
 	
 	@SuppressWarnings("unused")
 	private void verticalScroller(){
-		name = "VerticalScroller";
+		setName("VerticalScroller");
 		
 		screen.setResolution(400, 600);
 		
@@ -174,7 +174,9 @@ public class Game extends Updater {
 		
 		Ship ship = ShipFactory.getShip("Standard");
 		
-		ship.setLocation(130, 100);
+		ship.setMovmentBounds(camera.getBounds());
+		
+		ship.setLocation((camera.getWidth() - ship.getBounds().width)/2, camera.getHeight() - 150);
 		
 		gameObjectHandler.addGameObject(ship, "PlayerShip");
 	}
@@ -580,5 +582,19 @@ public class Game extends Updater {
 	 */
 	public static IDHandler<GameObject> getCurrentIDHandler() {
 		return game.getObjectHandler().getIDHandler();
+	}
+	
+	/**
+	 * @param name
+	 */
+	public void setName(String name){
+		this.name = name;
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getName(){
+		return name;
 	}
 }

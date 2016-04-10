@@ -2,6 +2,7 @@ package game.controller.event;
 
 /**
  * @author Julius Häger
+ * @param <T> 
  *
  */
 public abstract class GameEvent<T>{
