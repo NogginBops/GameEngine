@@ -1,0 +1,33 @@
+<?xml verision="1.0" encoding="UTF-8"?>
+<map>
+    <name>TestMap1</name>
+    <height>10000</height>
+    <speed>10</speed>
+    
+    <tiles>
+        <tile>
+            <name>Test_Cloud_1</name>
+            <pos>
+                <x>200</x>
+                <y>200</y>
+                <z>0</y>
+            </pos>
+            <graphic>
+                <image>
+                    <file>./res/verticalScroller/graphics/enviroment/shapesy.png</file>
+                    <x>48</x>
+                    <y>476</y>
+                    <width>96</width>
+                    <height>140</height>
+                    <cutout>
+                        <color>
+                            <r>0</r>
+                            <g>0</g>
+                            <b>0</b>
+                        </color>
+                    </cutout>
+                </image>
+            </graphic>
+        </tile>
+    </tiles>
+</map>

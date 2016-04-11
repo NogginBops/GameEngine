@@ -6,9 +6,12 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.xml.stream.XMLStreamException;
 
 import demos.pong.Ball;
 import demos.pong.Pad;
@@ -16,6 +19,7 @@ import demos.pong.Pad.Side;
 import demos.pong.Score;
 import demos.verticalScroller.Ship;
 import demos.verticalScroller.ShipFactory;
+import demos.verticalScroller.map.Map;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.UI.UI;
@@ -25,9 +29,7 @@ import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.image.UIImage;
 import game.UI.elements.input.UIButton;
 import game.UI.elements.text.UILabel;
-import game.controller.event.EventListener;
 import game.controller.event.EventMachine;
-import game.controller.event.GameEvent;
 import game.controller.event.engineEvents.GameQuitEvent;
 import game.controller.event.engineEvents.GameStartEvent;
 import game.debug.IDHandlerDebugFrame;
@@ -152,8 +154,8 @@ public class Game extends Updater {
 		BufferedImage projectileSheetImage = null;
 		
 		try {
-			shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/verticalScroller/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/verticalScroller/ProjectileSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
+			shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/verticalScroller/graphics/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
+			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/verticalScroller/graphics/ProjectileSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -183,14 +185,23 @@ public class Game extends Updater {
 		
 		AudioEngine.setAudioListener(ship);
 		
-		//TODO: Fix adhoc solution
+		try {
+			Map map = Map.parseMap(new File(".\\res\\verticalScroller\\maps\\map1.xml"));
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (XMLStreamException e1) {
+			e1.printStackTrace();
+		}
 		
+		//TODO: Fix adhoc solution
 		try {
 			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File(".\\res\\verticalScroller\\sounds\\music\\fight_looped.wav"), Music.class, "DefaultMusicLoader")).result;
-			music.play(true, 0.8f);
+			music.play(true, 0.4f);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		AudioEngine.setMasterVolume(0.5f);
 	}
 
 	private void basicSetup() {
