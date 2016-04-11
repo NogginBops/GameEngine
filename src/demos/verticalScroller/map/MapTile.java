@@ -12,6 +12,8 @@ import game.gameObject.graphics.Sprite;
 public class MapTile extends Sprite {
 	
 	//JAVADOC: MapTile
+	
+	private String name;
 
 	private BufferedImage tileImage;
 	
@@ -22,9 +24,11 @@ public class MapTile extends Sprite {
 	 * @param height
 	 * @param image 
 	 */
-	public MapTile(float x, float y, int width, int height, BufferedImage image) {
+	public MapTile(String name, float x, float y, int width, int height, int zOrder, BufferedImage image) {
 		super(x, y, width, height);
+		this.zOrder = zOrder;
 		tileImage = image;
+		this.name = name;
 	}
 
 	@Override

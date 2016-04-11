@@ -201,7 +201,7 @@ public class Game extends Updater {
 			e.printStackTrace();
 		}
 		
-		AudioEngine.setMasterVolume(0.5f);
+		AudioEngine.setMasterVolume(0f);
 	}
 
 	private void basicSetup() {
