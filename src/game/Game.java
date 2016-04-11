@@ -128,7 +128,7 @@ public class Game extends Updater {
 
 		completeSetup();
 		
-		addDebug();
+		//addDebug();
 		
 		//AudioEngine.setMasterVolume(0);
 	}
@@ -487,17 +487,15 @@ public class Game extends Updater {
 				continue;
 			}
 			
-			boolean shouldUpdate = gameObjectHandler.shouldUpdateObjects();
-			
-			if(shouldUpdate){
+			if(gameObjectHandler.shouldUpdateObjects()){
 				listeners = gameObjectHandler.getAllGameObjectsExtending(UpdateListener.class);
 			}
 			
 			propagateUpdate(elapsedTime);
 			
 			UpdateCounter.update(elapsedTime / 1000000000f);
-
-			boolean objectsChanged = gameObjectHandler.haveObjectsChanged();
+			
+			System.out.println("Should: " + gameObjectHandler.shouldUpdateObjects() + ", Change: " + gameObjectHandler.haveObjectsChanged());
 
 			gameObjectHandler.clearChange();
 			

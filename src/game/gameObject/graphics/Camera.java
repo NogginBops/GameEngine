@@ -183,6 +183,11 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 		x += (dx * timeNano) / 1000000000;
 		y += (dy * timeNano) / 1000000000;
 		updateBounds();
+		
+		//This update is synced with the gameobjecthandler
+		if (gameObjectHandler.shouldUpdateObjects()) {
+			paintables = gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
+		}
 	}
 
 	/**
@@ -196,12 +201,19 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	 */
 	@Override
 	public void paint(Graphics2D g2d) {
+		
 		g2d.setBackground(backgroundColor);
 		g2d.setColor(backgroundColor);
 		g2d.fillRect(0, 0, width, height);
-		if (gameObjectHandler.shouldUpdateObjects()) {
+		
+		//This thread is not synced with gameobjecthandler and such should not update them here
+		
+		/*if (gameObjectHandler.shouldUpdateObjects()) {
 			paintables = gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
-		}
+			
+			System.out.println("Updated paintables");
+		}*/
+		
 		super.paint(g2d);
 	}
 
