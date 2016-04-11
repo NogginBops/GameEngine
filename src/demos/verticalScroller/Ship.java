@@ -1,15 +1,24 @@
 package demos.verticalScroller;
 
+import java.applet.AudioClip;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 import demos.verticalScroller.projectiles.BasicProjectile;
 import game.Game;
+import game.IO.IOHandler;
+import game.IO.load.LoadRequest;
 import game.gameObject.graphics.Sprite;
 import game.gameObject.physics.Collidable;
 import game.input.keys.KeyListener;
+import game.sound.AudioEngine;
+import game.sound.AudioSource;
+import kuusisto.tinysound.Sound;
 
 /**
  * @author Julius Häger
@@ -20,6 +29,10 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 	private BufferedImage farLeft, left, center, right, farRight, projectile;
 	
 	private BufferedImage currentImage;
+	
+	private Sound fireSFX;
+	
+	private AudioSource source;
 	
 	private Rectangle movementBounds;
 	
@@ -57,6 +70,14 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 		this.right = right;
 		this.farRight = farRight;
 		this.projectile = projectile;
+		
+		try {
+			fireSFX = IOHandler.load(new LoadRequest<Sound>("ship/fireSFX", new File(".\\res\\verticalScroller\\sounds\\fire.wav"), Sound.class, "DefaultSoundLoader")).result;
+			source = new AudioSource(0, 0, fireSFX);
+		} catch (IOException e) {
+			e.printStackTrace();
+			fireSFX = null;
+		}
 	}
 	
 	/**
@@ -110,6 +131,10 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 			if(timer > delay){
 				BasicProjectile projectileGO = new BasicProjectile(projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -350);
 				Game.getGameObjectHandler().addGameObject(projectileGO);
+				
+				source.setLocation(new Point2D.Float(projectileGO.getX(), projectileGO.getY()));
+				AudioEngine.playSound(source);
+				
 				timer = 0;
 			}
 		}

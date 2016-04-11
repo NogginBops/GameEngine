@@ -25,7 +25,9 @@ import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.image.UIImage;
 import game.UI.elements.input.UIButton;
 import game.UI.elements.text.UILabel;
+import game.controller.event.EventListener;
 import game.controller.event.EventMachine;
+import game.controller.event.GameEvent;
 import game.controller.event.engineEvents.GameQuitEvent;
 import game.controller.event.engineEvents.GameStartEvent;
 import game.debug.IDHandlerDebugFrame;
@@ -52,6 +54,7 @@ import game.util.IDHandler;
 import game.util.UpdateCounter;
 import game.util.UpdateListener;
 import game.util.Updater;
+import kuusisto.tinysound.Music;
 
 /**
  * 
@@ -129,8 +132,6 @@ public class Game extends Updater {
 		completeSetup();
 		
 		//addDebug();
-		
-		//AudioEngine.setMasterVolume(0);
 	}
 	
 	@SuppressWarnings("unused")
@@ -144,7 +145,7 @@ public class Game extends Updater {
 		screen.setDebugEnabled(true);
 		camera.receiveKeyboardInput(false);
 		
-		camera.setBackgroundColor(new Color(60, 91, 120));
+		camera.setBackgroundColor(new Color(80, 111, 140));
 		
 		BufferedImage shipSheetImage = null;
 		
@@ -179,6 +180,17 @@ public class Game extends Updater {
 		ship.setLocation((camera.getWidth() - ship.getBounds().width)/2, camera.getHeight() - 150);
 		
 		gameObjectHandler.addGameObject(ship, "PlayerShip");
+		
+		AudioEngine.setAudioListener(ship);
+		
+		//TODO: Fix adhoc solution
+		
+		try {
+			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File(".\\res\\verticalScroller\\sounds\\music\\fight_looped.wav"), Music.class, "DefaultMusicLoader")).result;
+			music.play(true, 0.8f);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void basicSetup() {
@@ -495,8 +507,6 @@ public class Game extends Updater {
 			
 			UpdateCounter.update(elapsedTime / 1000000000f);
 			
-			System.out.println("Should: " + gameObjectHandler.shouldUpdateObjects() + ", Change: " + gameObjectHandler.haveObjectsChanged());
-
 			gameObjectHandler.clearChange();
 			
 			try {

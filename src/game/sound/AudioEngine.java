@@ -1,5 +1,6 @@
 package game.sound;
 
+import kuusisto.tinysound.Music;
 import kuusisto.tinysound.TinySound;
 
 import java.awt.geom.Point2D;
@@ -81,4 +82,6 @@ public class AudioEngine {
 		// " + dist + " Distance log: " + Math.log10(dist) + " Vector: " +
 		// vector);
 	}
+	
+	//TODO: Add music support
 }
