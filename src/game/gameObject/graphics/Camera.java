@@ -26,18 +26,10 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	// TODO: Fix gameObjectHandeler in constructor
 
 	private GameObjectHandler gameObjectHandler;
-
-	private float x;
-	private float y;
-
-	private int width;
-	private int height;
-
+	
 	private float dx;
 	private float dy;
-
-	private int ZOrder = Integer.MAX_VALUE - 8;
-
+	
 	private boolean shouldReceiveKeyboardInput = false;
 
 	private int cameraMovementSpeed = 200;
@@ -67,12 +59,9 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	 * @param height
 	 *            - The height of the Camera viewport (in pixels).
 	 */
-	public Camera(GameObjectHandler gameObjectHandeler, int x, int y, int width, int height) {
-		this.gameObjectHandler = gameObjectHandeler;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+	public Camera(int x, int y, int width, int height) {
+		super((int)x, (int)y, width, height, Integer.MAX_VALUE - 8);
+		this.gameObjectHandler = Game.getGameObjectHandler();
 		updateBounds();
 	}
 
@@ -254,15 +243,15 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	 */
 	@Override
 	public int getZOrder() {
-		return ZOrder;
+		return zOrder;
 	}
 
 	@Override
 	public int compareTo(GameObject object) {
-		if (ZOrder == object.getZOrder()) {
+		if (zOrder == object.getZOrder()) {
 			return 0;
 		} else {
-			return ZOrder > object.getZOrder() ? 1 : -1;
+			return zOrder > object.getZOrder() ? 1 : -1;
 		}
 	}
 

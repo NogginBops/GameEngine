@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import game.gameObject.BasicGameObject;
+
 /**
  * Extended to make a object that can be used to paint graphics using a
  * Graphics2D object.
@@ -12,7 +14,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Julius Häger
  * 
  */
-public abstract class Painter {
+public abstract class Painter extends BasicGameObject{
+
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param zOrder
+	 */
+	public Painter(float x, float y, int width, int height, int zOrder) {
+		super(x, y, width, height, zOrder);
+		
+	}
 
 	/**
 	 * The paintables the painter will paint when the {@link #paint(Graphics2D)}
@@ -24,7 +39,6 @@ public abstract class Painter {
 	 * The bounds of the painter. Any {@link Paintable} outside of these bounds
 	 * will not be painted.
 	 */
-	protected Rectangle bounds;
 
 	private Graphics2D translatedGraphics;
 

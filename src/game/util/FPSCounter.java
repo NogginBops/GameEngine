@@ -1,5 +1,7 @@
 package game.util;
 
+import game.debug.DebugOutputProvider;
+
 /**
  * <p>
  * The {@link FPSCounter} provides a static methods for measuring Frames Per

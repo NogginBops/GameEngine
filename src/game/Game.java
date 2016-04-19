@@ -51,6 +51,7 @@ import game.test.GameObjectAdderWithAudio;
 import game.test.OtherPaintable;
 import game.test.TestInputSprite;
 import game.test.TestSprite;
+import game.util.FPSCounter;
 import game.util.GameObjectHandler;
 import game.util.IDHandler;
 import game.util.UpdateCounter;
@@ -120,6 +121,8 @@ public class Game extends Updater {
 		initTime = System.nanoTime();
 
 		basicSetup();
+		
+		BasicDebug();
 
 		// test();
 		// test2();
@@ -216,7 +219,7 @@ public class Game extends Updater {
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
 		
 		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
-		camera = new Camera(gameObjectHandler, 0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+		camera = new Camera(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
 		
 		MouseInputHandler mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
 		KeyInputHandler keyHandler = new KeyInputHandler(gameObjectHandler);
@@ -232,6 +235,23 @@ public class Game extends Updater {
 		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
 		
 		gameObjectHandler.addGameObject(camera, "Main camera");
+	}
+	
+	private void BasicDebug(){
+		screen.AddDebugText(() -> { return new String[]{
+				"Frames: " + FPSCounter.framesTot,
+				"Updates: " + UpdateCounter.updatesTot,
+				"ElapsedTime: " + 0,
+				"Time: " + FPSCounter.timeTot,
+				"FPS: " + FPSCounter.fps,
+				"Average FPS: " + FPSCounter.averageFPS,
+				"Frames dropped: " + ScreenManager.framesDropped,
+				"UPS: " + UpdateCounter.ups,
+				"Average UPS: " + UpdateCounter.averageUPS,
+				"Camera X: " + camera.getBounds().x,
+				"Camera Y: " + camera.getBounds().y,
+				"Objects: " + gameObjectHandler.numberOfGameObjects()
+		};});
 	}
 
 	private void completeSetup() {
