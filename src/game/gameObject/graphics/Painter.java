@@ -1,7 +1,7 @@
 package game.gameObject.graphics;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.gameObject.BasicGameObject;
@@ -14,8 +14,8 @@ import game.gameObject.BasicGameObject;
  * @author Julius Häger
  * 
  */
-public abstract class Painter extends BasicGameObject{
-
+public abstract class Painter extends BasicGameObject {
+	
 	/**
 	 * 
 	 * @param x
@@ -26,7 +26,6 @@ public abstract class Painter extends BasicGameObject{
 	 */
 	public Painter(float x, float y, int width, int height, int zOrder) {
 		super(x, y, width, height, zOrder);
-		
 	}
 
 	/**
@@ -65,5 +64,9 @@ public abstract class Painter extends BasicGameObject{
 			}
 			translatedGraphics.dispose();
 		}
+	}
+	
+	public BufferedImage getImage(){
+		return null;
 	}
 }

@@ -23,8 +23,6 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 
 	// TODO: Remove movement code
 
-	// TODO: Fix gameObjectHandeler in constructor
-
 	private GameObjectHandler gameObjectHandler;
 	
 	private float dx;
@@ -61,6 +59,7 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	 */
 	public Camera(int x, int y, int width, int height) {
 		super((int)x, (int)y, width, height, Integer.MAX_VALUE - 8);
+		
 		this.gameObjectHandler = Game.getGameObjectHandler();
 		updateBounds();
 	}
