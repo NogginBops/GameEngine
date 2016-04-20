@@ -45,6 +45,7 @@ import game.input.KeyInputHandler;
 import game.input.MouseInputHandler;
 import game.screen.Screen;
 import game.screen.ScreenManager;
+import game.screen.ScreenRect;
 import game.sound.AudioEngine;
 import game.test.GameObjectAdder;
 import game.test.GameObjectAdderWithAudio;
@@ -122,10 +123,10 @@ public class Game extends Updater {
 
 		basicSetup();
 		
-		BasicDebug();
+		basicDebug();
 
-		// test();
-		// test2();
+		//test();
+		//test2();
 		// test2WithAudio();
 		// pong();
 		// pong44();
@@ -133,10 +134,79 @@ public class Game extends Updater {
 		//UITest();
 		
 		verticalScroller();
-
+		
+		cameraTest();
+		//cameraTest2();
+		
 		completeSetup();
 		
 		//addDebug();
+	}
+	
+	private void cameraTest2(){
+		setName("Camera Test 2");
+		
+		Camera Q1 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
+		
+		Q1.setScreenRectangle(new ScreenRect(0, 0, 0.5f, 0.5f));
+		
+		Q1.setBackgroundColor(Color.CYAN);
+		
+		Q1.receiveKeyboardInput(true);
+		
+		screen.addPainter(Q1);
+		
+		gameObjectHandler.addGameObject(Q1, "Q1 camera");
+		
+		Camera Q2 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
+		
+		Q2.setScreenRectangle(new ScreenRect(0.5f, 0, 0.5f, 0.5f));
+		
+		Q2.setBackgroundColor(Color.MAGENTA);
+		
+		Q2.receiveKeyboardInput(true);
+		
+		screen.addPainter(Q2);
+		
+		gameObjectHandler.addGameObject(Q2, "Q2 camera");
+		
+		Camera Q3 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
+		
+		Q3.setScreenRectangle(new ScreenRect(0, 0.5f, 0.5f, 0.5f));
+		
+		Q3.setBackgroundColor(Color.YELLOW);
+		
+		Q3.receiveKeyboardInput(true);
+		
+		screen.addPainter(Q3);
+		
+		gameObjectHandler.addGameObject(Q3, "Q3 camera");
+		
+		Camera Q4 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
+		
+		Q4.setScreenRectangle(new ScreenRect(0.5f, 0.5f, 0.5f, 0.5f));
+		
+		Q4.setBackgroundColor(Color.BLACK);
+		
+		Q4.receiveKeyboardInput(true);
+		
+		screen.addPainter(Q4);
+		
+		gameObjectHandler.addGameObject(Q4, "Q4 camera");
+	}
+	
+	private void cameraTest(){
+		setName("Camera Test");
+		
+		Camera newCamera = new Camera(0, 0, camera.getWidth(), camera.getHeight());
+		
+		newCamera.setScreenRectangle(new ScreenRect(0.59f, 0.59f, 0.4f, 0.4f));
+		
+		newCamera.setBackgroundColor(new Color(20, 200, 100));
+		
+		screen.addPainter(newCamera);
+		
+		gameObjectHandler.addGameObject(newCamera, "Secondary camera");
 	}
 	
 	@SuppressWarnings("unused")
@@ -225,7 +295,7 @@ public class Game extends Updater {
 		KeyInputHandler keyHandler = new KeyInputHandler(gameObjectHandler);
 		Input inputHandler = new Input(mouseHandler, keyHandler);
 		
-		screen.setPainter(camera);
+		screen.addPainter(camera);
 		screen.addInputListener(inputHandler);
 
 		AudioEngine.init(camera);
@@ -237,8 +307,8 @@ public class Game extends Updater {
 		gameObjectHandler.addGameObject(camera, "Main camera");
 	}
 	
-	private void BasicDebug(){
-		screen.AddDebugText(() -> { return new String[]{
+	private void basicDebug(){
+		screen.addDebugText(() -> { return new String[]{
 				"Frames: " + FPSCounter.framesTot,
 				"Updates: " + UpdateCounter.updatesTot,
 				"ElapsedTime: " + 0,
@@ -326,7 +396,7 @@ public class Game extends Updater {
 		
 		screen.setTitle("Pong");
 
-		Pad rightPad = new Pad(ScreenManager.getWidth() - 60, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
+		Pad rightPad = new Pad(camera.getWidth() - 60, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
 				camera.getBounds(), Side.RIGHT);
 
 		gameObjectHandler.addGameObject(rightPad, "RightPad");

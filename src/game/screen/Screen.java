@@ -1,18 +1,20 @@
 package game.screen;
 
-import game.Game;
-import game.debug.DebugOutputProvider;
-import game.gameObject.graphics.Camera;
-import game.gameObject.graphics.Painter;
-import game.input.Input;
-import game.util.FPSCounter;
-import game.util.UpdateCounter;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.nio.Buffer;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import game.Game;
+import game.debug.DebugOutputProvider;
+import game.debug.log.Log;
+import game.gameObject.graphics.Painter;
+import game.input.Input;
+import game.util.FPSCounter;
 
 /**
  * A screen object manages repainting of a window
@@ -31,12 +33,6 @@ public class Screen implements Runnable {
 	private boolean debug = false;
 
 	private Graphics2D g2d;
-
-	private Painter painter;
-	
-	//TODO: Multiple cameras (Painters) with viewport rectangles
-	
-	//TODO: Render painters to buffered images and combine with respect to some kind of ScreenRect
 	
 	//TODO: Add support for image effects and filters
 	
@@ -44,9 +40,14 @@ public class Screen implements Runnable {
 	
 	private ArrayList<Painter> painters;
 	
-	private ArrayList<BufferedImage> cameraImages;
+	private LinkedList<BufferedImage> cameraImages;
 	
 	private ArrayList<DebugOutputProvider> debugPrintOuts;
+	
+	private BufferedImage image;
+	
+	//Temporary variable
+	private ScreenRect rect;
 
 	/**
 	 * @param width
@@ -57,10 +58,10 @@ public class Screen implements Runnable {
 	public Screen(int width, int height, int state, String title) {
 		ScreenManager.createFrame(width, height, state, title);
 		
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		
 		painters = new ArrayList<Painter>();
-		cameraImages = new ArrayList<BufferedImage>();
-		
-		
+		cameraImages = new LinkedList<BufferedImage>();
 		
 		debugPrintOuts = new ArrayList<DebugOutputProvider>();
 	}
@@ -80,20 +81,37 @@ public class Screen implements Runnable {
 	private void resetDisplay() {
 		ScreenManager.closeFrame();
 	}
-
+	
 	private void loop() {
 		long currentTime = System.nanoTime();
 		long elapsedTime = 0;
+		
 		while (isRunning) {
+			
 			elapsedTime = System.nanoTime() - currentTime;
 			currentTime = System.nanoTime();
 			
 			g2d = ScreenManager.getGraphics();
 			g2d.clearRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
 			
-			if (painter != null) {
-				painter.paint(g2d);
+			image = new BufferedImage(ScreenManager.getWidth(), ScreenManager.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			
+			Graphics2D imageGraphics = image.createGraphics();
+			//Get all painter images
+			for (Painter painter : painters) {
+				rect = painter.getScreenRectangle();
+				
+				imageGraphics.drawImage(painter.getImage(), 
+						(int) (rect.getX() * ScreenManager.getWidth()), 
+						(int) (rect.getY() * ScreenManager.getHeight()), 
+						(int) (rect.getX2() * ScreenManager.getWidth()), 
+						(int) (rect.getY2() * ScreenManager.getHeight()),
+						null);
 			}
+			
+			imageGraphics.dispose();
+			
+			g2d.drawImage(image, 0, 0, ScreenManager.getWidth(), ScreenManager.getHeight(), null);
 			
 			if (debug) {
 				g2d.setColor(Color.GREEN.brighter());
@@ -142,8 +160,16 @@ public class Screen implements Runnable {
 	 * @param painter
 	 *            the painter to paint with
 	 */
-	public void setPainter(Painter painter) {
-		this.painter = painter;
+	public void addPainter(Painter painter) {
+		this.painters.add(painter);
+	}
+	
+	/**
+	 * 
+	 * @param painter
+	 */
+	public void removePainter(Painter painter){
+		this.painters.remove(painter);
 	}
 	
 	/**
@@ -177,6 +203,10 @@ public class Screen implements Runnable {
 	 */
 	public void setResolution(int width, int height) {
 		ScreenManager.setRes(width, height);
+		
+		synchronized (image) {
+			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		}
 	}
 	
 	/**
@@ -197,7 +227,7 @@ public class Screen implements Runnable {
 	 * 
 	 * @param provider
 	 */
-	public void AddDebugText(DebugOutputProvider provider){
+	public void addDebugText(DebugOutputProvider provider){
 		debugPrintOuts.add(provider);
 	}
 }

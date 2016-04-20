@@ -1,12 +1,9 @@
 package game.sound;
 
-import kuusisto.tinysound.Music;
-import kuusisto.tinysound.TinySound;
-
 import java.awt.geom.Point2D;
 
 import game.gameObject.GameObject;
-import game.sound.AudioUtil;
+import kuusisto.tinysound.TinySound;
 
 /**
  * 

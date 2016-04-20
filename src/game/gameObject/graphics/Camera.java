@@ -7,10 +7,12 @@ import game.input.keys.KeyListener;
 import game.util.GameObjectHandler;
 import game.util.UpdateListener;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 
 /**
  * A Camera is the object responsible for looking into a {@link Game Games}
@@ -142,6 +144,10 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	public void setWidth(int width){
 		this.width = width;
 		updateBounds();
+		
+		synchronized (image) {
+			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		}
 	}
 	
 	/**
@@ -152,6 +158,10 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	public void setHeight(int height){
 		this.height = height;
 		updateBounds();
+		
+		synchronized (image) {
+			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		}
 	}
 	
 	/**
@@ -164,6 +174,10 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 		this.width = width;
 		this.height = height;
 		updateBounds();
+		
+		synchronized (image) {
+			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		}
 	}
 
 	@Override
@@ -203,6 +217,32 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 		}*/
 		
 		super.paint(g2d);
+	}
+	
+	Graphics2D g2d;
+	
+	@Override
+	public BufferedImage getImage() {
+		
+		g2d = image.createGraphics();
+		
+		
+		//TODO: Evaluate if this is a good solution.
+		if(backgroundColor.getAlpha() == 0){
+			
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
+			g2d.fillRect(0, 0, width, height);
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+			
+		}
+		
+		g2d.setBackground(backgroundColor);
+		g2d.setColor(backgroundColor);
+		g2d.fillRect(0, 0, width, height);
+		
+		g2d.dispose();
+		
+		return super.getImage();
 	}
 
 	/**

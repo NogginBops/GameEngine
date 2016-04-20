@@ -19,6 +19,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MouseInputHandler {
 
 	// JAVADOC: MouseInputHandler
+	
+	//FIXME: Respond to multiple cameras
 
 	private GameObjectHandler gameObjectHandeler;
 
