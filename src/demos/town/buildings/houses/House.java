@@ -14,6 +14,8 @@ import game.IO.load.LoadRequest;
  *
  */
 public class House extends Building {
+	
+	//FIXME: Remove this and move this into Building
 
 	protected BufferedImage outline, building, built;
 

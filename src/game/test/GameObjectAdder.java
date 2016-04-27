@@ -15,6 +15,8 @@ import game.util.GameObjectHandler;
  *
  */
 public class GameObjectAdder implements GameObject, MouseListener {
+	
+	//Remove/Relocate
 
 	private int ZOrder = Integer.MAX_VALUE - 8;
 

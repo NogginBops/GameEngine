@@ -1,7 +1,5 @@
 package demos.pong;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
@@ -78,12 +76,6 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public void paint(Graphics2D g2d) {
-		g2d.setColor(Color.WHITE);
-		g2d.fill(bounds);
 	}
 
 	@Override

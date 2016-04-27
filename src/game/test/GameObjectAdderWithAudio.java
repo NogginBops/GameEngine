@@ -18,6 +18,8 @@ import java.io.File;
 import java.util.Random;
 
 public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseListener {
+	
+	//TODO: Remove/Relocate
 
 	private int ZOrder = Integer.MAX_VALUE - 8;
 

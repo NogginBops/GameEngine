@@ -126,21 +126,21 @@ public class Game extends Updater {
 		basicDebug();
 
 		//test();
-		//test2();
+		test2();
 		// test2WithAudio();
 		// pong();
 		// pong44();
 		// breakout();
 		//UITest();
 		
-		verticalScroller();
+		//verticalScroller();
 		
 		cameraTest();
 		//cameraTest2();
 		
 		completeSetup();
 		
-		//addDebug();
+		addDebug();
 	}
 	
 	private void cameraTest2(){
@@ -202,7 +202,7 @@ public class Game extends Updater {
 		
 		newCamera.setScreenRectangle(new ScreenRect(0.59f, 0.59f, 0.4f, 0.4f));
 		
-		newCamera.setBackgroundColor(new Color(20, 200, 100));
+		newCamera.setBackgroundColor(new Color(20, 200, 100, 100));
 		
 		screen.addPainter(newCamera);
 		
@@ -238,7 +238,6 @@ public class Game extends Updater {
 		UniformSpriteSheet projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
 		
 		log.logMessage("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles(), "VerticalScroller");
-		System.out.println("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles());
 		
 		ShipFactory.createShip("Standard", 
 				shipSheet.getSprite(0, 6, 2, 8),
@@ -288,7 +287,7 @@ public class Game extends Updater {
 		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
 		
-		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
+		screen = new Screen(600, 400, ScreenManager.FULL_SCREEN, "Game");
 		camera = new Camera(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
 		
 		MouseInputHandler mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
@@ -567,7 +566,6 @@ public class Game extends Updater {
 		Thread.currentThread().setName(name);
 		
 		log.logMessage("Starting...", "System");
-		System.out.println("Starting...");
 		//Maybe onStart method?
 		eventMachine.fireEvent(new GameStartEvent(this, name));
 
@@ -577,10 +575,8 @@ public class Game extends Updater {
 		long elapsedTime;
 		
 		log.logMessage("Pre run time: " + (startTime - initTime) / 1000000000f, "System");
-		System.out.println("Pre run time: " + (startTime - initTime) / 1000000000f);
 
 		log.logMessage("Running!", "System");
-		System.out.println("Running!");
 		running = true;
 		while (running) {
 			elapsedTime = System.nanoTime() - currTime;
@@ -618,7 +614,6 @@ public class Game extends Updater {
 		}
 		onQuit();
 		log.logMessage("Stopped.", "System");
-		System.out.println("Stopped.");
 	}
 
 	/**
@@ -627,7 +622,6 @@ public class Game extends Updater {
 	public static void stop() {
 		closeRequested = true;
 		log.logMessage("Close requested.", "System");
-		System.out.println("Close requested.");
 	}
 
 	/**
@@ -637,7 +631,6 @@ public class Game extends Updater {
 		// TODO: Game: Pause
 		paused = true;
 		log.logMessage("Game paused", "System");
-		System.out.println("Game paused");
 	}
 
 	/**
@@ -649,7 +642,6 @@ public class Game extends Updater {
 			// TODO: Game: Resume
 			paused = false;
 			log.logMessage("Game resumed", "System");
-			System.out.println("Game resumed");
 		}
 	}
 

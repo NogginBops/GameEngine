@@ -14,8 +14,6 @@ public class MapTile extends Sprite {
 	//JAVADOC: MapTile
 	
 	private String name;
-
-	private BufferedImage tileImage;
 	
 	/**
 	 * @param x
@@ -24,15 +22,10 @@ public class MapTile extends Sprite {
 	 * @param height
 	 * @param image 
 	 */
-	public MapTile(String name, float x, float y, int width, int height, int zOrder, BufferedImage image) {
+	public MapTile(String name, float x, float y, int width, int height, int zOrder, BufferedImage sprite) {
 		super(x, y, width, height);
 		this.zOrder = zOrder;
-		tileImage = image;
 		this.name = name;
-	}
-
-	@Override
-	public void paint(Graphics2D g2d) {
-		g2d.drawImage(tileImage, (int)x, (int)y, width, height, null);
+		setSprite(sprite);
 	}
 }

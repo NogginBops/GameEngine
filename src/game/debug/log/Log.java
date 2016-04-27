@@ -19,6 +19,14 @@ public class Log {
 		messages = new CopyOnWriteArrayList<>();
 	}
 	
+	public void logMessage(LogMessage message){
+		messages.add(message);
+		messages.sort(null);
+		
+		//TODO: Fix
+		System.out.println(message.toString());
+	}
+	
 	/**
 	 * Logs a message.
 	 * 
@@ -30,8 +38,7 @@ public class Log {
 	 * the tags associated with the message (for easy filtering of messages)
 	 */
 	public void log(String message, LogImportance impotrance, String ... tagFilter){
-		messages.add(new LogMessage(message, impotrance, tagFilter));
-		messages.sort(null);
+		logMessage(new LogMessage(message, impotrance, tagFilter));
 	}
 	
 	/**
@@ -48,8 +55,7 @@ public class Log {
 	 * @param tagFilter
 	 */
 	public void logDebug(String message, String ... tagFilter){
-		messages.add(new LogMessage(message, LogImportance.DEBUG, tagFilter));
-		messages.sort(null);
+		log(message, LogImportance.DEBUG, tagFilter);
 	}
 	
 	/**
@@ -57,8 +63,7 @@ public class Log {
 	 * @param message
 	 */
 	public void logMessage(String message){
-		messages.add(new LogMessage(message, LogImportance.INFORMATIONAL));
-		messages.sort(null);
+		log(message, LogImportance.INFORMATIONAL);
 	}
 	
 	/**
@@ -67,8 +72,7 @@ public class Log {
 	 * @param tagFilter
 	 */
 	public void logMessage(String message, String ... tagFilter){
-		messages.add(new LogMessage(message, LogImportance.INFORMATIONAL, tagFilter));
-		messages.sort(null);
+		log(message, LogImportance.INFORMATIONAL, tagFilter);
 	}
 	
 	/**
@@ -76,8 +80,7 @@ public class Log {
 	 * @param message
 	 */
 	public void logWarning(String message){
-		messages.add(new LogMessage(message, LogImportance.WARNING));
-		messages.sort(null);
+		log(message, LogImportance.WARNING);
 	}
 	
 	/**
@@ -86,8 +89,7 @@ public class Log {
 	 * @param tagFilter
 	 */
 	public void logWarning(String message, String ... tagFilter){
-		messages.add(new LogMessage(message, LogImportance.WARNING, tagFilter));
-		messages.sort(null);
+		log(message, LogImportance.WARNING, tagFilter);
 	}
 	
 	/**
@@ -95,8 +97,7 @@ public class Log {
 	 * @param message
 	 */
 	public void logError(String message){
-		messages.add(new LogMessage(message, LogImportance.ERROR));
-		messages.sort(null);
+		log(message, LogImportance.ERROR);
 	}
 	
 	/**
@@ -105,27 +106,7 @@ public class Log {
 	 * @param tagFilter
 	 */
 	public void logError(String message, String ... tagFilter){
-		messages.add(new LogMessage(message, LogImportance.ERROR, tagFilter));
-		messages.sort(null);
-	}
-	
-	/**
-	 * Adds a already constructed message to the log
-	 * @param message
-	 */
-	public void addMessage(LogMessage message){
-		messages.add(message);
-		messages.sort(null);
-	}
-	
-	/**
-	 * <p>Removes a message from the log.</p>
-	 * <p>THIS SHOULD NOT BE DONE</p>
-	 * @param message
-	 */
-	public void removeMessage(LogMessage message){
-		messages.remove(message);
-		messages.sort(null);
+		log(message, LogImportance.ERROR, tagFilter);
 	}
 	
 	/**

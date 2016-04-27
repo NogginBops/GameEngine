@@ -7,6 +7,8 @@ import game.gameObject.BasicGameObject;
 import game.gameObject.graphics.Paintable;
 
 public class OtherPaintable extends BasicGameObject implements Paintable {
+	
+	//Remove
 
 	private Color color;
 

@@ -1,6 +1,5 @@
 package demos.verticalScroller;
 
-import java.applet.AudioClip;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -26,9 +25,9 @@ import kuusisto.tinysound.Sound;
  */
 public class Ship extends Sprite implements Collidable, KeyListener{
 	
-	private BufferedImage farLeft, left, center, right, farRight, projectile;
+	//FIXME: Allocation issue where the same image gets set every frame
 	
-	private BufferedImage currentImage;
+	private BufferedImage farLeft, left, center, right, farRight, projectile;
 	
 	private Sound fireSFX;
 	
@@ -101,25 +100,24 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 	public void paint(Graphics2D g2d) {
 		
 		//This should be done another way but is fine for now
-		
+		//FIXME: setSprite
 		if(moveLeft && !moveRight){
 			if(bounds.getMinX() >= movementBounds.getMinX() + 100){
-				currentImage = left;
+				setSprite(left);
 			}else{
-				currentImage = farLeft;
+				setSprite(farLeft);
 			}
 		}else if(!moveLeft && moveRight){
 			if(bounds.getMaxX() <= movementBounds.getMaxX() - 100){
-				currentImage = right;
+				setSprite(right);
 			}else{
-				currentImage = farRight;
+				setSprite(farRight);
 			}
 		}else{
-			currentImage = center;
+			setSprite(center);
 		}
 		
-		
-		g2d.drawImage(currentImage, (int)x, (int)y, (int)(width), (int)(height), null);
+		super.paint(g2d);
 	}
 	
 	@Override
@@ -141,18 +139,20 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 		
 		updateBounds();
 		
+		//FIXME: setSprite
+		
 		if(!movementBounds.contains(bounds)){
 			if (bounds.getMinX() < movementBounds.getMinX()) {
 				x = (float) movementBounds.getMinX();
 				dx = 0;
 				
-				currentImage = farRight;
+				setSprite(farRight);
 			} 
 			else if (bounds.getMaxX() > movementBounds.getMaxX()) {
 				x = (float) movementBounds.getMaxX() - width;
 				dx = 0;
 				
-				currentImage = farLeft;
+				setSprite(farLeft);
 			}
 			
 			if (bounds.getMinY() < movementBounds.getMinY()) {

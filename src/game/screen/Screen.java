@@ -88,6 +88,8 @@ public class Screen implements Runnable {
 		
 		while (isRunning) {
 			
+			//FIXME: Huge performance drain somewhere
+			
 			elapsedTime = System.nanoTime() - currentTime;
 			currentTime = System.nanoTime();
 			

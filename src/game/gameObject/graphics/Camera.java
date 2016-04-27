@@ -228,7 +228,7 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 		
 		
 		//TODO: Evaluate if this is a good solution.
-		if(backgroundColor.getAlpha() == 0){
+		if(backgroundColor.getAlpha() < 255){
 			
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
 			g2d.fillRect(0, 0, width, height);

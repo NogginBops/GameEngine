@@ -11,6 +11,11 @@ import game.gameObject.graphics.Sprite;
  */
 public class TestAnimationSprite extends Sprite{
 	
+	/* FIXME: Handle this with sprite tinting. 
+	 * This could be done with some trickery with pre-tinting frames.
+	 * That solution would mean that the graphicsReadySprite would have to be visible to children. :/
+	 * 
+	 */
 	private BufferedImage[] images;
 	
 	private float delay;

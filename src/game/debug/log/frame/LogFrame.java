@@ -128,7 +128,7 @@ public class LogFrame extends JFrame implements Runnable{
 		btnTestmessage.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				log.addMessage(new LogMessage("TestMessage" + i++, LogImportance.DEBUG, "test"));
+				log.logMessage(new LogMessage("TestMessage" + i++, LogImportance.DEBUG, "test"));
 				updateMessages();
 			}
 		});

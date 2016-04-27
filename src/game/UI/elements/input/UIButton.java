@@ -70,7 +70,7 @@ public class UIButton extends UIElement implements MouseListener {
 		
 		
 		
-		listeners.get(0).actionPerformed(new ActionEvent(this, 1, ""));
+		//listeners.get(0).actionPerformed(new ActionEvent(this, 1, ""));
 	}
 	
 	/**
@@ -137,6 +137,8 @@ public class UIButton extends UIElement implements MouseListener {
 	public void mouseExited(MouseEvent e) {
 		if(state == ButtonState.HOVER){
 			state = ButtonState.IDLE;
+		}else if(state == ButtonState.ACTIVE){
+			//TODO: UIButton:  Active until release
 		}
 	}
 

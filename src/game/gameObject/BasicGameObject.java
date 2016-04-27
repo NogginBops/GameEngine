@@ -37,6 +37,8 @@ public class BasicGameObject implements GameObject {
 	 */
 	protected int zOrder;
 
+	
+	//NOTE: Should maybe not take the zOrder as a param
 	/**
 	 * 
 	 * @param x

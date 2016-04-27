@@ -1,7 +1,5 @@
 package demos.pong;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
@@ -45,12 +43,6 @@ public class Ball extends Sprite implements Collidable{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public void paint(Graphics2D g2d) {
-		g2d.setColor(Color.WHITE);
-		g2d.fill(bounds);
 	}
 
 	@Override
