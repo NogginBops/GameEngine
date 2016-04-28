@@ -2,10 +2,10 @@ package game.test;
 
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Paintable;
+import game.gameObject.handler.GameObjectHandler;
 import game.input.mouse.MouseListener;
 import game.sound.AudioEngine;
 import game.sound.AudioSource;
-import game.util.GameObjectHandler;
 import kuusisto.tinysound.Sound;
 import kuusisto.tinysound.TinySound;
 
@@ -17,6 +17,10 @@ import java.awt.event.MouseWheelEvent;
 import java.io.File;
 import java.util.Random;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseListener {
 	
 	//TODO: Remove/Relocate
@@ -31,6 +35,11 @@ public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseLis
 
 	private Sound sound;
 
+	/**
+	 * @param x
+	 * @param y
+	 * @param objectHandler
+	 */
 	public GameObjectAdderWithAudio(int x, int y, GameObjectHandler objectHandler) {
 		gameObjectHandler = objectHandler;
 		rand = new Random();

@@ -22,11 +22,9 @@ import game.util.IDHandler;
  * @version 1.0
  * @author Julius Häger
  */
-public class IOHandler {
+public final class IOHandler {
 
 	// JAVADOC: IOHandeler
-
-	// TODO: Set up static loading methods and non static exit save methods
 
 	private static IDHandler<Loader<?>> loaderIDHandler;
 
@@ -40,6 +38,9 @@ public class IOHandler {
 	}
 
 	private static void setUpDefaultLoaders() {
+		
+		//TODO: More and useful default loaders
+		
 		loaderIDHandler.addID(new ID<Loader<?>>("Default String Loader", 0, new StringLoader()));
 		loaderIDHandler.addID(new ID<Loader<?>>("Default Image Loader", 1, new BufferedImageLoader()));
 		loaderIDHandler.addID(new ID<Loader<?>>("Default Sound Loader", 2, new SoundLoader()));
@@ -47,6 +48,9 @@ public class IOHandler {
 	}
 
 	private static void setUpDefaultSavers() {
+		
+		//TODO: More and useful default savers
+		
 		saverIDHandler.addID(new ID<Saver<?>>("Default String Saver", 0, new StringSaver()));
 		saverIDHandler.addID(new ID<Saver<?>>("Default PNG Saver", 1, new ImageSaver(ImageSaver.Mode.PNG)));
 		saverIDHandler.addID(new ID<Saver<?>>("Default BMP Saver", 2, new ImageSaver(ImageSaver.Mode.BMP)));
@@ -58,7 +62,7 @@ public class IOHandler {
 	 * @param saver
 	 * @param name
 	 */
-	public void addSaver(Saver<?> saver, String name) {
+	public static void addSaver(Saver<?> saver, String name) {
 		saverIDHandler.addObject(saver, name);
 	}
 
@@ -66,7 +70,7 @@ public class IOHandler {
 	 * @param loader
 	 * @param name
 	 */
-	public void addLoader(Loader<?> loader, String name) {
+	public static void addLoader(Loader<?> loader, String name) {
 		loaderIDHandler.addObject(loader, name);
 	}
 

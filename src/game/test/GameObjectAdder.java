@@ -7,8 +7,8 @@ import java.awt.event.MouseWheelEvent;
 import demos.town.buildings.Building;
 import demos.town.buildings.houses.House;
 import game.gameObject.GameObject;
+import game.gameObject.handler.GameObjectHandler;
 import game.input.mouse.MouseListener;
-import game.util.GameObjectHandler;
 
 /**
  * @author Julius Häger

@@ -6,12 +6,24 @@ import java.awt.Graphics2D;
 import game.gameObject.BasicGameObject;
 import game.gameObject.graphics.Paintable;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class OtherPaintable extends BasicGameObject implements Paintable {
 	
 	//Remove
 
 	private Color color;
 
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param z
+	 * @param color
+	 */
 	public OtherPaintable(int x, int y, int width, int height, int z, Color color) {
 		super(x, y, width, height, z);
 		this.color = color;

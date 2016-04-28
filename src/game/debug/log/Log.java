@@ -10,6 +10,8 @@ import game.debug.log.LogMessage.LogImportance;
  */
 public class Log {
 	
+	//JAVADOC: Log
+	
 	private CopyOnWriteArrayList<LogMessage> messages;
 	
 	/**
@@ -19,11 +21,14 @@ public class Log {
 		messages = new CopyOnWriteArrayList<>();
 	}
 	
+	/**
+	 * @param message
+	 */
 	public void logMessage(LogMessage message){
 		messages.add(message);
 		messages.sort(null);
 		
-		//TODO: Fix
+		//TODO: Fix?
 		System.out.println(message.toString());
 	}
 	

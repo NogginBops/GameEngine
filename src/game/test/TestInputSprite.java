@@ -10,6 +10,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class TestInputSprite extends Sprite implements MouseListener, KeyListener {
 
 	private Color color;

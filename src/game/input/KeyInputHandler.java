@@ -1,7 +1,7 @@
 package game.input;
 
+import game.gameObject.handler.GameObjectHandler;
 import game.input.keys.KeyListener;
-import game.util.GameObjectHandler;
 
 import java.awt.event.KeyEvent;
 import java.util.concurrent.CopyOnWriteArrayList;

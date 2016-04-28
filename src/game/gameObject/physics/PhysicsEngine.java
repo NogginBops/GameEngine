@@ -6,7 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.Game;
 import game.gameObject.BasicGameObject;
-import game.util.GameObjectHandler;
+import game.gameObject.handler.GameObjectHandler;
 import game.util.UpdateListener;
 
 /**
@@ -18,6 +18,8 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	// JAVADOC: PhysicsEngine
 
 	// TODO: PhysicsEngine
+	
+	// TODO: Physics layers
 
 	private GameObjectHandler gameObjectHandeler;
 	
@@ -25,7 +27,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	@SuppressWarnings("unused")
 	private HashMap<Integer, CopyOnWriteArrayList<Collidable>> collidablesMap = new HashMap<Integer, CopyOnWriteArrayList<Collidable>>();
 
-	//TODO: Use the HashMap instead.
+	//TODO: Explore the HashMap solution.
 	private CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>> collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 
 	/**

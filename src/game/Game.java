@@ -39,6 +39,7 @@ import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.Paintable;
 import game.gameObject.graphics.UniformSpriteSheet;
+import game.gameObject.handler.GameObjectHandler;
 import game.gameObject.physics.PhysicsEngine;
 import game.input.Input;
 import game.input.KeyInputHandler;
@@ -53,7 +54,6 @@ import game.test.OtherPaintable;
 import game.test.TestInputSprite;
 import game.test.TestSprite;
 import game.util.FPSCounter;
-import game.util.GameObjectHandler;
 import game.util.IDHandler;
 import game.util.UpdateCounter;
 import game.util.UpdateListener;
@@ -114,6 +114,8 @@ public class Game extends Updater {
 	private LogFrame LogFrame;
 	
 	private IDHandlerDebugFrame<GameObject> IDDebug;
+	
+	//FIXME: Giant GC freeze
 
 	/**
 	 * 
@@ -143,6 +145,21 @@ public class Game extends Updater {
 		//addDebug();
 	}
 	
+	private void cameraTest(){
+		setName("Camera Test");
+		
+		Camera newCamera = new Camera(0, 0, camera.getWidth(), camera.getHeight());
+		
+		newCamera.setScreenRectangle(new ScreenRect(0.59f, 0.59f, 0.4f, 0.4f));
+		
+		newCamera.setBackgroundColor(new Color(20, 200, 100, 100));
+		
+		screen.addPainter(newCamera);
+		
+		gameObjectHandler.addGameObject(newCamera, "Secondary camera");
+	}
+	
+	@SuppressWarnings("unused")
 	private void cameraTest2(){
 		setName("Camera Test 2");
 		
@@ -193,20 +210,6 @@ public class Game extends Updater {
 		screen.addPainter(Q4);
 		
 		gameObjectHandler.addGameObject(Q4, "Q4 camera");
-	}
-	
-	private void cameraTest(){
-		setName("Camera Test");
-		
-		Camera newCamera = new Camera(0, 0, camera.getWidth(), camera.getHeight());
-		
-		newCamera.setScreenRectangle(new ScreenRect(0.59f, 0.59f, 0.4f, 0.4f));
-		
-		newCamera.setBackgroundColor(new Color(20, 200, 100, 100));
-		
-		screen.addPainter(newCamera);
-		
-		gameObjectHandler.addGameObject(newCamera, "Secondary camera");
 	}
 	
 	@SuppressWarnings("unused")
@@ -273,7 +276,7 @@ public class Game extends Updater {
 			e.printStackTrace();
 		}
 		
-		AudioEngine.setMasterVolume(0f);
+		AudioEngine.setMasterVolume(0.01f);
 	}
 
 	private void basicSetup() {
@@ -290,7 +293,7 @@ public class Game extends Updater {
 		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
 		camera = new Camera(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
 		
-		camera.setBackgroundColor(new Color(1f, 1f, 0f, 0.5f));
+		camera.setBackgroundColor(new Color(0.15f, 0.15f, 0.15f, 1f));
 		
 		MouseInputHandler mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
 		KeyInputHandler keyHandler = new KeyInputHandler(gameObjectHandler);
@@ -326,16 +329,17 @@ public class Game extends Updater {
 	}
 
 	private void completeSetup() {
-		
+		//TODO: Is this needed/should it be a event?
 	}
 	
+	@SuppressWarnings("unused")
 	private void addDebug(){
 		addDebugLog();
 		addIDHandlerDebug();
 	}
-
-	// TODO: Fix proper onStart onExit and other similar methods
-
+	
+	// TODO: Fix proper onStart onExit and other similar methods. (USE EVENTS!!)
+	
 	private void onQuit() {
 		if(IDDebug != null){
 		IDDebug.stopDebug();
@@ -630,9 +634,10 @@ public class Game extends Updater {
 	 * Pauses the game so that it can be resumed later
 	 */
 	public static void pause() {
-		// TODO: Game: Pause
-		paused = true;
-		log.logMessage("Game paused", "System");
+		if (!paused) {
+			paused = true;
+			log.logMessage("Game paused", "System");
+		}
 	}
 
 	/**
@@ -641,7 +646,6 @@ public class Game extends Updater {
 	 */
 	public static void resume() {
 		if (paused) {
-			// TODO: Game: Resume
 			paused = false;
 			log.logMessage("Game resumed", "System");
 		}

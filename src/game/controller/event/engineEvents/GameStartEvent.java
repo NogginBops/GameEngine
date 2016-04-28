@@ -17,7 +17,5 @@ public class GameStartEvent extends GameEvent<Game> {
 	 */
 	public GameStartEvent(Game origin, String command) {
 		super(origin, command);
-		// TODO Auto-generated constructor stub
 	}
-
 }

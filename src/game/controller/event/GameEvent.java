@@ -1,6 +1,9 @@
 package game.controller.event;
 
 /**
+ * 
+ * Note: Events should be immutable.
+ * 
  * @author Julius Häger
  * @param <T> 
  *

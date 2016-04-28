@@ -1,9 +1,14 @@
-package game.util;
-
-import game.gameObject.GameObject;
+package game.gameObject.handler;
 
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import game.Game;
+import game.gameObject.GameObject;
+import game.gameObject.handler.event.GameObjectCreatedEvent;
+import game.gameObject.handler.event.GameObjectDestryoedEvent;
+import game.util.ID;
+import game.util.IDHandler;
 
 /**
  * <p>
@@ -53,17 +58,6 @@ public class GameObjectHandler {
 	 */
 	public <T extends GameObject> void addGameObject(T gameObject) {
 		addGameObject(gameObject, gameObject.getClass().getSimpleName());
-		/*
-		 * CopyOnWriteArrayList<GameObject> objects =
-		 * gameObjectMap.get(gameObject.getZOrder()); if(objects == null){
-		 * gameObjectMap.put(gameObject.getZOrder(), objects = new
-		 * CopyOnWriteArrayList<GameObject>()); } objects.add(gameObject);
-		 * 
-		 * //TODO: Remove gameObjects.add(gameObject); gameObjects.sort(null);
-		 * if(!zLevels.contains(gameObject.getZOrder())){
-		 * zLevels.add(gameObject.getZOrder()); zLevels.sort(null); }
-		 * idHandler.addObject(gameObject); objectsChanged = true;
-		 */
 	}
 
 	/**
@@ -72,18 +66,8 @@ public class GameObjectHandler {
 	 * @param nameID
 	 */
 	public <T extends GameObject> void addGameObject(T gameObject, String nameID) {
-		addGameObject(new ID<GameObject>(nameID, 0, gameObject));
-		/*
-		 * CopyOnWriteArrayList<GameObject> objects =
-		 * gameObjectMap.get(gameObject.getZOrder()); if(objects == null){
-		 * gameObjectMap.put(gameObject.getZOrder(), objects = new
-		 * CopyOnWriteArrayList<GameObject>()); } objects.add(gameObject);
-		 * 
-		 * //TODO: Remove gameObjects.add(gameObject); gameObjects.sort(null);
-		 * if(!zLevels.contains(gameObject.getZOrder())){
-		 * zLevels.add(gameObject.getZOrder()); zLevels.sort(null); }
-		 * idHandler.addObject(gameObject, nameID); objectsChanged = true;
-		 */
+		//idHandler.getLastID() + 1  ---  Pretty good guess for a unused id.
+		addGameObject(new ID<GameObject>(nameID, idHandler.getLastID() + 1, gameObject));
 	}
 
 	/**
@@ -105,6 +89,8 @@ public class GameObjectHandler {
 		}
 		idHandler.addID(id);
 		objectsChanged = true;
+		
+		Game.eventMachine.fireEvent(new GameObjectCreatedEvent(this, id.object));
 	}
 	
 	//TODO: Clean up add and remove methods.
@@ -127,6 +113,8 @@ public class GameObjectHandler {
 		}
 		idHandler.removeObject(gameObject);
 		objectsChanged = true;
+		
+		Game.eventMachine.fireEvent(new GameObjectDestryoedEvent(this, gameObject));
 	}
 
 	/**
@@ -138,13 +126,15 @@ public class GameObjectHandler {
 		if (gameObjectMap.get(id.object.getZOrder()).size() == 0) {
 			gameObjectMap.remove(id.object.getZOrder());
 		}
-
+		
 		gameObjects.remove(id.object);
 		if (!zLevels.contains(id.object.getZOrder())) {
 			zLevels.remove(id.object.getZOrder());
 		}
 		idHandler.removeID(id);
 		objectsChanged = true;
+		
+		Game.eventMachine.fireEvent(new GameObjectDestryoedEvent(this, id.object));
 	}
 
 	/**
@@ -152,7 +142,7 @@ public class GameObjectHandler {
 	 * @return
 	 */
 	public CopyOnWriteArrayList<Integer> getZLevels() {
-		return zLevels;
+		return new CopyOnWriteArrayList<>(gameObjectMap.keySet());
 	}
 
 	/**

@@ -2,7 +2,6 @@ package game.gameObject.graphics;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.gameObject.BasicGameObject;

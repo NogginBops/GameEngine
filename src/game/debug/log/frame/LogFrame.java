@@ -164,6 +164,7 @@ public class LogFrame extends JFrame implements Runnable{
 	public void run() {
 		this.setVisible(true);
 		
+		//TODO: Make this event driven instead
 		while(!closeRequested){
 			updateMessages();
 			

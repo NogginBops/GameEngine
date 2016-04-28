@@ -11,7 +11,6 @@ import game.gameObject.BasicGameObject;
 import game.gameObject.GameObject;
 import game.gameObject.physics.Movable;
 import game.image.effects.ColorTintFilter;
-import game.util.UpdateListener;
 
 /**
  * 
@@ -19,12 +18,10 @@ import game.util.UpdateListener;
  * @version 1.0
  * @author Julius Häger
  */
-public abstract class Sprite extends BasicGameObject implements Paintable, Movable, UpdateListener {
+public abstract class Sprite extends BasicGameObject implements Paintable, Movable {
 
 	// JAVADOC: Sprite
 	
-	// FIXME: Allocation issue 
-
 	/**
 	 * The dynamic-x (The movement in the x-axis measured in pixels/second)
 	 */
@@ -268,6 +265,9 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 		}
 	}
 	
+	/**
+	 * @param sprites
+	 */
 	public void preloadSprites(BufferedImage ... sprites){
 		Game.log.logMessage("Preloading " + sprites.length + " sprites.", "Sprite", "Optimization");
 		for (int i = 0; i < sprites.length; i++) {

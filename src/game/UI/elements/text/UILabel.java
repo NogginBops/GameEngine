@@ -12,7 +12,7 @@ import game.UI.elements.UIElement;
  */
 public class UILabel extends UIElement {
 	
-	//TODO: Manage go get width and height of the label
+	//TODO: Manage to get width and height of the label
 	
 	//JAVADOC: UILable
 
@@ -21,7 +21,7 @@ public class UILabel extends UIElement {
 	protected Color color = Color.WHITE;
 
 	private FontMetrics fontMetrics;
-
+	
 	/**
 	 * @param text
 	 */

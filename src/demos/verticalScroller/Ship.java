@@ -25,7 +25,7 @@ import kuusisto.tinysound.Sound;
  */
 public class Ship extends Sprite implements Collidable, KeyListener{
 	
-	//FIXME: Allocation issue where the same image gets set every frame
+	//FIXME: Issue where the same image gets set every frame
 	
 	private BufferedImage farLeft, left, center, right, farRight, projectile;
 	
@@ -129,8 +129,6 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 		timer += timeNano / 1000000000f;
 		if(isSpaceDown){
 			if(timer > delay){
-				//FIXME: Fix duplication of buffered images: copy image to projectile (Maybe make projectile not extend Sprite for optimized drawing)
-				
 				BasicProjectile projectileGO = new BasicProjectile(projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -350);
 				Game.getGameObjectHandler().addGameObject(projectileGO);
 				

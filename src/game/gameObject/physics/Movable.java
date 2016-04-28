@@ -1,6 +1,6 @@
 package game.gameObject.physics;
 
-import game.gameObject.GameObject;
+import game.util.UpdateListener;
 
 /**
  * The movable interface is implemented to provide movement related functions.
@@ -11,7 +11,7 @@ import game.gameObject.GameObject;
  * @version 1.0
  * @author Julius Häger
  */
-public interface Movable extends GameObject {
+public interface Movable extends UpdateListener {
 
 	/**
 	 * Returns the current x value of the Movable
@@ -75,7 +75,7 @@ public interface Movable extends GameObject {
 	 */
 	public void setDY(float dy);
 	
-	//TODO: Make movement be updated by the PhysicsEngine
+	//TODO: Make movement be updated by the PhysicsEngine (RigidBody interface?)
 
 	/**
 	 * <p>
@@ -87,10 +87,10 @@ public interface Movable extends GameObject {
 	 * <b>Note:</b> <br>
 	 * Should be implemented so that the Dynamic x and y equal to pixels per
 	 * second.
-	 * </p>
 	 * @param timeNano 
 	 * time since last update (in nanoseconds)
 	 */
+	@Override
 	public void update(long timeNano);
 
 }

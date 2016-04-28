@@ -1,18 +1,11 @@
 package game.screen;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import game.Game;
 import game.debug.DebugOutputProvider;
-import game.debug.log.Log;
 import game.gameObject.graphics.Painter;
 import game.input.Input;
 import game.util.FPSCounter;
@@ -27,7 +20,7 @@ public class Screen implements Runnable {
 
 	// JAVADOC: Screen
 	
-	//TODO: Merge with ScreenManager
+	//TODO: Merge with ScreenManager!!!
 
 	private boolean isRunning = false;
 
@@ -124,6 +117,8 @@ public class Screen implements Runnable {
 			imageGraphics.dispose();
 			
 			g2d.drawImage(image, 0, 0, ScreenManager.getWidth(), ScreenManager.getHeight(), null);
+			
+			//TODO: Better on screen debug
 			
 			if (debug) {
 				g2d.setColor(Color.GREEN.brighter());

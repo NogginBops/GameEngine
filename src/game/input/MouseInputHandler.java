@@ -1,9 +1,9 @@
 package game.input;
 
 import game.gameObject.graphics.Camera;
+import game.gameObject.handler.GameObjectHandler;
 import game.input.mouse.MouseListener;
 import game.screen.ScreenManager;
-import game.util.GameObjectHandler;
 import game.util.InverseGameObjectComparator;
 
 import java.awt.event.MouseEvent;

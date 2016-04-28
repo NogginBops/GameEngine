@@ -8,6 +8,8 @@ import java.awt.Rectangle;
  * @author Julius Häger
  */
 public class BasicGameObject implements GameObject {
+	
+	//JAVADOC: BasicGameObject
 
 	/**
 	 * 

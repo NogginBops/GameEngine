@@ -64,4 +64,17 @@ public class EventMachine {
 			listener.eventFired(event);
 		}
 	}
+	
+	//TODO: Add support for event hierarchies.
+	
+	/*
+	public <T extends GameEvent<?>> void fireExtendedEvent(T event, Class<? super T> upperLimit) {
+		Class<? super GameEvent<?>> eventClass = (Class<GameEvent<?>>) event.getClass();
+		
+		while(upperLimit.isAssignableFrom(eventClass)){
+			fireEvent(eventClass.cast(event));
+			eventClass = eventClass.getSuperclass();
+		}
+	}
+	*/
 }

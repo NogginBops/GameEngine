@@ -91,6 +91,8 @@ public class Map {
 	 */
 	public static Map parseMap(File mapXml) throws FileNotFoundException, XMLStreamException{
 		
+		//FIXME: I DON'T KNOW HOW TO PARSE XML, OK?!
+		
 		XMLInputFactory xmlif = XMLInputFactory.newInstance();
 		XMLEventReader reader = xmlif.createXMLEventReader(mapXml.getName(), new FileInputStream(mapXml));
 		
@@ -110,7 +112,7 @@ public class Map {
 				case "map":
 					
 					//Wait until next start element
-					//TODO: Make this better
+					//TODO: Make this work
 					event = reader.nextEvent();
 					while (!event.isStartElement()) {
 						event = reader.nextEvent();

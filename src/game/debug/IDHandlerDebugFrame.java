@@ -13,6 +13,12 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import game.Game;
+import game.controller.event.EventListener;
+import game.controller.event.GameEvent;
+import game.gameObject.handler.event.GameObjectCreatedEvent;
+import game.gameObject.handler.event.GameObjectDestryoedEvent;
+import game.gameObject.handler.event.GameObjectEvent;
 import game.util.ID;
 import game.util.IDHandler;
 
@@ -158,16 +164,28 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	public void run() {
 		this.setVisible(true);
 		
-		//FIXME: Make use of the eventsystem instead than a infinite loop
+		EventListener listener = new EventListener() {
+			@Override
+			public <T2 extends GameEvent<?>> void eventFired(T2 event) {
+				updateIDs(handler.getAllIDs());
+			}
+		};
+		//FIXME: Event Hierarchies
+		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, listener);
+		
+		Game.eventMachine.addEventListener(GameObjectDestryoedEvent.class, listener);
+		
+		Game.eventMachine.addEventListener(GameObjectEvent.class, listener);
+		
 		while(!closeRequested){
-			updateIDs(handler.getAllIDs());
-			
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
+	
+	
+	
 }

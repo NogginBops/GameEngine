@@ -1,18 +1,17 @@
 package game.gameObject.graphics;
 
-import game.Game;
-import game.gameObject.GameObject;
-import game.gameObject.physics.Movable;
-import game.input.keys.KeyListener;
-import game.util.GameObjectHandler;
-import game.util.UpdateListener;
-
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+
+import game.Game;
+import game.gameObject.GameObject;
+import game.gameObject.handler.GameObjectHandler;
+import game.gameObject.physics.Movable;
+import game.input.keys.KeyListener;
 
 /**
  * A Camera is the object responsible for looking into a {@link Game Games}
@@ -21,7 +20,7 @@ import java.awt.image.BufferedImage;
  * @version 1.0
  * @author Julius Häger
  */
-public class Camera extends Painter implements Movable, UpdateListener, KeyListener {
+public class Camera extends Painter implements Movable, KeyListener {
 
 	// TODO: Remove movement code
 
@@ -223,18 +222,10 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 		
 		g2d = image.createGraphics();
 		
-		//TODO: Evaluate if this is a good solution.
-		if(backgroundColor.getAlpha() < 255){
-			
-			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
-			g2d.fillRect(0, 0, width, height);
-			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
-			
-		}
-		
-		g2d.setBackground(backgroundColor);
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 		g2d.setColor(backgroundColor);
 		g2d.fillRect(0, 0, width, height);
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 		
 		g2d.dispose();
 		
