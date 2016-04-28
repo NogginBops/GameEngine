@@ -126,14 +126,14 @@ public class Game extends Updater {
 		basicDebug();
 
 		//test();
-		test2();
+		//test2();
 		// test2WithAudio();
 		// pong();
 		// pong44();
 		// breakout();
 		//UITest();
 		
-		//verticalScroller();
+		verticalScroller();
 		
 		cameraTest();
 		//cameraTest2();
@@ -287,7 +287,7 @@ public class Game extends Updater {
 		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
 		
-		screen = new Screen(600, 400, ScreenManager.FULL_SCREEN, "Game");
+		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
 		camera = new Camera(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
 		
 		MouseInputHandler mouseHandler = new MouseInputHandler(gameObjectHandler, camera);

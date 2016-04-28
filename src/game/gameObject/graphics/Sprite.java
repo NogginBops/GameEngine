@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 import game.Game;
 import game.gameObject.BasicGameObject;
@@ -46,9 +47,11 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 	 */
 	private Color color = Color.WHITE;
 	
-	private volatile BufferedImage graphicsReadySprite;
+	private volatile BufferedImage graphicsReadySprite = null;
 	
 	private ColorTintFilter colorTinter;
+	
+	private HashMap<BufferedImage, BufferedImage> imageCache;
 
 	/**
 	 * 
@@ -64,7 +67,10 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 	 */
 	public Sprite(float x, float y, int width, int height) {
 		super(x, y, width, height, 5);
-		createColorFilter();
+		imageCache = new HashMap<>();
+		
+		setColor(color);
+		setSprite(sprite);
 	}
 	
 	/**
@@ -83,9 +89,10 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 	 */
 	public Sprite(float x, float y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, 5);
-		this.sprite = sprite;
-		createColorFilter();
-		createGraphicsReadySprite();
+		imageCache = new HashMap<>();
+		
+		setColor(color);
+		setSprite(sprite);
 	}
 	
 	/**
@@ -104,8 +111,10 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 	 */
 	public Sprite(float x, float y, int width, int height, Color color) {
 		super(x, y, width, height, 5);
-		this.color = color;
-		createColorFilter();
+		imageCache = new HashMap<>();
+		
+		setColor(color);
+		setSprite(null);
 	}
 	
 	/**
@@ -126,10 +135,10 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 	 */
 	public Sprite(float x, float y, int width, int height, BufferedImage sprite, Color color) {
 		super(x, y, width, height, 5);
-		this.sprite = sprite;
-		this.color = color;
-		createColorFilter();
-		createGraphicsReadySprite();
+		imageCache = new HashMap<>();
+		
+		setColor(color);
+		setSprite(sprite);
 	}
 	
 	//TODO: Add sorting layers for sprites and such
@@ -139,6 +148,10 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 	 */
 	public Sprite(Rectangle bounds) {
 		super(bounds, 5);
+		imageCache = new HashMap<>();
+		
+		setColor(color);
+		setSprite(null);
 	}
 	
 	@Override
@@ -242,9 +255,25 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 	 * @param sprite
 	 */
 	public void setSprite(BufferedImage sprite){
-		this.sprite = sprite;
-		if(sprite != null){
-			createGraphicsReadySprite();
+		
+		if(sprite == null){
+			
+			this.sprite = null;
+			
+		} else {
+			
+			this.sprite = sprite;
+			graphicsReadySprite = getGraphicsReadySprite(sprite);
+			
+		}
+	}
+	
+	public void preloadSprites(BufferedImage ... sprites){
+		Game.log.logMessage("Preloading " + sprites.length + " sprites.", "Sprite", "Optimization");
+		for (int i = 0; i < sprites.length; i++) {
+			if(!imageCache.containsKey(sprites[i])){
+				imageCache.put(sprite, createGraphicsReadySprite(sprites[i]));
+			}
 		}
 	}
 	
@@ -271,17 +300,24 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 	}
 	
 	private void createColorFilter(){
-		colorTinter = new ColorTintFilter(color, 0.5f);
+		colorTinter = new ColorTintFilter(color, 1f);
 	}
 	
-	private void createGraphicsReadySprite(){
-		if(sprite != null){
-			graphicsReadySprite = colorTinter.filter(sprite, graphicsReadySprite);
-			Game.log.logMessage("CreatedGraphicsReadySprite!" + this);
+	private BufferedImage getGraphicsReadySprite(BufferedImage sprite){
+		if(!imageCache.containsKey(sprite)){
+			Game.log.logMessage("No image cached, creating a new image!");
+			imageCache.put(sprite, createGraphicsReadySprite(sprite));
 		}
-		else
-		{
+		return imageCache.get(sprite);
+	}
+	
+	private BufferedImage createGraphicsReadySprite(BufferedImage sprite){
+		if(sprite != null){
+			Game.log.logMessage("CreatingGraphicsReadySprite!");
+			return colorTinter.filter(sprite, null);
+		} else {
 			Game.log.logError("Tried to create a graphics ready image from a null image!", new String[]{ "Sprite", "Image", "Graphics ready" });
+			return null;
 		}
 	}
 }

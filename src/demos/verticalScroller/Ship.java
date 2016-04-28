@@ -70,6 +70,8 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 		this.farRight = farRight;
 		this.projectile = projectile;
 		
+		preloadSprites(farLeft, left, center, right, farRight);
+		
 		try {
 			fireSFX = IOHandler.load(new LoadRequest<Sound>("ship/fireSFX", new File(".\\res\\verticalScroller\\sounds\\fire.wav"), Sound.class, "DefaultSoundLoader")).result;
 			source = new AudioSource(0, 0, fireSFX);
