@@ -145,9 +145,8 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 		this.width = width;
 		updateBounds();
 		
-		synchronized (image) {
-			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		}
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		
 	}
 	
 	/**
@@ -159,9 +158,8 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 		this.height = height;
 		updateBounds();
 		
-		synchronized (image) {
-			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		}
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		
 	}
 	
 	/**
@@ -175,9 +173,8 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 		this.height = height;
 		updateBounds();
 		
-		synchronized (image) {
-			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		}
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		
 	}
 
 	@Override
@@ -225,7 +222,6 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	public BufferedImage getImage() {
 		
 		g2d = image.createGraphics();
-		
 		
 		//TODO: Evaluate if this is a good solution.
 		if(backgroundColor.getAlpha() < 255){

@@ -140,7 +140,7 @@ public class Game extends Updater {
 		
 		completeSetup();
 		
-		addDebug();
+		//addDebug();
 	}
 	
 	private void cameraTest2(){
@@ -289,6 +289,8 @@ public class Game extends Updater {
 		
 		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
 		camera = new Camera(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+		
+		camera.setBackgroundColor(new Color(1f, 1f, 0f, 0.5f));
 		
 		MouseInputHandler mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
 		KeyInputHandler keyHandler = new KeyInputHandler(gameObjectHandler);

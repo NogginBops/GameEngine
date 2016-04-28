@@ -47,7 +47,7 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 	 */
 	private Color color = Color.WHITE;
 	
-	private volatile BufferedImage graphicsReadySprite = null;
+	private BufferedImage graphicsReadySprite = null;
 	
 	private ColorTintFilter colorTinter;
 	
@@ -272,7 +272,7 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 		Game.log.logMessage("Preloading " + sprites.length + " sprites.", "Sprite", "Optimization");
 		for (int i = 0; i < sprites.length; i++) {
 			if(!imageCache.containsKey(sprites[i])){
-				imageCache.put(sprite, createGraphicsReadySprite(sprites[i]));
+				imageCache.put(sprites[i], createGraphicsReadySprite(sprites[i]));
 			}
 		}
 	}

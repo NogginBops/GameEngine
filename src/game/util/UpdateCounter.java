@@ -51,7 +51,9 @@ public class UpdateCounter {
 		time += elapsedTime;
 		updatesTot++;
 		updates++;
-		if (time > 2) {
+		
+		//TODO: Use a variable for interval
+		if (time > 1) {
 			ups = (long) (updates / time);
 			averageUPS = (long) (updatesTot / timeTot);
 			time = 0;

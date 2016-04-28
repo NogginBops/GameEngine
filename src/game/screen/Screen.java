@@ -1,5 +1,6 @@
 package game.screen;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -40,8 +41,6 @@ public class Screen implements Runnable {
 	
 	private ArrayList<Painter> painters;
 	
-	private LinkedList<BufferedImage> cameraImages;
-	
 	private ArrayList<DebugOutputProvider> debugPrintOuts;
 	
 	private BufferedImage image;
@@ -61,7 +60,6 @@ public class Screen implements Runnable {
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		
 		painters = new ArrayList<Painter>();
-		cameraImages = new LinkedList<BufferedImage>();
 		
 		debugPrintOuts = new ArrayList<DebugOutputProvider>();
 	}
@@ -82,23 +80,35 @@ public class Screen implements Runnable {
 		ScreenManager.closeFrame();
 	}
 	
+	Graphics2D imageGraphics;
+	
 	private void loop() {
 		long currentTime = System.nanoTime();
 		long elapsedTime = 0;
 		
 		while (isRunning) {
 			
-			//FIXME: Huge performance drain somewhere
-			
 			elapsedTime = System.nanoTime() - currentTime;
 			currentTime = System.nanoTime();
 			
 			g2d = ScreenManager.getGraphics();
-			g2d.clearRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
 			
-			image = new BufferedImage(ScreenManager.getWidth(), ScreenManager.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			//FIXME: Figure out what should and shouldn't be done.
 			
-			Graphics2D imageGraphics = image.createGraphics();
+			//g2d.clearRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+			
+			//image = new BufferedImage(ScreenManager.getWidth(), ScreenManager.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			
+			//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
+			//g2d.fillRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+			//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+			
+			imageGraphics = image.createGraphics();
+			
+			//imageGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
+			//imageGraphics.fillRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+			//imageGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+			
 			//Get all painter images
 			for (Painter painter : painters) {
 				rect = painter.getScreenRectangle();
