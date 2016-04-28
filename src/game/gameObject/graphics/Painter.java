@@ -68,6 +68,8 @@ public abstract class Painter extends BasicGameObject {
 	 * 
 	 * @param g2d
 	 *            the Graphics2D object to paint to
+	 * @deprecated
+	 * 		Use getImage
 	 */
 	public void paint(Graphics2D g2d) {
 		if (paintables != null && paintables.size() > 0) {
@@ -102,14 +104,16 @@ public abstract class Painter extends BasicGameObject {
 	 */
 	public BufferedImage getImage(){
 		if (paintables != null && paintables.size() > 0) {
-			translatedGraphics = image.createGraphics();
+			if(translatedGraphics == null){
+				translatedGraphics = image.createGraphics();
+			}
 			translatedGraphics.translate(-bounds.x, -bounds.y);
 			for (Paintable paintable : paintables) {
 				if (paintable.getBounds().intersects(bounds)) {
 					paintable.paint(translatedGraphics);
 				}
 			}
-			translatedGraphics.dispose();
+			translatedGraphics.translate(bounds.x, bounds.y);
 		}
 		return image;
 	}
