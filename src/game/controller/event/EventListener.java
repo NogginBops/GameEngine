@@ -1,7 +1,15 @@
 package game.controller.event;
 
-public abstract class EventListener {
+/**
+ * 
+ * @author Julius Häger
+ *
+ */
+public interface EventListener {
 
-	public abstract <T extends GameEvent> void eventFired(T event);
+	/**
+	 * @param event
+	 */
+	public <T extends GameEvent<?>> void eventFired(T event);
 
 }

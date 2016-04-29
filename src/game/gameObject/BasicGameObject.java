@@ -2,7 +2,14 @@ package game.gameObject;
 
 import java.awt.Rectangle;
 
+/**
+ * 
+ * @version 1.0
+ * @author Julius Häger
+ */
 public class BasicGameObject implements GameObject {
+	
+	//JAVADOC: BasicGameObject
 
 	/**
 	 * 
@@ -16,22 +23,51 @@ public class BasicGameObject implements GameObject {
 	/**
 	 * 
 	 */
-	protected float width;
+	protected int width;
 	/**
 	 * 
 	 */
-	protected float height;
-
+	protected int height;
+	
+	/**
+	 * 
+	 */
 	protected Rectangle bounds;
-
+	
+	/**
+	 * The current Z-order of the GameObject
+	 */
 	protected int zOrder;
 
-	public BasicGameObject(int x, int y, int width, int height, int zOrder) {
+	
+	//NOTE: Should maybe not take the zOrder as a param
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param zOrder
+	 */
+	public BasicGameObject(float x, float y, int width, int height, int zOrder) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		bounds = new Rectangle(x, y, width, height);
+		bounds = new Rectangle((int)x, (int)y, width, height);
+		this.zOrder = zOrder;
+	}
+	
+	/**
+	 * @param bounds
+	 * @param zOrder
+	 */
+	public BasicGameObject(Rectangle bounds, int zOrder) {
+		this.x = bounds.x;
+		this.y = bounds.y;
+		this.width = bounds.width;
+		this.height = bounds.height;
+		this.bounds = bounds;
 		this.zOrder = zOrder;
 	}
 
@@ -42,7 +78,10 @@ public class BasicGameObject implements GameObject {
 
 	@Override
 	public void updateBounds() {
-		bounds = new Rectangle((int) x, (int) y, (int) width, (int) height);
+		bounds.x = (int) x;
+		bounds.y = (int) y;
+		bounds.width = width;
+		bounds.height = height;
 	}
 
 	@Override

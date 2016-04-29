@@ -7,10 +7,6 @@ package game.IO.save;
  */
 public interface Saver<T> {
 
-	// TODO: General Output
-
-	// TODO: Save: interface
-
 	/**
 	 * @param request
 	 * @return

@@ -4,12 +4,21 @@ import java.util.Comparator;
 
 import game.UI.elements.UIElement;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class UISorter implements Comparator<UIElement> {
 	
+	//JAVADOC: UISorter
+	
+	/**
+	 * 
+	 */
 	public static UISorter instance;
 	
-	public UISorter() {
-		instance = this;
+	static{
+		instance = new UISorter();
 	}
 
 	@Override

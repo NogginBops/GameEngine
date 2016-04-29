@@ -6,5 +6,7 @@ package game.state;
  * @author Julius Häger
  */
 public class GameState extends State {
+	
 	// TODO: GameState
+	
 }

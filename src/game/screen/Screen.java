@@ -1,13 +1,14 @@
 package game.screen;
 
-import game.Game;
-import game.gameObject.graphics.Camera;
-import game.gameObject.graphics.Painter;
-import game.util.FPSCounter;
-import game.util.UpdateCounter;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+
+import game.debug.DebugOutputProvider;
+import game.gameObject.graphics.Painter;
+import game.input.Input;
+import game.util.FPSCounter;
 
 /**
  * A screen object manages repainting of a window
@@ -18,18 +19,27 @@ import java.awt.Graphics2D;
 public class Screen implements Runnable {
 
 	// JAVADOC: Screen
-
-	// TODO: Multiple cameras (Painters) with viewport rectangles
 	
-	// TODO: Add better debugging system
+	//TODO: Merge with ScreenManager!!!
 
 	private boolean isRunning = false;
 
 	private boolean debug = false;
 
 	private Graphics2D g2d;
-
-	private Painter painter;
+	
+	//TODO: Add support for image effects and filters
+	
+	//TODO: Support image effects for individual painters
+	
+	private ArrayList<Painter> painters;
+	
+	private ArrayList<DebugOutputProvider> debugPrintOuts;
+	
+	private BufferedImage image;
+	
+	//Temporary variable
+	private ScreenRect rect;
 
 	/**
 	 * @param width
@@ -39,6 +49,12 @@ public class Screen implements Runnable {
 	 */
 	public Screen(int width, int height, int state, String title) {
 		ScreenManager.createFrame(width, height, state, title);
+		
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		
+		painters = new ArrayList<Painter>();
+		
+		debugPrintOuts = new ArrayList<DebugOutputProvider>();
 	}
 
 	/**
@@ -56,32 +72,62 @@ public class Screen implements Runnable {
 	private void resetDisplay() {
 		ScreenManager.closeFrame();
 	}
-
+	
+	Graphics2D imageGraphics;
+	
 	private void loop() {
 		long currentTime = System.nanoTime();
 		long elapsedTime = 0;
+		
 		while (isRunning) {
+			
 			elapsedTime = System.nanoTime() - currentTime;
 			currentTime = System.nanoTime();
+			
 			g2d = ScreenManager.getGraphics();
-			g2d.clearRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
-			if (painter != null) {
-				painter.paint(g2d);
+			
+			//FIXME: Figure out what should and shouldn't be done.
+			
+			//g2d.clearRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+			
+			//image = new BufferedImage(ScreenManager.getWidth(), ScreenManager.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			
+			//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
+			//g2d.fillRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+			//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+			
+			imageGraphics = image.createGraphics();
+			
+			//imageGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
+			//imageGraphics.fillRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+			//imageGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+			
+			//Get all painter images
+			for (Painter painter : painters) {
+				rect = painter.getScreenRectangle();
+				
+				imageGraphics.drawImage(painter.getImage(), 
+						(int) (rect.getX() * ScreenManager.getWidth()), 
+						(int) (rect.getY() * ScreenManager.getHeight()), 
+						(int) (rect.getX2() * ScreenManager.getWidth()), 
+						(int) (rect.getY2() * ScreenManager.getHeight()),
+						null);
 			}
+			
+			imageGraphics.dispose();
+			
+			g2d.drawImage(image, 0, 0, ScreenManager.getWidth(), ScreenManager.getHeight(), null);
+			
+			//TODO: Better on screen debug
+			
 			if (debug) {
 				g2d.setColor(Color.GREEN.brighter());
-				g2d.drawString(("Frame: " + FPSCounter.framesTot), 20, 20);
-				g2d.drawString(("Updates: " + UpdateCounter.updatesTot), 20, 40);
-				g2d.drawString(("ElapsedTime: " + elapsedTime), 20, 60);
-				g2d.drawString(("Time: " + FPSCounter.timeTot), 20, 80);
-				g2d.drawString(("FPS: " + FPSCounter.fps), 20, 100);
-				g2d.drawString(("Average FPS: " + FPSCounter.averageFPS), 20, 120);
-				g2d.drawString("Frames dropped: " + ScreenManager.framesDropped, 20, 140);
-				g2d.drawString(("UPS: " + UpdateCounter.ups), 20, 160);
-				g2d.drawString(("Average UPS: " + UpdateCounter.averageUPS), 20, 180);
-				g2d.drawString("Camera X: " + ((Camera) painter).getBounds().x, 20, 200);
-				g2d.drawString("Camera Y: " + ((Camera) painter).getBounds().y, 20, 220);
-				g2d.drawString("Objects: " + Game.getGameObjectHandler().numberOfGameObjects(), 20, 240);
+				for (int i = 0; i < debugPrintOuts.size(); i++) {
+					for (String debugOutput : debugPrintOuts.get(i).GetDebugValues()) {
+						i++;
+						g2d.drawString(debugOutput, 20, 20 * i);
+					}
+				}
 			}
 
 			g2d.dispose();
@@ -90,6 +136,12 @@ public class Screen implements Runnable {
 			ScreenManager.update();
 
 			FPSCounter.update(elapsedTime / 1000000000f);
+			
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -115,10 +167,18 @@ public class Screen implements Runnable {
 	 * @param painter
 	 *            the painter to paint with
 	 */
-	public void setPainter(Painter painter) {
-		this.painter = painter;
+	public void addPainter(Painter painter) {
+		this.painters.add(painter);
 	}
-
+	
+	/**
+	 * 
+	 * @param painter
+	 */
+	public void removePainter(Painter painter){
+		this.painters.remove(painter);
+	}
+	
 	/**
 	 * 
 	 * @param enabled
@@ -150,5 +210,31 @@ public class Screen implements Runnable {
 	 */
 	public void setResolution(int width, int height) {
 		ScreenManager.setRes(width, height);
+		
+		synchronized (image) {
+			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void requestFocus(){
+		ScreenManager.requestFocus();
+	}
+
+	/**
+	 * @param inputHandler
+	 */
+	public void addInputListener(Input inputHandler) {
+		ScreenManager.addInputListener(inputHandler);
+	}
+	
+	/**
+	 * 
+	 * @param provider
+	 */
+	public void addDebugText(DebugOutputProvider provider){
+		debugPrintOuts.add(provider);
 	}
 }

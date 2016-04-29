@@ -1,43 +1,59 @@
 package game.gameObject.physics;
 
-import game.util.GameObjectHandler;
-import game.util.UpdateListener;
-
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import game.Game;
+import game.gameObject.BasicGameObject;
+import game.gameObject.handler.GameObjectHandler;
+import game.util.UpdateListener;
 
 /**
  * 
  * @author Julius Häger
  */
-public class PhysicsEngine implements UpdateListener {
+public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 
 	// JAVADOC: PhysicsEngine
 
 	// TODO: PhysicsEngine
+	
+	// TODO: Physics layers
 
 	private GameObjectHandler gameObjectHandeler;
 	
-	private HashMap<Integer, CopyOnWriteArrayList<Collidable>> collidablesMap = new HashMap<>();
+	//TODO: Explore if this solution is better than the one currently in use
+	@SuppressWarnings("unused")
+	private HashMap<Integer, CopyOnWriteArrayList<Collidable>> collidablesMap = new HashMap<Integer, CopyOnWriteArrayList<Collidable>>();
 
-	//TODO: Use the HashMap instead.
+	//TODO: Explore the HashMap solution.
 	private CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>> collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 
 	/**
 	 * @param gameObjectHandeler
 	 */
 	public PhysicsEngine(GameObjectHandler gameObjectHandeler) {
+		super(0, 0, 0, 0, 0);
 		this.gameObjectHandeler = gameObjectHandeler;
+		
+		Game.log.logMessage("PhysicsEngine created", "Physics");
 	}
-
+	
+	CopyOnWriteArrayList<Collidable> tempList;
+	
 	@Override
 	public void update(long timeMillis) {
-		if (gameObjectHandeler.haveObjectsChanged()) {
+		if (gameObjectHandeler.shouldUpdateObjects()) {
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
-			//FIXME: Change to not consider empty z levels.
 			for (int z : gameObjectHandeler.getZLevels()) {
-				collidables.add(gameObjectHandeler.getAllGameObjectsAtZLevelExtending(z, Collidable.class));
+				tempList = gameObjectHandeler.getAllGameObjectsAtZLevelExtending(z, Collidable.class);
+				if(tempList.size() > 1){
+					collidables.add(tempList);
+				}
+			}
+			if(collidables.size() < 1){
+				return;
 			}
 		}
 

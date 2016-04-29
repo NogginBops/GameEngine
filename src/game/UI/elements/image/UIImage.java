@@ -6,20 +6,41 @@ import java.awt.Image;
 
 import game.UI.elements.UIElement;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class UIImage extends UIElement {
+	
+	//JAVADOC: UIImage
 	
 	protected Image image;
 	
+	/**
+	 * @param image
+	 * @param x
+	 * @param y
+	 */
 	public UIImage(Image image, int x, int y) {
 		super(x, y, image.getWidth(null), image.getHeight(null));
 		this.image = image;
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param image
+	 */
 	public UIImage(int x, int y, int width, int height, Image image){
 		super(x, y, width, height);
 		this.image = image;
 	}
 	
+	/**
+	 * 
+	 */
 	public void setNativeSize(){
 		if(image != null){
 			area.setSize(image.getWidth(null), image.getHeight(null));

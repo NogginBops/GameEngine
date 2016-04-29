@@ -1,12 +1,13 @@
 package demos.pong;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+import demos.pong.Pad.Side;
+import demos.pong.event.PlayerScoreEvent;
+import game.Game;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.gameObject.graphics.Sprite;
@@ -45,12 +46,6 @@ public class Ball extends Sprite implements Collidable{
 	}
 
 	@Override
-	public void paint(Graphics2D g2d) {
-		g2d.setColor(Color.WHITE);
-		g2d.fill(bounds);
-	}
-
-	@Override
 	public void update(long timeMillis) {
 		super.update(timeMillis);
 		if (!outerBounds.contains(bounds)) {
@@ -62,10 +57,16 @@ public class Ball extends Sprite implements Collidable{
 				setDY(-getDY());
 			}
 			if (bounds.getMinX() < outerBounds.getMinX()) {
-				Score.right++;
+				
+				Game.eventMachine.fireEvent(new PlayerScoreEvent(this, Side.RIGHT));
+				
+				Game.log.logMessage("Right player scored", "Pong", "Score");
 				resetBall();
 			} else if (bounds.getMaxX() > outerBounds.getMaxX()) {
-				Score.left++;
+				
+				Game.eventMachine.fireEvent(new PlayerScoreEvent(this, Side.LEFT));
+				
+				Game.log.logMessage("Left player scored", "Pong", "Score");
 				resetBall();
 			}
 			AudioEngine.playSound(new AudioSource(x, y, beep));

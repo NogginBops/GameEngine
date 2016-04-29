@@ -142,4 +142,11 @@ public class IDHandler<T> {
 		lastID = testID.id;
 		return true;
 	}
+	
+	/**
+	 * @return
+	 */
+	public int getLastID(){
+		return lastID;
+	}
 }

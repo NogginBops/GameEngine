@@ -1,9 +1,9 @@
 package game.input;
 
 import game.gameObject.graphics.Camera;
+import game.gameObject.handler.GameObjectHandler;
 import game.input.mouse.MouseListener;
 import game.screen.ScreenManager;
-import game.util.GameObjectHandler;
 import game.util.InverseGameObjectComparator;
 
 import java.awt.event.MouseEvent;
@@ -19,6 +19,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MouseInputHandler {
 
 	// JAVADOC: MouseInputHandler
+	
+	//FIXME: Respond to multiple cameras
 
 	private GameObjectHandler gameObjectHandeler;
 
@@ -118,7 +120,7 @@ public class MouseInputHandler {
 	public void mouseDragged(MouseEvent e) {
 		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
 				(int) camera.getY() - ScreenManager.getInsets().top);
-		if (gameObjectHandeler.haveObjectsChanged()) {
+		if (gameObjectHandeler.shouldUpdateObjects()) {
 			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
 		}
 		for (MouseListener listener : listeners) {
@@ -134,7 +136,7 @@ public class MouseInputHandler {
 	public void mouseMoved(MouseEvent e) {
 		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
 				(int) camera.getY() - ScreenManager.getInsets().top);
-		if (gameObjectHandeler.haveObjectsChanged()) {
+		if (gameObjectHandeler.shouldUpdateObjects()) {
 			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
 		}
 		listeners.sort(invComparator);
@@ -175,10 +177,11 @@ public class MouseInputHandler {
 	 * 
 	 */
 	public void computeEnteredListeners() {
+		if (gameObjectHandeler.shouldUpdateObjects()) {
+			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
+		}
+		
 		if (lastEvent != null) {
-			if (gameObjectHandeler.haveObjectsChanged()) {
-				listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
-			}
 			listeners.sort(invComparator);
 			for (MouseListener listener : listeners) {
 				if (listener.getBounds().contains(lastEvent.getX(), lastEvent.getY())

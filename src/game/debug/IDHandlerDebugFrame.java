@@ -13,6 +13,12 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import game.Game;
+import game.controller.event.EventListener;
+import game.controller.event.GameEvent;
+import game.gameObject.handler.event.GameObjectCreatedEvent;
+import game.gameObject.handler.event.GameObjectDestryoedEvent;
+import game.gameObject.handler.event.GameObjectEvent;
 import game.util.ID;
 import game.util.IDHandler;
 
@@ -27,12 +33,16 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	 * 
 	 */
 	private static final long serialVersionUID = 6735343486517710772L;
+	
+	private IDHandler<T> handler;
 
 	private JPanel contentPane;
 	private JPanel panel;
 	private JScrollPane scrollPane;
 	private JTable table;
 	private JButton btnRefresh;
+	
+	private boolean closeRequested = false;
 
 	/**
 	 * Launch the application.
@@ -60,6 +70,7 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	 * @param handler
 	 */
 	public IDHandlerDebugFrame(IDHandler<T> handler) {
+		this.handler = handler;
 
 		setTitle("ID Handler Debug Window");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -103,14 +114,15 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 			}
 		});
 		panel.add(btnRefresh, BorderLayout.NORTH);
-
+		
 		updateIDs(handler.getAllIDs());
 	}
 
 	/**
 	 * 
 	 */
-	public void stoppDebug() {
+	public void stopDebug() {
+		closeRequested = true;
 		dispose();
 	}
 
@@ -118,8 +130,8 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	 * @param ids
 	 * 
 	 */
-	@SuppressWarnings("rawtypes")
-	private void updateIDs(ID[] ids) {
+	
+	private void updateIDs(ID<?>[] ids) {
 		Object[][] tableData = new Object[ids.length][3];
 		for (int x = 0; x < tableData.length; x++) {
 			tableData[x][0] = ids[x].name;
@@ -133,11 +145,10 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 			 */
 			private static final long serialVersionUID = 650289327416122528L;
 
-			Class[] columnTypes = new Class[] { String.class, Integer.class, String.class };
+			Class<?>[] columnTypes = new Class[] { String.class, Integer.class, String.class };
 
-			@SuppressWarnings("unchecked")
 			@Override
-			public Class getColumnClass(int columnIndex) {
+			public Class<?> getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 
@@ -152,5 +163,29 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	@Override
 	public void run() {
 		this.setVisible(true);
+		
+		EventListener listener = new EventListener() {
+			@Override
+			public <T2 extends GameEvent<?>> void eventFired(T2 event) {
+				updateIDs(handler.getAllIDs());
+			}
+		};
+		//FIXME: Event Hierarchies
+		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, listener);
+		
+		Game.eventMachine.addEventListener(GameObjectDestryoedEvent.class, listener);
+		
+		Game.eventMachine.addEventListener(GameObjectEvent.class, listener);
+		
+		while(!closeRequested){
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
+	
+	
+	
 }

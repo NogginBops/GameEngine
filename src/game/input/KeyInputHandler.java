@@ -1,7 +1,7 @@
 package game.input;
 
+import game.gameObject.handler.GameObjectHandler;
 import game.input.keys.KeyListener;
-import game.util.GameObjectHandler;
 
 import java.awt.event.KeyEvent;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -38,6 +38,13 @@ public class KeyInputHandler {
 	public void selectListener(KeyListener listener) {
 		selectedListener = listener;
 	}
+	
+	/**
+	 * 
+	 */
+	public void updateListeners(){
+		listeners = gameObjectHandeler.getAllGameObjectsExtending(KeyListener.class);
+	}
 
 	/**
 	 * 
@@ -47,9 +54,6 @@ public class KeyInputHandler {
 	public void keyTyped(KeyEvent e) {
 		if (selectedListener != null) {
 			selectedListener.keyTyped(e);
-		}
-		if (gameObjectHandeler.haveObjectsChanged()) {
-			listeners = gameObjectHandeler.getAllGameObjectsExtending(KeyListener.class);
 		}
 		for (KeyListener listener : listeners) {
 			if (listener.shouldReceiveKeyboardInput()) {
@@ -67,9 +71,6 @@ public class KeyInputHandler {
 		if (selectedListener != null) {
 			selectedListener.keyPressed(e);
 		}
-		if (gameObjectHandeler.haveObjectsChanged()) {
-			listeners = gameObjectHandeler.getAllGameObjectsExtending(KeyListener.class);
-		}
 		for (KeyListener listener : listeners) {
 			if (listener.shouldReceiveKeyboardInput()) {
 				listener.keyPressed(e);
@@ -85,9 +86,6 @@ public class KeyInputHandler {
 	public void keyReleased(KeyEvent e) {
 		if (selectedListener != null) {
 			selectedListener.keyReleased(e);
-		}
-		if (gameObjectHandeler.haveObjectsChanged()) {
-			listeners = gameObjectHandeler.getAllGameObjectsExtending(KeyListener.class);
 		}
 		for (KeyListener listener : listeners) {
 			if (listener.shouldReceiveKeyboardInput()) {

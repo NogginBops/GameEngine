@@ -1,7 +1,5 @@
 package demos.pong;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
@@ -81,12 +79,6 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 	}
 
 	@Override
-	public void paint(Graphics2D g2d) {
-		g2d.setColor(Color.WHITE);
-		g2d.fill(bounds);
-	}
-
-	@Override
 	public void keyTyped(KeyEvent e) {
 
 	}
@@ -137,7 +129,8 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 
 	@Override
 	public void hasCollided(Collidable collisionObject) {
-		System.out.println("Collided: " + this);
+		//Game.log.logMessage("Collided: " + this, "Pong", "Pad");
+		//System.out.println("Collided: " + this);
 		
 		Rectangle2D ballBounds = collisionObject.getBounds();
 		float inclenation = (float) (ballBounds.getY() - bounds.y) / bounds.height;

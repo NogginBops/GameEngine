@@ -1,5 +1,7 @@
 package game.input;
 
+import game.Game;
+import game.gameObject.BasicGameObject;
 import game.util.UpdateListener;
 
 import java.awt.event.KeyEvent;
@@ -15,7 +17,7 @@ import javax.swing.event.MouseInputListener;
  * @version 1.0
  * @author Julius Häger
  */
-public class Input implements KeyListener, MouseInputListener, MouseWheelListener, UpdateListener {
+public class Input extends BasicGameObject implements KeyListener, MouseInputListener, MouseWheelListener, UpdateListener {
 
 	private MouseInputHandler mouseHandler;
 
@@ -28,6 +30,7 @@ public class Input implements KeyListener, MouseInputListener, MouseWheelListene
 	 * @param keyHandeler
 	 */
 	public Input(MouseInputHandler mouseHandeler, KeyInputHandler keyHandeler) {
+		super(0, 0, 0, 0, 0);
 		this.mouseHandler = mouseHandeler;
 		this.keyHandler = keyHandeler;
 	}
@@ -90,5 +93,9 @@ public class Input implements KeyListener, MouseInputListener, MouseWheelListene
 	@Override
 	public void update(long timeMillis) {
 		mouseHandler.computeEnteredListeners();
+		
+		if(Game.getGameObjectHandler().shouldUpdateObjects()){
+			keyHandler.updateListeners();
+		}
 	}
 }

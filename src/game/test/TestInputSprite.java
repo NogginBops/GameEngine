@@ -10,6 +10,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class TestInputSprite extends Sprite implements MouseListener, KeyListener {
 
 	private Color color;
@@ -40,6 +44,9 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 
 	@Override
 	public void paint(Graphics2D g2d) {
+		
+		//This is custom paint behavior that should not inherit Sprites paint behavior.
+		
 		g2d.setColor(color);
 		g2d.fillRect((int) x, (int) y, (int) width, (int) height);
 		g2d.setColor(color.darker());

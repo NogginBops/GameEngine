@@ -1,16 +1,17 @@
 package game.gameObject.graphics;
 
-import game.Game;
-import game.gameObject.GameObject;
-import game.gameObject.physics.Movable;
-import game.input.keys.KeyListener;
-import game.util.GameObjectHandler;
-import game.util.UpdateListener;
-
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+
+import game.Game;
+import game.gameObject.GameObject;
+import game.gameObject.handler.GameObjectHandler;
+import game.gameObject.physics.Movable;
+import game.input.keys.KeyListener;
 
 /**
  * A Camera is the object responsible for looking into a {@link Game Games}
@@ -19,25 +20,15 @@ import java.awt.event.KeyEvent;
  * @version 1.0
  * @author Julius Häger
  */
-public class Camera extends Painter implements Movable, UpdateListener, KeyListener {
+public class Camera extends Painter implements Movable, KeyListener {
 
 	// TODO: Remove movement code
 
-	// TODO: Fix gameObjectHandeler in constructor
-
 	private GameObjectHandler gameObjectHandler;
-
-	private float x;
-	private float y;
-
-	private int width;
-	private int height;
-
+	
 	private float dx;
 	private float dy;
-
-	private int ZOrder = Integer.MAX_VALUE - 8;
-
+	
 	private boolean shouldReceiveKeyboardInput = false;
 
 	private int cameraMovementSpeed = 200;
@@ -67,12 +58,10 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	 * @param height
 	 *            - The height of the Camera viewport (in pixels).
 	 */
-	public Camera(GameObjectHandler gameObjectHandeler, int x, int y, int width, int height) {
-		this.gameObjectHandler = gameObjectHandeler;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+	public Camera(int x, int y, int width, int height) {
+		super((int)x, (int)y, width, height, Integer.MAX_VALUE - 8);
+		
+		this.gameObjectHandler = Game.getGameObjectHandler();
 		updateBounds();
 	}
 
@@ -145,12 +134,63 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	public int getHeight() {
 		return height;
 	}
+	
+	/**
+	 * Sets the width of the camera.
+	 * 
+	 * @param width
+	 */
+	public void setWidth(int width){
+		this.width = width;
+		updateBounds();
+		
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		translatedGraphics = image.createGraphics();
+		originalTransform = translatedGraphics.getTransform();
+	}
+	
+	/**
+	 * Sets the height of the camera.
+	 * 
+	 * @param height
+	 */
+	public void setHeight(int height){
+		this.height = height;
+		updateBounds();
+		
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		translatedGraphics = image.createGraphics();
+		originalTransform = translatedGraphics.getTransform();
+	}
+	
+	/**
+	 * Sets the width and height of the camera.
+	 * 
+	 * @param width
+	 * @param height
+	 */
+	public void setSize(int width, int height){
+		this.width = width;
+		this.height = height;
+		updateBounds();
+		
+		
+		//TODO: Synchronize?
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		translatedGraphics = image.createGraphics();
+		originalTransform = translatedGraphics.getTransform();
+	}
 
 	@Override
 	public void update(long timeNano) {
 		x += (dx * timeNano) / 1000000000;
 		y += (dy * timeNano) / 1000000000;
 		updateBounds();
+		
+		//This update is synced with the gameobjecthandler
+		if (gameObjectHandler.shouldUpdateObjects()) {
+			paintables = gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
+		}
 	}
 
 	/**
@@ -158,19 +198,48 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	 * 
 	 * <p>
 	 * This methods only updates {@link #paintables} array when
-	 * {@link GameObjectHandler#haveObjectsChanged() haveObjectsChanged} method
+	 * {@link GameObjectHandler#shouldUpdateObjects()} method
 	 * returns true.
 	 * </p>
+	 * @deprecated
 	 */
 	@Override
 	public void paint(Graphics2D g2d) {
+		
 		g2d.setBackground(backgroundColor);
 		g2d.setColor(backgroundColor);
 		g2d.fillRect(0, 0, width, height);
-		if (gameObjectHandler.haveObjectsChanged()) {
+		
+		//This thread is not synced with gameobjecthandler and such should not update them here
+		
+		/*if (gameObjectHandler.shouldUpdateObjects()) {
 			paintables = gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
-		}
+			
+			System.out.println("Updated paintables");
+		}*/
+		
 		super.paint(g2d);
+	}
+	
+	//Graphics2D g2d;
+	
+	@Override
+	public BufferedImage getImage() {
+		if(translatedGraphics == null){
+			translatedGraphics = image.createGraphics();
+			originalTransform = translatedGraphics.getTransform();
+		}
+		
+		//g2d = image.createGraphics();
+		
+		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+		translatedGraphics.setColor(backgroundColor);
+		translatedGraphics.fillRect(0, 0, width, height);
+		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+		
+		//g2d.dispose();
+		
+		return super.getImage();
 	}
 
 	/**
@@ -184,7 +253,10 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	 */
 	@Override
 	public void updateBounds() {
-		bounds = new Rectangle((int) x, (int) y, width, height);
+		bounds.x = (int) x;
+		bounds.y = (int) y;
+		bounds.width = width;
+		bounds.height = height;
 	}
 
 	/**
@@ -210,15 +282,15 @@ public class Camera extends Painter implements Movable, UpdateListener, KeyListe
 	 */
 	@Override
 	public int getZOrder() {
-		return ZOrder;
+		return zOrder;
 	}
 
 	@Override
 	public int compareTo(GameObject object) {
-		if (ZOrder == object.getZOrder()) {
+		if (zOrder == object.getZOrder()) {
 			return 0;
 		} else {
-			return ZOrder > object.getZOrder() ? 1 : -1;
+			return zOrder > object.getZOrder() ? 1 : -1;
 		}
 	}
 
