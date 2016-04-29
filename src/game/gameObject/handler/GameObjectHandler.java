@@ -142,6 +142,7 @@ public class GameObjectHandler {
 	 * @return
 	 */
 	public CopyOnWriteArrayList<Integer> getZLevels() {
+		//TODO: Try make this not allocate memory
 		return new CopyOnWriteArrayList<>(gameObjectMap.keySet());
 	}
 
@@ -162,8 +163,6 @@ public class GameObjectHandler {
 	 *         the class T.
 	 */
 	public <T extends GameObject> CopyOnWriteArrayList<T> getAllGameObjectsExtending(Class<T> classT) {
-		// System.out.println("Called getAllGameObjectsExtending() with
-		// arguments: " + classT);
 		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
 		for (GameObject object : gameObjects) {
 			if (classT.isAssignableFrom(object.getClass())) {
@@ -179,8 +178,6 @@ public class GameObjectHandler {
 	 * @return
 	 */
 	public CopyOnWriteArrayList<GameObject> getAllGameObjectsAtZLevel(int zLevel) {
-		// System.out.println("Called getAllGameObjectsAtZLevel() with
-		// arguments: " + zLevel);
 		return gameObjectMap.get(zLevel);
 	}
 
@@ -190,11 +187,7 @@ public class GameObjectHandler {
 	 * @param classT
 	 * @return
 	 */
-	public <T extends GameObject> CopyOnWriteArrayList<T> getAllGameObjectsAtZLevelExtending(int zLevel,
-			Class<T> classT) {
-		// System.out.println("Called
-		// getAllGameObjectsAtZLevelGameObjectExtending() with arguments: " +
-		// zLevel + " and " + classT);
+	public <T extends GameObject> CopyOnWriteArrayList<T> getAllGameObjectsAtZLevelExtending(int zLevel, Class<T> classT) {
 		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
 		for (GameObject object : getAllGameObjectsAtZLevel(zLevel)) {
 			if (classT.isAssignableFrom(object.getClass())) {

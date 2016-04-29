@@ -121,6 +121,8 @@ public abstract class UIElement{
 	 * @return
 	 */
 	public Rectangle getBounds() {
+		
+		//TODO: Pre compute?
 		Rectangle parentArea = parent.getBounds();
 		return new Rectangle(area.x + parentArea.x, area.y + parentArea.y, area.width, area.height);
 	}

@@ -61,6 +61,7 @@ public abstract class Border {
 	 * @return
 	 */
 	public Rectangle getInnerArea(Rectangle rect) {
+		//TODO: Pre compute?
 		return new Rectangle(rect.x + left, rect.y + top, rect.width - right - left, rect.height - bottom - top);
 	}
 

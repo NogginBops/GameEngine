@@ -78,7 +78,10 @@ public class BasicGameObject implements GameObject {
 
 	@Override
 	public void updateBounds() {
-		bounds = new Rectangle((int) x, (int) y, (int) width, (int) height);
+		bounds.x = (int) x;
+		bounds.y = (int) y;
+		bounds.width = width;
+		bounds.height = height;
 	}
 
 	@Override

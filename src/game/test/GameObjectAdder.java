@@ -42,7 +42,7 @@ public class GameObjectAdder implements GameObject, MouseListener {
 
 	@Override
 	public void updateBounds() {
-
+		
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package game.gameObject.graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
@@ -187,7 +188,11 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 	 */
 	@Override
 	public void updateBounds() {
-		bounds = new Rectangle((int) x, (int) y, width, height);
+		bounds.x = (int) x;
+		bounds.y = (int) y;
+		bounds.width = width;
+		bounds.height = height;
+		//bounds = new Rectangle((int) x, (int) y, width, height);
 	}
 
 	@Override

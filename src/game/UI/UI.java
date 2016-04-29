@@ -51,7 +51,7 @@ public class UI extends UIContainer implements Paintable {
 
 	@Override
 	public void updateBounds() {
-
+		//TODO: Fix UI bounds!
 	}
 
 	@Override

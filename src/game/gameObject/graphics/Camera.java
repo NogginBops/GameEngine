@@ -253,7 +253,10 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 */
 	@Override
 	public void updateBounds() {
-		bounds = new Rectangle((int) x, (int) y, width, height);
+		bounds.x = (int) x;
+		bounds.y = (int) y;
+		bounds.width = width;
+		bounds.height = height;
 	}
 
 	/**
