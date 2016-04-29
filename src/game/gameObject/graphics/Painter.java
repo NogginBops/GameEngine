@@ -1,6 +1,7 @@
 package game.gameObject.graphics;
 
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -41,7 +42,9 @@ public abstract class Painter extends BasicGameObject {
 	 */
 	protected BufferedImage image;
 	
-	private Graphics2D translatedGraphics;
+	protected Graphics2D translatedGraphics;
+	
+	protected AffineTransform originalTransform;
 	
 	/**
 	 * 
@@ -106,6 +109,7 @@ public abstract class Painter extends BasicGameObject {
 		if (paintables != null && paintables.size() > 0) {
 			if(translatedGraphics == null){
 				translatedGraphics = image.createGraphics();
+				originalTransform = translatedGraphics.getTransform();
 			}
 			translatedGraphics.translate(-bounds.x, -bounds.y);
 			for (Paintable paintable : paintables) {
@@ -113,7 +117,7 @@ public abstract class Painter extends BasicGameObject {
 					paintable.paint(translatedGraphics);
 				}
 			}
-			translatedGraphics.translate(bounds.x, bounds.y);
+			translatedGraphics.setTransform(originalTransform);
 		}
 		return image;
 	}

@@ -18,7 +18,7 @@ public class GameQuitEvent extends GameEvent<Game> {
 	 * @param command
 	 */
 	public GameQuitEvent(Game origin, String command) {
-		super(origin, command);
+		super(origin, "Quit: " + command);
 	}
 	
 }

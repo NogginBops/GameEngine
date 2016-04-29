@@ -127,7 +127,7 @@ public class Game extends Updater {
 		
 		basicDebug();
 
-		//test();
+		test();
 		//test2();
 		// test2WithAudio();
 		// pong();
@@ -135,7 +135,7 @@ public class Game extends Updater {
 		// breakout();
 		//UITest();
 		
-		verticalScroller();
+		//verticalScroller();
 		
 		cameraTest();
 		//cameraTest2();
@@ -311,6 +311,7 @@ public class Game extends Updater {
 		gameObjectHandler.addGameObject(camera, "Main camera");
 	}
 	
+	//FIXME: This is a memory intensive solution and has to go
 	private void basicDebug(){
 		screen.addDebugText(() -> { return new String[]{
 				"Frames: " + FPSCounter.framesTot,
@@ -342,7 +343,7 @@ public class Game extends Updater {
 	
 	private void onQuit() {
 		if(IDDebug != null){
-		IDDebug.stopDebug();
+			IDDebug.stopDebug();
 		}
 		
 		if(LogFrame != null){
@@ -581,6 +582,8 @@ public class Game extends Updater {
 		long elapsedTime;
 		
 		log.logMessage("Pre run time: " + (startTime - initTime) / 1000000000f, "System");
+		
+		//FIXME: Allocating a lot of memory when updating many GameObjects
 
 		log.logMessage("Running!", "System");
 		running = true;

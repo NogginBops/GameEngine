@@ -145,7 +145,8 @@ public class Camera extends Painter implements Movable, KeyListener {
 		updateBounds();
 		
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		
+		translatedGraphics = image.createGraphics();
+		originalTransform = translatedGraphics.getTransform();
 	}
 	
 	/**
@@ -158,7 +159,8 @@ public class Camera extends Painter implements Movable, KeyListener {
 		updateBounds();
 		
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		
+		translatedGraphics = image.createGraphics();
+		originalTransform = translatedGraphics.getTransform();
 	}
 	
 	/**
@@ -172,8 +174,11 @@ public class Camera extends Painter implements Movable, KeyListener {
 		this.height = height;
 		updateBounds();
 		
-		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		
+		//TODO: Synchronize?
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		translatedGraphics = image.createGraphics();
+		originalTransform = translatedGraphics.getTransform();
 	}
 
 	@Override
@@ -196,6 +201,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * {@link GameObjectHandler#shouldUpdateObjects()} method
 	 * returns true.
 	 * </p>
+	 * @deprecated
 	 */
 	@Override
 	public void paint(Graphics2D g2d) {
@@ -215,19 +221,23 @@ public class Camera extends Painter implements Movable, KeyListener {
 		super.paint(g2d);
 	}
 	
-	Graphics2D g2d;
+	//Graphics2D g2d;
 	
 	@Override
 	public BufferedImage getImage() {
+		if(translatedGraphics == null){
+			translatedGraphics = image.createGraphics();
+			originalTransform = translatedGraphics.getTransform();
+		}
 		
-		g2d = image.createGraphics();
+		//g2d = image.createGraphics();
 		
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-		g2d.setColor(backgroundColor);
-		g2d.fillRect(0, 0, width, height);
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+		translatedGraphics.setColor(backgroundColor);
+		translatedGraphics.fillRect(0, 0, width, height);
+		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 		
-		g2d.dispose();
+		//g2d.dispose();
 		
 		return super.getImage();
 	}

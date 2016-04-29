@@ -129,6 +129,7 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 		timer += timeNano / 1000000000f;
 		if(isSpaceDown){
 			if(timer > delay){
+				//TODO: Pool projectiles?
 				BasicProjectile projectileGO = new BasicProjectile(projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -350);
 				Game.getGameObjectHandler().addGameObject(projectileGO);
 				
