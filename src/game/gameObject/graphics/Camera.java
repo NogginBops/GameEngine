@@ -145,6 +145,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 		updateBounds();
 		
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
 		originalTransform = translatedGraphics.getTransform();
 	}
@@ -159,6 +160,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 		updateBounds();
 		
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
 		originalTransform = translatedGraphics.getTransform();
 	}
@@ -174,9 +176,9 @@ public class Camera extends Painter implements Movable, KeyListener {
 		this.height = height;
 		updateBounds();
 		
-		
 		//TODO: Synchronize?
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
 		originalTransform = translatedGraphics.getTransform();
 	}
@@ -201,7 +203,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * {@link GameObjectHandler#shouldUpdateObjects()} method
 	 * returns true.
 	 * </p>
-	 * @deprecated
+	 * @deprecated //TODO: Maybe make some kind of fallback painting for Painters
 	 */
 	@Override
 	public void paint(Graphics2D g2d) {
@@ -230,14 +232,10 @@ public class Camera extends Painter implements Movable, KeyListener {
 			originalTransform = translatedGraphics.getTransform();
 		}
 		
-		//g2d = image.createGraphics();
-		
 		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 		translatedGraphics.setColor(backgroundColor);
 		translatedGraphics.fillRect(0, 0, width, height);
 		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
-		
-		//g2d.dispose();
 		
 		return super.getImage();
 	}

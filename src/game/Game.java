@@ -127,9 +127,9 @@ public class Game extends Updater {
 		
 		basicDebug();
 
-		test();
+		//test();
 		//test2();
-		// test2WithAudio();
+		 test2WithAudio();
 		// pong();
 		// pong44();
 		// breakout();
@@ -137,7 +137,7 @@ public class Game extends Updater {
 		
 		//verticalScroller();
 		
-		cameraTest();
+		//cameraTest();
 		//cameraTest2();
 		
 		completeSetup();
@@ -220,7 +220,6 @@ public class Game extends Updater {
 		
 		camera.setSize(400, 600);
 		
-		screen.setDebugEnabled(true);
 		camera.receiveKeyboardInput(false);
 		
 		camera.setBackgroundColor(new Color(80, 111, 140));
@@ -290,7 +289,7 @@ public class Game extends Updater {
 		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
 		
-		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
+		screen = new Screen(800, 600, ScreenManager.NORMAL, "Game");
 		camera = new Camera(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
 		
 		camera.setBackgroundColor(new Color(0.15f, 0.15f, 0.15f, 1f));
@@ -313,6 +312,7 @@ public class Game extends Updater {
 	
 	//FIXME: This is a memory intensive solution and has to go
 	private void basicDebug(){
+		screen.setDebugEnabled(true);
 		screen.addDebugText(() -> { return new String[]{
 				"Frames: " + FPSCounter.framesTot,
 				"Updates: " + UpdateCounter.updatesTot,
@@ -356,7 +356,6 @@ public class Game extends Updater {
 	@SuppressWarnings("unused")
 	private void UITest() {
 		screen.setTitle("UI Test");
-		screen.setDebugEnabled(true);
 
 		camera.receiveKeyboardInput(true);
 		
@@ -398,8 +397,6 @@ public class Game extends Updater {
 
 	@SuppressWarnings("unused")
 	private void pong() {
-		screen.setDebugEnabled(true);
-		
 		screen.setTitle("Pong");
 
 		Pad rightPad = new Pad(camera.getWidth() - 60, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
@@ -425,8 +422,6 @@ public class Game extends Updater {
 
 	@SuppressWarnings("unused")
 	private void pong44() {
-		screen.setDebugEnabled(true);
-		
 		screen.setTitle("Pong44");
 
 		Pad rightPad = new Pad(ScreenManager.getWidth() - 50, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
@@ -469,9 +464,7 @@ public class Game extends Updater {
 	@SuppressWarnings("unused")
 	private void test() {
 		screen.setTitle("Test #1");
-
-		screen.setDebugEnabled(true);
-
+		
 		camera.receiveKeyboardInput(true);
 
 		OtherPaintable z1 = new OtherPaintable(0, 0, 100, 100, 1, Color.BLUE);
@@ -524,9 +517,7 @@ public class Game extends Updater {
 	@SuppressWarnings("unused")
 	private void test2() {
 		screen.setTitle("Test #2");
-
-		screen.setDebugEnabled(true);
-
+		
 		camera.receiveKeyboardInput(true);
 
 		GameObjectAdder adder = new GameObjectAdder(gameObjectHandler);
@@ -537,9 +528,7 @@ public class Game extends Updater {
 	@SuppressWarnings("unused")
 	private void test2WithAudio() {
 		screen.setTitle("Test #2");
-
-		screen.setDebugEnabled(true);
-
+		
 		camera.receiveKeyboardInput(true);
 
 		GameObjectAdderWithAudio adder = new GameObjectAdderWithAudio(-5, -5, gameObjectHandler);

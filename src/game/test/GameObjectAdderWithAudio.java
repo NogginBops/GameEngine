@@ -14,6 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Random;
 
@@ -129,5 +130,10 @@ public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseLis
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.WHITE);
 		g2d.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+	}
+
+	@Override
+	public BufferedImage getImage() {
+		return null;
 	}
 }

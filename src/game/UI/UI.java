@@ -1,6 +1,8 @@
 package game.UI;
 
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 import game.UI.elements.UIElement;
 import game.UI.elements.containers.UIContainer;
@@ -62,5 +64,16 @@ public class UI extends UIContainer implements Paintable {
 	@Override
 	public int getZOrder() {
 		return super.getZOrder();
+	}
+	
+	@Override
+	public void paint(Graphics2D g2d) {
+		super.paint(g2d);
+	}
+
+	@Override
+	public BufferedImage getImage() {
+		//TODO: Add support for pre-rendered UI
+		return null;
 	}
 }

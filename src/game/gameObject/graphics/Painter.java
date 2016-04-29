@@ -102,6 +102,8 @@ public abstract class Painter extends BasicGameObject {
 		return screenRectange;
 	}
 	
+	BufferedImage paintableImage;
+	//TODO: A getImage() -> paint(Graphics2d) fallback.
 	/**
 	 * @return
 	 */
@@ -114,7 +116,16 @@ public abstract class Painter extends BasicGameObject {
 			translatedGraphics.translate(-bounds.x, -bounds.y);
 			for (Paintable paintable : paintables) {
 				if (paintable.getBounds().intersects(bounds)) {
-					paintable.paint(translatedGraphics);
+					paintableImage = paintable.getImage();
+					if(paintableImage != null){
+						translatedGraphics.drawImage(paintableImage,
+								paintable.getBounds().x,
+								paintable.getBounds().y,
+								paintable.getBounds().width,
+								paintable.getBounds().height, null);
+					}else{
+						paintable.paint(translatedGraphics);
+					}
 				}
 			}
 			translatedGraphics.setTransform(originalTransform);

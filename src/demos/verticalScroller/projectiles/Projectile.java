@@ -1,5 +1,6 @@
 package demos.verticalScroller.projectiles;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -45,7 +46,13 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 	
 	@Override
 	public void paint(Graphics2D g2d) {
-		g2d.drawImage(sprite, (int)x, (int)y, width, height, null);
+		g2d.setColor(Color.magenta);
+		g2d.drawRect((int)x, (int)y, width, height);
+	}
+	
+	@Override
+	public BufferedImage getImage() {
+		return sprite;
 	}
 
 	@Override

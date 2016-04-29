@@ -95,8 +95,9 @@ public class Screen implements Runnable {
 			//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
 			//g2d.fillRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
 			//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
-			
-			imageGraphics = image.createGraphics();
+			if(imageGraphics == null){
+				imageGraphics = image.createGraphics();
+			}
 			
 			//imageGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
 			//imageGraphics.fillRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
@@ -114,9 +115,9 @@ public class Screen implements Runnable {
 						null);
 			}
 			
-			imageGraphics.dispose();
+			//imageGraphics.dispose();
 			
-			g2d.drawImage(image, 0, 0, ScreenManager.getWidth(), ScreenManager.getHeight(), null);
+			g2d.drawImage(image, 0, 0, null);
 			
 			//TODO: Better on screen debug
 			
@@ -213,6 +214,8 @@ public class Screen implements Runnable {
 		
 		synchronized (image) {
 			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+			imageGraphics.dispose();
+			imageGraphics = image.createGraphics();
 		}
 	}
 	

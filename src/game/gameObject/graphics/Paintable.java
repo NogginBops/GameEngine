@@ -3,6 +3,7 @@ package game.gameObject.graphics;
 import game.gameObject.GameObject;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 /**
  * The Paintable interface provides functions for painting a element using a
@@ -26,5 +27,12 @@ public interface Paintable extends GameObject {
 	 *            the current graphics object
 	 */
 	public void paint(Graphics2D g2d);
+	
+	/**
+	 * Used by a {@link Painter} to get a image representation of this paintable. 
+	 * If null is returned the {@link #paint(Graphics2D)} method is called as a fallback or more optimized drawing method.
+	 * @return
+	 */
+	public BufferedImage getImage();
 
 }

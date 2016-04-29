@@ -161,6 +161,11 @@ public abstract class Sprite extends BasicGameObject implements Paintable, Movab
 			g2d.drawImage(graphicsReadySprite, (int)x, (int)y, width, height, null);
 		}
 	}
+	
+	@Override
+	public BufferedImage getImage() {
+		return sprite;
+	}
 
 	@Override
 	public int getZOrder() {
