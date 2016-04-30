@@ -33,13 +33,15 @@ The `Movable` interface can be implemented to provide functions for a moving `Ga
 
 ###The `Collidable` interface and the `PhysicsEngine` class:
 ######Note!!! Both the `Colidable` interface and `PhysicsEngine` class are makeshift! Expect lots of changes to be made.
-The `Colidable` interface currently only contains the `hasCollided(Colidable)` method specification that gets called every update for all collisions with `Collidable` objects that update. This is done in the `PhysicsEngine` that iterates through all of the `Collidable` interfaces in each z-layer and checks to see if they have collided. In the future the `PhysicsEngine` will probably be running in its own thread and be able to handle not only `Collidable` interfaces but also more complicated things like RigidBodys.
+The `Colidable` interface currently only contains the `hasCollided(Colidable)` method specification that gets called every update for all collisions with `Collidable` objects that update. This is done in the `PhysicsEngine` that iterates through all of the `Collidable` interfaces in each z-layer and checks to see if they have collided. In the future the `PhysicsEngine` will probably be running in its own thread and be able to handle not only `Collidable` interfaces but also more complicated things like RigidBodies.
 
 ###The `Input` class:
 To handle user inputs the `Input` class is used along the `KeyInputHandler` and `MouseInputHandler`. The main `Input` object is passed as an argument to the `ScreenManager.addInputListner(Input)` in the `Game.basicSetup()` method. To receive input the `KeyListener` and `MouseListener` interfaces are implemented. Currently only GameObjects can receive inputs but in the future this might change.
 ##To be continued
-#####The `KeyInputHanlder` class and `KeyListener` interface:
+#####The `KeyInputHandler` class and `KeyListener` interface:
 #####The `MouseInputHandler` class and `MouseListener` interface:
+#####The `EventMachine` class, the `EventListener` and `GameEvent` interfaces:
+#####Standard events:
 #####The `IOHandler` class:
 #####The `LoadRequest`, `SaveRequest` and `LoadResult` classes:
 #####The `Loader` interface and DefaultLoaders:
@@ -47,9 +49,12 @@ To handle user inputs the `Input` class is used along the `KeyInputHandler` and 
 #####The `AudioEngine` and `AudioSource` class and interface:
 #####The `UI`, `UIElement` and `UIContainer` classes:
 #####The `ID` and `IDHandler` classes:
-#####The `IDHandlerDebugFrame` class:
-###Not implemented yet:
-* The EventSystem
+#####The `Log` class and logging:
+#####The `LogDebugFrame` class:
+#####The `Camera` class:
+#####The `Sprite` class, best practices and uses:
+
+###Not implemented yet/TODOs:
 * Networking
 * Scenes
 * GameStates
