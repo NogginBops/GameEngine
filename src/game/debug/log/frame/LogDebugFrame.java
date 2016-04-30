@@ -28,7 +28,7 @@ import game.debug.log.LogMessage.LogImportance;
  * @author Julius Häger
  *
  */
-public class LogFrame extends JFrame implements Runnable{
+public class LogDebugFrame extends JFrame implements Runnable{
 	
 	//TODO: Remove LogMessageComponent to optimize memory
 
@@ -47,7 +47,7 @@ public class LogFrame extends JFrame implements Runnable{
 	 * Create the frame.
 	 * @param log the log to display
 	 */
-	public LogFrame(Log log) {
+	public LogDebugFrame(Log log) {
 		this.log = log;
 		
 		setTitle("Debug log");

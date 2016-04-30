@@ -34,7 +34,7 @@ import game.controller.event.engineEvents.GameQuitEvent;
 import game.controller.event.engineEvents.GameStartEvent;
 import game.debug.IDHandlerDebugFrame;
 import game.debug.log.Log;
-import game.debug.log.frame.LogFrame;
+import game.debug.log.frame.LogDebugFrame;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.Paintable;
@@ -111,7 +111,7 @@ public class Game extends Updater {
 
 	private long initTime;
 
-	private LogFrame LogFrame;
+	private LogDebugFrame LogDebugFrame;
 	
 	private IDHandlerDebugFrame<GameObject> IDDebug;
 	
@@ -346,8 +346,8 @@ public class Game extends Updater {
 			IDDebug.stopDebug();
 		}
 		
-		if(LogFrame != null){
-			LogFrame.stopDebug();
+		if(LogDebugFrame != null){
+			LogDebugFrame.stopDebug();
 		}
 		
 		eventMachine.fireEvent(new GameQuitEvent(this, name));
@@ -538,7 +538,7 @@ public class Game extends Updater {
 	}
 
 	private void addDebugLog(){
-		new Thread(LogFrame = new LogFrame(log), "Debug log").start();
+		new Thread(LogDebugFrame = new LogDebugFrame(log), "Debug log").start();
 	}
 	
 	private void addIDHandlerDebug() {
