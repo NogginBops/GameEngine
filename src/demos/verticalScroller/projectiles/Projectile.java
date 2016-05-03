@@ -40,7 +40,7 @@ public abstract class Projectile extends BasicMovable implements Collidable, Pai
 		
 		timer += timeNano / 1000000000f;
 		if(timer > lifetime){
-			Game.getGameObjectHandler().removeGameObject(this);
+			Game.gameObjectHandler.removeGameObject(this);
 		}
 	}
 	

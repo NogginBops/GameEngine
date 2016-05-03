@@ -6,6 +6,8 @@ package game.screen;
  */
 public class ScreenRect {
 	
+	public static ScreenRect FULL = new ScreenRect(0, 0, 1, 1);
+	
 	protected float x, y, x2, y2;
 	
 	/**

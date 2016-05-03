@@ -94,7 +94,7 @@ public class Input extends BasicGameObject implements KeyListener, MouseInputLis
 	public void update(long timeMillis) {
 		mouseHandler.computeEnteredListeners();
 		
-		if(Game.getGameObjectHandler().shouldUpdateObjects()){
+		if(Game.gameObjectHandler.shouldUpdateObjects()){
 			keyHandler.updateListeners();
 		}
 	}

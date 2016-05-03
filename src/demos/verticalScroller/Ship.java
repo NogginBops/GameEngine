@@ -131,7 +131,7 @@ public class Ship extends Sprite implements Collidable, KeyListener{
 			if(timer > delay){
 				//TODO: Pool projectiles?
 				BasicProjectile projectileGO = new BasicProjectile(projectile, 2f, x + ((width - projectile.getWidth())/2), y, 0, -350);
-				Game.getGameObjectHandler().addGameObject(projectileGO);
+				Game.gameObjectHandler.addGameObject(projectileGO);
 				
 				source.setLocation(new Point2D.Float(projectileGO.getX(), projectileGO.getY()));
 				AudioEngine.playSound(source);

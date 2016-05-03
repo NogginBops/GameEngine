@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -68,11 +69,13 @@ import kuusisto.tinysound.Music;
  */
 public class Game extends Updater {
 
+	//TODO: Externalize start
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Game game = new Game();
+		Game game = new Game(GameSettings.DEFAULT);
 		game.run();
 	}
 
@@ -101,7 +104,7 @@ public class Game extends Updater {
 	
 	private String name = "Game";
 
-	private GameObjectHandler gameObjectHandler;
+	public static GameObjectHandler gameObjectHandler;
 
 	private PhysicsEngine physicsEngine;
 	
@@ -117,6 +120,18 @@ public class Game extends Updater {
 	
 	//FIXME: Giant GC freeze
 
+	public Game(GameSettings settigns) {
+		if(settigns == null){
+			settigns = GameSettings.DEFAULT;
+		}
+		//TODO: Use the GameSettings
+		
+		setup(settigns);
+		
+		basicDebug();
+		
+	}
+	
 	/**
 	 * 
 	 */
@@ -276,6 +291,58 @@ public class Game extends Updater {
 		}
 		
 		AudioEngine.setMasterVolume(0.01f);
+	}
+	
+	private void setup(GameSettings settings){
+		Game.game = this;
+		
+		eventMachine = new EventMachine();
+		
+		log = new Log();
+		
+		gameObjectHandler = new GameObjectHandler();
+		
+		physicsEngine = new PhysicsEngine(gameObjectHandler);
+		
+		String name = GameSettings.DEFAULT.getSettingAs("Name", String.class);
+		if(settings.containsSetting("Name")){
+			name = settings.getSettingAs("Name", String.class);
+		}
+		
+		Dimension res = GameSettings.DEFAULT.getSettingAs("Resolution", Dimension.class);
+		if(settings.containsSetting("Resolution")){
+			res = settings.getSettingAs("Resolution", Dimension.class);
+		}
+		
+		int mode = GameSettings.DEFAULT.getSettingAs("ScreenMode", Integer.class);
+		if(settings.containsSetting("ScreenMode")){
+			mode = settings.getSettingAs("ScreenMode", Integer.class);
+		}
+		
+		screen = new Screen(res, mode, name);
+		
+		if(settings.containsSetting("MainCamera")){
+			camera = settings.getSettingAs("MainCamera", Camera.class);
+		}else{
+			camera = GameSettings.DEFAULT.getSettingAs("MainCamera", Camera.class);
+		}
+		
+		MouseInputHandler mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
+		KeyInputHandler keyHandler = new KeyInputHandler(gameObjectHandler);
+		Input inputHandler = new Input(mouseHandler, keyHandler);
+		
+		//TODO: Handle camera == null case
+		
+		screen.addPainter(camera);
+		screen.addInputListener(inputHandler);
+
+		AudioEngine.init(camera);
+		
+		gameObjectHandler.addGameObject(physicsEngine, "Physics Engine");
+		
+		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
+		
+		gameObjectHandler.addGameObject(camera, "Main camera");
 	}
 
 	private void basicSetup() {
@@ -665,14 +732,6 @@ public class Game extends Updater {
 	 */
 	private GameObjectHandler getObjectHandler() {
 		return gameObjectHandler;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static GameObjectHandler getGameObjectHandler() {
-		return game.getObjectHandler();
 	}
 
 	/**

@@ -12,6 +12,8 @@ import game.gameObject.GameObject;
 import game.gameObject.handler.GameObjectHandler;
 import game.gameObject.physics.Movable;
 import game.input.keys.KeyListener;
+import game.screen.ScreenManager;
+import game.screen.ScreenRect;
 
 /**
  * A Camera is the object responsible for looking into a {@link Game Games}
@@ -61,7 +63,19 @@ public class Camera extends Painter implements Movable, KeyListener {
 	public Camera(int x, int y, int width, int height) {
 		super((int)x, (int)y, width, height, Integer.MAX_VALUE - 8);
 		
-		this.gameObjectHandler = Game.getGameObjectHandler();
+		this.gameObjectHandler = Game.gameObjectHandler;
+		updateBounds();
+	}
+	
+	
+	public Camera(Rectangle rect, ScreenRect screenRect, Color bgColor) {
+		super(rect.x, rect.y, rect.width, rect.height, Integer.MAX_VALUE - 8);
+		
+		setScreenRectangle(screenRect);
+		
+		setBackgroundColor(bgColor);
+		
+		this.gameObjectHandler = Game.gameObjectHandler;
 		updateBounds();
 	}
 

@@ -1,6 +1,7 @@
 package game.screen;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -51,6 +52,23 @@ public class Screen implements Runnable {
 		ScreenManager.createFrame(width, height, state, title);
 		
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		
+		painters = new ArrayList<Painter>();
+		
+		debugPrintOuts = new ArrayList<DebugOutputProvider>();
+	}
+	
+	/**
+	 * 
+	 * @param width
+	 * @param height
+	 * @param state
+	 * @param title
+	 */
+	public Screen(Dimension res, int state, String title) {
+		ScreenManager.createFrame(res.width, res.height, state, title);
+		
+		image = new BufferedImage(res.width, res.height, BufferedImage.TYPE_INT_ARGB);
 		
 		painters = new ArrayList<Painter>();
 		
