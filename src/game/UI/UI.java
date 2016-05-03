@@ -14,10 +14,11 @@ import game.gameObject.graphics.Paintable;
  * @version 1.0
  */
 public class UI extends UIContainer implements Paintable {
-
-	// TODO: UIPainter?
 	
 	// TODO: UI position anchors
+	
+	//TODO: XML application UI (Kind of like HTML)
+	//UI scripting?
 
 	// JAVADOC: UIPainter
 	
@@ -26,9 +27,10 @@ public class UI extends UIContainer implements Paintable {
 	 * @param elements
 	 */
 	public UI(Rectangle area, UIElement... elements) {
-		super(elements);
+		super(area, elements);
 		setBorder(null);
-		this.area = area;
+		root = this;
+		//this.area = area;
 	}
 	
 	boolean result;

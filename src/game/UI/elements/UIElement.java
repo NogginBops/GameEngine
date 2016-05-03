@@ -12,9 +12,7 @@ import game.UI.elements.containers.UIContainer;
  * @author Julius Häger
  */
 public abstract class UIElement{
-
-	// TODO: UIElement
-
+	
 	// JAVADOC: UIElement
 	
 	protected UI root;
@@ -61,15 +59,38 @@ public abstract class UIElement{
 	 * @param parent
 	 */
 	public void setParent(UIContainer parent){
+		//FIXME: UI NOT WORKING!!!!
+		//Something about removing itself after removing itself from its parent.
+		
+		if(parent == null){
+			this.parent = null;
+			setRoot(null);
+		}else if(parent != this.parent){
+			
+			if(this.parent != null){
+				//This set root to null!
+				this.parent.removeUIElement(this);
+			}
+			
+			this.parent = parent;
+			
+			setRoot(parent.root);
+		}
+		
+		/*
+		if(this.parent != null){
+			//This set root to null!
+			this.parent.removeUIElement(this);
+		}
+		
+		if(parent.root != this.root){
+			root = parent.getRoot();
+		}
+		
 		if(parent != root && !root.contains(parent)){
 			root = parent.getRoot();
 		}
-		if(parent != this.parent){
-			if(this.parent != null){
-				this.parent.removeUIElement(this);
-			}
-			this.parent = parent;
-		}
+		*/
 	}
 	
 	/**
@@ -83,10 +104,19 @@ public abstract class UIElement{
 	 * @param root
 	 */
 	public void setRoot(UI root){
-		if(root != null && !root.contains(this)){
-			setParent(root);
+		if(root == null){
+			if(parent != null){
+				setParent(null);
+			}
+			this.root = null;
 		}
-		this.root = root;
+		else if(root != this.root){
+			this.root = root;
+			
+			if(root != null && !root.contains(this)){
+				setParent(root);
+			}
+		}
 	}
 	
 	/**

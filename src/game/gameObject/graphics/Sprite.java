@@ -18,7 +18,7 @@ import game.image.effects.ColorTintFilter;
  * @version 1.0
  * @author Julius Häger
  */
-public abstract class Sprite extends BasicGameObject implements Paintable, Movable {
+public class Sprite extends BasicGameObject implements Paintable, Movable {
 
 	// JAVADOC: Sprite
 	

@@ -8,6 +8,8 @@ import game.gameObject.BasicGameObject;
  */
 public class BasicMovable extends BasicGameObject implements Movable {
 	
+	//JAVADOC: BasicMovable
+	
 	/**
 	 * The dynamic-x (The movement in the x-axis measured in pixels/second)
 	 */

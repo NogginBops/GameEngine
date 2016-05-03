@@ -33,8 +33,8 @@ public class SolidBorder extends Border {
 	public void paint(Graphics2D g2d, Rectangle area) {
 		g2d.setColor(color);
 		g2d.fillRect(area.x, area.y, area.width, top);
-		g2d.fillRect(area.x, area.height - bottom, area.width, bottom);
+		g2d.fillRect(area.x, area.y + area.height - bottom, area.width, bottom);
 		g2d.fillRect(area.x, area.y, left, area.height);
-		g2d.fillRect(area.width - right, area.y, right, area.height);
+		g2d.fillRect(area.x + area.width - right, area.y, right, area.height);
 	}
 }

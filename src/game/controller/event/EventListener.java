@@ -6,6 +6,8 @@ package game.controller.event;
  *
  */
 public interface EventListener {
+	
+	//JAVADOC: EventListener
 
 	/**
 	 * @param event

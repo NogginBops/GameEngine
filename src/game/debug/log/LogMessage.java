@@ -9,6 +9,8 @@ import java.util.Date;
  */
 public class LogMessage implements Comparable<LogMessage>{
 	
+	//JAVADOC: LogMessage
+	
 	/**
 	 * @author Julius Häger
 	 *

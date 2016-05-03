@@ -12,6 +12,7 @@ public abstract class GameEvent<T>{
 	
 	//JAVADOC: GameEvent
 	
+	//TODO: Is one type of gameEvent for one type of origin a good solution?
 	/**
 	 * 
 	 */

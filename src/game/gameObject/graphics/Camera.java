@@ -12,7 +12,6 @@ import game.gameObject.GameObject;
 import game.gameObject.handler.GameObjectHandler;
 import game.gameObject.physics.Movable;
 import game.input.keys.KeyListener;
-import game.screen.ScreenManager;
 import game.screen.ScreenRect;
 
 /**
@@ -68,6 +67,11 @@ public class Camera extends Painter implements Movable, KeyListener {
 	}
 	
 	
+	/**
+	 * @param rect
+	 * @param screenRect
+	 * @param bgColor
+	 */
 	public Camera(Rectangle rect, ScreenRect screenRect, Color bgColor) {
 		super(rect.x, rect.y, rect.width, rect.height, Integer.MAX_VALUE - 8);
 		
@@ -217,7 +221,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * {@link GameObjectHandler#shouldUpdateObjects()} method
 	 * returns true.
 	 * </p>
-	 * @deprecated //TODO: Maybe make some kind of fallback painting for Painters
+	 * @deprecated
 	 */
 	@Override
 	public void paint(Graphics2D g2d) {

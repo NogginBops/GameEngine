@@ -13,6 +13,8 @@ package game.IO.load;
  *            - The output data type of the loader.
  */
 public interface Loader<T> {
+	
+	//JAVADOC: Loader<T>
 
 	/**
 	 * When the IO system has found a suitable request for this loader this

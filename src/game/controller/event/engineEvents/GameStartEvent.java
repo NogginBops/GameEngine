@@ -10,6 +10,8 @@ import game.controller.event.GameEvent;
  */
 public class GameStartEvent extends GameEvent<Game> {
 
+	//JAVADOC: GameStartEvent
+	
 	/**
 	 * 
 	 * @param origin

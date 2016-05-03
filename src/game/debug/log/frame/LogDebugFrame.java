@@ -42,6 +42,8 @@ public class LogDebugFrame extends JFrame implements Runnable{
 	
 	private Log log;
 	private JComboBox<LogImportance> importanceComboBox;
+	
+	private static int i = 0;
 
 	/**
 	 * Create the frame.
@@ -152,9 +154,6 @@ public class LogDebugFrame extends JFrame implements Runnable{
 		updateMessages();
 	}
 	
-	//TODO: Remove
-	static int i = 0;
-
 	private CopyOnWriteArrayList<LogMessage> messages = new CopyOnWriteArrayList<>();
 	private JPanel logMessagePanel;
 	

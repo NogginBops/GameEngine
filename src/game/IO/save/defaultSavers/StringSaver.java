@@ -15,6 +15,8 @@ import game.IO.save.SaverUtil;
  *
  */
 public class StringSaver implements Saver<String> {
+	
+	//JAVADOC: StringSaver
 
 	@Override
 	public boolean save(SaveRequest<?> request) {

@@ -21,7 +21,7 @@ public class Screen implements Runnable {
 
 	// JAVADOC: Screen
 	
-	//TODO: Merge with ScreenManager!!!
+	//FIXME: Merge with ScreenManager!!!
 
 	private boolean isRunning = false;
 
@@ -60,8 +60,7 @@ public class Screen implements Runnable {
 	
 	/**
 	 * 
-	 * @param width
-	 * @param height
+	 * @param res
 	 * @param state
 	 * @param title
 	 */

@@ -5,6 +5,8 @@ package game.debug;
  *
  */
 public interface DebugOutputProvider {
+	
+	//JAVADOC: DebugOutputProvider
 
 	/**
 	 * @return

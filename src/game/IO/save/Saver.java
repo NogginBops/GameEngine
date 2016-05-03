@@ -6,6 +6,8 @@ package game.IO.save;
  * @param <T>
  */
 public interface Saver<T> {
+	
+	//JAVADOC: Saver<T>
 
 	/**
 	 * @param request

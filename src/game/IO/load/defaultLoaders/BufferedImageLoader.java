@@ -13,6 +13,8 @@ import javax.imageio.ImageIO;
  * @version 1.0
  */
 public class BufferedImageLoader implements Loader<BufferedImage> {
+	
+	//JAVADOC: BufferedImageLoader
 
 	@Override
 	public BufferedImage load(LoadRequest<?> request) {

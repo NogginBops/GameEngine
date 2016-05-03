@@ -35,6 +35,7 @@ import game.controller.event.engineEvents.GameQuitEvent;
 import game.controller.event.engineEvents.GameStartEvent;
 import game.debug.IDHandlerDebugFrame;
 import game.debug.log.Log;
+import game.debug.log.LogMessage.LogImportance;
 import game.debug.log.frame.LogDebugFrame;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
@@ -69,6 +70,8 @@ import kuusisto.tinysound.Music;
  */
 public class Game extends Updater {
 
+	//TODO: Restructure project packages to make more sense
+	
 	//TODO: Externalize start
 	
 	/**
@@ -83,34 +86,43 @@ public class Game extends Updater {
 
 	// JAVADOC: Game
 
-	/**
-	 * 
-	 */
-	public static Game game;
-	
-	/**
-	 * The debug log associated with the game
-	 */
-	public static Log log;
-	
-	/**
-	 * The main EventMachine
-	 */
-	public static EventMachine eventMachine;
-
 	private static boolean running = false;
 	private static boolean closeRequested = false;
 	private static boolean paused = false;
 	
 	private String name = "Game";
 
-	public static GameObjectHandler gameObjectHandler;
-
-	private PhysicsEngine physicsEngine;
+	/**
+	 * The current Game.
+	 */
+	public static Game game;
 	
-	private Camera camera;
+	/**
+	 * The debug log associated with the game.
+	 */
+	public static Log log = new Log();
+	
+	/**
+	 * The main EventMachine.
+	 */
+	public static EventMachine eventMachine = new EventMachine();
+	
+	/**
+	 * The main gameObjectHandeler.
+	 */
+	public static GameObjectHandler gameObjectHandler = new GameObjectHandler();
 
-	private Screen screen;
+	private PhysicsEngine physicsEngine; //Make static?
+	
+	private Camera camera; //TODO: This should support multiple cameras!
+
+	private Screen screen; //TODO: Support multiple screens.
+	
+	private MouseInputHandler mouseHandler;
+	
+	private KeyInputHandler keyHandler;
+	
+	private Input inputHandler;
 
 	private long initTime;
 
@@ -120,7 +132,15 @@ public class Game extends Updater {
 	
 	//FIXME: Giant GC freeze
 
+	/**
+	 * @param settigns
+	 */
 	public Game(GameSettings settigns) {
+		//TODO: Clean up and make more streamline. (Think about the order of initialization)
+		//Should things really be static?
+		
+		initTime = System.nanoTime();
+		
 		if(settigns == null){
 			settigns = GameSettings.DEFAULT;
 		}
@@ -128,8 +148,12 @@ public class Game extends Updater {
 		
 		setup(settigns);
 		
-		basicDebug();
 		
+		if(settigns.containsSetting("OnScreenDebug")){
+			if(settigns.getSettingAs("OnScreenDebug", Boolean.class)){
+				basicDebug();
+			}
+		}
 	}
 	
 	/**
@@ -144,7 +168,7 @@ public class Game extends Updater {
 
 		//test();
 		//test2();
-		 test2WithAudio();
+		// test2WithAudio();
 		// pong();
 		// pong44();
 		// breakout();
@@ -160,6 +184,9 @@ public class Game extends Updater {
 		//addDebug();
 	}
 	
+	//TODO: Make all demos external
+	
+	@SuppressWarnings("unused")
 	private void cameraTest(){
 		setName("Camera Test");
 		
@@ -296,15 +323,9 @@ public class Game extends Updater {
 	private void setup(GameSettings settings){
 		Game.game = this;
 		
-		eventMachine = new EventMachine();
-		
-		log = new Log();
-		
-		gameObjectHandler = new GameObjectHandler();
-		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
 		
-		String name = GameSettings.DEFAULT.getSettingAs("Name", String.class);
+		name = GameSettings.DEFAULT.getSettingAs("Name", String.class);
 		if(settings.containsSetting("Name")){
 			name = settings.getSettingAs("Name", String.class);
 		}
@@ -323,15 +344,15 @@ public class Game extends Updater {
 		
 		if(settings.containsSetting("MainCamera")){
 			camera = settings.getSettingAs("MainCamera", Camera.class);
-		}else{
+		}
+
+		if(camera == null){
 			camera = GameSettings.DEFAULT.getSettingAs("MainCamera", Camera.class);
 		}
 		
-		MouseInputHandler mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
-		KeyInputHandler keyHandler = new KeyInputHandler(gameObjectHandler);
-		Input inputHandler = new Input(mouseHandler, keyHandler);
-		
-		//TODO: Handle camera == null case
+		mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
+		keyHandler = new KeyInputHandler(gameObjectHandler);
+		inputHandler = new Input(mouseHandler, keyHandler);
 		
 		screen.addPainter(camera);
 		screen.addInputListener(inputHandler);
@@ -343,16 +364,17 @@ public class Game extends Updater {
 		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
 		
 		gameObjectHandler.addGameObject(camera, "Main camera");
+		
+		if(settings.containsSetting("GameInit")){
+			settings.getSettingAs("GameInit", GameInitializer.class).initialize(game, settings);
+		}else{
+			Game.log.log("No GameInit was found!! Exiting...", LogImportance.CRITICAL, "System", "Init", "Game");
+			stop();
+		}
 	}
 
 	private void basicSetup() {
 		Game.game = this;
-		
-		eventMachine = new EventMachine();
-		
-		log = new Log();
-		
-		gameObjectHandler = new GameObjectHandler();
 		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
 		
@@ -641,7 +663,7 @@ public class Game extends Updater {
 		
 		//FIXME: Allocating a lot of memory when updating many GameObjects
 
-		log.logMessage("Running!", "System");
+		log.logMessage("Running " + name + "!", "System");
 		running = true;
 		while (running) {
 			elapsedTime = System.nanoTime() - currTime;
@@ -730,16 +752,8 @@ public class Game extends Updater {
 	 * 
 	 * @return
 	 */
-	private GameObjectHandler getObjectHandler() {
-		return gameObjectHandler;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
 	public static IDHandler<GameObject> getCurrentIDHandler() {
-		return game.getObjectHandler().getIDHandler();
+		return gameObjectHandler.getIDHandler(); //TODO: This is not needed.
 	}
 	
 	/**

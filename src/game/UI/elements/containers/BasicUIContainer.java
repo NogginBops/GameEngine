@@ -18,10 +18,30 @@ public class BasicUIContainer extends UIContainer {
 	/**
 	 * @param container
 	 */
+	//FIXME: This constructor is broken!!
 	public BasicUIContainer(UIContainer container) {
+		super(container.getContainerArea());
+		//area = container.getContainerArea();
+		computeContainerArea();
+		
+		setParent(container);
+	}
+	
+	/**
+	 * @param container
+	 * @param insetLeft
+	 * @param insetTop
+	 * @param insetRight
+	 * @param insetBottom
+	 */
+	//FIXME: This constructor is broken!!
+	public BasicUIContainer(UIContainer container, int insetLeft, int insetTop, int insetRight, int insetBottom) {
 		super();
 		area = container.getContainerArea();
+		area.setBounds(area.x + insetLeft, area.y + insetTop, area.width - (insetLeft + insetRight), area.height - (insetTop - insetBottom));
 		computeContainerArea();
+		
+		setParent(container);
 	}
 
 	/**

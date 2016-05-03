@@ -28,6 +28,10 @@ import game.util.IDHandler;
  *
  */
 public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
+	
+	//TODO: Clean up
+	
+	//JAVADOC: IDHandlerDebugFrame<T>
 
 	/**
 	 * 

@@ -10,6 +10,8 @@ import java.awt.image.BufferedImage;
  */
 public class UniformSpriteSheet {
 	
+	//JAVADOC: UniformSpriteSheet
+	
 	private BufferedImage sheet;
 	
 	private int width, height, margin = 0, padding = 0;

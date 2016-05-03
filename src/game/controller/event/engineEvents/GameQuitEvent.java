@@ -12,6 +12,8 @@ public class GameQuitEvent extends GameEvent<Game> {
 	
 	//NOTE: This might be relocated as a nested class of game.
 	
+	//JAVADOC: GameQuitEvent
+	
 	/**
 	 * 
 	 * @param origin

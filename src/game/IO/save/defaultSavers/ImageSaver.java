@@ -14,6 +14,8 @@ import game.IO.save.Saver;
  *
  */
 public class ImageSaver implements Saver<BufferedImage> {
+	
+	//JAVADOC: ImageSaver
 
 	/**
 	 * @author Julius Häger

@@ -31,8 +31,20 @@ public abstract class UIContainer extends UIElement {
 	 */
 	public UIContainer(UIElement... elements) {
 		super();
-		this.children = new CopyOnWriteArrayList<UIElement>(elements);
-		sortChildren();
+		this.children = new CopyOnWriteArrayList<UIElement>();
+		addUIElements(elements);
+		containedArea = new Rectangle();
+		border = new SolidBorder(5);
+	}
+	
+	/**
+	 * @param rect
+	 * @param elements
+	 */
+	public UIContainer(Rectangle rect, UIElement... elements) {
+		super(rect);
+		this.children = new CopyOnWriteArrayList<UIElement>();
+		addUIElements(elements);
 		containedArea = new Rectangle();
 		border = new SolidBorder(5);
 	}
@@ -44,8 +56,8 @@ public abstract class UIContainer extends UIElement {
 	 */
 	public UIContainer(int width, int height, UIElement ... elements){
 		super(width, height);
-		this.children = new CopyOnWriteArrayList<UIElement>(elements);
-		sortChildren();
+		this.children = new CopyOnWriteArrayList<UIElement>();
+		addUIElements(elements);
 		border = new SolidBorder(5);
 		computeContainerArea();
 	}
@@ -59,8 +71,8 @@ public abstract class UIContainer extends UIElement {
 	 */
 	public UIContainer(int x, int y, int width, int height, UIElement ... elements){
 		super(x, y, width, height);
-		this.children = new CopyOnWriteArrayList<UIElement>(elements);
-		sortChildren();
+		this.children = new CopyOnWriteArrayList<UIElement>();
+		addUIElements(elements);
 		border = new SolidBorder(5);
 		computeContainerArea();
 	}
@@ -75,8 +87,8 @@ public abstract class UIContainer extends UIElement {
 	 */
 	public UIContainer(int x, int y, int width, int height, Border border, UIElement ... elements){
 		super(x, y, width, height);
-		this.children = new CopyOnWriteArrayList<UIElement>(elements);
-		sortChildren();
+		this.children = new CopyOnWriteArrayList<UIElement>();
+		addUIElements(elements);
 		this.border = border;
 		computeContainerArea();
 	}

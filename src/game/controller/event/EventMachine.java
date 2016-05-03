@@ -10,6 +10,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  */
 public class EventMachine {
+	
+	//JAVADOC: EventMachine
 
 	private ConcurrentSkipListMap<Class<? extends GameEvent<?>>, CopyOnWriteArrayList<EventListener>> eventListenerMap;
 

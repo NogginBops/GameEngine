@@ -103,7 +103,9 @@ public abstract class Painter extends BasicGameObject {
 	}
 	
 	BufferedImage paintableImage;
-	//TODO: A getImage() -> paint(Graphics2d) fallback.
+	
+	//JAVADOC: Painter
+	
 	/**
 	 * @return
 	 */
