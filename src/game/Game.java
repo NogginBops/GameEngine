@@ -7,20 +7,14 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.xml.stream.XMLStreamException;
 
 import demos.pong.Ball;
 import demos.pong.Pad;
 import demos.pong.Pad.Side;
 import demos.pong.Score;
-import demos.verticalScroller.Ship;
-import demos.verticalScroller.ShipFactory;
-import demos.verticalScroller.map.Map;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.UI.UI;
@@ -40,7 +34,6 @@ import game.debug.log.frame.LogDebugFrame;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.Paintable;
-import game.gameObject.graphics.UniformSpriteSheet;
 import game.gameObject.handler.GameObjectHandler;
 import game.gameObject.physics.PhysicsEngine;
 import game.input.Input;
@@ -60,7 +53,6 @@ import game.util.IDHandler;
 import game.util.UpdateCounter;
 import game.util.UpdateListener;
 import game.util.Updater;
-import kuusisto.tinysound.Music;
 
 /**
  * 
@@ -78,7 +70,7 @@ public class Game extends Updater {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Game game = new Game(GameSettings.DEFAULT);
+		Game game = new Game();
 		game.run();
 	}
 
@@ -153,6 +145,16 @@ public class Game extends Updater {
 			if(settigns.getSettingAs("OnScreenDebug", Boolean.class)){
 				basicDebug();
 			}
+		}else{
+			Game.log.logWarning("No OnScreenDebug property in game settings");;
+		}
+		
+		if(settigns.containsSetting("Debug")){
+			if(settigns.getSettingAs("Debug", Boolean.class)){
+				addDebug();
+			}
+		}else{
+			Game.log.logWarning("No Debug property in game settings");;
 		}
 	}
 	
@@ -173,8 +175,6 @@ public class Game extends Updater {
 		// pong44();
 		// breakout();
 		//UITest();
-		
-		//verticalScroller();
 		
 		//cameraTest();
 		//cameraTest2();
@@ -252,72 +252,6 @@ public class Game extends Updater {
 		screen.addPainter(Q4);
 		
 		gameObjectHandler.addGameObject(Q4, "Q4 camera");
-	}
-	
-	@SuppressWarnings("unused")
-	private void verticalScroller(){
-		setName("VerticalScroller");
-		
-		screen.setResolution(400, 600);
-		
-		camera.setSize(400, 600);
-		
-		camera.receiveKeyboardInput(false);
-		
-		camera.setBackgroundColor(new Color(80, 111, 140));
-		
-		BufferedImage shipSheetImage = null;
-		
-		BufferedImage projectileSheetImage = null;
-		
-		try {
-			shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/verticalScroller/graphics/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/verticalScroller/graphics/ProjectileSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		UniformSpriteSheet shipSheet = new UniformSpriteSheet(shipSheetImage, 12, 14, new Color(191, 220, 191));
-		
-		UniformSpriteSheet projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
-		
-		log.logMessage("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles(), "VerticalScroller");
-		
-		ShipFactory.createShip("Standard", 
-				shipSheet.getSprite(0, 6, 2, 8),
-				shipSheet.getSprite(2, 6, 4, 8),
-				shipSheet.getSprite(4, 6, 6, 8),
-				shipSheet.getSprite(6, 6, 8, 8),
-				shipSheet.getSprite(8, 6, 10, 8),
-				projectileSheet.getSprite(3, 4));
-		
-		Ship ship = ShipFactory.getShip("Standard");
-		
-		ship.setMovmentBounds(camera.getBounds());
-		
-		ship.setLocation((camera.getWidth() - ship.getBounds().width)/2, camera.getHeight() - 150);
-		
-		gameObjectHandler.addGameObject(ship, "PlayerShip");
-		
-		AudioEngine.setAudioListener(ship);
-		
-		try {
-			Map map = Map.parseMap(new File(".\\res\\verticalScroller\\maps\\map1.xml"));
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (XMLStreamException e1) {
-			e1.printStackTrace();
-		}
-		
-		//TODO: Fix adhoc solution
-		try {
-			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File(".\\res\\verticalScroller\\sounds\\music\\fight_looped.wav"), Music.class, "DefaultMusicLoader")).result;
-			music.play(true, 0.4f);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		AudioEngine.setMasterVolume(0.01f);
 	}
 	
 	private void setup(GameSettings settings){
@@ -431,6 +365,7 @@ public class Game extends Updater {
 	// TODO: Fix proper onStart onExit and other similar methods. (USE EVENTS!!)
 	
 	private void onQuit() {
+		//TODO: These should be event driven
 		if(IDDebug != null){
 			IDDebug.stopDebug();
 		}

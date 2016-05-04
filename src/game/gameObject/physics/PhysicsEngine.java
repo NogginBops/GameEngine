@@ -56,7 +56,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 				return;
 			}
 		}
-
+		
 		for (CopyOnWriteArrayList<Collidable> collidablesInLayer : collidables) {
 			for (int c1 = 0; c1 < collidablesInLayer.size(); c1++) {
 				for (int c2 = c1 + 1; c2 < collidablesInLayer.size(); c2++) {
@@ -64,6 +64,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 						if (collidablesInLayer.get(c1).getBounds()
 								.intersects((Rectangle2D) collidablesInLayer.get(c2).getBounds())) {
 							collidablesInLayer.get(c1).hasCollided(collidablesInLayer.get(c2));
+							collidablesInLayer.get(c2).hasCollided(collidablesInLayer.get(c1));
 						}
 					}
 				}

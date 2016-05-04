@@ -38,6 +38,7 @@ public class GameSettings {
 		
 		defaultSettigns.putSetting("Resolution", res);
 		
+		//TODO: Should camera be a setting or should it be in game init?
 		defaultSettigns.putSetting("MainCamera", new Camera(new Rectangle(res), ScreenRect.FULL, new Color(0.15f, 0.15f, 0.15f, 1f)));
 		
 		defaultSettigns.putSetting("OnScreenDebug", false);
