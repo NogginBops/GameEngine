@@ -299,6 +299,8 @@ public class Sprite extends BasicGameObject implements Paintable, Movable {
 	public void setColor(Color color){
 		this.color = color;
 		createColorFilter();
+		//imageCache = new HashMap<>();
+		//graphicsReadySprite = getGraphicsReadySprite(sprite);
 	}
 	
 	/**
