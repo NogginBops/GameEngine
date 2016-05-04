@@ -66,6 +66,8 @@ public class Game extends Updater {
 	
 	//TODO: Externalize start
 	
+	//TODO: Move all demos out of this file
+	
 	/**
 	 * @param args
 	 */
@@ -149,12 +151,20 @@ public class Game extends Updater {
 			Game.log.logWarning("No OnScreenDebug property in game settings");;
 		}
 		
-		if(settigns.containsSetting("Debug")){
-			if(settigns.getSettingAs("Debug", Boolean.class)){
-				addDebug();
+		if(settigns.containsSetting("DebugLog")){
+			if(settigns.getSettingAs("DebugLog", Boolean.class)){
+				addDebugLog();
 			}
 		}else{
-			Game.log.logWarning("No Debug property in game settings");;
+			Game.log.logWarning("No DebugLog property in game settings");;
+		}
+		
+		if(settigns.containsSetting("DebugID")){
+			if(settigns.getSettingAs("DebugID", Boolean.class)){
+				addIDHandlerDebug();
+			}
+		}else{
+			Game.log.logWarning("No DebugID property in game settings");;
 		}
 	}
 	
@@ -354,12 +364,6 @@ public class Game extends Updater {
 
 	private void completeSetup() {
 		//TODO: Is this needed/should it be a event?
-	}
-	
-	@SuppressWarnings("unused")
-	private void addDebug(){
-		addDebugLog();
-		addIDHandlerDebug();
 	}
 	
 	// TODO: Fix proper onStart onExit and other similar methods. (USE EVENTS!!)

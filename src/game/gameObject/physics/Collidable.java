@@ -8,6 +8,8 @@ package game.gameObject.physics;
 public interface Collidable extends Movable {
 
 	// JAVADOC: Collidable
+	
+	//TODO: Custom collision shape 
 
 	/**
 	 * This method is called when this object has collided with another

@@ -163,7 +163,7 @@ public class Sprite extends BasicGameObject implements Paintable, Movable {
 	
 	@Override
 	public BufferedImage getImage() {
-		return sprite;
+		return graphicsReadySprite;
 	}
 
 	@Override
@@ -298,9 +298,9 @@ public class Sprite extends BasicGameObject implements Paintable, Movable {
 	 */
 	public void setColor(Color color){
 		this.color = color;
-		createColorFilter();
-		//imageCache = new HashMap<>();
-		//graphicsReadySprite = getGraphicsReadySprite(sprite);
+		colorTinter = createColorFilter();
+		tintCachedSprites();
+		graphicsReadySprite = getGraphicsReadySprite(sprite);
 	}
 	
 	/**
@@ -310,13 +310,22 @@ public class Sprite extends BasicGameObject implements Paintable, Movable {
 		return color;
 	}
 	
-	private void createColorFilter(){
-		colorTinter = new ColorTintFilter(color, 1f);
+	private ColorTintFilter createColorFilter(){
+		return new ColorTintFilter(color, 1f);
+	}
+	
+	private void tintCachedSprites(){
+		for (BufferedImage cachedSprite : imageCache.keySet()) {
+			imageCache.put(cachedSprite, createGraphicsReadySprite(cachedSprite));
+		}
 	}
 	
 	private BufferedImage getGraphicsReadySprite(BufferedImage sprite){
+		if(sprite == null){
+			return null;
+		}
 		if(!imageCache.containsKey(sprite)){
-			Game.log.logMessage("No image cached, creating a new image!");
+			Game.log.logDebug("No image cached, creating a new image!");
 			imageCache.put(sprite, createGraphicsReadySprite(sprite));
 		}
 		return imageCache.get(sprite);
@@ -324,7 +333,6 @@ public class Sprite extends BasicGameObject implements Paintable, Movable {
 	
 	private BufferedImage createGraphicsReadySprite(BufferedImage sprite){
 		if(sprite != null){
-			Game.log.logMessage("CreatingGraphicsReadySprite!");
 			return colorTinter.filter(sprite, null);
 		} else {
 			Game.log.logError("Tried to create a graphics ready image from a null image!", new String[]{ "Sprite", "Image", "Graphics ready" });

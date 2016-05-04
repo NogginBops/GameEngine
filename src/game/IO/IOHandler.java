@@ -7,6 +7,7 @@ import game.IO.load.LoadRequest;
 import game.IO.load.LoadResult;
 import game.IO.load.Loader;
 import game.IO.load.defaultLoaders.BufferedImageLoader;
+import game.IO.load.defaultLoaders.FontLoader;
 import game.IO.load.defaultLoaders.MusicLoader;
 import game.IO.load.defaultLoaders.SoundLoader;
 import game.IO.load.defaultLoaders.StringLoader;
@@ -25,6 +26,8 @@ import game.util.IDHandler;
 public final class IOHandler {
 
 	// JAVADOC: IOHandeler
+	
+	//TODO: Load cache
 
 	private static IDHandler<Loader<?>> loaderIDHandler;
 
@@ -45,6 +48,8 @@ public final class IOHandler {
 		loaderIDHandler.addID(new ID<Loader<?>>("Default Image Loader", 1, new BufferedImageLoader()));
 		loaderIDHandler.addID(new ID<Loader<?>>("Default Sound Loader", 2, new SoundLoader()));
 		loaderIDHandler.addID(new ID<Loader<?>>("Default Music Loader", 3, new MusicLoader()));
+		loaderIDHandler.addID(new ID<Loader<?>>("Default Font Loader", 4, new FontLoader()));
+		
 	}
 
 	private static void setUpDefaultSavers() {

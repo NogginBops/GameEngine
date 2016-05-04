@@ -73,7 +73,7 @@ public class AudioEngine {
 
 		double pan = dist < lowerPanThreshhold ? 0 : vector.getX() / dist;
 
-		source.getSound().play(volume, pan);
+		source.getSound().play(volume * source.getVolume(), pan);
 
 		// System.out.println("Volume: " + volume + " Pan: " + pan + " Distance:
 		// " + dist + " Distance log: " + Math.log10(dist) + " Vector: " +
