@@ -29,4 +29,52 @@ public final class MathUtils {
 	public static float Lerpf(float value1, float value2, float amount){
 		return value1 + (value2 - value1) * amount;
 	}
+	
+	/**
+	 * @param value
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	public static int clamp(int value, int min, int max){
+		if(value < min){
+			return min;
+		}else if(value > max){
+			return max;
+		}else{
+			return value;
+		}
+	}
+	
+	/**
+	 * @param value
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	public static float clamp(float value, float min, float max){
+		if(value < min){
+			return min;
+		}else if(value > max){
+			return max;
+		}else{
+			return value;
+		}
+	}
+	
+	/**
+	 * @param value
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	public static float clamp01(float value){
+		if(value < 0){
+			return 0;
+		}else if(value > 1){
+			return 1;
+		}else{
+			return value;
+		}
+	}
 }

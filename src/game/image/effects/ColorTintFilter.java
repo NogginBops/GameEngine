@@ -98,7 +98,7 @@ public class ColorTintFilter extends AbstractFilter {
 	}
 
 	private void mixColor(int[] inPixels) {
-		//float mix_a = mixColor.getAlpha() / 255f;
+		float mix_a = mixColor.getAlpha() / 255f;
 		float mix_r = mixColor.getRed() / 255f;
 		float mix_b = mixColor.getBlue() / 255f;
 		float mix_g = mixColor.getGreen() / 255f;
@@ -110,6 +110,7 @@ public class ColorTintFilter extends AbstractFilter {
 			float r = ((argb >> 16) & 0xFF) / 255f;;
 			float g = ((argb >> 8) & 0xFF) / 255f;;
 			float b = ((argb) & 0xFF) / 255f;;
+			a = a * mix_a;
 			r = r * mix_r;
 			g = g * mix_g;
 			b = b * mix_b;

@@ -2,7 +2,9 @@ package game.IO;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import game.Game;
 import game.IO.load.LoadRequest;
 import game.IO.load.LoadResult;
 import game.IO.load.Loader;
@@ -32,10 +34,14 @@ public final class IOHandler {
 	private static IDHandler<Loader<?>> loaderIDHandler;
 
 	private static IDHandler<Saver<?>> saverIDHandler;
+	
+	//Using LoadRequest<?> as key for type safety
+	private static HashMap<LoadRequest<?>, LoadResult<?>> loadCache;
 
 	static {
-		IOHandler.loaderIDHandler = new IDHandler<Loader<?>>();
-		IOHandler.saverIDHandler = new IDHandler<Saver<?>>();
+		loaderIDHandler = new IDHandler<Loader<?>>();
+		saverIDHandler = new IDHandler<Saver<?>>();
+		loadCache = new HashMap<>();
 		setUpDefaultLoaders();
 		setUpDefaultSavers();
 	}
@@ -104,6 +110,16 @@ public final class IOHandler {
 	 * 
 	 */
 	public static <T> LoadResult<T> load(LoadRequest<T> request) throws IOException {
+		if(request.ID != null || request.cache == false){ //Not cached
+			if(loadCache.containsKey(request)){
+				//TODO: Can this be done without creating a new object?
+				T result = request.dataType.cast(loadCache.get(request).result);
+				
+				Game.log.logDebug("Found cahced result! ID: " + request.ID, "IO", "Load");
+				
+				return new LoadResult<T>(request.ID, result);
+			}
+		}
 		if (request.preferredLoader != null) {
 			Loader<?> preferedLoader = loaderIDHandler.getObject(request.preferredLoader);
 			if (preferedLoader != null) {
@@ -113,6 +129,9 @@ public final class IOHandler {
 					if (result.result == null) {
 						throw new IOException("Couldn't load request: " + request.ID);
 					} else {
+						if(request.cache){
+							loadCache.put(request, result);
+						}
 						return result;
 					}
 				}
@@ -125,6 +144,9 @@ public final class IOHandler {
 				if (result.result == null) {
 					throw new IOException("Couldn't load request: " + request.ID);
 				} else {
+					if(request.cache){
+						loadCache.put(request, result);
+					}
 					return result;
 				}
 			}
@@ -161,4 +183,6 @@ public final class IOHandler {
 		}
 		return success;
 	}
+	
+	//TODO: Clear methods for cache
 }

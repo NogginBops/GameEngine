@@ -160,6 +160,6 @@ public class LogMessage implements Comparable<LogMessage>{
 	
 	@Override
 	public String toString() {
-		return "LogMessage[ " + message + ", Importance: " + importance.toString() + ", Tags: " + getTagsString() + " ]";
+		return "LogMessage[ \"" + message + "\", Importance: " + importance.toString() + ", Tags: " + getTagsString() + " ]";
 	}
 }
