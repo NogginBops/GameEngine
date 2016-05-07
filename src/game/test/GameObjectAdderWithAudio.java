@@ -1,14 +1,5 @@
 package game.test;
 
-import game.gameObject.GameObject;
-import game.gameObject.graphics.Paintable;
-import game.gameObject.handler.GameObjectHandler;
-import game.input.mouse.MouseListener;
-import game.sound.AudioEngine;
-import game.sound.AudioSource;
-import kuusisto.tinysound.Sound;
-import kuusisto.tinysound.TinySound;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -18,21 +9,25 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Random;
 
+import game.Game;
+import game.gameObject.BasicGameObject;
+import game.gameObject.GameObject;
+import game.gameObject.graphics.Paintable;
+import game.input.mouse.MouseListener;
+import game.sound.AudioEngine;
+import game.sound.AudioSource;
+import kuusisto.tinysound.Sound;
+import kuusisto.tinysound.TinySound;
+
 /**
  * @author Julius Häger
  *
  */
-public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseListener {
+public class GameObjectAdderWithAudio extends BasicGameObject implements GameObject, Paintable, MouseListener {
 	
 	//TODO: Remove/Relocate
 
-	private int ZOrder = Integer.MAX_VALUE - 8;
-
-	private GameObjectHandler gameObjectHandler;
-
 	private Random rand;
-
-	private Rectangle bounds = new Rectangle(10, 10);
 
 	private Sound sound;
 
@@ -41,35 +36,11 @@ public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseLis
 	 * @param y
 	 * @param objectHandler
 	 */
-	public GameObjectAdderWithAudio(int x, int y, GameObjectHandler objectHandler) {
-		gameObjectHandler = objectHandler;
+	public GameObjectAdderWithAudio(int x, int y) {
+		super(new Rectangle(x, y, 10, 10), Integer.MAX_VALUE - 10);
 		rand = new Random();
 		sound = TinySound.loadSound(new File("./res/robot.mp3"));
 		bounds = new Rectangle(x, y, 10, 10);
-	}
-
-	@Override
-	public Rectangle getBounds() {
-		return bounds;
-	}
-
-	@Override
-	public void updateBounds() {
-
-	}
-
-	@Override
-	public int getZOrder() {
-		return ZOrder;
-	}
-
-	@Override
-	public int compareTo(GameObject object) {
-		if (ZOrder == object.getZOrder()) {
-			return 0;
-		} else {
-			return ZOrder > object.getZOrder() ? 1 : -1;
-		}
 	}
 
 	@Override
@@ -81,7 +52,7 @@ public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseLis
 	public void mousePressed(MouseEvent e) {
 		OtherPaintable p = new OtherPaintable(e.getX(), e.getY(), rand.nextInt(200), rand.nextInt(200), 0,
 				new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)));
-		gameObjectHandler.addGameObject(p);
+		Game.gameObjectHandler.addGameObject(p);
 		AudioSource source = new AudioSource(e.getX(), e.getY(), sound);
 		AudioEngine.playSound(source);
 	}

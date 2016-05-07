@@ -136,22 +136,25 @@ public class MouseInputHandler {
 	public void mouseMoved(MouseEvent e) {
 		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
 				(int) camera.getY() - ScreenManager.getInsets().top);
+		
 		if (gameObjectHandeler.shouldUpdateObjects()) {
 			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
 		}
 		listeners.sort(invComparator);
 		for (MouseListener listener : listeners) {
-			if (listener.getBounds().contains(e.getX(), e.getY()) || listener.souldReceiveMouseInput()) {
-				listener.mouseMoved(e);
-				if (!enteredListeners.contains(listener)) {
-					listener.mouseEntered(e);
-					enteredListeners.add(listener);
-					enteredListeners.sort(invComparator);
-				}
-			} else {
-				if (enteredListeners.contains(listener)) {
-					listener.mouseExited(e);
-					enteredListeners.remove(listener);
+			if(listener.isActive()){
+				if (listener.getBounds().contains(e.getX(), e.getY()) || listener.souldReceiveMouseInput()) {
+					listener.mouseMoved(e);
+					if (!enteredListeners.contains(listener)) {
+						listener.mouseEntered(e);
+						enteredListeners.add(listener);
+						enteredListeners.sort(invComparator);
+					}
+				} else {
+					if (enteredListeners.contains(listener)) {
+						listener.mouseExited(e);
+						enteredListeners.remove(listener);
+					}
 				}
 			}
 		}
@@ -184,17 +187,19 @@ public class MouseInputHandler {
 		if (lastEvent != null) {
 			listeners.sort(invComparator);
 			for (MouseListener listener : listeners) {
-				if (listener.getBounds().contains(lastEvent.getX(), lastEvent.getY())
-						|| listener.souldReceiveMouseInput()) {
-					if (!enteredListeners.contains(listener)) {
-						listener.mouseEntered(lastEvent);
-						enteredListeners.add(listener);
-						enteredListeners.sort(invComparator);
-					}
-				} else {
-					if (enteredListeners.contains(listener)) {
-						listener.mouseExited(lastEvent);
-						enteredListeners.remove(listener);
+				if(listener.isActive()){
+					if (listener.getBounds().contains(lastEvent.getX(), lastEvent.getY())
+							|| listener.souldReceiveMouseInput()) {
+						if (!enteredListeners.contains(listener)) {
+							listener.mouseEntered(lastEvent);
+							enteredListeners.add(listener);
+							enteredListeners.sort(invComparator);
+						}
+					} else {
+						if (enteredListeners.contains(listener)) {
+							listener.mouseExited(lastEvent);
+							enteredListeners.remove(listener);
+						}
 					}
 				}
 			}

@@ -179,11 +179,10 @@ public class Game extends Updater {
 		basicDebug();
 
 		//test();
-		//test2();
+		// test2();
 		// test2WithAudio();
-		// pong();
+		 pong();
 		// pong44();
-		// breakout();
 		//UITest();
 		
 		//cameraTest();
@@ -191,7 +190,7 @@ public class Game extends Updater {
 		
 		completeSetup();
 		
-		//addDebug();
+		addIDHandlerDebug();
 	}
 	
 	//TODO: Make all demos external
@@ -548,7 +547,7 @@ public class Game extends Updater {
 		
 		camera.receiveKeyboardInput(true);
 
-		GameObjectAdder adder = new GameObjectAdder(gameObjectHandler);
+		GameObjectAdder adder = new GameObjectAdder();
 		gameObjectHandler.addGameObject(adder);
 
 	}
@@ -559,7 +558,7 @@ public class Game extends Updater {
 		
 		camera.receiveKeyboardInput(true);
 
-		GameObjectAdderWithAudio adder = new GameObjectAdderWithAudio(-5, -5, gameObjectHandler);
+		GameObjectAdderWithAudio adder = new GameObjectAdderWithAudio(-5, -5);
 		gameObjectHandler.addGameObject(adder);
 
 		AudioEngine.setAudioListener(adder);

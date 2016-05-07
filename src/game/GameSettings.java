@@ -24,7 +24,7 @@ public class GameSettings {
 	/**
 	 * 
 	 */
-	public static GameSettings DEFAULT = createDefaultGameSettings();
+	public final static GameSettings DEFAULT = createDefaultGameSettings();
 	
 	private static GameSettings createDefaultGameSettings() {
 		

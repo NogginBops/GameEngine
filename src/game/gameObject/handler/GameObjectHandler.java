@@ -6,7 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import game.Game;
 import game.gameObject.GameObject;
 import game.gameObject.handler.event.GameObjectCreatedEvent;
-import game.gameObject.handler.event.GameObjectDestryoedEvent;
+import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.util.ID;
 import game.util.IDHandler;
 
@@ -114,7 +114,7 @@ public class GameObjectHandler {
 		idHandler.removeObject(gameObject);
 		objectsChanged = true;
 		
-		Game.eventMachine.fireEvent(new GameObjectDestryoedEvent(this, gameObject));
+		Game.eventMachine.fireEvent(new GameObjectDestroyedEvent(this, gameObject));
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class GameObjectHandler {
 		idHandler.removeID(id);
 		objectsChanged = true;
 		
-		Game.eventMachine.fireEvent(new GameObjectDestryoedEvent(this, id.object));
+		Game.eventMachine.fireEvent(new GameObjectDestroyedEvent(this, id.object));
 	}
 
 	/**
@@ -151,6 +151,22 @@ public class GameObjectHandler {
 	 */
 	public CopyOnWriteArrayList<GameObject> getAllGameObjects() {
 		return gameObjects;
+	}
+	
+	//TODO: Maybe implement updateListener to be able to figure out when the number of active GameObjects change.
+	//Is this a performance update or is it slower than the current system?
+	
+	/**
+	 * @return
+	 */
+	public CopyOnWriteArrayList<GameObject> getAllActiveGameObjects() {
+		CopyOnWriteArrayList<GameObject> returnList = new CopyOnWriteArrayList<>();
+		for (GameObject gameObject : gameObjects) {
+			if(gameObject.isActive()){
+				returnList.add(gameObject);
+			}
+		}
+		return returnList;
 	}
 
 	/**
@@ -171,6 +187,28 @@ public class GameObjectHandler {
 		}
 		return returnList;
 	}
+	
+	/**
+	 * This method finds all the registered {@link GameObject GameObjects} 
+	 * extending a certain subclass T 
+	 * whose {@link GameObject#isActive() isActive()} method returns true.
+	 * 
+	 * @param classT
+	 *            The requested {@link Class}
+	 * @return A ArratList of all the {@link GameObject GameObjects} extending
+	 *         the class T.
+	 */
+	public <T extends GameObject> CopyOnWriteArrayList<T> getAllActiveGameObjectsExtending(Class<T> classT) {
+		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
+		for (GameObject object : gameObjects) {
+			if(object.isActive()){
+				if (classT.isAssignableFrom(object.getClass())) {
+					returnList.add(classT.cast(object));
+				}
+			}
+		}
+		return returnList;
+	}
 
 	/**
 	 * 
@@ -179,6 +217,21 @@ public class GameObjectHandler {
 	 */
 	public CopyOnWriteArrayList<GameObject> getAllGameObjectsAtZLevel(int zLevel) {
 		return gameObjectMap.get(zLevel);
+	}
+	
+	/**
+	 * 
+	 * @param zLevel
+	 * @return
+	 */
+	public CopyOnWriteArrayList<GameObject> getAllActiveGameObjectsAtZLevel(int zLevel) {
+		CopyOnWriteArrayList<GameObject> returnList = new CopyOnWriteArrayList<>();
+		for (GameObject gameObject : gameObjectMap.get(zLevel)) {
+			if(gameObject.isActive()){
+				returnList.add(gameObject);
+			}
+		}
+		return returnList;
 	}
 
 	/**
@@ -189,9 +242,27 @@ public class GameObjectHandler {
 	 */
 	public <T extends GameObject> CopyOnWriteArrayList<T> getAllGameObjectsAtZLevelExtending(int zLevel, Class<T> classT) {
 		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
-		for (GameObject object : getAllGameObjectsAtZLevel(zLevel)) {
+		for (GameObject object : gameObjectMap.get(zLevel)) {
 			if (classT.isAssignableFrom(object.getClass())) {
 				returnList.add(classT.cast(object));
+			}
+		}
+		return returnList;
+	}
+	
+	/**
+	 * 
+	 * @param zLevel
+	 * @param classT
+	 * @return
+	 */
+	public <T extends GameObject> CopyOnWriteArrayList<T> getAllActiveGameObjectsAtZLevelExtending(int zLevel, Class<T> classT) {
+		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
+		for (GameObject object : gameObjectMap.get(zLevel)) {
+			if(object.isActive()){
+				if (classT.isAssignableFrom(object.getClass())) {
+					returnList.add(classT.cast(object));
+				}
 			}
 		}
 		return returnList;

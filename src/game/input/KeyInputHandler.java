@@ -56,7 +56,7 @@ public class KeyInputHandler {
 			selectedListener.keyTyped(e);
 		}
 		for (KeyListener listener : listeners) {
-			if (listener.shouldReceiveKeyboardInput()) {
+			if (listener.isActive() && listener.shouldReceiveKeyboardInput()) {
 				listener.keyTyped(e);
 			}
 		}
@@ -72,7 +72,7 @@ public class KeyInputHandler {
 			selectedListener.keyPressed(e);
 		}
 		for (KeyListener listener : listeners) {
-			if (listener.shouldReceiveKeyboardInput()) {
+			if (listener.isActive() && listener.shouldReceiveKeyboardInput()) {
 				listener.keyPressed(e);
 			}
 		}
@@ -88,7 +88,7 @@ public class KeyInputHandler {
 			selectedListener.keyReleased(e);
 		}
 		for (KeyListener listener : listeners) {
-			if (listener.shouldReceiveKeyboardInput()) {
+			if (listener.isActive() && listener.shouldReceiveKeyboardInput()) {
 				listener.keyReleased(e);
 			}
 		}

@@ -7,7 +7,7 @@ import game.gameObject.handler.GameObjectHandler;
  * @author Julius Häger
  *
  */
-public class GameObjectDestryoedEvent extends GameObjectEvent {
+public class GameObjectDestroyedEvent extends GameObjectEvent {
 
 	//JAVADOC: GameObjectDestryoedEvent
 	
@@ -15,7 +15,7 @@ public class GameObjectDestryoedEvent extends GameObjectEvent {
 	 * @param origin
 	 * @param object
 	 */
-	public GameObjectDestryoedEvent(GameObjectHandler origin, GameObject object) {
+	public GameObjectDestroyedEvent(GameObjectHandler origin, GameObject object) {
 		super(origin, "Destroyed", object);
 	}
 

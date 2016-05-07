@@ -15,6 +15,8 @@ public abstract class UIElement{
 	
 	// JAVADOC: UIElement
 	
+	//TODO: Should this actually be a GameObject
+	
 	protected UI root;
 	
 	protected UIContainer parent;

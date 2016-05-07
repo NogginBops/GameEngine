@@ -38,6 +38,8 @@ public class BasicGameObject implements GameObject {
 	 * The current Z-order of the GameObject
 	 */
 	protected int zOrder;
+	
+	private boolean active = true;
 
 	
 	//NOTE: Should maybe not take the zOrder as a param
@@ -82,6 +84,16 @@ public class BasicGameObject implements GameObject {
 		bounds.y = (int) y;
 		bounds.width = width;
 		bounds.height = height;
+	}
+	
+	@Override
+	public boolean isActive() {
+		return active;
+	}
+
+	@Override
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	@Override

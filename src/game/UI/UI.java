@@ -22,6 +22,8 @@ public class UI extends UIContainer implements Paintable {
 
 	// JAVADOC: UIPainter
 	
+	private boolean active;
+	
 	/**
 	 * @param area
 	 * @param elements
@@ -56,6 +58,16 @@ public class UI extends UIContainer implements Paintable {
 	@Override
 	public void updateBounds() {
 		//TODO: Fix UI bounds!
+	}
+	
+	@Override
+	public boolean isActive() {
+		return active;
+	}
+
+	@Override
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	@Override

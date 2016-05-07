@@ -20,8 +20,6 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	// TODO: PhysicsEngine
 	
 	// TODO: Physics layers
-
-	private GameObjectHandler gameObjectHandeler;
 	
 	//TODO: Explore if this solution is better than the one currently in use
 	@SuppressWarnings("unused")
@@ -35,7 +33,6 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	 */
 	public PhysicsEngine(GameObjectHandler gameObjectHandeler) {
 		super(0, 0, 0, 0, 0);
-		this.gameObjectHandeler = gameObjectHandeler;
 		
 		Game.log.logMessage("PhysicsEngine created", "Physics");
 	}
@@ -44,10 +41,10 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	
 	@Override
 	public void update(long timeMillis) {
-		if (gameObjectHandeler.shouldUpdateObjects()) {
+		if (Game.gameObjectHandler.shouldUpdateObjects()) {
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
-			for (int z : gameObjectHandeler.getZLevels()) {
-				tempList = gameObjectHandeler.getAllGameObjectsAtZLevelExtending(z, Collidable.class);
+			for (int z : Game.gameObjectHandler.getZLevels()) {
+				tempList = Game.gameObjectHandler.getAllGameObjectsAtZLevelExtending(z, Collidable.class);
 				if(tempList.size() > 1){
 					collidables.add(tempList);
 				}
@@ -61,10 +58,12 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 			for (int c1 = 0; c1 < collidablesInLayer.size(); c1++) {
 				for (int c2 = c1 + 1; c2 < collidablesInLayer.size(); c2++) {
 					if (c1 != c2) {
-						if (collidablesInLayer.get(c1).getBounds()
-								.intersects((Rectangle2D) collidablesInLayer.get(c2).getBounds())) {
-							collidablesInLayer.get(c1).hasCollided(collidablesInLayer.get(c2));
-							collidablesInLayer.get(c2).hasCollided(collidablesInLayer.get(c1));
+						if(collidablesInLayer.get(c1).isActive() && collidablesInLayer.get(c2).isActive()){
+							if (collidablesInLayer.get(c1).getBounds()
+									.intersects((Rectangle2D) collidablesInLayer.get(c2).getBounds())) {
+								collidablesInLayer.get(c1).hasCollided(collidablesInLayer.get(c2));
+								collidablesInLayer.get(c2).hasCollided(collidablesInLayer.get(c1));
+							}
 						}
 					}
 				}

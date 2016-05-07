@@ -117,16 +117,18 @@ public abstract class Painter extends BasicGameObject {
 			}
 			translatedGraphics.translate(-bounds.x, -bounds.y);
 			for (Paintable paintable : paintables) {
-				if (paintable.getBounds().intersects(bounds)) {
-					paintableImage = paintable.getImage();
-					if(paintableImage != null){
-						translatedGraphics.drawImage(paintableImage,
-								paintable.getBounds().x,
-								paintable.getBounds().y,
-								paintable.getBounds().width,
-								paintable.getBounds().height, null);
-					}else{
-						paintable.paint(translatedGraphics);
+				if(paintable.isActive()){
+					if (paintable.getBounds().intersects(bounds)) {
+						paintableImage = paintable.getImage();
+						if(paintableImage != null){
+							translatedGraphics.drawImage(paintableImage,
+									paintable.getBounds().x,
+									paintable.getBounds().y,
+									paintable.getBounds().width,
+									paintable.getBounds().height, null);
+						}else{
+							paintable.paint(translatedGraphics);
+						}
 					}
 				}
 			}

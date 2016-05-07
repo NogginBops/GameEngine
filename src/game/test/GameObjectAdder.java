@@ -6,57 +6,27 @@ import java.awt.event.MouseWheelEvent;
 
 import demos.town.buildings.Building;
 import demos.town.buildings.houses.House;
-import game.gameObject.GameObject;
-import game.gameObject.handler.GameObjectHandler;
+import game.Game;
+import game.gameObject.BasicGameObject;
 import game.input.mouse.MouseListener;
 
 /**
  * @author Julius Häger
  *
  */
-public class GameObjectAdder implements GameObject, MouseListener {
+public class GameObjectAdder extends BasicGameObject implements MouseListener {
 	
 	//Remove/Relocate
-
-	private int ZOrder = Integer.MAX_VALUE - 8;
-
-	private GameObjectHandler gameObjectHandler;
-
-	private Rectangle bounds = new Rectangle(10, 10);
 
 	private Building currentBuilding;
 
 	/**
 	 * @param objectHandler
 	 */
-	public GameObjectAdder(GameObjectHandler objectHandler) {
-		gameObjectHandler = objectHandler;
+	public GameObjectAdder() {
+		super(new Rectangle(10, 10), Integer.MAX_VALUE - 10);
 		currentBuilding = new House(0, 0, 24, 30);
-		gameObjectHandler.addGameObject(currentBuilding, "House");
-	}
-
-	@Override
-	public Rectangle getBounds() {
-		return bounds;
-	}
-
-	@Override
-	public void updateBounds() {
-		
-	}
-
-	@Override
-	public int getZOrder() {
-		return ZOrder;
-	}
-
-	@Override
-	public int compareTo(GameObject object) {
-		if (ZOrder == object.getZOrder()) {
-			return 0;
-		} else {
-			return ZOrder > object.getZOrder() ? 1 : -1;
-		}
+		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
 	}
 
 	@Override
@@ -73,7 +43,7 @@ public class GameObjectAdder implements GameObject, MouseListener {
 		currentBuilding.placed();
 		currentBuilding.updateBounds();
 		currentBuilding = new House(e.getX(), e.getY(), 24, 30);
-		gameObjectHandler.addGameObject(currentBuilding, "House");
+		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
 	}
 
 	@Override

@@ -38,7 +38,9 @@ public abstract class Updater {
 	 */
 	protected void propagateUpdate(long timeNano) {
 		for (UpdateListener listener : listeners) {
-			listener.update(timeNano);
+			if(listener.isActive()){
+				listener.update(timeNano);
+			}
 		}
 	}
 }

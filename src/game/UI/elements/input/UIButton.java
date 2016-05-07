@@ -21,6 +21,10 @@ public class UIButton extends UIElement implements MouseListener {
 	
 	//JAVADOC: UIButton
 	
+	//TODO: UI active state!
+	
+	private boolean active;
+	
 	/**
 	 * 
 	 * @author Julius Häger
@@ -78,6 +82,26 @@ public class UIButton extends UIElement implements MouseListener {
 	 */
 	public UIButton(int width, int height) {
 		super(width, height);
+	}
+	
+	@Override
+	public void updateBounds() {
+		
+	}
+	
+	@Override
+	public boolean isActive() {
+		return active;
+	}
+
+	@Override
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	@Override
+	public int compareTo(GameObject object) {
+		return 0;
 	}
 	
 	@Override
@@ -164,15 +188,5 @@ public class UIButton extends UIElement implements MouseListener {
 	@Override
 	public boolean souldReceiveMouseInput() {
 		return false;
-	}
-
-	@Override
-	public void updateBounds() {
-		
-	}
-
-	@Override
-	public int compareTo(GameObject object) {
-		return 0;
 	}
 }

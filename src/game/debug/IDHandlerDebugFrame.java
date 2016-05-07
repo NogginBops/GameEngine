@@ -17,7 +17,7 @@ import game.Game;
 import game.controller.event.EventListener;
 import game.controller.event.GameEvent;
 import game.gameObject.handler.event.GameObjectCreatedEvent;
-import game.gameObject.handler.event.GameObjectDestryoedEvent;
+import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.gameObject.handler.event.GameObjectEvent;
 import game.util.ID;
 import game.util.IDHandler;
@@ -177,7 +177,7 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 		//FIXME: Event Hierarchies
 		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, listener);
 		
-		Game.eventMachine.addEventListener(GameObjectDestryoedEvent.class, listener);
+		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, listener);
 		
 		Game.eventMachine.addEventListener(GameObjectEvent.class, listener);
 		

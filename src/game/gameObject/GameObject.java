@@ -29,6 +29,24 @@ public interface GameObject extends Comparable<GameObject> {
 	 * </p>
 	 */
 	public void updateBounds();
+	
+	/**
+	 * <p>Returns whether or not the GameObject is active.</p>
+	 * <p>This determines if some subsystems should include the GameObject. 
+	 * Notable examples are painting and collision detection</p>
+	 * 
+	 * @return Whether or not the GameObject is active.
+	 */
+	public boolean isActive();
+	
+	/**
+	 * <p>Sets the GameObjects active state.</p>
+	 * <p>The active state determines if some subsystems should include the GameObject. 
+	 * Notable examples are painting and collision detection</p>
+	 * 
+	 * @param active
+	 */
+	public void setActive(boolean active);
 
 	/**
 	 * Returns the current Z-Order of the GameObject.
