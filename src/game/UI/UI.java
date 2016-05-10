@@ -22,7 +22,7 @@ public class UI extends UIContainer implements Paintable {
 
 	// JAVADOC: UIPainter
 	
-	private boolean active;
+	private boolean active = true;
 	
 	/**
 	 * @param area

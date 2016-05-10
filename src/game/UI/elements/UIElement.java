@@ -64,19 +64,18 @@ public abstract class UIElement{
 		//FIXME: UI NOT WORKING!!!!
 		//Something about removing itself after removing itself from its parent.
 		
-		if(parent == null){
-			this.parent = null;
-			setRoot(null);
-		}else if(parent != this.parent){
-			
-			if(this.parent != null){
-				//This set root to null!
-				this.parent.removeUIElement(this);
+		if(this.parent != parent){
+			if(parent == null){
+				this.parent = null;
+				setRoot(null);
+			}else{
+				if(root != null && root.contains(parent)){
+					this.parent.parent = parent;
+				}else{
+					setRoot(parent.root);
+					this.parent = parent;
+				}
 			}
-			
-			this.parent = parent;
-			
-			setRoot(parent.root);
 		}
 		
 		/*
@@ -106,17 +105,18 @@ public abstract class UIElement{
 	 * @param root
 	 */
 	public void setRoot(UI root){
-		if(root == null){
-			if(parent != null){
-				setParent(null);
-			}
-			this.root = null;
-		}
-		else if(root != this.root){
-			this.root = root;
-			
-			if(root != null && !root.contains(this)){
-				setParent(root);
+		
+		if(this.root != root){
+			if(root == null){
+				this.root = null;
+				if(this.parent != null){
+					this.parent = null;
+				}
+			}else{
+				this.root = root;
+				if(!root.contains(parent)){
+					setParent(root);
+				}
 			}
 		}
 	}

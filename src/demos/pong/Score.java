@@ -103,12 +103,11 @@ public class Score extends UI implements KeyListener {
 			Game.stop();
 			break;
 		case KeyEvent.VK_B:
-			if (IOHandler.save(
-					new ArrayList<SaveRequest<?>>(Arrays.asList(new SaveRequest<String>("P1: " + left + " P2: " + right,
-							String.class, new File("./res/Score.txt"), "Default String Saver"))))) {
-				Game.log.logMessage("Save sucsessfull", "Pong", "Score", "IO", "Save");
+			if (IOHandler.save(new SaveRequest<String>("P1: " + left + " P2: " + right,
+							String.class, new File("./res/Score.txt"), "Default String Saver"))) {
+				Game.log.logMessage("Score saved sucsessfully!", "Pong", "Score", "IO", "Save");
 			} else {
-				Game.log.logError("Save sucsessfull", "Pong", "Score", "IO", "Save");
+				Game.log.logError("Score save failed!", "Pong", "Score", "IO", "Save");
 			}
 			break;
 		}

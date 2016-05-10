@@ -24,9 +24,9 @@ public class GameSettings {
 	/**
 	 * 
 	 */
-	public final static GameSettings DEFAULT = createDefaultGameSettings();
+	public final static GameSettings DEFAULT = getDefaultGameSettings();
 	
-	private static GameSettings createDefaultGameSettings() {
+	public static GameSettings getDefaultGameSettings() {
 		
 		GameSettings defaultSettigns = new GameSettings();
 		
@@ -43,7 +43,9 @@ public class GameSettings {
 		
 		defaultSettigns.putSetting("OnScreenDebug", false);
 		
-		defaultSettigns.putSetting("Debug", false);
+		defaultSettigns.putSetting("DebugLog", false);
+		
+		defaultSettigns.putSetting("DebugID", false);
 		
 		defaultSettigns.putSetting("GameInit", new GameInitializer() {
 			

@@ -184,5 +184,11 @@ public final class IOHandler {
 		return success;
 	}
 	
+	public static <T> boolean save(SaveRequest<T> saveRequestQueue) {
+		
+		//TODO: boolean save(SaveRequest<T>);
+		return false;
+	}
+	
 	//TODO: Clear methods for cache
 }

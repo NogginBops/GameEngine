@@ -127,40 +127,40 @@ public class Game extends Updater {
 	//FIXME: Giant GC freeze
 
 	/**
-	 * @param settigns
+	 * @param settings
 	 */
-	public Game(GameSettings settigns) {
+	public Game(GameSettings settings) {
 		//TODO: Clean up and make more streamline. (Think about the order of initialization)
 		//Should things really be static?
 		
 		initTime = System.nanoTime();
 		
-		if(settigns == null){
-			settigns = GameSettings.DEFAULT;
+		if(settings == null){
+			settings = GameSettings.DEFAULT;
 		}
 		//TODO: Use the GameSettings
 		
-		setup(settigns);
+		setup(settings);
 		
 		
-		if(settigns.containsSetting("OnScreenDebug")){
-			if(settigns.getSettingAs("OnScreenDebug", Boolean.class)){
+		if(settings.containsSetting("OnScreenDebug")){
+			if(settings.getSettingAs("OnScreenDebug", Boolean.class)){
 				basicDebug();
 			}
 		}else{
 			Game.log.logWarning("No OnScreenDebug property in game settings");;
 		}
 		
-		if(settigns.containsSetting("DebugLog")){
-			if(settigns.getSettingAs("DebugLog", Boolean.class)){
+		if(settings.containsSetting("DebugLog")){
+			if(settings.getSettingAs("DebugLog", Boolean.class)){
 				addDebugLog();
 			}
 		}else{
 			Game.log.logWarning("No DebugLog property in game settings");;
 		}
 		
-		if(settigns.containsSetting("DebugID")){
-			if(settigns.getSettingAs("DebugID", Boolean.class)){
+		if(settings.containsSetting("DebugID")){
+			if(settings.getSettingAs("DebugID", Boolean.class)){
 				addIDHandlerDebug();
 			}
 		}else{
@@ -313,6 +313,7 @@ public class Game extends Updater {
 		}else{
 			Game.log.log("No GameInit was found!! Exiting...", LogImportance.CRITICAL, "System", "Init", "Game");
 			stop();
+			System.exit(1);
 		}
 	}
 
