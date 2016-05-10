@@ -6,8 +6,6 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import demos.pong.Pad.Side;
 import demos.pong.event.PlayerScoreEvent;

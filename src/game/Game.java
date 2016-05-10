@@ -4,17 +4,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import demos.pong.Ball;
-import demos.pong.Pad;
-import demos.pong.Pad.Side;
-import demos.pong.Score;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.UI.UI;
@@ -178,10 +173,9 @@ public class Game extends Updater {
 		
 		basicDebug();
 
-		//test();
+		test();
 		// test2();
 		// test2WithAudio();
-		 pong();
 		// pong44();
 		//UITest();
 		
@@ -423,73 +417,6 @@ public class Game extends Updater {
 		gameObjectHandler.addGameObject(hud);
 	}
 
-	@SuppressWarnings("unused")
-	private void pong() {
-		screen.setTitle("Pong");
-
-		Pad rightPad = new Pad(camera.getWidth() - 60, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
-				camera.getBounds(), Side.RIGHT);
-
-		gameObjectHandler.addGameObject(rightPad, "RightPad");
-
-		Pad leftPad = new Pad(50, 40, 10, 50, KeyEvent.VK_W, KeyEvent.VK_S, camera.getBounds(), Side.LEFT);
-
-		gameObjectHandler.addGameObject(leftPad, "LeftPad");
-
-		Ball ball = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
-				camera.getBounds());
-
-		gameObjectHandler.addGameObject(ball, "Ball");
-
-		ball.resetBall();
-
-		Score score = new Score(camera.getBounds());
-
-		gameObjectHandler.addGameObject(score, "Score");
-	}
-
-	@SuppressWarnings("unused")
-	private void pong44() {
-		screen.setTitle("Pong44");
-
-		Pad rightPad = new Pad(ScreenManager.getWidth() - 50, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
-				camera.getBounds(), Side.RIGHT);
-
-		gameObjectHandler.addGameObject(rightPad, "RightPad");
-
-		Pad rightPad2 = new Pad(ScreenManager.getWidth() - 100, 40, 10, 50, KeyEvent.VK_O, KeyEvent.VK_L,
-				camera.getBounds(), Side.RIGHT);
-
-		gameObjectHandler.addGameObject(rightPad2, "RightPad2");
-
-		Pad leftPad = new Pad(50, 40, 10, 50, KeyEvent.VK_W, KeyEvent.VK_S, camera.getBounds(), Side.LEFT);
-
-		gameObjectHandler.addGameObject(leftPad, "LeftPad");
-
-		Pad leftPad2 = new Pad(100, 40, 10, 50, KeyEvent.VK_T, KeyEvent.VK_G, camera.getBounds(), Side.LEFT);
-
-		gameObjectHandler.addGameObject(leftPad2, "LeftPad2");
-
-		Ball ball = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
-				camera.getBounds());
-
-		gameObjectHandler.addGameObject(ball, "Ball");
-
-		Ball ball2 = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
-				camera.getBounds());
-
-		gameObjectHandler.addGameObject(ball2, "Ball2");
-
-		ball.resetBall();
-
-		ball2.resetBall();
-
-		Score score = new Score(camera.getBounds());
-
-		gameObjectHandler.addGameObject(score, "Score");
-	}
-
-	@SuppressWarnings("unused")
 	private void test() {
 		screen.setTitle("Test #1");
 		
