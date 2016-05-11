@@ -22,10 +22,13 @@ public class GameSettings {
 	//JAVADOC: GameSettings
 	
 	/**
-	 * 
+	 * Note: Should not be modified! Use {@link GameSettings#getDefaultGameSettings() getDefaultGameSettings()} to get a modifiable one.
 	 */
 	public final static GameSettings DEFAULT = getDefaultGameSettings();
 	
+	/**
+	 * @return
+	 */
 	public static GameSettings getDefaultGameSettings() {
 		
 		GameSettings defaultSettigns = new GameSettings();

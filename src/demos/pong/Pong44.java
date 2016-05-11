@@ -9,10 +9,19 @@ import game.GameSettings;
 import game.gameObject.graphics.Camera;
 import game.screen.ScreenManager;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class Pong44 implements GameInitializer {
+	
+	//JAVADOC: Pong44
 	
 	private static Camera camera;
 	
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		GameSettings settings = GameSettings.getDefaultGameSettings();
 		

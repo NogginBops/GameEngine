@@ -161,34 +161,40 @@ public final class IOHandler {
 	public static boolean save(ArrayList<SaveRequest<?>> saveRequestQueue) {
 		boolean success = true;
 		for (SaveRequest<?> request : saveRequestQueue) {
-			if (request.preferredSaver != null) {
-				Saver<?> preferedSaver = saverIDHandler.getObject(request.preferredSaver);
-				if (preferedSaver != null) {
-					if (request.dataType == preferedSaver.getSupportedDataType()) {
-						if (preferedSaver.save(request)) {
-							continue;
-						}
-						success = false;
-					}
-				}
-			}
-			for (Saver<?> saver : saverIDHandler.getAllObjects()) {
-				if (request.dataType == saver.getSupportedDataType()) {
-					if (saver.save(request)) {
-						continue;
-					}
-					success = false;
-				}
+			if(save(request) == false){
+				success = false;
 			}
 		}
 		return success;
 	}
 	
-	public static <T> boolean save(SaveRequest<T> saveRequestQueue) {
-		
-		//TODO: boolean save(SaveRequest<T>);
+	/**
+	 * @param request
+	 * @return
+	 */
+	public static <T> boolean save(SaveRequest<T> request) {
+		if (request.preferredSaver != null) {
+			Saver<?> preferedSaver = saverIDHandler.getObject(request.preferredSaver);
+			if (preferedSaver != null) {
+				if (request.dataType == preferedSaver.getSupportedDataType()) {
+					return preferedSaver.save(request);
+				}
+			}
+		}
+		for (Saver<?> saver : saverIDHandler.getAllObjects()) {
+			if (request.dataType == saver.getSupportedDataType()) {
+				return saver.save(request);
+			}
+		}
 		return false;
 	}
 	
-	//TODO: Clear methods for cache
+	//TODO: Maybe a clear entry? Or should this be handled by the cached tag in LoadRequest
+	
+	/**
+	 * 
+	 */
+	public void PurgeLoadCache(){
+		loadCache.clear();
+	}
 }
