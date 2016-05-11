@@ -29,8 +29,6 @@ public final class IOHandler {
 
 	// JAVADOC: IOHandeler
 	
-	//TODO: Load cache
-
 	private static IDHandler<Loader<?>> loaderIDHandler;
 
 	private static IDHandler<Saver<?>> saverIDHandler;

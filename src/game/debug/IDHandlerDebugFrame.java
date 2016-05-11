@@ -49,26 +49,6 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	private boolean closeRequested = false;
 
 	/**
-	 * Launch the application.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					@SuppressWarnings({ "unchecked", "rawtypes" })
-					IDHandlerDebugFrame frame = new IDHandlerDebugFrame(new IDHandler<>());
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 * 
 	 * @param handler
@@ -174,10 +154,6 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 				updateIDs(handler.getAllIDs());
 			}
 		};
-		//FIXME: Event Hierarchies
-		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, listener);
-		
-		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, listener);
 		
 		Game.eventMachine.addEventListener(GameObjectEvent.class, listener);
 		

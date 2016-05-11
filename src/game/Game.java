@@ -79,6 +79,10 @@ public class Game extends Updater {
 	private static boolean closeRequested = false;
 	private static boolean paused = false;
 	
+	private long startTime;
+	private long currTime;
+	private long elapsedTime;
+	
 	private String name = "Game";
 
 	/**
@@ -96,6 +100,7 @@ public class Game extends Updater {
 	 */
 	public static EventMachine eventMachine = new EventMachine();
 	
+	//TODO: Some more elegant methods for using the GOH
 	/**
 	 * The main gameObjectHandeler.
 	 */
@@ -343,7 +348,7 @@ public class Game extends Updater {
 		screen.addDebugText(() -> { return new String[]{
 				"Frames: " + FPSCounter.framesTot,
 				"Updates: " + UpdateCounter.updatesTot,
-				"ElapsedTime: " + 0,
+				"ElapsedTime (ns): " + elapsedTime,
 				"Time: " + FPSCounter.timeTot,
 				"FPS: " + FPSCounter.fps,
 				"Average FPS: " + FPSCounter.averageFPS,
@@ -521,9 +526,9 @@ public class Game extends Updater {
 		eventMachine.fireEvent(new GameStartEvent(this, name));
 
 		new Thread(screen, "Graphics").start();
-		long startTime = System.nanoTime();
-		long currTime = startTime;
-		long elapsedTime;
+		startTime = System.nanoTime();
+		currTime = startTime;
+		elapsedTime = 0;
 		
 		log.logMessage("Pre run time: " + (startTime - initTime) / 1000000000f, "System");
 		

@@ -106,7 +106,7 @@ public class GameObjectHandler {
 			gameObjectMap.remove(gameObject.getZOrder());
 		}
 
-		// TODO: Remove
+		// TODO: Remove?
 		gameObjects.remove(gameObject);
 		if (!zLevels.contains(gameObject.getZOrder())) {
 			zLevels.remove(gameObject.getZOrder());

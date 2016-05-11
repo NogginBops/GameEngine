@@ -18,7 +18,7 @@ public abstract class GameEvent<T>{
 	 */
 	public final T origin;
 	
-	//TODO: Explore a safer solution
+	//TODO: Explore a more fail-safe solution
 	/**
 	 * <b>NOTE:</b> The class should specify which commands are valid through public static final strings
 	 */

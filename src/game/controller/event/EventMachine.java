@@ -52,31 +52,33 @@ public class EventMachine {
 			eventListenerMap.remove(event);
 		}
 	}
-
+	
+	//NOTE: This method of firing events has O(n^2) time complexity, this might need optimization.
+	
 	/**
-	 * 
 	 * @param event
 	 */
 	public <T extends GameEvent<?>> void fireEvent(T event) {
-		CopyOnWriteArrayList<EventListener> listeners = eventListenerMap.get(event.getClass());
-		if(listeners == null || listeners.size() <= 0){
-			return;
-		}
-		for (EventListener listener : listeners) {
-			listener.eventFired(event);
+		for (Class<? extends GameEvent<?>> eventClass : eventListenerMap.keySet()) {
+			if(GameEvent.class.isAssignableFrom(eventClass)){
+				for (EventListener eventListener : eventListenerMap.get(eventClass)) {
+					eventListener.eventFired(event);
+				}
+			}
 		}
 	}
 	
-	//TODO: Add support for event hierarchies.
-	
-	/*
-	public <T extends GameEvent<?>> void fireExtendedEvent(T event, Class<? super T> upperLimit) {
-		Class<? super GameEvent<?>> eventClass = (Class<GameEvent<?>>) event.getClass();
-		
-		while(upperLimit.isAssignableFrom(eventClass)){
-			fireEvent(eventClass.cast(event));
-			eventClass = eventClass.getSuperclass();
+	/**
+	 * @param event
+	 * @param upperLimit
+	 */
+	public <T extends GameEvent<?>> void fireEvent(T event, Class<? super T> upperLimit) {
+		for (Class<? extends GameEvent<?>> eventClass : eventListenerMap.keySet()) {
+			if(upperLimit.isAssignableFrom(eventClass)){
+				for (EventListener eventListener : eventListenerMap.get(eventClass)) {
+					eventListener.eventFired(event);
+				}
+			}
 		}
 	}
-	*/
 }
