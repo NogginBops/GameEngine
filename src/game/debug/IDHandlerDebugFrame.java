@@ -1,7 +1,6 @@
 package game.debug;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,8 +15,6 @@ import javax.swing.table.DefaultTableModel;
 import game.Game;
 import game.controller.event.EventListener;
 import game.controller.event.GameEvent;
-import game.gameObject.handler.event.GameObjectCreatedEvent;
-import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.gameObject.handler.event.GameObjectEvent;
 import game.util.ID;
 import game.util.IDHandler;
