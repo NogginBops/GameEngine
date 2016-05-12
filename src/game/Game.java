@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
@@ -28,7 +27,6 @@ import game.debug.log.LogMessage.LogImportance;
 import game.debug.log.frame.LogDebugFrame;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
-import game.gameObject.graphics.Paintable;
 import game.gameObject.handler.GameObjectHandler;
 import game.gameObject.physics.PhysicsEngine;
 import game.input.Input;
@@ -62,6 +60,8 @@ public class Game extends Updater {
 	//TODO: Externalize start
 	
 	//TODO: Move all demos out of this file
+	
+	//NOTE: Should everything be static? There is only ever going to be one game.
 	
 	/**
 	 * @param args
@@ -110,7 +110,7 @@ public class Game extends Updater {
 	
 	private Camera camera; //TODO: This should support multiple cameras!
 
-	private Screen screen; //TODO: Support multiple screens.
+	public Screen screen; //FIXME: Support multiple screens.
 	
 	private MouseInputHandler mouseHandler;
 	
@@ -168,6 +168,8 @@ public class Game extends Updater {
 		}
 	}
 	
+	
+	//TODO: Remove?
 	/**
 	 * 
 	 */
@@ -177,89 +179,11 @@ public class Game extends Updater {
 		basicSetup();
 		
 		basicDebug();
-
-		test();
-		// test2();
-		// test2WithAudio();
-		// pong44();
-		//UITest();
 		
-		//cameraTest();
-		//cameraTest2();
 		
 		completeSetup();
 		
 		addIDHandlerDebug();
-	}
-	
-	//TODO: Make all demos external
-	
-	@SuppressWarnings("unused")
-	private void cameraTest(){
-		setName("Camera Test");
-		
-		Camera newCamera = new Camera(0, 0, camera.getWidth(), camera.getHeight());
-		
-		newCamera.setScreenRectangle(new ScreenRect(0.59f, 0.59f, 0.4f, 0.4f));
-		
-		newCamera.setBackgroundColor(new Color(20, 200, 100, 100));
-		
-		screen.addPainter(newCamera);
-		
-		gameObjectHandler.addGameObject(newCamera, "Secondary camera");
-	}
-	
-	@SuppressWarnings("unused")
-	private void cameraTest2(){
-		setName("Camera Test 2");
-		
-		Camera Q1 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
-		
-		Q1.setScreenRectangle(new ScreenRect(0, 0, 0.5f, 0.5f));
-		
-		Q1.setBackgroundColor(Color.CYAN);
-		
-		Q1.receiveKeyboardInput(true);
-		
-		screen.addPainter(Q1);
-		
-		gameObjectHandler.addGameObject(Q1, "Q1 camera");
-		
-		Camera Q2 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
-		
-		Q2.setScreenRectangle(new ScreenRect(0.5f, 0, 0.5f, 0.5f));
-		
-		Q2.setBackgroundColor(Color.MAGENTA);
-		
-		Q2.receiveKeyboardInput(true);
-		
-		screen.addPainter(Q2);
-		
-		gameObjectHandler.addGameObject(Q2, "Q2 camera");
-		
-		Camera Q3 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
-		
-		Q3.setScreenRectangle(new ScreenRect(0, 0.5f, 0.5f, 0.5f));
-		
-		Q3.setBackgroundColor(Color.YELLOW);
-		
-		Q3.receiveKeyboardInput(true);
-		
-		screen.addPainter(Q3);
-		
-		gameObjectHandler.addGameObject(Q3, "Q3 camera");
-		
-		Camera Q4 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
-		
-		Q4.setScreenRectangle(new ScreenRect(0.5f, 0.5f, 0.5f, 0.5f));
-		
-		Q4.setBackgroundColor(Color.BLACK);
-		
-		Q4.receiveKeyboardInput(true);
-		
-		screen.addPainter(Q4);
-		
-		gameObjectHandler.addGameObject(Q4, "Q4 camera");
 	}
 	
 	private void setup(GameSettings settings){
@@ -380,139 +304,12 @@ public class Game extends Updater {
 		eventMachine.fireEvent(new GameQuitEvent(this, name));
 	}
 	
-	@SuppressWarnings("unused")
-	private void UITest() {
-		screen.setTitle("UI Test");
-
-		camera.receiveKeyboardInput(true);
-		
-		UI hud = new UI(new Rectangle(200, 100, 400, 400));
-
-		BasicUIContainer container = new BasicUIContainer(200, 300);
-		Border border = new SolidBorder(20, Color.MAGENTA);
-		container.setBorder(border);
-		hud.addUIElement(container);
-
-		BasicUIContainer container2 = new BasicUIContainer(100, 100);
-		Border border2 = new SolidBorder(10, Color.CYAN);
-		container2.setBorder(border2);
-		container.addUIElement(container2);
-
-		UILabel lable = new UILabel("Test label");
-		lable.setColor(Color.WHITE);
-		container2.addUIElement(lable);
-		
-		Image image;
-		try {
-			image = IOHandler.load(new LoadRequest<BufferedImage>("Image", new File("./res/Background.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-		} catch (IOException e) {
-			image = null;
-		}
-		
-		UIImage UIimg = new UIImage(0, 0, 40, 100, image);
-		UIimg.setNativeSize();
-		UIimg.setZOrder(2);
-		container.addUIElement(UIimg);
-		
-		UIButton button = new UIButton(40, 40, 100, 40);
-		gameObjectHandler.addGameObject(button);
-		button.setZOrder(10);
-		container.addUIElement(button);
-		
-		gameObjectHandler.addGameObject(hud);
-	}
-
-	private void test() {
-		screen.setTitle("Test #1");
-		
-		camera.receiveKeyboardInput(true);
-
-		OtherPaintable z1 = new OtherPaintable(0, 0, 100, 100, 1, Color.BLUE);
-
-		OtherPaintable z2 = new OtherPaintable(10, 10, 100, 100, 2, Color.RED);
-
-		OtherPaintable z3 = new OtherPaintable(20, 20, 100, 100, 3, Color.GREEN);
-
-		gameObjectHandler.addGameObject(z2, "OtherPaintable2");
-
-		gameObjectHandler.addGameObject(z3, "OtherPaintable3");
-
-		gameObjectHandler.addGameObject(z1, "OtherPaintable1");
-
-		TestSprite t = new TestSprite(50, 50, 100, 70);
-
-		gameObjectHandler.addGameObject(t, "TestSprite1");
-
-		t.setDX(30);
-		t.setDY(3);
-
-		TestSprite t2 = new TestSprite(400, 50, 20, 20);
-
-		gameObjectHandler.addGameObject(t2, "TestSprite2");
-
-		t2.setDX(-60);
-		t2.setDY(-1);
-
-		TestInputSprite testInput = new TestInputSprite(100, 100, 100, 100, 10, false);
-
-		gameObjectHandler.addGameObject(testInput, "TestInputSprite1");
-
-		TestInputSprite testInput2 = new TestInputSprite(200, 150, 100, 100, 9, false);
-
-		gameObjectHandler.addGameObject(testInput2, "TestInuptSprite2");
-
-		Random rand = new Random();
-
-		for (int x = 0; x < 30; x++) {
-			for (int y = 0; y < 30; y++) {
-				TestSprite test = new TestSprite(x * 30, y * 30, 20, 20);
-				gameObjectHandler.addGameObject(test);
-				
-				test.setDX(rand.nextFloat() * 50);
-				test.setDY(rand.nextFloat() * 50);
-			}
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private void test2() {
-		screen.setTitle("Test #2");
-		
-		camera.receiveKeyboardInput(true);
-
-		GameObjectAdder adder = new GameObjectAdder();
-		gameObjectHandler.addGameObject(adder);
-
-	}
-
-	@SuppressWarnings("unused")
-	private void test2WithAudio() {
-		screen.setTitle("Test #2");
-		
-		camera.receiveKeyboardInput(true);
-
-		GameObjectAdderWithAudio adder = new GameObjectAdderWithAudio(-5, -5);
-		gameObjectHandler.addGameObject(adder);
-
-		AudioEngine.setAudioListener(adder);
-	}
-
 	private void addDebugLog(){
 		new Thread(LogDebugFrame = new LogDebugFrame(log), "Debug log").start();
 	}
 	
 	private void addIDHandlerDebug() {
 		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler()), "ID Handler Debug").start();
-	}
-
-	/**
-	 * Returns a list of all the currently registered {@link Paintable
-	 * Paintables}. (Used by {@link game.gameObject.graphics.Camera Camera})
-	 * 
-	 * @return a list of the currently registered {@link Paintable Paintables}.
-	 */
-	public CopyOnWriteArrayList<Paintable> getPaintables() {
-		return gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
 	}
 
 	/**
@@ -623,6 +420,7 @@ public class Game extends Updater {
 	 * 
 	 * @return
 	 */
+	//NOTE: Is this needed? Probably not
 	public static IDHandler<GameObject> getCurrentIDHandler() {
 		return gameObjectHandler.getIDHandler(); //TODO: This is not needed.
 	}
