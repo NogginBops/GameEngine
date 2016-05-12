@@ -2,22 +2,7 @@ package game;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Random;
 
-import game.IO.IOHandler;
-import game.IO.load.LoadRequest;
-import game.UI.UI;
-import game.UI.border.Border;
-import game.UI.border.SolidBorder;
-import game.UI.elements.containers.BasicUIContainer;
-import game.UI.elements.image.UIImage;
-import game.UI.elements.input.UIButton;
-import game.UI.elements.text.UILabel;
 import game.controller.event.EventMachine;
 import game.controller.event.engineEvents.GameQuitEvent;
 import game.controller.event.engineEvents.GameStartEvent;
@@ -34,15 +19,8 @@ import game.input.KeyInputHandler;
 import game.input.MouseInputHandler;
 import game.screen.Screen;
 import game.screen.ScreenManager;
-import game.screen.ScreenRect;
 import game.sound.AudioEngine;
-import game.test.GameObjectAdder;
-import game.test.GameObjectAdderWithAudio;
-import game.test.OtherPaintable;
-import game.test.TestInputSprite;
-import game.test.TestSprite;
 import game.util.FPSCounter;
-import game.util.IDHandler;
 import game.util.UpdateCounter;
 import game.util.UpdateListener;
 import game.util.Updater;
@@ -63,14 +41,6 @@ public class Game extends Updater {
 	
 	//NOTE: Should everything be static? There is only ever going to be one game.
 	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		Game game = new Game();
-		game.run();
-	}
-
 	// TODO: Clean up
 
 	// JAVADOC: Game
@@ -79,11 +49,11 @@ public class Game extends Updater {
 	private static boolean closeRequested = false;
 	private static boolean paused = false;
 	
-	private long startTime;
-	private long currTime;
-	private long elapsedTime;
+	private static long startTime;
+	private static long currTime;
+	private static long elapsedTime;
 	
-	private String name = "Game";
+	private static String name = "Game";
 
 	/**
 	 * The current Game.
@@ -105,24 +75,26 @@ public class Game extends Updater {
 	 * The main gameObjectHandeler.
 	 */
 	public static GameObjectHandler gameObjectHandler = new GameObjectHandler();
+	
+	private static GameSettings settings;
 
-	private PhysicsEngine physicsEngine; //Make static?
+	private static PhysicsEngine physicsEngine; //Make static?
 	
-	private Camera camera; //TODO: This should support multiple cameras!
+	private static Camera camera; //TODO: This should support multiple cameras!
 
-	public Screen screen; //FIXME: Support multiple screens.
+	public static Screen screen; //FIXME: Support multiple screens.
 	
-	private MouseInputHandler mouseHandler;
+	private static MouseInputHandler mouseHandler;
 	
-	private KeyInputHandler keyHandler;
+	private static KeyInputHandler keyHandler;
 	
-	private Input inputHandler;
+	private static Input inputHandler;
 
-	private long initTime;
+	private static long initTime;
 
-	private LogDebugFrame LogDebugFrame;
+	private static LogDebugFrame LogDebugFrame;
 	
-	private IDHandlerDebugFrame<GameObject> IDDebug;
+	private static IDHandlerDebugFrame<GameObject> IDDebug;
 	
 	//FIXME: Giant GC freeze
 
@@ -134,6 +106,8 @@ public class Game extends Updater {
 		//Should things really be static?
 		
 		initTime = System.nanoTime();
+		
+		Game.settings = settings;
 		
 		if(settings == null){
 			settings = GameSettings.DEFAULT;
@@ -180,7 +154,6 @@ public class Game extends Updater {
 		
 		basicDebug();
 		
-		
 		completeSetup();
 		
 		addIDHandlerDebug();
@@ -216,8 +189,8 @@ public class Game extends Updater {
 			camera = GameSettings.DEFAULT.getSettingAs("MainCamera", Camera.class);
 		}
 		
-		mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
-		keyHandler = new KeyInputHandler(gameObjectHandler);
+		mouseHandler = new MouseInputHandler(camera);
+		keyHandler = new KeyInputHandler();
 		inputHandler = new Input(mouseHandler, keyHandler);
 		
 		screen.addPainter(camera);
@@ -250,8 +223,8 @@ public class Game extends Updater {
 		
 		camera.setBackgroundColor(new Color(0.15f, 0.15f, 0.15f, 1f));
 		
-		MouseInputHandler mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
-		KeyInputHandler keyHandler = new KeyInputHandler(gameObjectHandler);
+		MouseInputHandler mouseHandler = new MouseInputHandler(camera);
+		KeyInputHandler keyHandler = new KeyInputHandler();
 		Input inputHandler = new Input(mouseHandler, keyHandler);
 		
 		screen.addPainter(camera);
@@ -311,7 +284,7 @@ public class Game extends Updater {
 	private void addIDHandlerDebug() {
 		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler()), "ID Handler Debug").start();
 	}
-
+	
 	/**
 	 * Starts the main loop of the game
 	 */
@@ -415,21 +388,37 @@ public class Game extends Updater {
 	public static boolean isRunning() {
 		return running;
 	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	//NOTE: Is this needed? Probably not
-	public static IDHandler<GameObject> getCurrentIDHandler() {
-		return gameObjectHandler.getIDHandler(); //TODO: This is not needed.
+	
+	public static void loadScene(GameInitializer sceneInit){
+		pause();
+		
+		gameObjectHandler = new GameObjectHandler();
+		
+		//TODO: Figure out a good way to solve adding standard gameObjects to the new GOH
+		
+		gameObjectHandler.addGameObject(physicsEngine, "Physics Engine");
+		
+		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
+		
+		gameObjectHandler.addGameObject(camera, "Main camera");
+		
+		camera.receiveKeyboardInput(true);
+		
+		sceneInit.initialize(game, settings);
+		
+		if(IDDebug != null){
+			IDDebug.setHandler(gameObjectHandler.getIDHandler());
+		}
+		
+		resume();
 	}
 	
 	/**
 	 * @param name
 	 */
 	public void setName(String name){
-		this.name = name;
+		Game.name = name;
+		screen.setTitle(name);
 	}
 	
 	/**

@@ -38,7 +38,7 @@ public class CameraTest1 implements GameInitializer {
 		
 		newCamera.setBackgroundColor(new Color(20, 200, 100, 100));
 		
-		game.screen.addPainter(newCamera);
+		Game.screen.addPainter(newCamera);
 		
 		Game.gameObjectHandler.addGameObject(newCamera, "Secondary camera");
 	}

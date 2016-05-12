@@ -2,6 +2,7 @@ package demos.pong;
 
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
@@ -121,10 +122,20 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 			}
 		}
 	}
+	
+	@Override
+	public void updateBounds() {
+		super.updateBounds();
+	}
 
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
 		return true;
+	}
+	
+	@Override
+	public Area getCollitionArea() {
+		return new Area(bounds);
 	}
 
 	@Override

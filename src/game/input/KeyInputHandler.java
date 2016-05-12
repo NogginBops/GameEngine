@@ -1,10 +1,10 @@
 package game.input;
 
-import game.gameObject.handler.GameObjectHandler;
-import game.input.keys.KeyListener;
-
 import java.awt.event.KeyEvent;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import game.Game;
+import game.input.keys.KeyListener;
 
 /**
  * 
@@ -18,16 +18,13 @@ public class KeyInputHandler {
 
 	private KeyListener selectedListener;
 
-	private GameObjectHandler gameObjectHandeler;
-
 	private CopyOnWriteArrayList<KeyListener> listeners = new CopyOnWriteArrayList<KeyListener>();
 
 	/**
 	 * 
-	 * @param gameObjectHandeler
 	 */
-	public KeyInputHandler(GameObjectHandler gameObjectHandeler) {
-		this.gameObjectHandeler = gameObjectHandeler;
+	public KeyInputHandler() {
+		
 	}
 
 	/**
@@ -43,7 +40,7 @@ public class KeyInputHandler {
 	 * 
 	 */
 	public void updateListeners(){
-		listeners = gameObjectHandeler.getAllGameObjectsExtending(KeyListener.class);
+		listeners = Game.gameObjectHandler.getAllGameObjectsExtending(KeyListener.class);
 	}
 
 	/**

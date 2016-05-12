@@ -37,7 +37,7 @@ public class CameraTest2 implements GameInitializer {
 		
 		Q1.receiveKeyboardInput(true);
 		
-		game.screen.addPainter(Q1);
+		Game.screen.addPainter(Q1);
 		
 		Game.gameObjectHandler.addGameObject(Q1, "Q1 camera");
 		
@@ -49,7 +49,7 @@ public class CameraTest2 implements GameInitializer {
 		
 		Q2.receiveKeyboardInput(true);
 		
-		game.screen.addPainter(Q2);
+		Game.screen.addPainter(Q2);
 		
 		Game.gameObjectHandler.addGameObject(Q2, "Q2 camera");
 		
@@ -61,7 +61,7 @@ public class CameraTest2 implements GameInitializer {
 		
 		Q3.receiveKeyboardInput(true);
 		
-		game.screen.addPainter(Q3);
+		Game.screen.addPainter(Q3);
 		
 		Game.gameObjectHandler.addGameObject(Q3, "Q3 camera");
 		
@@ -73,7 +73,7 @@ public class CameraTest2 implements GameInitializer {
 		
 		Q4.receiveKeyboardInput(true);
 		
-		game.screen.addPainter(Q4);
+		Game.screen.addPainter(Q4);
 		
 		Game.gameObjectHandler.addGameObject(Q4, "Q4 camera");
 	}

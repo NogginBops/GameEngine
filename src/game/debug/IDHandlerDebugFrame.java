@@ -163,6 +163,9 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 		}
 	}
 	
-	
+	//TODO: Fix this in a more elegant way
+	public void setHandler(IDHandler<T> handler){
+		this.handler = handler;
+	}
 	
 }

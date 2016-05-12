@@ -1,6 +1,7 @@
 package demos.pong;
 
 import java.awt.Rectangle;
+import java.awt.geom.Area;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -38,6 +39,7 @@ public class Ball extends Sprite implements Collidable{
 	public Ball(int x, int y, int width, int height, Rectangle outerBounds) {
 		super(x, y, width, height);
 		this.outerBounds = outerBounds;
+		
 		try {
 			beep = IOHandler.load(new LoadRequest<Sound>("BeepSound", new File("./res/pongbeep.wav"), Sound.class, "DefaultSoundLoader")).result;
 		} catch (IOException e) {
@@ -92,9 +94,14 @@ public class Ball extends Sprite implements Collidable{
 			}
 		}
 	}
+	
+	@Override
+	public Area getCollitionArea() {
+		return new Area(bounds);
+	}
 
 	@Override
 	public void hasCollided(Collidable collisionObject) {
-		return;
+		
 	}
 }

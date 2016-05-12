@@ -39,9 +39,10 @@ public class GameSettings {
 		
 		Dimension res = new Dimension(800, 600);
 		
+		//NOTE: This is probably also going to be replaced
 		defaultSettigns.putSetting("Resolution", res);
 		
-		//TODO: Should camera be a setting or should it be in game init?
+		//TODO: Should camera be a setting or should it be in game init? Probably game init so that it works when switching scenes
 		defaultSettigns.putSetting("MainCamera", new Camera(new Rectangle(res), ScreenRect.FULL, new Color(0.15f, 0.15f, 0.15f, 1f)));
 		
 		defaultSettigns.putSetting("OnScreenDebug", false);

@@ -1,14 +1,14 @@
 package game.input;
 
-import game.gameObject.graphics.Camera;
-import game.gameObject.handler.GameObjectHandler;
-import game.input.mouse.MouseListener;
-import game.screen.ScreenManager;
-import game.util.InverseGameObjectComparator;
-
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import game.Game;
+import game.gameObject.graphics.Camera;
+import game.input.mouse.MouseListener;
+import game.screen.ScreenManager;
+import game.util.InverseGameObjectComparator;
 
 /**
  * 
@@ -21,8 +21,6 @@ public class MouseInputHandler {
 	// JAVADOC: MouseInputHandler
 	
 	//FIXME: Respond to multiple cameras
-
-	private GameObjectHandler gameObjectHandeler;
 
 	private CopyOnWriteArrayList<MouseListener> listeners;
 
@@ -40,8 +38,7 @@ public class MouseInputHandler {
 	 * @param gameObjectHandeler
 	 * @param camera
 	 */
-	public MouseInputHandler(GameObjectHandler gameObjectHandeler, Camera camera) {
-		this.gameObjectHandeler = gameObjectHandeler;
+	public MouseInputHandler(Camera camera) {
 		this.camera = camera;
 		enteredListeners = new CopyOnWriteArrayList<MouseListener>();
 		invComparator = new InverseGameObjectComparator();
@@ -120,8 +117,8 @@ public class MouseInputHandler {
 	public void mouseDragged(MouseEvent e) {
 		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
 				(int) camera.getY() - ScreenManager.getInsets().top);
-		if (gameObjectHandeler.shouldUpdateObjects()) {
-			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
+		if (Game.gameObjectHandler.shouldUpdateObjects()) {
+			listeners = Game.gameObjectHandler.getAllGameObjectsExtending(MouseListener.class);
 		}
 		for (MouseListener listener : listeners) {
 			listener.mouseDragged(e);
@@ -137,8 +134,8 @@ public class MouseInputHandler {
 		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
 				(int) camera.getY() - ScreenManager.getInsets().top);
 		
-		if (gameObjectHandeler.shouldUpdateObjects()) {
-			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
+		if (Game.gameObjectHandler.shouldUpdateObjects()) {
+			listeners = Game.gameObjectHandler.getAllGameObjectsExtending(MouseListener.class);
 		}
 		listeners.sort(invComparator);
 		for (MouseListener listener : listeners) {
@@ -180,8 +177,8 @@ public class MouseInputHandler {
 	 * 
 	 */
 	public void computeEnteredListeners() {
-		if (gameObjectHandeler.shouldUpdateObjects()) {
-			listeners = gameObjectHandeler.getAllGameObjectsExtending(MouseListener.class);
+		if (Game.gameObjectHandler.shouldUpdateObjects()) {
+			listeners = Game.gameObjectHandler.getAllGameObjectsExtending(MouseListener.class);
 		}
 		
 		if (lastEvent != null) {

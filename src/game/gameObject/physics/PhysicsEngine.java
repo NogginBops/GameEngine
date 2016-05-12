@@ -1,6 +1,6 @@
 package game.gameObject.physics;
 
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Area;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -59,8 +59,9 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 				for (int c2 = c1 + 1; c2 < collidablesInLayer.size(); c2++) {
 					if (c1 != c2) {
 						if(collidablesInLayer.get(c1).isActive() && collidablesInLayer.get(c2).isActive()){
-							if (collidablesInLayer.get(c1).getBounds()
-									.intersects((Rectangle2D) collidablesInLayer.get(c2).getBounds())) {
+							Area collition = collidablesInLayer.get(c1).getCollitionArea();
+							collition.intersect(collidablesInLayer.get(c2).getCollitionArea());
+							if (!collition.isEmpty()) {
 								collidablesInLayer.get(c1).hasCollided(collidablesInLayer.get(c2));
 								collidablesInLayer.get(c2).hasCollided(collidablesInLayer.get(c1));
 							}

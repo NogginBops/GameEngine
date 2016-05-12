@@ -24,8 +24,6 @@ import game.screen.ScreenRect;
 public class Camera extends Painter implements Movable, KeyListener {
 
 	// TODO: Remove movement code
-
-	private GameObjectHandler gameObjectHandler;
 	
 	private float dx;
 	private float dy;
@@ -62,7 +60,6 @@ public class Camera extends Painter implements Movable, KeyListener {
 	public Camera(int x, int y, int width, int height) {
 		super((int)x, (int)y, width, height, Integer.MAX_VALUE - 8);
 		
-		this.gameObjectHandler = Game.gameObjectHandler;
 		updateBounds();
 	}
 	
@@ -79,7 +76,6 @@ public class Camera extends Painter implements Movable, KeyListener {
 		
 		setBackgroundColor(bgColor);
 		
-		this.gameObjectHandler = Game.gameObjectHandler;
 		updateBounds();
 	}
 
@@ -208,8 +204,8 @@ public class Camera extends Painter implements Movable, KeyListener {
 		updateBounds();
 		
 		//This update is synced with the gameobjecthandler
-		if (gameObjectHandler.shouldUpdateObjects()) {
-			paintables = gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
+		if (Game.gameObjectHandler.shouldUpdateObjects()) {
+			paintables = Game.gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
 		}
 	}
 
