@@ -6,8 +6,17 @@ import game.GameSettings;
 import game.gameObject.graphics.Camera;
 import game.test.GameObjectAdder;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class Test2 implements GameInitializer {
 
+	//JAVADOC: Test2
+	
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		GameSettings settings = GameSettings.getDefaultGameSettings();
 		

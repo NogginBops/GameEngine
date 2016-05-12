@@ -1,6 +1,6 @@
 package game.gameObject.physics;
 
-import java.awt.geom.Area;
+import java.awt.Shape;
 
 /**
  * 
@@ -17,7 +17,7 @@ public interface Collidable extends Movable {
 	 * 
 	 * @return
 	 */
-	public Area getCollitionArea();
+	public Shape getCollitionShape();
 
 	/**
 	 * This method is called when this object has collided with another

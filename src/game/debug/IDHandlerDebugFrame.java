@@ -164,6 +164,9 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	}
 	
 	//TODO: Fix this in a more elegant way
+	/**
+	 * @param handler
+	 */
 	public void setHandler(IDHandler<T> handler){
 		this.handler = handler;
 	}

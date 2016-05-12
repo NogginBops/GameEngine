@@ -1,7 +1,7 @@
 package demos.pong;
 
 import java.awt.Rectangle;
-import java.awt.geom.Area;
+import java.awt.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -96,8 +96,8 @@ public class Ball extends Sprite implements Collidable{
 	}
 	
 	@Override
-	public Area getCollitionArea() {
-		return new Area(bounds);
+	public Shape getCollitionShape() {
+		return bounds;
 	}
 
 	@Override

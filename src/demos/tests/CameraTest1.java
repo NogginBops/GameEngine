@@ -8,10 +8,19 @@ import game.GameSettings;
 import game.gameObject.graphics.Camera;
 import game.screen.ScreenRect;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class CameraTest1 implements GameInitializer {
 
 	//TODO: Make this be able to be added on top of another init
 	
+	//JAVADOC: CameraTest1
+	
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		GameSettings settings = GameSettings.getDefaultGameSettings();
 		

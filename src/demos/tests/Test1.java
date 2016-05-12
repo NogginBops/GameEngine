@@ -11,8 +11,17 @@ import game.test.OtherPaintable;
 import game.test.TestInputSprite;
 import game.test.TestSprite;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class Test1 implements GameInitializer {
 
+	//JAVADOC: Test1
+	
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		GameSettings settings = GameSettings.getDefaultGameSettings();
 		

@@ -1,8 +1,8 @@
 package demos.pong;
 
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
@@ -134,8 +134,8 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 	}
 	
 	@Override
-	public Area getCollitionArea() {
-		return new Area(bounds);
+	public Shape getCollitionShape() {
+		return bounds;
 	}
 
 	@Override

@@ -21,8 +21,17 @@ import game.UI.elements.input.UIButton;
 import game.UI.elements.text.UILabel;
 import game.gameObject.graphics.Camera;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class UITest implements GameInitializer {
 
+	//JAVADOC: UITest
+	
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		GameSettings settings = GameSettings.getDefaultGameSettings();
 		

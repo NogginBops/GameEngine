@@ -7,8 +7,17 @@ import game.gameObject.graphics.Camera;
 import game.sound.AudioEngine;
 import game.test.GameObjectAdderWithAudio;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class AudioTest implements GameInitializer {
 
+	//JAVADOC: AudioTest
+	
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		GameSettings settings = GameSettings.getDefaultGameSettings();
 		

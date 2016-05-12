@@ -35,10 +35,6 @@ public class Game extends Updater {
 
 	//TODO: Restructure project packages to make more sense
 	
-	//TODO: Externalize start
-	
-	//TODO: Move all demos out of this file
-	
 	//NOTE: Should everything be static? There is only ever going to be one game.
 	
 	// TODO: Clean up
@@ -82,6 +78,9 @@ public class Game extends Updater {
 	
 	private static Camera camera; //TODO: This should support multiple cameras!
 
+	/**
+	 * 
+	 */
 	public static Screen screen; //FIXME: Support multiple screens.
 	
 	private static MouseInputHandler mouseHandler;
@@ -389,6 +388,9 @@ public class Game extends Updater {
 		return running;
 	}
 	
+	/**
+	 * @param sceneInit
+	 */
 	public static void loadScene(GameInitializer sceneInit){
 		pause();
 		
