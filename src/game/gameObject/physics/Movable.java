@@ -42,6 +42,15 @@ public interface Movable extends UpdateListener {
 	 *            the new y value
 	 */
 	public void setY(float y);
+	
+	/**
+	 * Sets the current x and y value of the Movable
+	 * @param x	
+	 * 	the new x value
+	 * @param y
+	 * 	the new y value
+	 */
+	public void setPosition(float x, float y);
 
 	/**
 	 * Returns the current dynamic x (X-axis movement) of the movable. <br>

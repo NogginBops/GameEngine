@@ -241,19 +241,5 @@ public abstract class UIContainer extends UIElement {
 		return new Rectangle(containedArea.x + parentArea.x, containedArea.y + parentArea.y, containedArea.width, containedArea.height);
 	}
 
-	/**
-	 * @param x
-	 * @param y
-	 */
-	public void setPos(int x, int y) {
-		area.setLocation(x, y);
-	}
-
-	/**
-	 * @param width
-	 * @param height
-	 */
-	public void setSize(int width, int height) {
-		this.area.setSize(width, height);
-	}
+	
 }

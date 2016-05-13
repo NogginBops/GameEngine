@@ -7,9 +7,8 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 import game.Game;
-import game.gameObject.BasicGameObject;
 import game.gameObject.GameObject;
-import game.gameObject.physics.Movable;
+import game.gameObject.physics.BasicMovable;
 import game.image.effects.ColorTintFilter;
 
 /**
@@ -18,19 +17,9 @@ import game.image.effects.ColorTintFilter;
  * @version 1.0
  * @author Julius Häger
  */
-public class Sprite extends BasicGameObject implements Paintable, Movable {
+public class Sprite extends BasicMovable implements Paintable {
 
 	// JAVADOC: Sprite
-	
-	/**
-	 * The dynamic-x (The movement in the x-axis measured in pixels/second)
-	 */
-	protected float dx;
-	
-	/**
-	 * The dynamic-x (The movement in the y-axis measured in pixels/second)
-	 */
-	protected float dy;
 	
 	/**
 	 * The sprite image of the sprite.
@@ -49,6 +38,8 @@ public class Sprite extends BasicGameObject implements Paintable, Movable {
 	private ColorTintFilter colorTinter;
 	
 	private HashMap<BufferedImage, BufferedImage> imageCache;
+	
+	private float scale = 1;
 
 	/**
 	 * 
@@ -205,56 +196,25 @@ public class Sprite extends BasicGameObject implements Paintable, Movable {
 		y += (dy * timeNano) / 1000000000;
 		updateBounds();
 	}
-
-	@Override
-	public float getX() {
-		return x;
-	}
-
-	@Override
-	public float getY() {
-		return y;
-	}
-
-	@Override
-	public void setX(float x) {
-		this.x = x;
-	}
-
-	@Override
-	public void setY(float y) {
-		this.y = y;
+	
+	/**
+	 * @param scale
+	 */
+	public void setScale(float scale){
+		this.scale = scale;
+		if(sprite != null){
+			width = (int)(sprite.getWidth() * scale);
+			height = (int)(sprite.getHeight() * scale);
+			updateBounds();
+		}
 	}
 	
 	/**
-	 * Sets the location of the sprite.
 	 * 
-	 * @param x The x coordinate
-	 * @param y The y coordinate
+	 * @return
 	 */
-	public void setLocation(float x, float y){
-		this.x = x;
-		this.y = y;
-	}
-
-	@Override
-	public float getDX() {
-		return dx;
-	}
-
-	@Override
-	public float getDY() {
-		return dy;
-	}
-
-	@Override
-	public void setDX(float dx) {
-		this.dx = dx;
-	}
-
-	@Override
-	public void setDY(float dy) {
-		this.dy = dy;
+	public float getScale(){
+		return scale;
 	}
 	
 	/**

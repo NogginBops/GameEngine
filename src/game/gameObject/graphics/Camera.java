@@ -110,6 +110,13 @@ public class Camera extends Painter implements Movable, KeyListener {
 		this.y = y;
 		updateBounds();
 	}
+	
+	@Override
+	public void setPosition(float x, float y) {
+		this.x = x;
+		this.y = y;
+		updateBounds();
+	}
 
 	@Override
 	public float getDX() {

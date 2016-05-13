@@ -1,5 +1,7 @@
 package game.gameObject.physics;
 
+import java.awt.Rectangle;
+
 import game.gameObject.BasicGameObject;
 
 /**
@@ -30,6 +32,14 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	public BasicMovable(float x, float y, int width, int height, int zOrder) {
 		super(x, y, width, height, zOrder);
 	}
+	
+	/**
+	 * @param rect
+	 * @param zOrder
+	 */
+	public BasicMovable(Rectangle rect, int zOrder) {
+		super(rect, zOrder);
+	}
 
 	@Override
 	public float getX() {
@@ -49,6 +59,13 @@ public class BasicMovable extends BasicGameObject implements Movable {
 
 	@Override
 	public void setY(float y) {
+		this.y = y;
+		updateBounds();
+	}
+	
+	@Override
+	public void setPosition(float x, float y) {
+		this.x = x;
 		this.y = y;
 		updateBounds();
 	}

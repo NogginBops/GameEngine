@@ -225,9 +225,12 @@ public abstract class UIElement{
 		return area.height;
 	}
 	
+	/**
+	 * @param width
+	 * @param height
+	 */
 	public void setSize(int width, int height){
-		area.width = width;
-		area.height = height;
+		area.setSize(width, height);
 	}
 	
 	/**
