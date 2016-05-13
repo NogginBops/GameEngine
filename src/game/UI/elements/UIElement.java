@@ -196,6 +196,14 @@ public abstract class UIElement{
 	}
 	
 	/**
+	 * 
+	 * @param width
+	 */
+	public void setWidth(int width){
+		area.width = width;
+	}
+	
+	/**
 	 * @return
 	 */
 	public int getWidth(){
@@ -203,10 +211,23 @@ public abstract class UIElement{
 	}
 	
 	/**
+	 * 
+	 * @param height
+	 */
+	public void setHeight(int height){
+		area.height = height;
+	}
+	
+	/**
 	 * @return
 	 */
 	public int getHeight(){
 		return area.height;
+	}
+	
+	public void setSize(int width, int height){
+		area.width = width;
+		area.height = height;
 	}
 	
 	/**
