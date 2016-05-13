@@ -3,6 +3,7 @@ package game.UI.elements.image;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 import game.UI.elements.UIElement;
 
@@ -45,6 +46,14 @@ public class UIImage extends UIElement {
 		if(image != null){
 			area.setSize(image.getWidth(null), image.getHeight(null));
 		}
+	}
+	
+	/**
+	 * 
+	 * @param image
+	 */
+	public void setImage(BufferedImage image){
+		this.image = image;
 	}
 
 	@Override

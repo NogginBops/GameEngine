@@ -140,10 +140,11 @@ public class Screen implements Runnable {
 			
 			if (debug) {
 				g2d.setColor(Color.GREEN.brighter());
+				int lines = 0;
 				for (int i = 0; i < debugPrintOuts.size(); i++) {
 					for (String debugOutput : debugPrintOuts.get(i).GetDebugValues()) {
-						i++;
-						g2d.drawString(debugOutput, 20, 20 * i);
+						lines++;
+						g2d.drawString(debugOutput, 20, 20 * lines);
 					}
 				}
 			}
