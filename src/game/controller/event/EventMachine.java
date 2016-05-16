@@ -12,6 +12,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class EventMachine {
 	
 	//JAVADOC: EventMachine
+	
+	//TODO: Event delays? Firing a event with a 2 second delay will called event fired 2 seconds later.
 
 	private ConcurrentSkipListMap<Class<? extends GameEvent<?>>, CopyOnWriteArrayList<EventListener>> eventListenerMap;
 

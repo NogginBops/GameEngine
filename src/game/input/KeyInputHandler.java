@@ -63,12 +63,14 @@ public class KeyInputHandler {
 		}
 	}
 	
+	//TODO: Better name
+	
 	/**
 	 * @param name
 	 * @param keycode
 	 * @return
 	 */
-	public boolean bound(String name, int keycode){
+	public boolean isBound(String name, int keycode){
 		if(keyBindings.containsKey(name)){
 			return keyBindings.get(name).contains(keycode);
 		}else{
