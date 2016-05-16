@@ -11,6 +11,8 @@ import java.awt.image.WritableRaster;
  */
 public class ColorTintFilter extends AbstractFilter {
 	
+	//JAVADOC: ColorTintFilter
+	
 	private final Color mixColor;
 	private final float mixValue;
 

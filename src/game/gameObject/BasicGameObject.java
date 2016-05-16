@@ -19,7 +19,9 @@ public class BasicGameObject implements GameObject {
 	 * 
 	 */
 	protected float y;
-
+	
+	//TODO: Should width and height be integer or float? (Probably a float)
+	
 	/**
 	 * 
 	 */

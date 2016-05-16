@@ -18,6 +18,8 @@ import javax.swing.event.MouseInputListener;
  * @author Julius Häger
  */
 public class Input extends BasicGameObject implements KeyListener, MouseInputListener, MouseWheelListener, UpdateListener {
+	
+	//TODO: Merge Input, MouseInputHandler and KeyInputHandler
 
 	private MouseInputHandler mouseHandler;
 

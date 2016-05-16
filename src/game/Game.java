@@ -35,11 +35,13 @@ public class Game extends Updater {
 
 	//TODO: Restructure project packages to make more sense
 	
-	//NOTE: Should everything be static? There is only ever going to be one game.
+	// NOTE: Should everything be static? There is only ever going to be one game.
 	
 	// TODO: Clean up
 
 	// JAVADOC: Game
+	
+	//TODO: Tasks and thread pooling for game and painting threads. (Support for other tasks too)
 
 	private static boolean running = false;
 	private static boolean closeRequested = false;
@@ -85,7 +87,10 @@ public class Game extends Updater {
 	
 	private static MouseInputHandler mouseHandler;
 	
-	private static KeyInputHandler keyHandler;
+	/**
+	 * 
+	 */
+	public static KeyInputHandler keyHandler;
 	
 	private static Input inputHandler;
 

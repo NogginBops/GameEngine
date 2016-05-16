@@ -1,6 +1,7 @@
 package game.input;
 
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.Game;
@@ -19,12 +20,61 @@ public class KeyInputHandler {
 	private KeyListener selectedListener;
 
 	private CopyOnWriteArrayList<KeyListener> listeners = new CopyOnWriteArrayList<KeyListener>();
+	
+	private HashMap<String, CopyOnWriteArrayList<Integer>> keyBindings;
 
 	/**
 	 * 
 	 */
 	public KeyInputHandler() {
-		
+		keyBindings = new HashMap<String, CopyOnWriteArrayList<Integer>>();
+	}
+	
+	/**
+	 * @param name
+	 * @param keycodes
+	 */
+	public void addKeyBinding(String name, Integer ... keycodes){
+		if(keyBindings.containsKey(name)){
+			for (Integer keycode : keycodes) {
+				keyBindings.get(name).add(keycode);
+			}
+		}else{
+			keyBindings.put(name, new CopyOnWriteArrayList<Integer>(keycodes));
+		}
+	}
+	
+	/**
+	 * @param name
+	 */
+	public void removeBinding(String name){
+		if(keyBindings.containsKey(name)){
+			keyBindings.remove(name);
+		}
+	}
+	
+	/**
+	 * @param name
+	 * @param keycode
+	 */
+	public void removeBinding(String name, int keycode){
+		if(keyBindings.containsKey(name)){
+			keyBindings.get(name).remove(keycode);
+		}
+	}
+	
+	/**
+	 * @param name
+	 * @param keycode
+	 * @return
+	 */
+	public boolean bound(String name, int keycode){
+		if(keyBindings.containsKey(name)){
+			return keyBindings.get(name).contains(keycode);
+		}else{
+			Game.log.logWarning("Checked non-registered keybinding: " + name, "Input", "KeyBinding");
+			return false;
+		}
 	}
 
 	/**
