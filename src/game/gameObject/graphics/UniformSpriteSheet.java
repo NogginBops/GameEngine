@@ -12,6 +12,8 @@ public class UniformSpriteSheet {
 	
 	//JAVADOC: UniformSpriteSheet
 	
+	//TODO: Put in a better package
+	
 	private BufferedImage sheet;
 	
 	private int width, height, margin = 0, padding = 0;
@@ -158,6 +160,8 @@ public class UniformSpriteSheet {
 		verticalTiles = tiles;
 	}
 	
+	//TODO: Move these functions to some other util method
+	
 	/**
 	 * @param x
 	 * @param y
@@ -204,6 +208,8 @@ public class UniformSpriteSheet {
 		}
 		return image;
 	}
+	
+	//TODO: Should this be done as a filter? Either way it should be done more efficiently (Raster manipulation?)
 	
 	private BufferedImage copyImageAndRemoveColor(BufferedImage image, Color color){
 		BufferedImage copyImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);

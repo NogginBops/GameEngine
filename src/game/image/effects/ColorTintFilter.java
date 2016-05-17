@@ -2,8 +2,8 @@ package game.image.effects;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
+
+import game.util.image.ImageUtils;
 
 /**
  * 
@@ -58,45 +58,10 @@ public class ColorTintFilter extends AbstractFilter {
 		int height = src.getHeight();
 
 		int[] pixels = new int[width * height];
-		getPixels(src, 0, 0, width, height, pixels);
+		ImageUtils.getPixels(src, 0, 0, width, height, pixels);
 		mixColor(pixels);
-		setPixels(dst, 0, 0, width, height, pixels);
+		ImageUtils.setPixels(dst, 0, 0, width, height, pixels);
 		return dst;
-	}
-
-	private static int[] getPixels(BufferedImage img, int x, int y, int w, int h, int[] pixels) {
-		if (w == 0 || h == 0) {
-			return new int[0];
-		}
-		if (pixels == null) {
-			pixels = new int[w * h];
-		} else if (pixels.length < w * h) {
-			throw new IllegalArgumentException("pixels array must have a length >= w*h");
-		}
-
-		int imageType = img.getType();
-		if (imageType == BufferedImage.TYPE_INT_ARGB || imageType == BufferedImage.TYPE_INT_RGB) {
-			Raster raster = img.getRaster();
-			return (int[]) raster.getDataElements(x, y, w, h, pixels);
-		}
-
-		return img.getRGB(x, y, w, h, pixels, 0, w);
-	}
-
-	private static void setPixels(BufferedImage img, int x, int y, int w, int h, int[] pixels) {
-		if (pixels == null || w == 0 || h == 0) {
-			return;
-		} else if (pixels.length < w * h) {
-			throw new IllegalArgumentException("pixels array must have a length >= w*h");
-		}
-
-		int imageType = img.getType();
-		if (imageType == BufferedImage.TYPE_INT_ARGB || imageType == BufferedImage.TYPE_INT_RGB) {
-			WritableRaster raster = img.getRaster();
-			raster.setDataElements(x, y, w, h, pixels);
-		} else {
-			img.setRGB(x, y, w, h, pixels, 0, w);
-		}
 	}
 
 	private void mixColor(int[] inPixels) {
@@ -109,9 +74,10 @@ public class ColorTintFilter extends AbstractFilter {
 			int argb = inPixels[i];
 
 			float a = ((argb >> 24) & 0xFF) / 255f;
-			float r = ((argb >> 16) & 0xFF) / 255f;;
-			float g = ((argb >> 8) & 0xFF) / 255f;;
-			float b = ((argb) & 0xFF) / 255f;;
+			float r = ((argb >> 16) & 0xFF) / 255f;
+			float g = ((argb >> 8) & 0xFF) / 255f;
+			float b = ((argb) & 0xFF) / 255f;
+			
 			a = a * mix_a;
 			r = r * mix_r;
 			g = g * mix_g;
