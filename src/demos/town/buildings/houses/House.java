@@ -1,6 +1,5 @@
 package demos.town.buildings.houses;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +27,8 @@ public class House extends Building {
 	public House(float x, float y, int width, int height) {
 		super(x, y, width, height);
 		load();
+		
+		setSprite(outline);
 	}
 
 	private void load() {
@@ -42,21 +43,28 @@ public class House extends Building {
 			e.printStackTrace();
 		}
 	}
-
+	
+	BuildingMode last = null;
+	
 	@Override
-	public void paint(Graphics2D g2d) {
-		switch (mode) {
-		case OUTLINE:
-			g2d.drawImage(outline, (int) x, (int) y, null);
-			break;
-		case BUILDING:
-			g2d.drawImage(building, (int) x, (int) y, null);
-			break;
-		case BUILT:
-			g2d.drawImage(built, (int) x, (int) y, null);
-			break;
-		default:
-			break;
+	public void update(long timeNano) {
+		super.update(timeNano);
+		
+		if(last != mode){
+			switch (mode) {
+			case OUTLINE:
+				setSprite(outline);
+				break;
+			case BUILDING:
+				setSprite(building);
+				break;
+			case BUILT:
+				setSprite(built);
+				break;
+			default:
+				break;
+			}
+			last = mode;
 		}
 	}
 }

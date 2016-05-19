@@ -14,8 +14,15 @@ import game.IO.load.LoadRequest;
 import game.gameObject.graphics.MappedSpriteSheet;
 import game.gameObject.graphics.Sprite;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class TextureTest implements GameInitializer {
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 		GameSettings settings = GameSettings.getDefaultGameSettings();
@@ -47,7 +54,7 @@ public class TextureTest implements GameInitializer {
 		
 		Sprite sprite1 = new Sprite(10, 10, 2, mappedSpritesheet.getSprite("Sprite1"));
 		
-		Game.gameObjectHandler.addGameObject(sprite1, "Test");
+		Game.gameObjectHandler.addGameObject(sprite1, "TestSprite1");
 		
 	}
 }

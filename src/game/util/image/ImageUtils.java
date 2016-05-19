@@ -11,6 +11,8 @@ import java.awt.image.WritableRaster;
  */
 public final class ImageUtils {
 	
+	//NOTE: The deepCopy method might not be needed.
+	
 	/**
 	 * @param bi
 	 * @return
@@ -19,8 +21,11 @@ public final class ImageUtils {
 	    ColorModel cm = bi.getColorModel();
 	    boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
 	    WritableRaster raster = bi.copyData(bi.getRaster().createCompatibleWritableRaster());
+	    raster = bi.copyData(null);
 	    return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
 	}
+	
+	//TODO: A better system for working with image filters
 	
 	/**
 	 * @param img

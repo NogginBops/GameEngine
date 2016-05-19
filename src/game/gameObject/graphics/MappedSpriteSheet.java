@@ -7,7 +7,6 @@ import java.util.HashMap;
 
 import game.Game;
 import game.image.effects.ColorCutoutFilter;
-import game.util.image.ImageUtils;
 
 /**
  * @author Julius Häger
@@ -76,6 +75,6 @@ public class MappedSpriteSheet {
 		
 		Rectangle rect = mappings.get(name);
 		
-		return ImageUtils.deepCopy(sheet.getSubimage(rect.x, rect.y, rect.width, rect.height));
+		return sheet.getSubimage(rect.x, rect.y, rect.width, rect.height);
 	}
 }

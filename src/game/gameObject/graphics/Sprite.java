@@ -61,12 +61,22 @@ public class Sprite extends BasicMovable implements Paintable {
 		setSprite(sprite);
 	}
 	
-	public Sprite(float x, float y, float scale, BufferedImage image){
-		super(x, y, image.getWidth(), image.getHeight(), 5);
+	/**
+	 * 
+	 * @param x
+	 *            the start x-coordinate of the upper most corner of the Sprite
+	 * @param y
+	 *            the start x-coordinate of the upper most corner of the Sprite
+	 * @param scale
+	 * @param sprite
+	 */
+	public Sprite(float x, float y, float scale, BufferedImage sprite){
+		super(x, y, sprite.getWidth(), sprite.getHeight(), 5);
 		imageCache = new HashMap<>();
 		
 		setColor(color);
 		setSprite(sprite);
+		setScale(scale);
 	}
 	
 	/**
@@ -278,6 +288,8 @@ public class Sprite extends BasicMovable implements Paintable {
 		return color;
 	}
 	
+	//TODO: Clean up, rename and optimize these methods
+	
 	private ColorTintFilter createColorFilter(){
 		return new ColorTintFilter(color, 1f);
 	}
@@ -293,7 +305,7 @@ public class Sprite extends BasicMovable implements Paintable {
 			return null;
 		}
 		if(!imageCache.containsKey(sprite)){
-			Game.log.logDebug("No image cached, creating a new image!");
+			Game.log.logDebug("No image cached, creating a new image!", "Sprite", "Image");
 			imageCache.put(sprite, createGraphicsReadySprite(sprite));
 		}
 		return imageCache.get(sprite);

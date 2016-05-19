@@ -2,6 +2,7 @@ package game.image.effects;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 
 import game.util.image.ImageUtils;
 
@@ -32,7 +33,7 @@ public class ColorCutoutFilter extends AbstractFilter{
 	@Override
 	public BufferedImage filter(BufferedImage src, BufferedImage dest) {
 		if (dest == null) {
-			dest = createCompatibleDestImage(src, null);
+			dest = createCompatibleDestImage(src, ColorModel.getRGBdefault());
 		}
 
 		int width = src.getWidth();
