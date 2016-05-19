@@ -61,6 +61,14 @@ public class Sprite extends BasicMovable implements Paintable {
 		setSprite(sprite);
 	}
 	
+	public Sprite(float x, float y, float scale, BufferedImage image){
+		super(x, y, image.getWidth(), image.getHeight(), 5);
+		imageCache = new HashMap<>();
+		
+		setColor(color);
+		setSprite(sprite);
+	}
+	
 	/**
 	 * 
 	 * 

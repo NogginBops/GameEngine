@@ -52,10 +52,10 @@ public class ColorCutoutFilter extends AbstractFilter{
 		int cut_g = cutoutColor.getGreen();
 		
 		for (int i = 0; i < pixels.length; i++) {
-			if((!compareTransparency || (pixels[i] & 0xFF000000) == cut_a) &&
-					(pixels[i] & 0x00FF0000) == cut_r &&
-					(pixels[i] & 0x0000FF00) == cut_g &&
-					(pixels[i] & 0x000000FF) == cut_b){
+			if((!compareTransparency || (((pixels[i] >> 24) & 0xFF) == cut_a)) &&
+					(((pixels[i] >> 16) & 0xFF) == cut_r &&
+					((pixels[i] >> 8) & 0xFF) == cut_g &&
+					(pixels[i] & 0xFF) == cut_b)){
 				
 				pixels[i] = fillColor.getRGB();
 				

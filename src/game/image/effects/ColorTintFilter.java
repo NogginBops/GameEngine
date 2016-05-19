@@ -1,7 +1,11 @@
 package game.image.effects;
 
 import java.awt.Color;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
 
 import game.util.image.ImageUtils;
 
@@ -51,7 +55,7 @@ public class ColorTintFilter extends AbstractFilter {
 	@Override
 	public BufferedImage filter(BufferedImage src, BufferedImage dst) {
 		if (dst == null) {
-			dst = createCompatibleDestImage(src, null);
+			dst = createCompatibleDestImage(src, new ComponentColorModel(ColorSpace.getInstance(ColorSpace.TYPE_RGB), true, false, ColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE));
 		}
 
 		int width = src.getWidth();
