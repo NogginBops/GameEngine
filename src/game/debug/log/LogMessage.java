@@ -52,6 +52,8 @@ public class LogMessage implements Comparable<LogMessage>{
 	
 	private final String[] tags;
 	
+	private final StackTraceElement[] stackTrace;
+	
 	private final Date date;
 	
 	/**
@@ -60,6 +62,7 @@ public class LogMessage implements Comparable<LogMessage>{
 	 */
 	public LogMessage(String message){
 		date = Date.from(Instant.now());
+		stackTrace = Thread.currentThread().getStackTrace();
 		
 		this.message = message;
 		importance = LogImportance.INFORMATIONAL;
@@ -73,6 +76,7 @@ public class LogMessage implements Comparable<LogMessage>{
 	 */
 	public LogMessage(String message, LogImportance importance){
 		date = Date.from(Instant.now());
+		stackTrace = Thread.currentThread().getStackTrace();
 		
 		this.importance = importance;
 		this.message = message;
@@ -86,6 +90,7 @@ public class LogMessage implements Comparable<LogMessage>{
 	 */
 	public LogMessage(String message, String ... tags){
 		date = Date.from(Instant.now());
+		stackTrace = Thread.currentThread().getStackTrace();
 		
 		importance = LogImportance.INFORMATIONAL;
 		this.message = message;
@@ -100,6 +105,7 @@ public class LogMessage implements Comparable<LogMessage>{
 	 */
 	public LogMessage(String message, LogImportance importance, String ... tags){
 		date = Date.from(Instant.now());
+		stackTrace = Thread.currentThread().getStackTrace();
 		
 		this.importance = importance;
 		this.message = message;
@@ -160,6 +166,8 @@ public class LogMessage implements Comparable<LogMessage>{
 	
 	@Override
 	public String toString() {
-		return "LogMessage[ \"" + message + "\", Importance: " + importance.toString() + ", Tags: " + getTagsString() + " ]";
+		//NOTE: stackTrace[4] - we are apparently 4 method calls in from the log.logMessage(); method call. 
+		//There should maybe be a safer way that guarantees that the callers stack element is shown.
+		return "LogMessage[ \"" + message + "\", Importance: " + importance.toString() + ", Tags: " + getTagsString() + ", At: " + stackTrace[4] +  " ]";
 	}
 }

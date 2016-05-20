@@ -262,7 +262,8 @@ public class Game extends Updater {
 				"Camera X: " + camera.getBounds().x,
 				"Camera Y: " + camera.getBounds().y,
 				"Objects: " + gameObjectHandler.numberOfGameObjects()
-		};});
+			};
+		});
 	}
 
 	private void completeSetup() {

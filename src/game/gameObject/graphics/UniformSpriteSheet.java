@@ -164,8 +164,6 @@ public class UniformSpriteSheet {
 		verticalTiles = tiles;
 	}
 	
-	//TODO: Move these functions to some other util method
-	
 	/**
 	 * @param x
 	 * @param y
