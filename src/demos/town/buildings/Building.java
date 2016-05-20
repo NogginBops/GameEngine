@@ -8,6 +8,8 @@ import game.util.UpdateListener;
  *
  */
 public abstract class Building extends Sprite implements UpdateListener {
+	
+	//TODO: Remove
 
 	protected BuildingMode mode;
 

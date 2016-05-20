@@ -3,6 +3,7 @@ package game.sound;
 import java.awt.geom.Point2D;
 
 import game.gameObject.GameObject;
+import game.util.math.MathUtils;
 import kuusisto.tinysound.TinySound;
 
 /**
@@ -13,8 +14,6 @@ import kuusisto.tinysound.TinySound;
 public class AudioEngine {
 
 	// JAVADOC: AudioEngine
-
-	// TODO: Master volume control
 	
 	private static GameObject listener;
 
@@ -52,7 +51,7 @@ public class AudioEngine {
 	 * @param vol
 	 */
 	public static void setMasterVolume(double vol){
-		masterVolume = vol < 0 ? 0 : vol > 1 ? 1 : vol;
+		masterVolume = MathUtils.clamp01(vol);
 		TinySound.setGlobalVolume(masterVolume);
 	}
 

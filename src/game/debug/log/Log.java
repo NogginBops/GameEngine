@@ -12,6 +12,8 @@ public class Log {
 	
 	//JAVADOC: Log
 	
+	//TODO: Reflection to see file and line that log entries come from
+	
 	private CopyOnWriteArrayList<LogMessage> messages;
 	
 	/**

@@ -42,6 +42,8 @@ public class Game extends Updater {
 	// JAVADOC: Game
 	
 	//TODO: Tasks and thread pooling for game and painting threads. (Support for other tasks too)
+	//The game loop, graphics loop and potentially other systems should use a thread pool system
+	//so that they can be more efficient
 
 	private static boolean running = false;
 	private static boolean closeRequested = false;
@@ -243,7 +245,8 @@ public class Game extends Updater {
 		gameObjectHandler.addGameObject(camera, "Main camera");
 	}
 	
-	//FIXME: This is a memory intensive solution and has to go
+	//FIXME: This is a memory intensive solution, is there a better solution? 
+	//NOTE: Does this really have any performance hit?
 	private void basicDebug(){
 		screen.setDebugEnabled(true);
 		screen.addDebugText(() -> { return new String[]{

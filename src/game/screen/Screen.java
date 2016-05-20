@@ -162,6 +162,10 @@ public class Screen implements Runnable {
 				e.printStackTrace();
 			}
 		}
+		
+		//closeRequested == true, clean up
+		
+		imageGraphics.dispose();
 	}
 
 	/**

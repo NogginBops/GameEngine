@@ -28,7 +28,7 @@ public final class SaverUtil {
 					return false;
 				}
 			} else {
-				System.err.println("Is't a file");
+				System.err.println("Isn't a file");
 				return false;
 			}
 		} else {
@@ -66,7 +66,7 @@ public final class SaverUtil {
 									return false;
 								}
 							} else {
-								System.err.println("Is't a file");
+								System.err.println("Isn't a file");
 								return false;
 							}
 						} else {

@@ -68,7 +68,39 @@ public final class MathUtils {
 	 * @param max
 	 * @return
 	 */
+	public static int clamp01(int value){
+		if(value < 0){
+			return 0;
+		}else if(value > 1){
+			return 1;
+		}else{
+			return value;
+		}
+	}
+	
+	/**
+	 * @param value
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public static float clamp01(float value){
+		if(value < 0){
+			return 0;
+		}else if(value > 1){
+			return 1;
+		}else{
+			return value;
+		}
+	}
+	
+	/**
+	 * @param value
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	public static double clamp01(double value){
 		if(value < 0){
 			return 0;
 		}else if(value > 1){

@@ -3,6 +3,9 @@ package game.controller.event;
 import java.util.Comparator;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 
@@ -13,10 +16,10 @@ public class EventMachine {
 	
 	//JAVADOC: EventMachine
 	
-	//TODO: Event delays? Firing a event with a 2 second delay will called event fired 2 seconds later.
-
 	private ConcurrentSkipListMap<Class<? extends GameEvent<?>>, CopyOnWriteArrayList<EventListener>> eventListenerMap;
-
+	
+	private ScheduledThreadPoolExecutor executor;
+	
 	/**
 	 * 
 	 */
@@ -27,6 +30,11 @@ public class EventMachine {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
+		
+		//NOTE: Is 5 threads optimal? 
+		//Should the executor be able to allocate threads? 
+		//What should happen if no threads are available?
+		executor = new ScheduledThreadPoolExecutor(5, Executors.defaultThreadFactory());
 	}
 
 	/**
@@ -82,5 +90,23 @@ public class EventMachine {
 				}
 			}
 		}
+	}
+	
+	//NOTE: Should the timeUnit parameter on executor.schedule(Runnable r, long delay, TimeUnit timeUnit) be exposed?
+	
+	/**
+	 * @param event
+	 * @param delayMillis
+	 */
+	public <T extends GameEvent<?>> void fireEvent(T event, long delayMillis) {
+		executor.schedule(() -> {
+					for (Class<? extends GameEvent<?>> eventClass : eventListenerMap.keySet()) {
+						if(GameEvent.class.isAssignableFrom(eventClass)){
+							for (EventListener eventListener : eventListenerMap.get(eventClass)) {
+								eventListener.eventFired(event);
+							}
+						}
+					}
+				}, delayMillis, TimeUnit.MILLISECONDS);
 	}
 }
