@@ -336,6 +336,8 @@ public class Game extends Updater {
 				listeners = gameObjectHandler.getAllGameObjectsExtending(UpdateListener.class);
 			}
 			
+			//TODO: Use a float representing seconds instead
+			
 			propagateUpdate(elapsedTime);
 			
 			UpdateCounter.update(elapsedTime / 1000000000f);

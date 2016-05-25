@@ -35,6 +35,8 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	//TODO: Explore the HashMap solution.
 	private CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>> collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 
+	private boolean debug = false;
+	
 	/**
 	 * @param gameObjectHandeler
 	 */
@@ -123,7 +125,9 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 				objects += copyOnWriteArrayList.size();
 			}
 			
-			Game.log.logDebug("Loop count: " + loopCount + " for "  + collidables.size() + " layers and " + objects + " objects!");
+			if(debug){
+				Game.log.logDebug("Loop count: " + loopCount + " for "  + collidables.size() + " layers and " + objects + " objects!");
+			}
 		}
 		
 		loopCount = 0;

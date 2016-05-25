@@ -15,6 +15,8 @@ public class AudioEngine {
 
 	// JAVADOC: AudioEngine
 	
+	//TODO: Either replace TinySound with a custom written system or use another library
+	
 	private static GameObject listener;
 
 	private static Point2D listenerLocation;
@@ -45,7 +47,6 @@ public class AudioEngine {
 		listener = audioListener;
 	}
 	
-	
 	/**
 	 * Sets the masterVolume. The value is clamped between 0 and 1.
 	 * @param vol
@@ -73,7 +74,7 @@ public class AudioEngine {
 		double pan = dist < lowerPanThreshhold ? 0 : vector.getX() / dist;
 
 		source.getSound().play(volume * source.getVolume(), pan);
-
+		
 		// System.out.println("Volume: " + volume + " Pan: " + pan + " Distance:
 		// " + dist + " Distance log: " + Math.log10(dist) + " Vector: " +
 		// vector);
