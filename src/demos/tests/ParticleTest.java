@@ -55,33 +55,37 @@ public class ParticleTest implements GameInitializer {
 			e.printStackTrace();
 		}
 		
-		ParticleSystem pSystem = new ParticleSystem(new Rectangle(100, 100, 250, 250), 5, 1000);
+		ParticleSystem pSystem = new ParticleSystem(new Rectangle(100, 100, 400, 400), 5, 1000);
 		
 		pSystem.addImage(0, particeImage);
 		
 		Particle[] particles = pSystem.getParticles();
 		
 		for (int i = 0; i < particles.length; i++) {
-			particles[i] = new Particle(pSystem.getY() + (pSystem.getBounds().width * rand.nextFloat()), pSystem.getY() + (pSystem.getBounds().height * rand.nextFloat()), 20, 20, Color.WHITE, 0);
+			particles[i] = new Particle(pSystem.getY() + (pSystem.getBounds().width * rand.nextFloat()), pSystem.getY() + (pSystem.getBounds().height * rand.nextFloat()), 50, 50, rand.nextFloat() * 10, Color.WHITE, 0);
 			
 			particles[i].dx = (rand.nextFloat()- 0.5f) * 20;
 			particles[i].dy = (rand.nextFloat()- 0.5f) * 20;
 		}
 		
-		Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
+		//Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
 		
-		ParticleSystem pSys2 = new ParticleSystem(new Rectangle(350, 400, 50, 200), 5, 200);
+		ParticleSystem pSys2 = new ParticleSystem(new Rectangle(100, 100, 500, 500), 5, 2000);
 		
 		pSys2.addImage(0, particeImage);
 		
 		Particle[] particles2 = pSys2.getParticles();
 		
 		for (int i = 0; i < particles2.length; i++) {
-			particles2[i] = new Particle(pSys2.getX() + (pSys2.getBounds().width * rand.nextFloat()), pSys2.getY() + (pSys2.getBounds().height * rand.nextFloat()), 10, 10, Color.WHITE, 0);
+			particles2[i] = new Particle(pSys2.getX() + (pSys2.getBounds().width * rand.nextFloat()), pSys2.getY() + (pSys2.getBounds().height * rand.nextFloat()), 10, 10, 5 + rand.nextFloat() * 10, Color.WHITE, 0);
 			
 			particles2[i].dx = (rand.nextFloat()- 0.5f) * 20;
 			particles2[i].dy = (rand.nextFloat()- 0.5f) * 20;
+			
+			particles2[i].active = false;
 		}
+		
+		pSys2.addEmitter(pSys2.new ParticleEmitter(pSys2.getX(), pSys2.getX(), 50, 50, 100f));
 		
 		Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");
 	}

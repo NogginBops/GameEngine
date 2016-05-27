@@ -10,6 +10,8 @@ public class Particle {
 	
 	//JAVADOC: Particle
 	
+	//Should particle be final?
+	
 	//TODO: Should these be public or private/protected (Probably private)
 	
 	/**
@@ -50,6 +52,16 @@ public class Particle {
 	/**
 	 * 
 	 */
+	public float scaleX = 1;
+	
+	/**
+	 * 
+	 */
+	public float scaleY = 1;
+	
+	/**
+	 * 
+	 */
 	public Color color;
 	
 	/**
@@ -57,21 +69,31 @@ public class Particle {
 	 */
 	public int image;
 	
+	/**
+	 * 
+	 */
+	public float lifetime;
+	
+	public float currLifetime;
+	
 	
 	/**
 	 * @param x
 	 * @param y
 	 * @param width 
 	 * @param height 
+	 * @param lifetime 
 	 * @param size 
 	 * @param color 
 	 * @param image 
 	 */
-	public Particle(float x, float y, float width, float height, Color color, int image) {
+	public Particle(float x, float y, float width, float height, float lifetime, Color color, int image) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.lifetime = lifetime;
+		currLifetime = lifetime;
 		this.color = color;
 		this.image = image;
 		
@@ -125,5 +147,4 @@ public class Particle {
 		this.dx = dx;
 		this.dy = dy;
 	}
-	
 }
