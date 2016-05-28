@@ -3,11 +3,12 @@ package game.gameObject.particles;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Random;
 
 import game.Game;
@@ -25,12 +26,25 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	
 	//TODO: ParticleSystem
 	
+	//TODO: Figure out what should and should not be relative coordinates.
+	
+	//TODO: Particle forces
+	
+	//TODO: ParticleColliders
+	
+	//TODO: Other particle related things like color/size over lifetime and other effects
+	
+	//TODO: Rotation?
+	
 	private Particle[] particles;
 	
 	private ArrayList<ParticleEmitter> emitters;
 	
 	private HashMap<Integer, HashMap<Color, BufferedImage>> imageMap;
 
+	//TODO: Remove
+	public boolean debug = false;
+	
 	/**
 	 * @param rect
 	 * @param zOrder
@@ -39,12 +53,36 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	public ParticleSystem(Rectangle rect, int zOrder, int maxParticles) {
 		super(rect, zOrder);
 		particles = new Particle[maxParticles];
+		for (int i = 0; i < particles.length; i++) {
+			particles[i] = new Particle(0, 0, 10, 10, 1, Color.WHITE, 0);
+			particles[i].active = false;
+		}
 		emitters = new ArrayList<>();
 		imageMap = new HashMap<>();
 	}
 
 	@Override
 	public void paint(Graphics2D g2d) {
+		//TODO: Remove
+		if(debug){
+			g2d.setColor(Color.magenta);
+			g2d.draw(bounds);
+			g2d.setColor(Color.cyan);
+			for (ParticleEmitter particleEmitter : emitters) {
+				switch (particleEmitter.shape) {
+				case RECTANGLE:
+					g2d.draw(new Rectangle2D.Float(x + particleEmitter.x, y + particleEmitter.y, particleEmitter.width, particleEmitter.height));
+					break;
+				case CIRCLE:
+					g2d.draw(new Ellipse2D.Float(x + particleEmitter.x, y + particleEmitter.y, particleEmitter.radius * 2, particleEmitter.radius * 2));
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		
+		
 		for (int i = 0; i < particles.length; i++) {
 			if(particles[i].active == true){
 				//Paint
@@ -112,8 +150,8 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				particles[i].scaleX = (float)((particles[i].currLifetime / particles[i].lifetime));
 				particles[i].scaleY = (float)((particles[i].currLifetime / particles[i].lifetime));
 			
-				if(MathUtils.isOutside(particles[i].x, x, x + (width - (particles[i].width * particles[i].scaleX)))!= 0 ||
-						MathUtils.isOutside(particles[i].y, y, y + (height - (particles[i].height * particles[i].scaleY)))!= 0){
+				if(MathUtils.isOutside(x + particles[i].x, x, x + (width - (particles[i].width * particles[i].scaleX)))!= 0 ||
+						MathUtils.isOutside(y + particles[i].y, y, y + (height - (particles[i].height * particles[i].scaleY)))!= 0){
 					
 					//TODO: Different edge modes
 					
@@ -207,6 +245,8 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	 */
 	public class ParticleEmitter{
 		
+		//TODO: Figure out what members that should be exposed
+		
 		/**
 		 * 
 		 */
@@ -227,11 +267,20 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		 */
 		public float y;
 		
-		private float width;
+		/**
+		 * 
+		 */
+		public float width;
 		
-		private float height;
+		/**
+		 * 
+		 */
+		public float height;
 		
-		private float radius;
+		/**
+		 * 
+		 */
+		public float radius;
 		
 		private Random rand = new Random();
 		
@@ -284,7 +333,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				Point2D.Float point = getRandomPoint();
 				
 				//Relative coordinates?
-				Particle p = system.spawnParticle(system.x + point.x, system.y + point.y);
+				Particle p = system.spawnParticle(point.x, point.y);
 				
 				//NOTE: Should something be done to the particles?
 				//Lifetime things and such...
@@ -295,15 +344,15 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				}
 				
 				//TODO: Emission variables?
-				p.dx = rand.nextFloat() * 100;
-				p.dy = rand.nextFloat() * 100;
+				//p.dx = rand.nextFloat() * 100;
+				p.dy = 200 + (rand.nextFloat() * 10);
 			}
 		}
 		
 		private Point2D.Float getRandomPoint(){
 			switch (shape) {
 			case RECTANGLE:
-				return new Point2D.Float(rand.nextFloat() * width, rand.nextFloat() * height);
+				return new Point2D.Float(x + (rand.nextFloat() * width), y + (rand.nextFloat() * height));
 			case CIRCLE:
 				double angle = rand.nextFloat() * Math.PI * 2;
 				return new Point2D.Float((float)(Math.cos(angle) * (rand.nextFloat() * radius)), (float)(Math.sin(angle) * (rand.nextFloat() * radius)));

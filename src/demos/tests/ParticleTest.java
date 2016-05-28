@@ -51,7 +51,6 @@ public class ParticleTest implements GameInitializer {
 		try {
 			particeImage = IOHandler.load(new LoadRequest<BufferedImage>("StandardParticle", new File("./res/particles/StandardParticle_100.png"), BufferedImage.class)).result;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -86,6 +85,12 @@ public class ParticleTest implements GameInitializer {
 		}
 		
 		pSys2.addEmitter(pSys2.new ParticleEmitter(pSys2.getX(), pSys2.getX(), 50, 50, 100f));
+		
+		//FIXME: Something weird is happening with the bounding box when the particle system is moving!
+		//Probably a error with relative coordinates.
+		
+		pSys2.setDX(20);
+		pSys2.setDY(40);
 		
 		Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");
 	}

@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import game.Game;
 import game.controller.event.EventListener;
 import game.controller.event.GameEvent;
+import game.gameObject.GameObject;
 import game.gameObject.handler.event.GameObjectEvent;
 import game.util.ID;
 import game.util.IDHandler;
@@ -115,7 +116,7 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	private void updateIDs(ID<?>[] ids) {
 		Object[][] tableData = new Object[ids.length][3];
 		for (int x = 0; x < tableData.length; x++) {
-			tableData[x][0] = ids[x].name;
+			tableData[x][0] = ids[x].name + (ids[x].object instanceof GameObject ? ((GameObject)ids[x].object).isActive() ? " +" : " -" : "");
 			tableData[x][1] = ids[x].id;
 			tableData[x][2] = ids[x].object.getClass().getName();
 		}
