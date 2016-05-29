@@ -48,14 +48,14 @@ public abstract class Building extends Sprite implements UpdateListener {
 	}
 
 	@Override
-	public void update(long timeNano) {
+	public void update(float deltaTime) {
 		switch (mode) {
 		case OUTLINE:
 
 			break;
 		case BUILDING:
 			if (timer < buildTime) {
-				timer += timeNano / 1000000000f;
+				timer += deltaTime;
 			} else {
 				mode = BuildingMode.BUILT;
 				timer = 0;

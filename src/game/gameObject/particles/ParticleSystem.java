@@ -14,6 +14,8 @@ import java.util.Random;
 import game.Game;
 import game.gameObject.graphics.Paintable;
 import game.gameObject.physics.BasicMovable;
+import game.image.effects.ColorTintFilter;
+import game.util.math.ColorUtils;
 import game.util.math.MathUtils;
 
 /**
@@ -36,13 +38,19 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	
 	//TODO: Rotation?
 	
+	//NOTE: When thread scheduling tasks are implemented, should this be it's own task?
+	
 	private Particle[] particles;
 	
 	private ArrayList<ParticleEmitter> emitters;
 	
+	//TODO: Use volatile images for hardware acceleration!
 	private HashMap<Integer, HashMap<Color, BufferedImage>> imageMap;
 
 	//TODO: Remove
+	/**
+	 * 
+	 */
 	public boolean debug = false;
 	
 	/**
@@ -89,9 +97,9 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				BufferedImage image = getParticleImage(particles[i]);
 				
 				if(image == null){
-					g2d.setColor(Color.magenta);
+					g2d.setColor(particles[i].color);
 					g2d.drawRect((int)(x + (particles[i].x - (particles[i].width * particles[i].scaleX))),
-							(int)(y + (particles[i].y)),
+							(int)(y + (particles[i].y) - ((particles[i].height * particles[i].scaleY)/2)),
 							(int)(particles[i].width * particles[i].scaleX),
 							(int)(particles[i].height * particles[i].scaleY));
 				}else{
@@ -105,19 +113,35 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		}
 	}
 
+	//TODO: remove
+	int i = 0;
+	
 	private BufferedImage getParticleImage(Particle particle) {
+		if(hasImage(particle) == false){
+			generateParticleImage(particle);
+		}
+		
+		return imageMap.get(particle.image).get(particle.color);
+	}
+	
+	/**
+	 * 
+	 * @param particle
+	 * @return
+	 */
+	private boolean hasImage(Particle particle){
 		if(imageMap.containsKey(particle.image)){
-			if(imageMap.get(particle.image) == null){
-				imageMap.put(particle.image, new HashMap<Color, BufferedImage>());
-			}
 			if(imageMap.get(particle.image).containsKey(particle.color)){
-				return imageMap.get(particle.image).get(particle.color);
-			}else{
-				//Generate
-				return null;
+				return true;
 			}
-		}else{
-			return null;
+		}
+		return false;
+	}
+	
+	private void generateParticleImage(Particle particle){
+		if(imageMap.containsKey(particle.image)){
+			imageMap.get(particle.image).put(particle.color,
+					new ColorTintFilter(particles[i].color, 1).filter(imageMap.get(particle.image).get(Color.white), null));
 		}
 	}
 
@@ -127,29 +151,38 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	}
 	
 	@Override
-	public void update(long timeNano) {
-		super.update(timeNano);
+	public void update(float deltaTime) {
+		super.update(deltaTime);
 		
 		//Update emitters
 		for (ParticleEmitter particleEmitter : emitters) {
-			particleEmitter.Update(this, timeNano / 1000000000f);
+			if(particleEmitter.enabled == true){
+				particleEmitter.Update(this, deltaTime);
+			}
 		}
 		
 		//Update particle movement
 		for (int i = 0; i < particles.length; i++) {
 			if(particles[i].active == true){
-				particles[i].currLifetime -= (timeNano / 1000000000f);
+				particles[i].currLifetime -= (deltaTime);
 				if(particles[i].currLifetime <= 0){
 					particles[i].active = false;
 				}
 				
-				particles[i].x = particles[i].x + (particles[i].dx * (timeNano / 1000000000f));
-				particles[i].y = particles[i].y + (particles[i].dy * (timeNano / 1000000000f));
+				particles[i].x = particles[i].x + (particles[i].dx * deltaTime);
+				particles[i].y = particles[i].y + (particles[i].dy * deltaTime);
 				
 				//Scale with lifetime
-				particles[i].scaleX = (float)((particles[i].currLifetime / particles[i].lifetime));
-				particles[i].scaleY = (float)((particles[i].currLifetime / particles[i].lifetime));
-			
+				
+				particles[i].scaleX = (float) MathUtils.max(0.2f, ((particles[i].currLifetime / particles[i].lifetime)));
+				particles[i].scaleY = (float) MathUtils.max(0.2f, ((particles[i].currLifetime / particles[i].lifetime)));
+				
+				particles[i].color = ColorUtils.Lerp(Color.red, Color.white, (particles[i].currLifetime)/(particles[i].lifetime));				
+				
+				if(hasImage(particles[i]) == false){
+					generateParticleImage(particles[i]);
+				}
+				
 				if(MathUtils.isOutside(x + particles[i].x, x, x + (width - (particles[i].width * particles[i].scaleX)))!= 0 ||
 						MathUtils.isOutside(y + particles[i].y, y, y + (height - (particles[i].height * particles[i].scaleY)))!= 0){
 					
@@ -250,6 +283,11 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		/**
 		 * 
 		 */
+		public boolean enabled = true;
+		
+		/**
+		 * 
+		 */
 		public float emissionRate;
 		
 		/**
@@ -285,6 +323,10 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		private Random rand = new Random();
 		
 		private float timer;
+		
+		//TODO: Particle imageId things
+		
+		//TODO: Particle spawning arguments
 		
 		/**
 		 * @param x
@@ -344,8 +386,8 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				}
 				
 				//TODO: Emission variables?
-				//p.dx = rand.nextFloat() * 100;
-				p.dy = 200 + (rand.nextFloat() * 10);
+				p.dx = (rand.nextFloat() - 0.5f) * 40;
+				p.dy = 200 + (rand.nextFloat() * 40);
 			}
 		}
 		

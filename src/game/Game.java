@@ -24,6 +24,7 @@ import game.util.FPSCounter;
 import game.util.UpdateCounter;
 import game.util.UpdateListener;
 import game.util.Updater;
+import game.util.math.MathUtils;
 
 /**
  * 
@@ -52,6 +53,8 @@ public class Game extends Updater {
 	private static long startTime;
 	private static long currTime;
 	private static long elapsedTime;
+	
+	private static float timeScale = 1;
 	
 	private static String name = "Game";
 
@@ -261,7 +264,8 @@ public class Game extends Updater {
 				"Average UPS: " + UpdateCounter.averageUPS,
 				"Camera X: " + camera.getBounds().x,
 				"Camera Y: " + camera.getBounds().y,
-				"Objects: " + gameObjectHandler.numberOfGameObjects()
+				"Objects: " + gameObjectHandler.numberOfGameObjects(),
+				"Time scale: " + timeScale
 			};
 		});
 	}
@@ -292,6 +296,8 @@ public class Game extends Updater {
 	private void addIDHandlerDebug() {
 		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler()), "ID Handler Debug").start();
 	}
+	
+	int i = 0;
 	
 	/**
 	 * Starts the main loop of the game
@@ -338,7 +344,17 @@ public class Game extends Updater {
 			
 			//TODO: Use a float representing seconds instead
 			
-			propagateUpdate(elapsedTime);
+			propagateUpdate((elapsedTime / 1000000000f) * timeScale);
+			
+			i++;
+			
+			if(i % 100 == 0){
+				i = 0;
+				
+				System.gc();
+			}
+			
+			System.out.println(timeScale);
 			
 			UpdateCounter.update(elapsedTime / 1000000000f);
 			
@@ -439,5 +455,19 @@ public class Game extends Updater {
 	 */
 	public String getName(){
 		return name;
+	}
+	
+	/**
+	 * @param timeScale
+	 */
+	public static void setTimeScale(float timeScale){
+		Game.timeScale = MathUtils.clamp(timeScale, 0, 1000000000f);
+	}
+	
+	/**
+	 * @return
+	 */
+	public static float getTimeScale(){
+		return timeScale;
 	}
 }

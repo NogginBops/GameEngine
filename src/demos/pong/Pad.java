@@ -112,8 +112,8 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 	}
 
 	@Override
-	public void update(long timeMillis) {
-		super.update(timeMillis);
+	public void update(float deltaTime) {
+		super.update(deltaTime);
 		if (!outerBounds.contains(bounds)) {
 			if (bounds.y + bounds.height > outerBounds.y + outerBounds.height) {
 				setY((int) outerBounds.getMaxY() - bounds.height);

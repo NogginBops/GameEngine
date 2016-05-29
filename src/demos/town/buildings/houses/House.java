@@ -47,8 +47,8 @@ public class House extends Building {
 	BuildingMode last = null;
 	
 	@Override
-	public void update(long timeNano) {
-		super.update(timeNano);
+	public void update(float deltaTime) {
+		super.update(deltaTime);
 		
 		if(last != mode){
 			switch (mode) {

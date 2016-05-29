@@ -36,10 +36,10 @@ public abstract class Updater {
 	 * @param timeNano
 	 *            time since last update (in milliseconds)
 	 */
-	protected void propagateUpdate(long timeNano) {
+	protected void propagateUpdate(float deltaTime) {
 		for (UpdateListener listener : listeners) {
 			if(listener.isActive()){
-				listener.update(timeNano);
+				listener.update(deltaTime);
 			}
 		}
 	}

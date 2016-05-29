@@ -53,7 +53,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	int loopCount = 0;
 	
 	@Override
-	public void update(long timeNano) {
+	public void update(float deltaTime) {
 		if (Game.gameObjectHandler.shouldUpdateObjects()) {
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 			for (int z : Game.gameObjectHandler.getZLevels()) {
@@ -116,7 +116,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 			}
 		}
 		
-		timer -= timeNano/1000000000f;
+		timer -= deltaTime;
 		if(timer <= 0){
 			timer = 2;
 			

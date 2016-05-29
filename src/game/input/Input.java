@@ -93,7 +93,7 @@ public class Input extends BasicGameObject implements KeyListener, MouseInputLis
 	}
 
 	@Override
-	public void update(long timeMillis) {
+	public void update(float deltaTime) {
 		mouseHandler.computeEnteredListeners();
 		
 		if(Game.gameObjectHandler.shouldUpdateObjects()){

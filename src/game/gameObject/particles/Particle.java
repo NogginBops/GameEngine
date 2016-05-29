@@ -74,6 +74,9 @@ public class Particle {
 	 */
 	public float lifetime;
 	
+	/**
+	 * 
+	 */
 	public float currLifetime;
 	
 	

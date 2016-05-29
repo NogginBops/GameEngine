@@ -209,9 +209,9 @@ public class Sprite extends BasicMovable implements Paintable {
 	}
 
 	@Override
-	public void update(long timeNano) {
-		x += (dx * timeNano) / 1000000000;
-		y += (dy * timeNano) / 1000000000;
+	public void update(float deltaTime) {
+		x += dx * deltaTime;
+		y += dy * deltaTime;
 		updateBounds();
 	}
 	

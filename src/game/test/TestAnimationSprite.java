@@ -49,9 +49,9 @@ public class TestAnimationSprite extends Sprite{
 	
 	int temp = 0;
 	@Override
-	public void update(long timeMillis) {
-		super.update(timeMillis);
-		timer += timeMillis / 1000000000f;
+	public void update(float deltaTime) {
+		super.update(deltaTime);
+		timer += deltaTime;
 		if(timer > delay){
 			temp = current;
 			temp += reverse ? -1 : 1;

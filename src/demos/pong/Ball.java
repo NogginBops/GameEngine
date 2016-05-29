@@ -48,8 +48,8 @@ public class Ball extends Sprite implements Collidable{
 	}
 
 	@Override
-	public void update(long timeMillis) {
-		super.update(timeMillis);
+	public void update(float deltaTime) {
+		super.update(deltaTime);
 		if (!outerBounds.contains(bounds)) {
 			if (bounds.getMinY() < outerBounds.getMinY()) {
 				setY(outerBounds.y);
