@@ -297,6 +297,7 @@ public class Game extends Updater {
 		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler()), "ID Handler Debug").start();
 	}
 	
+	//TODO: Remove
 	int i = 0;
 	
 	/**
@@ -346,6 +347,8 @@ public class Game extends Updater {
 			
 			propagateUpdate((elapsedTime / 1000000000f) * timeScale);
 			
+			
+			//FIXME: THERE IS A BIG GC ISSUE, THIS IS A ADHOC SOLUTION!!
 			i++;
 			
 			if(i % 100 == 0){
@@ -353,8 +356,6 @@ public class Game extends Updater {
 				
 				System.gc();
 			}
-			
-			System.out.println(timeScale);
 			
 			UpdateCounter.update(elapsedTime / 1000000000f);
 			

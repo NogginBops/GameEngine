@@ -4,18 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
-import game.Game;
 import game.gameObject.graphics.Paintable;
 import game.gameObject.physics.BasicMovable;
 import game.image.effects.ColorTintFilter;
-import game.util.math.ColorUtils;
 import game.util.math.MathUtils;
 
 /**
@@ -26,11 +22,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	
 	//JAVADOC: ParticleSystem
 	
-	//TODO: ParticleSystem
-	
-	//TODO: Figure out what should and should not be relative coordinates.
-	
-	//TODO: Particle forces
+	//TODO: Figure out what should and should not be relative coordinates. (Most things probably)
 	
 	//TODO: ParticleColliders
 	
@@ -40,14 +32,20 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	
 	//NOTE: When thread scheduling tasks are implemented, should this be it's own task?
 	
+	//TODO: Particle coordinates should represent the center of the particle.
+	//Only the center should be collision checked for speed.
+	//Most of the times this wont even be noticed.
+	
 	private Particle[] particles;
 	
 	private ArrayList<ParticleEmitter> emitters;
 	
-	//TODO: Use volatile images for hardware acceleration!
+	private ArrayList<ParticleEffector> effectors;
+	
+	//NOTE: Does this need optimization?
 	private HashMap<Integer, HashMap<Color, BufferedImage>> imageMap;
 
-	//TODO: Remove
+	//TODO: Remove?
 	/**
 	 * 
 	 */
@@ -62,16 +60,18 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		super(rect, zOrder);
 		particles = new Particle[maxParticles];
 		for (int i = 0; i < particles.length; i++) {
+			//TODO: A way to change the way particles are being initialized.
 			particles[i] = new Particle(0, 0, 10, 10, 1, Color.WHITE, 0);
 			particles[i].active = false;
 		}
 		emitters = new ArrayList<>();
+		effectors = new ArrayList<>();
 		imageMap = new HashMap<>();
 	}
 
 	@Override
 	public void paint(Graphics2D g2d) {
-		//TODO: Remove
+		//TODO: Remove? Make a better system for debugging bounding areas?
 		if(debug){
 			g2d.setColor(Color.magenta);
 			g2d.draw(bounds);
@@ -112,13 +112,12 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 			}
 		}
 	}
-
-	//TODO: remove
-	int i = 0;
 	
 	private BufferedImage getParticleImage(Particle particle) {
 		if(hasImage(particle) == false){
-			generateParticleImage(particle);
+			if(generateParticleImage(particle) == false){
+				return null;
+			}
 		}
 		
 		return imageMap.get(particle.image).get(particle.color);
@@ -138,15 +137,19 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		return false;
 	}
 	
-	private void generateParticleImage(Particle particle){
+	private boolean generateParticleImage(Particle particle){
 		if(imageMap.containsKey(particle.image)){
 			imageMap.get(particle.image).put(particle.color,
-					new ColorTintFilter(particles[i].color, 1).filter(imageMap.get(particle.image).get(Color.white), null));
+					new ColorTintFilter(particle.color, 1).filter(imageMap.get(particle.image).get(Color.white), null));
+			return true;
 		}
+		return false;
 	}
 
 	@Override
 	public BufferedImage getImage() {
+		//NOTE: A particle system is a very dynamic system so rendering to a image is probably going to be slower than using the paint method.
+		//But there should be a option to render to a image so that image effects can be applied.
 		return null;
 	}
 	
@@ -161,6 +164,12 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 			}
 		}
 		
+		for (ParticleEffector particleEffector : effectors) {
+			if(particleEffector.enabled == true){
+				particleEffector.effect(particles, deltaTime);
+			}
+		}
+		
 		//Update particle movement
 		for (int i = 0; i < particles.length; i++) {
 			if(particles[i].active == true){
@@ -172,13 +181,11 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				particles[i].x = particles[i].x + (particles[i].dx * deltaTime);
 				particles[i].y = particles[i].y + (particles[i].dy * deltaTime);
 				
-				//Scale with lifetime
+				//Scale with lifetime //TODO: Move to a ParticleEffector
 				
-				particles[i].scaleX = (float) MathUtils.max(0.2f, ((particles[i].currLifetime / particles[i].lifetime)));
-				particles[i].scaleY = (float) MathUtils.max(0.2f, ((particles[i].currLifetime / particles[i].lifetime)));
-				
-				particles[i].color = ColorUtils.Lerp(Color.red, Color.white, (particles[i].currLifetime)/(particles[i].lifetime));				
-				
+				//particles[i].scaleX = (float) MathUtils.max(0.2f, ((particles[i].currLifetime / particles[i].lifetime)));
+				//particles[i].scaleY = (float) MathUtils.max(0.2f, ((particles[i].currLifetime / particles[i].lifetime)));
+								
 				if(hasImage(particles[i]) == false){
 					generateParticleImage(particles[i]);
 				}
@@ -200,6 +207,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		}
 	}
 	
+	//NOTE: Should this be private to make this only accessible in the particleEmitter class
 	/**
 	 * @param x
 	 * @param y
@@ -246,6 +254,14 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	}
 	
 	/**
+	 * @param effector
+	 */
+	public void addEffector(ParticleEffector effector){
+		effectors.add(effector);
+	}
+	
+	//NOTE: Should there be a better way of keeping track of the different particle images 
+	/**
 	 * @param imageID
 	 * @param image
 	 */
@@ -255,153 +271,5 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		imageMap.put(imageID, tempMap);
 	}
 	
-	
-	/**
-	 * 
-	 * @author Julius Häger
-	 *
-	 */
-	public enum EmissionShape{
-		/**
-		 * 
-		 */
-		CIRCLE,
-		/**
-		 * 
-		 */
-		RECTANGLE;
-	}
-	
-	/**
-	 * @author Julius Häger
-	 *
-	 */
-	public class ParticleEmitter{
-		
-		//TODO: Figure out what members that should be exposed
-		
-		/**
-		 * 
-		 */
-		public boolean enabled = true;
-		
-		/**
-		 * 
-		 */
-		public float emissionRate;
-		
-		/**
-		 * 
-		 */
-		public EmissionShape shape;
-		
-		/**
-		 * 
-		 */
-		public float x;
-		
-		/**
-		 * 
-		 */
-		public float y;
-		
-		/**
-		 * 
-		 */
-		public float width;
-		
-		/**
-		 * 
-		 */
-		public float height;
-		
-		/**
-		 * 
-		 */
-		public float radius;
-		
-		private Random rand = new Random();
-		
-		private float timer;
-		
-		//TODO: Particle imageId things
-		
-		//TODO: Particle spawning arguments
-		
-		/**
-		 * @param x
-		 * @param y
-		 * @param width
-		 * @param height
-		 * @param emissionRate
-		 */
-		public ParticleEmitter(float x, float y, float width, float height, float emissionRate) {
-			this.x = x;
-			this.y = y;
-			this.width = width;
-			this.height = height;
-			this.emissionRate = emissionRate;
-			timer = 1/emissionRate;
-			
-			shape = EmissionShape.RECTANGLE;
-		}
-		
-		/**
-		 * @param x
-		 * @param y
-		 * @param radius
-		 * @param emissionRate
-		 */
-		public ParticleEmitter(float x, float y, float radius, float emissionRate) {
-			this.x = x;
-			this.y = y;
-			this.radius = radius;
-			this.emissionRate = emissionRate;
-			timer = 1/emissionRate;
-			
-			shape = EmissionShape.CIRCLE;
-		}
-		
-		/**
-		 * @param system
-		 * @param deltaTime
-		 */
-		public void Update(ParticleSystem system, float deltaTime){
-			timer -= deltaTime;
-			while(timer <= 0){
-				timer += 1/emissionRate;
-				
-				//Spawn particle
-				Point2D.Float point = getRandomPoint();
-				
-				//Relative coordinates?
-				Particle p = system.spawnParticle(point.x, point.y);
-				
-				//NOTE: Should something be done to the particles?
-				//Lifetime things and such...
-				
-				//Cannot spawn any more particles
-				if(p == null){
-					break;
-				}
-				
-				//TODO: Emission variables?
-				p.dx = (rand.nextFloat() - 0.5f) * 40;
-				p.dy = 200 + (rand.nextFloat() * 40);
-			}
-		}
-		
-		private Point2D.Float getRandomPoint(){
-			switch (shape) {
-			case RECTANGLE:
-				return new Point2D.Float(x + (rand.nextFloat() * width), y + (rand.nextFloat() * height));
-			case CIRCLE:
-				double angle = rand.nextFloat() * Math.PI * 2;
-				return new Point2D.Float((float)(Math.cos(angle) * (rand.nextFloat() * radius)), (float)(Math.sin(angle) * (rand.nextFloat() * radius)));
-			default:
-				Game.log.logError("Unknown particle emission shape " + shape, "ParticleSystem", "Emission", "ParticleEmission");
-				return null;
-			}
-		}
-	}
+	//Particle collides?
 }

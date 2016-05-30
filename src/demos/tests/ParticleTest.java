@@ -14,6 +14,7 @@ import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.gameObject.graphics.Camera;
 import game.gameObject.particles.Particle;
+import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.particles.ParticleSystem;
 
 /**
@@ -88,7 +89,7 @@ public class ParticleTest implements GameInitializer {
 			particles2[i].active = false;
 		}
 		
-		pSys2.addEmitter(pSys2.new ParticleEmitter(pSys2.getX(), pSys2.getX(), 500, 500, 100f));
+		pSys2.addEmitter(new ParticleEmitter(pSys2.getX(), pSys2.getX(), 500, 500, 100f));
 		
 		//FIXME: Something weird is happening with the bounding box when the particle system is moving!
 		//Probably a error with relative coordinates.
