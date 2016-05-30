@@ -34,17 +34,20 @@ import game.util.math.MathUtils;
  */
 public class Game extends Updater {
 
+	//JAVADOC: Game
+	
 	//TODO: Restructure project packages to make more sense
 	
-	// NOTE: Should everything be static? There is only ever going to be one game.
+	//NOTE: Should everything be static? There is only ever going to be one game.
 	
-	// TODO: Clean up
+	//TODO: Clean up
+	
+	//TODO: Clean up getters and setters, and maybe add shorthand methods for common uses (e.g logging and getting gameObjects)
 
-	// JAVADOC: Game
-	
 	//TODO: Tasks and thread pooling for game and painting threads. (Support for other tasks too)
 	//The game loop, graphics loop and potentially other systems should use a thread pool system
-	//so that they can be more efficient
+	//so that they can be more efficient. (The game update thread could be used for rendering if 
+	//the rendering system was built to support that).
 
 	private static boolean running = false;
 	private static boolean closeRequested = false;
@@ -163,8 +166,6 @@ public class Game extends Updater {
 		
 		basicDebug();
 		
-		completeSetup();
-		
 		addIDHandlerDebug();
 	}
 	
@@ -269,10 +270,6 @@ public class Game extends Updater {
 			};
 		});
 	}
-
-	private void completeSetup() {
-		//TODO: Is this needed/should it be a event?
-	}
 	
 	// TODO: Fix proper onStart onExit and other similar methods. (USE EVENTS!!)
 	
@@ -296,9 +293,6 @@ public class Game extends Updater {
 	private void addIDHandlerDebug() {
 		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler()), "ID Handler Debug").start();
 	}
-	
-	//TODO: Remove
-	int i = 0;
 	
 	/**
 	 * Starts the main loop of the game
@@ -329,7 +323,12 @@ public class Game extends Updater {
 				screen.stop();
 				running = false;
 			}
-
+			
+			//TODO: Some system for not rendering when paused. (Though some times that might be wanted behavior)
+			//Note that when the threaded task system is implemented that that might be a good time to do that as
+			//it will be a lot easier to do then. (Depends on implementation though)
+			//Then this might be generalized to "not running specific tasks when paused" and possibly having special
+			//behavior if needed.
 			if (paused){
 				try {
 					Thread.sleep(10);
@@ -343,19 +342,7 @@ public class Game extends Updater {
 				listeners = gameObjectHandler.getAllGameObjectsExtending(UpdateListener.class);
 			}
 			
-			//TODO: Use a float representing seconds instead
-			
 			propagateUpdate((elapsedTime / 1000000000f) * timeScale);
-			
-			
-			//FIXME: THERE IS A BIG GC ISSUE, THIS IS A ADHOC SOLUTION!!
-			i++;
-			
-			if(i % 100 == 0){
-				i = 0;
-				
-				System.gc();
-			}
 			
 			UpdateCounter.update(elapsedTime / 1000000000f);
 			

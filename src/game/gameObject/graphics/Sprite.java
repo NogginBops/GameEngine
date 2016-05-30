@@ -37,6 +37,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	
 	private ColorTintFilter colorTinter;
 	
+	//NOTE: Is this creating a lot of unused sprites? Should there be a way to disable is feature?
 	private HashMap<BufferedImage, BufferedImage> imageCache;
 	
 	private float scale = 1;

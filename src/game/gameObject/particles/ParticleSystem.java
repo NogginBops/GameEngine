@@ -43,6 +43,10 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	private ArrayList<ParticleEffector> effectors;
 	
 	//NOTE: Does this need optimization?
+	//FIXME: This solution is generating a lot of entries. Find a way to cut number entries!
+	//The images can not be generated at draw-time for performance, a few solutions could be;
+	//  - Approximation of the color key in the second hashmap. (This solution will probably cut the allocation the most)
+	//  - A way to draw all the particles with the same image at the same time (batching)
 	private HashMap<Integer, HashMap<Color, BufferedImage>> imageMap;
 
 	//TODO: Remove?
@@ -94,6 +98,8 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		for (int i = 0; i < particles.length; i++) {
 			if(particles[i].active == true){
 				//Paint
+				
+				//FIXME: This is generating a lot of memory
 				BufferedImage image = getParticleImage(particles[i]);
 				
 				if(image == null){

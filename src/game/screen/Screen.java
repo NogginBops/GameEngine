@@ -92,6 +92,9 @@ public class Screen implements Runnable {
 	
 	Graphics2D imageGraphics;
 	
+	//TODO: Remove
+	int i = 0;
+	
 	private void loop() {
 		long currentTime = System.nanoTime();
 		long elapsedTime = 0;
@@ -155,6 +158,15 @@ public class Screen implements Runnable {
 			ScreenManager.update();
 
 			FPSCounter.update(elapsedTime / 1000000000f);
+			
+			//FIXME: THERE IS A BIG GC ISSUE WITH PARTICLE SYSTEMS, THIS IS A ADHOC SOLUTION!!
+			i++;
+			
+			if(i % 100 == 0){
+				i = 0;
+				
+				System.gc();
+			}
 			
 			try {
 				Thread.sleep(1);
