@@ -47,6 +47,11 @@ public class ParticleEmitter{
 	/**
 	 * 
 	 */
+	public ParticleCustomizer customizer;
+	
+	/**
+	 * 
+	 */
 	public float x;
 	
 	/**
@@ -126,12 +131,14 @@ public class ParticleEmitter{
 			//Relative coordinates?
 			Particle p = system.spawnParticle(point.x, point.y);
 			
-			//NOTE: Should something be done to the particles?
-			//Lifetime things and such...
-			
-			//Cannot spawn any more particles
 			if(p == null){
+				//Cannot spawn any more particles
 				break;
+			}
+			
+			//Customize particles
+			if(customizer != null){
+				customizer.customize(p);
 			}
 		}
 	}
@@ -147,5 +154,18 @@ public class ParticleEmitter{
 			Game.log.logError("Unknown particle emission shape " + shape, "ParticleSystem", "Emission", "ParticleEmission");
 			return null;
 		}
+	}
+	
+	/**
+	 * @author Julius Häger
+	 *
+	 */
+	public interface ParticleCustomizer{
+		//TODO: Better name
+		
+		/**
+		 * @param particle
+		 */
+		public void customize(Particle particle);
 	}
 }

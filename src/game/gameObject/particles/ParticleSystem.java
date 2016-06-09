@@ -42,12 +42,34 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	
 	private ArrayList<ParticleEffector> effectors;
 	
+	private ArrayList<ParticleEffector> activeEffectors;
+	
 	//NOTE: Does this need optimization?
 	//FIXME: This solution is generating a lot of entries. Find a way to cut number entries!
 	//The images can not be generated at draw-time for performance, a few solutions could be;
 	//  - Approximation of the color key in the second hashmap. (This solution will probably cut the allocation the most)
 	//  - A way to draw all the particles with the same image at the same time (batching)
 	private HashMap<Integer, HashMap<Color, BufferedImage>> imageMap;
+	
+	/**
+	 * 
+	 */
+	public int rGranularity = 5;
+	
+	/**
+	 * 
+	 */
+	public int gGranularity = 5;
+	
+	/**
+	 * 
+	 */
+	public int bGranularity = 5;
+	
+	/**
+	 * 
+	 */
+	public int aGranularity = 5;
 
 	//TODO: Remove?
 	/**
@@ -119,14 +141,17 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		}
 	}
 	
+	//TODO: roundColor is being called 3 times in succession, there is a better solution
+	
 	private BufferedImage getParticleImage(Particle particle) {
-		if(hasImage(particle) == false){
-			if(generateParticleImage(particle) == false){
+		Color rColor = roundColor(particle.color);
+		if(hasImage(particle, rColor) == false){
+			if(generateParticleImage(particle, rColor) == false){
 				return null;
 			}
 		}
 		
-		return imageMap.get(particle.image).get(particle.color);
+		return imageMap.get(particle.image).get(rColor);
 	}
 	
 	/**
@@ -134,22 +159,53 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	 * @param particle
 	 * @return
 	 */
-	private boolean hasImage(Particle particle){
+	private boolean hasImage(Particle particle, Color color){
 		if(imageMap.containsKey(particle.image)){
-			if(imageMap.get(particle.image).containsKey(particle.color)){
+			if(imageMap.get(particle.image).containsKey(roundColor(color))){
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	private boolean generateParticleImage(Particle particle){
+	private boolean generateParticleImage(Particle particle, Color color){
 		if(imageMap.containsKey(particle.image)){
-			imageMap.get(particle.image).put(particle.color,
-					new ColorTintFilter(particle.color, 1).filter(imageMap.get(particle.image).get(Color.white), null));
+			imageMap.get(particle.image).put(color,
+					new ColorTintFilter(color, 1).filter(imageMap.get(particle.image).get(Color.white), null));
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Round the input color to a specified granularity. 
+	 * Used to round the particles color, to reduce image generation and caching while keeping the particle data unchanged.
+	 * @param color
+	 * @return
+	 */
+	private Color roundColor(Color color){
+		if(rGranularity == 1 && gGranularity == 1 &&
+				bGranularity == 1 && aGranularity == 1){
+			return color;
+		}
+		
+		//TODO: Find a more efficient way to do this
+		
+		int r = color.getRed();
+		r = r + (r % rGranularity < rGranularity - (r % rGranularity) ? -(r % rGranularity) : rGranularity - (r % rGranularity));
+		
+		int g = color.getGreen();
+		g = g + (g % gGranularity < gGranularity - (g % gGranularity) ? -(g % gGranularity) : gGranularity - (g % gGranularity));
+		
+		int b = color.getBlue();
+		b = b + (b % bGranularity < bGranularity - (b % bGranularity) ? -(b % bGranularity) : bGranularity - (b % bGranularity));
+		
+		int a = color.getAlpha();
+		a = a + (a % aGranularity < aGranularity - (a % aGranularity) ? -(a % aGranularity) : aGranularity - (a % aGranularity));
+		
+		//System.out.println("R: " + r + ", G: " + g + ", B:" + b + ", A:" + a);
+		
+		return new Color(r, g, b, a);
 	}
 
 	@Override
@@ -170,9 +226,11 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 			}
 		}
 		
+		//Get active effectors
+		activeEffectors = new ArrayList<>();
 		for (ParticleEffector particleEffector : effectors) {
 			if(particleEffector.enabled == true){
-				particleEffector.effect(particles, deltaTime);
+				activeEffectors.add(particleEffector);
 			}
 		}
 		
@@ -184,16 +242,18 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 					particles[i].active = false;
 				}
 				
+				//Apply effectors to all particle
+				for (ParticleEffector particleEffector : activeEffectors) {
+					particleEffector.effect(particles[i], deltaTime);
+				}
+				
 				particles[i].x = particles[i].x + (particles[i].dx * deltaTime);
 				particles[i].y = particles[i].y + (particles[i].dy * deltaTime);
 				
-				//Scale with lifetime //TODO: Move to a ParticleEffector
-				
-				//particles[i].scaleX = (float) MathUtils.max(0.2f, ((particles[i].currLifetime / particles[i].lifetime)));
-				//particles[i].scaleY = (float) MathUtils.max(0.2f, ((particles[i].currLifetime / particles[i].lifetime)));
-								
-				if(hasImage(particles[i]) == false){
-					generateParticleImage(particles[i]);
+				//NOTE: Should this be done here?
+				Color rColor = roundColor(particles[i].color);
+				if(hasImage(particles[i], rColor) == false){
+					generateParticleImage(particles[i], rColor);
 				}
 				
 				if(MathUtils.isOutside(x + particles[i].x, x, x + (width - (particles[i].width * particles[i].scaleX)))!= 0 ||
@@ -227,6 +287,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				particles[i].setPosition(x, y);
 				particles[i].setVelocity(0, 0);
 				
+				//Reset lifetime
 				particles[i].currLifetime = particles[i].lifetime;
 				
 				//Activate and return
