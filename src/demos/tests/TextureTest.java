@@ -29,6 +29,8 @@ public class TextureTest implements GameInitializer {
 		
 		settings.putSetting("Name", "TextureTest");
 		
+		settings.putSetting("OnScreenDebug", true);
+		
 		settings.putSetting("GameInit", new TextureTest());
 		
 		Game game = new Game(settings);

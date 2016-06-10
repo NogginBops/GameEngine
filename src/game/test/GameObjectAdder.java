@@ -1,6 +1,7 @@
 package game.test;
 
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
@@ -8,13 +9,15 @@ import demos.town.buildings.Building;
 import demos.town.buildings.houses.House;
 import game.Game;
 import game.gameObject.BasicGameObject;
+import game.gameObject.GameObject;
+import game.input.keys.KeyListener;
 import game.input.mouse.MouseListener;
 
 /**
  * @author Julius Häger
  *
  */
-public class GameObjectAdder extends BasicGameObject implements MouseListener {
+public class GameObjectAdder extends BasicGameObject implements MouseListener, KeyListener {
 	
 	//Remove/Relocate
 
@@ -27,6 +30,8 @@ public class GameObjectAdder extends BasicGameObject implements MouseListener {
 		super(new Rectangle(10, 10), Integer.MAX_VALUE - 10);
 		currentBuilding = new House(0, 0, 24, 30);
 		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
+		
+		Game.keyHandler.addKeyBinding("Clear", KeyEvent.VK_BACK_SPACE);
 	}
 
 	@Override
@@ -74,7 +79,10 @@ public class GameObjectAdder extends BasicGameObject implements MouseListener {
 
 	@Override
 	public void mouseWeelMoved(MouseWheelEvent e) {
-
+		currentBuilding.placed();
+		currentBuilding.updateBounds();
+		currentBuilding = new House(e.getX(), e.getY(), 24, 30);
+		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
 	}
 
 	@Override
@@ -84,6 +92,28 @@ public class GameObjectAdder extends BasicGameObject implements MouseListener {
 
 	@Override
 	public boolean souldReceiveMouseInput() {
+		return true;
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(Game.keyHandler.isBound("Clear", e.getKeyCode())){
+			for (GameObject gameObject : Game.gameObjectHandler.getAllActiveGameObjectsExtending(currentBuilding.getClass())) {
+				Game.gameObjectHandler.removeGameObject(gameObject);
+			}
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+	}
+
+	@Override
+	public boolean shouldReceiveKeyboardInput() {
 		return true;
 	}
 }

@@ -14,8 +14,11 @@ import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.gameObject.graphics.Camera;
 import game.gameObject.particles.Particle;
+import game.gameObject.particles.ParticleEffector;
 import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.particles.ParticleSystem;
+import game.util.math.ColorUtils;
+import game.util.math.MathUtils;
 
 /**
  * @author Julius Häger
@@ -35,7 +38,7 @@ public class ParticleTest implements GameInitializer {
 		
 		settings.putSetting("OnScreenDebug", true);
 		
-		settings.putSetting("DebugID", true);
+		settings.putSetting("DebugID", false);
 		
 		settings.putSetting("GameInit", new ParticleTest());
 		
@@ -49,17 +52,18 @@ public class ParticleTest implements GameInitializer {
 		
 		Random rand = new Random();
 		
-		BufferedImage particeImage = null;
+		BufferedImage particleImage = null;
 		
 		try {
-			particeImage = IOHandler.load(new LoadRequest<BufferedImage>("StandardParticle", new File("./res/particles/StandardParticle_10.png"), BufferedImage.class)).result;
+			//TODO: The standard 10px particle needs to be more smooth
+			particleImage = IOHandler.load(new LoadRequest<BufferedImage>("StandardParticle", new File("./res/particles/StandardParticle_10.png"), BufferedImage.class)).result;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		ParticleSystem pSystem = new ParticleSystem(new Rectangle(100, 100, 400, 400), 5, 1000);
 		
-		pSystem.addImage(0, particeImage);
+		pSystem.addImage(0, particleImage);
 		
 		Particle[] particles = pSystem.getParticles();
 		
@@ -70,11 +74,37 @@ public class ParticleTest implements GameInitializer {
 			particles[i].dy = (rand.nextFloat()- 0.5f) * 20;
 		}
 		
-		//Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
+		pSystem.setParticles(particles);
+		
+		ParticleEmitter emitter = new ParticleEmitter(120, 200, 100, 10);
+		
+		emitter.customizer = (particle) -> {
+			particle.lifetime = particle.currLifetime = 1;
+		};
+		
+		pSystem.addEmitter(emitter);
+		
+		pSystem.addEffector(ParticleEffector.createColorOverLifetimeEffector(ParticleEffector.ACCEPT_ALL,
+				(ratio) -> {
+					return ColorUtils.Lerp(Color.BLUE, Color.red, ratio);
+				}));
+		
+		pSystem.addEffector(ParticleEffector.createScaleOverLifetimeEffector(ParticleEffector.ACCEPT_ALL,
+				(ratio) -> {
+					return (float) MathUtils.max(0.1f, ratio);
+				}));
+		
+		pSystem.rGranularity = 64;
+		pSystem.gGranularity = 64;
+		pSystem.bGranularity = 64;
+		
+		//pSystem.debug = true;
+		
+		Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
 		
 		ParticleSystem pSys2 = new ParticleSystem(new Rectangle(100, 100, 500, 500), 5, 2000);
 		
-		pSys2.addImage(0, particeImage);
+		pSys2.addImage(0, particleImage);
 		
 		Particle[] particles2 = pSys2.getParticles();
 		
@@ -89,14 +119,16 @@ public class ParticleTest implements GameInitializer {
 			particles2[i].active = false;
 		}
 		
-		pSys2.addEmitter(new ParticleEmitter(pSys2.getX(), pSys2.getX(), 500, 500, 100f));
+		pSys2.addEmitter(new ParticleEmitter(0, 0, 500, 500, 100f));
 		
 		//FIXME: Something weird is happening with the bounding box when the particle system is moving!
 		//Probably a error with relative coordinates.
 		
-		//pSys2.setDX(20);
-		//pSys2.setDY(40);
+		pSys2.setDX(20);
+		pSys2.setDY(40);
 		
-		Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");
+		pSys2.debug = true;
+		
+		//Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");
 	}
 }

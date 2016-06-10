@@ -133,6 +133,24 @@ public final class MathUtils {
 	 * @param value2
 	 * @return
 	 */
+	public static float min(float value1, float value2){
+		return value1 > value2 ? value2 : value1;
+	}
+	
+	/**
+	 * @param value1
+	 * @param value2
+	 * @return
+	 */
+	public static float max(float value1, float value2){
+		return value1 < value2 ? value2 : value1;
+	}
+	
+	/**
+	 * @param value1
+	 * @param value2
+	 * @return
+	 */
 	public static double min(double value1, double value2){
 		return value1 > value2 ? value2 : value1;
 	}

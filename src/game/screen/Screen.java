@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import game.Game;
 import game.debug.DebugOutputProvider;
 import game.gameObject.graphics.Painter;
 import game.input.Input;
@@ -22,6 +23,8 @@ public class Screen implements Runnable {
 	// JAVADOC: Screen
 	
 	//FIXME: Merge with ScreenManager!!!
+	
+	//TODO: Add lighting when the task system is implemented
 
 	private boolean isRunning = false;
 
@@ -108,13 +111,19 @@ public class Screen implements Runnable {
 			
 			//FIXME: Figure out what should and shouldn't be done.
 			
-			//g2d.clearRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
-			
 			//image = new BufferedImage(ScreenManager.getWidth(), ScreenManager.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			
 			//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
 			//g2d.fillRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
 			//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+			if(image.getWidth() != ScreenManager.getWidth() || image.getHeight() != ScreenManager.getHeight()){
+				image = new BufferedImage(ScreenManager.getWidth(), ScreenManager.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				if(imageGraphics != null){
+					imageGraphics.dispose();
+					imageGraphics = null;
+				}
+			}
+			
 			if(imageGraphics == null){
 				imageGraphics = image.createGraphics();
 			}
@@ -159,13 +168,20 @@ public class Screen implements Runnable {
 
 			FPSCounter.update(elapsedTime / 1000000000f);
 			
+			if((elapsedTime / 1000000f) > Game.deltaTimeWarningThreshold){
+				Game.log.logWarning("Graphics loop delta time exeeded " +
+						Game.deltaTimeWarningThreshold + "ms with " +
+						((elapsedTime / 1000000f) - Game.deltaTimeWarningThreshold) + "ms",
+						"Graphics", "DeltaTime", "System");
+			}
+			
 			//FIXME: THERE IS A BIG GC ISSUE WITH PARTICLE SYSTEMS, THIS IS A ADHOC SOLUTION!!
 			i++;
 			
 			if(i % 100 == 0){
 				i = 0;
 				
-				System.gc();
+				//System.gc();
 			}
 			
 			try {

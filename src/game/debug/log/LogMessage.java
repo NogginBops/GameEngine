@@ -168,6 +168,7 @@ public class LogMessage implements Comparable<LogMessage>{
 	public String toString() {
 		//NOTE: stackTrace[4] - we are apparently 4 method calls in from the log.logMessage(); method call. 
 		//There should maybe be a safer way that guarantees that the callers stack element is shown.
-		return "LogMessage[ \"" + message + "\", Importance: " + importance.toString() + ", Tags: " + getTagsString() + ", At: " + stackTrace[4] +  " ]";
+		//One way is to record where the message is being created and use that stack trace.
+		return "LogMessage[ \"" + message + "\", Importance: " + importance.toString() + ", Tags: \"" + getTagsString() + "\", At: " + stackTrace[4] + " ]";
 	}
 }

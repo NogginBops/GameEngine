@@ -25,6 +25,8 @@ public class Camera extends Painter implements Movable, KeyListener {
 
 	// TODO: Remove movement code
 	
+	//TODO: Implement a way to zoom
+	
 	private float dx;
 	private float dy;
 	

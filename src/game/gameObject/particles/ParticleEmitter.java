@@ -149,7 +149,7 @@ public class ParticleEmitter{
 			return new Point2D.Float(x + (rand.nextFloat() * width), y + (rand.nextFloat() * height));
 		case CIRCLE:
 			double angle = rand.nextFloat() * Math.PI * 2;
-			return new Point2D.Float((float)(Math.cos(angle) * (rand.nextFloat() * radius)), (float)(Math.sin(angle) * (rand.nextFloat() * radius)));
+			return new Point2D.Float((float)(x + (Math.cos(angle) * (rand.nextFloat() * radius))), (float)(y + (Math.sin(angle) * (rand.nextFloat() * radius))));
 		default:
 			Game.log.logError("Unknown particle emission shape " + shape, "ParticleSystem", "Emission", "ParticleEmission");
 			return null;

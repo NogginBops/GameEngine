@@ -13,6 +13,11 @@ public abstract class ParticleEffector{
 	//NOTE: Should the static methods be extracted to a separate class?
 	
 	/**
+	 * 
+	 */
+	public static final BiPredicate<Particle, Float> ACCEPT_ALL = (particle, deltaTime) -> { return true; };
+	
+	/**
 	 * @param pred 
 	 * @param func
 	 * @return

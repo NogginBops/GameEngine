@@ -12,9 +12,12 @@ public class Log {
 	
 	//JAVADOC: Log
 	
-	//TODO: Reflection to see file and line that log entries come from
-	
 	private CopyOnWriteArrayList<LogMessage> messages;
+	
+	/**
+	 * 
+	 */
+	public boolean printDebug = false;
 	
 	/**
 	 * Creates a empty log.
@@ -31,7 +34,13 @@ public class Log {
 		messages.sort(null);
 		
 		//TODO: Fix?
-		System.out.println(message.toString());
+		if(message.getImportance().compareTo(LogImportance.ERROR) <= 0){
+			System.err.println(message.toString());
+		}else{
+			if(message.getImportance() != LogImportance.DEBUG || printDebug){
+				System.out.println(message.toString());
+			}
+		}
 	}
 	
 	/**

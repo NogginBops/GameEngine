@@ -57,6 +57,11 @@ public class Game extends Updater {
 	private static long currTime;
 	private static long elapsedTime;
 	
+	/**
+	 * 
+	 */
+	public static long deltaTimeWarningThreshold = 100;
+	
 	private static float timeScale = 1;
 	
 	private static String name = "Game";
@@ -346,6 +351,13 @@ public class Game extends Updater {
 			
 			UpdateCounter.update(elapsedTime / 1000000000f);
 			
+			if((elapsedTime / 1000000f) > deltaTimeWarningThreshold){
+				Game.log.logWarning("Game loop delta time exeeded " +
+						Game.deltaTimeWarningThreshold + "ms with " + 
+						((elapsedTime / 1000000f) - Game.deltaTimeWarningThreshold) + "ms",
+						"Game", "DeltaTime", "System");
+			}
+			
 			gameObjectHandler.clearChange();
 			
 			try {
@@ -429,6 +441,8 @@ public class Game extends Updater {
 		
 		resume();
 	}
+	
+	//TODO: Use either getters and setters or public variables to change variables in game
 	
 	/**
 	 * @param name

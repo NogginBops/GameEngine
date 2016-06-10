@@ -95,8 +95,34 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		imageMap = new HashMap<>();
 	}
 
+	//Temp var
+	BufferedImage image;
+	
 	@Override
 	public void paint(Graphics2D g2d) {
+		for (int i = 0; i < particles.length; i++) {
+			if(particles[i].active == true){
+				//Paint
+				
+				//FIXME: This is generating a lot of memory
+				 image = getParticleImage(particles[i]);
+				
+				if(image == null){
+					g2d.setColor(particles[i].color);
+					g2d.drawRect((int)(x + (particles[i].x - (particles[i].width * particles[i].scaleX/2))),
+							(int)(y + (particles[i].y) - ((particles[i].height * particles[i].scaleY)/2)),
+							(int)(particles[i].width * particles[i].scaleX),
+							(int)(particles[i].height * particles[i].scaleY));
+				}else{
+					g2d.drawImage(image,
+							(int)(x + (particles[i].x - ((particles[i].width * particles[i].scaleX)/2))),
+									(int)(y + (particles[i].y - ((particles[i].height * particles[i].scaleY)/2))),
+									(int)(particles[i].width * particles[i].scaleX),
+									(int)(particles[i].height * particles[i].scaleY), null);
+				}
+			}
+		}
+		
 		//TODO: Remove? Make a better system for debugging bounding areas?
 		if(debug){
 			g2d.setColor(Color.magenta);
@@ -108,34 +134,24 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 					g2d.draw(new Rectangle2D.Float(x + particleEmitter.x, y + particleEmitter.y, particleEmitter.width, particleEmitter.height));
 					break;
 				case CIRCLE:
-					g2d.draw(new Ellipse2D.Float(x + particleEmitter.x, y + particleEmitter.y, particleEmitter.radius * 2, particleEmitter.radius * 2));
+					g2d.draw(new Ellipse2D.Float(x + particleEmitter.x - particleEmitter.radius, y + particleEmitter.y - particleEmitter.radius, particleEmitter.radius * 2, particleEmitter.radius * 2));
 					break;
 				default:
 					break;
 				}
 			}
-		}
-		
-		
-		for (int i = 0; i < particles.length; i++) {
-			if(particles[i].active == true){
-				//Paint
-				
-				//FIXME: This is generating a lot of memory
-				BufferedImage image = getParticleImage(particles[i]);
-				
-				if(image == null){
-					g2d.setColor(particles[i].color);
-					g2d.drawRect((int)(x + (particles[i].x - (particles[i].width * particles[i].scaleX))),
+			
+			for (int i = 0; i < particles.length; i++) {
+				if(particles[i].active == true){
+					g2d.setColor(Color.yellow);
+					g2d.drawRect((int)(x + (particles[i].x - (particles[i].width * particles[i].scaleX/2))),
 							(int)(y + (particles[i].y) - ((particles[i].height * particles[i].scaleY)/2)),
 							(int)(particles[i].width * particles[i].scaleX),
 							(int)(particles[i].height * particles[i].scaleY));
-				}else{
-					g2d.drawImage(image,
-							(int)(x + (particles[i].x - ((particles[i].width * particles[i].scaleX)/2))),
-									(int)(y + (particles[i].y - ((particles[i].height * particles[i].scaleY)/2))),
-									(int)(particles[i].width * particles[i].scaleX),
-									(int)(particles[i].height * particles[i].scaleY), null);
+					g2d.setColor(Color.GREEN);
+					g2d.drawRect((int)(x + particles[i].x) - 1,
+							(int)(y + particles[i].y) - 1,
+							2, 2);
 				}
 			}
 		}
@@ -191,21 +207,34 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		
 		//TODO: Find a more efficient way to do this
 		
+		//TODO: Fix this algorithm, its almost right
+		
 		int r = color.getRed();
-		r = r + (r % rGranularity < rGranularity - (r % rGranularity) ? -(r % rGranularity) : rGranularity - (r % rGranularity));
+		r = roundColorValue(r, rGranularity);
 		
 		int g = color.getGreen();
-		g = g + (g % gGranularity < gGranularity - (g % gGranularity) ? -(g % gGranularity) : gGranularity - (g % gGranularity));
+		g = roundColorValue(g, gGranularity);
 		
 		int b = color.getBlue();
-		b = b + (b % bGranularity < bGranularity - (b % bGranularity) ? -(b % bGranularity) : bGranularity - (b % bGranularity));
+		b = roundColorValue(b, bGranularity);
 		
 		int a = color.getAlpha();
-		a = a + (a % aGranularity < aGranularity - (a % aGranularity) ? -(a % aGranularity) : aGranularity - (a % aGranularity));
-		
-		//System.out.println("R: " + r + ", G: " + g + ", B:" + b + ", A:" + a);
+		a = roundColorValue(a, aGranularity);
 		
 		return new Color(r, g, b, a);
+	}
+	
+	private int roundColorValue(int value, int granularity){
+		if(value % granularity != 0){
+			if(value % granularity <= granularity/2){
+				value -= value % granularity;
+			}else{
+				value += granularity - (value % granularity);
+			}
+			
+			value = MathUtils.clamp(value, 0, 255);
+		}
+		return value;
 	}
 
 	@Override
@@ -338,5 +367,15 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		imageMap.put(imageID, tempMap);
 	}
 	
-	//Particle collides?
+	/**
+	 * @param granularity
+	 */
+	public void setAllGranularities(int granularity){
+		granularity = MathUtils.clamp(granularity, 1, 255);
+		
+		rGranularity = granularity;
+		gGranularity = granularity;
+		bGranularity = granularity;
+		aGranularity = granularity;
+	}
 }

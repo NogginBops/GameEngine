@@ -28,12 +28,17 @@ public final class ScreenManager {
 	 * 
 	 */
 	public static final int NORMAL = 0x00;
-
+	
 	/**
 	 * 
 	 */
 	public static final int FULL_SCREEN = 0x01;
 
+	/**
+	 * 
+	 */
+	public static final int RESIZABLE = 0x02;
+	
 	private static JFrame frame;
 
 	private static Input inputListener;
@@ -122,19 +127,23 @@ public final class ScreenManager {
 		frame.dispose();
 		frame = new JFrame(title);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		if (state == NORMAL) {
+		if (state == NORMAL || state == RESIZABLE) {
 			frame.setUndecorated(false);
 			frame.setExtendedState(JFrame.NORMAL);
 			frame.getContentPane().setPreferredSize(new Dimension(width, height));
-			currentState = NORMAL;
 		} else if (state == FULL_SCREEN) {
 			frame.setUndecorated(true);
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			frame.setPreferredSize(new Dimension(fullScreenWidth, fullScreenHeight));
-			currentState = FULL_SCREEN;
 		}
+		
+		if(state == RESIZABLE){
+			frame.setResizable(true);
+		}else{
+			frame.setResizable(false);
+		}
+		
 		frame.setIgnoreRepaint(true);
-		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
@@ -142,6 +151,8 @@ public final class ScreenManager {
 		addInputListener(inputListener);
 
 		insets = frame.getInsets();
+		
+		currentState = state;
 	}
 
 	/**
@@ -160,6 +171,8 @@ public final class ScreenManager {
 			return width;
 		} else if (currentState == FULL_SCREEN) {
 			return fullScreenWidth;
+		}else if(currentState == RESIZABLE){
+			return frame.getWidth();
 		} else {
 			return 0;
 		}
@@ -174,6 +187,8 @@ public final class ScreenManager {
 			return height;
 		} else if (currentState == FULL_SCREEN) {
 			return fullScreenHeight;
+		}else if(currentState == RESIZABLE){
+			return frame.getHeight();
 		} else {
 			return 0;
 		}
@@ -249,5 +264,12 @@ public final class ScreenManager {
 	 */
 	public static void requestFocus(){
 		frame.requestFocus();
+	}
+	
+	/**
+	 * @return
+	 */
+	public static int getCurrentState(){
+		return currentState;
 	}
 }
