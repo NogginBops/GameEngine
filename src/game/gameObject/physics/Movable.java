@@ -18,6 +18,7 @@ public interface Movable extends UpdateListener {
 	 * 
 	 * @return the x value of the Movable
 	 */
+	@Override
 	public float getX();
 
 	/**
@@ -25,6 +26,7 @@ public interface Movable extends UpdateListener {
 	 * 
 	 * @return the y value of the Movable
 	 */
+	@Override
 	public float getY();
 
 	/**

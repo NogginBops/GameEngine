@@ -2,9 +2,9 @@ package game.test;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Random;
@@ -37,10 +37,11 @@ public class GameObjectAdderWithAudio extends BasicGameObject implements GameObj
 	 * @param objectHandler
 	 */
 	public GameObjectAdderWithAudio(int x, int y) {
-		super(new Rectangle(x, y, 10, 10), Integer.MAX_VALUE - 10);
+		super(new Rectangle2D.Float(x, y, 10, 10), Integer.MAX_VALUE - 10);
 		rand = new Random();
+		//TODO: Use IOHandler
 		sound = TinySound.loadSound(new File("./res/robot.mp3"));
-		bounds = new Rectangle(x, y, 10, 10);
+		bounds = new Rectangle2D.Float(x, y, 10, 10);
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class GameObjectAdderWithAudio extends BasicGameObject implements GameObj
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.WHITE);
-		g2d.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+		g2d.drawRect((int)x, (int)y, (int)width, (int)height);
 	}
 
 	@Override

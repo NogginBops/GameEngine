@@ -1,7 +1,7 @@
 package game.UI.elements;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 import game.UI.UI;
 import game.UI.elements.containers.UIContainer;
@@ -21,7 +21,7 @@ public abstract class UIElement{
 	
 	protected UIContainer parent;
 
-	protected Rectangle area;
+	protected Rectangle2D.Float area;
 
 	protected int zOrder = 10;
 
@@ -29,13 +29,13 @@ public abstract class UIElement{
 	 * 
 	 */
 	public UIElement() {
-		area = new Rectangle();
+		area = new Rectangle2D.Float();
 	}
 
 	/**
 	 * @param area
 	 */
-	public UIElement(Rectangle area) {
+	public UIElement(Rectangle2D.Float area) {
 		this.area = area;
 	}
 
@@ -43,8 +43,8 @@ public abstract class UIElement{
 	 * @param width
 	 * @param height
 	 */
-	public UIElement(int width, int height) {
-		area = new Rectangle(width, height);
+	public UIElement(float width, float height) {
+		area = new Rectangle2D.Float(0, 0, width, height);
 	}
 	
 	/**
@@ -53,8 +53,8 @@ public abstract class UIElement{
 	 * @param width
 	 * @param height
 	 */
-	public UIElement(int x, int y, int width, int height){
-		area = new Rectangle(x, y, width, height);
+	public UIElement(float x, float y, float width, float height){
+		area = new Rectangle2D.Float(x, y, width, height);
 	}
 	
 	/**
@@ -145,68 +145,69 @@ public abstract class UIElement{
 	/**
 	 * @return
 	 */
-	public Rectangle getArea(){
+	public Rectangle2D.Float getArea(){
 		return area;
 	}
 	
 	/**
 	 * @return
 	 */
-	public Rectangle getBounds() {
+	public Rectangle2D.Float getBounds() {
 		
 		//TODO: Pre compute?
-		Rectangle parentArea = parent.getBounds();
-		return new Rectangle(area.x + parentArea.x, area.y + parentArea.y, area.width, area.height);
+		Rectangle2D.Float parentArea = parent.getBounds();
+		return new Rectangle2D.Float(area.x + parentArea.x, area.y + parentArea.y, area.width, area.height);
 	}
 	
 	/**
 	 * @return
 	 */
-	public int getX(){
+	public float getX(){
 		return area.x;
 	}
 	
 	/**
 	 * @param x
 	 */
-	public void setX(int x){
-		area.setLocation(x, (int) area.getY());
+	public void setX(float x){
+		area.x = x;
 	}
 	
 	/**
 	 * @return
 	 */
-	public int getY(){
+	public float getY(){
 		return area.y;
 	}
 	
 	/**
 	 * @param y
 	 */
-	public void setY(int y){
-		area.setLocation((int)area.getX(), y);
+	public void setY(float y){
+		area.y = y;
 	}
 	
 	/**
 	 * @param x
 	 * @param y
 	 */
-	public void setPosition(int x, int y){
-		area.setLocation(x, y);
+	public void setPosition(float x, float y){
+		area.x = x;
+		area.y = y;
 	}
 	
 	/**
 	 * 
 	 * @param width
 	 */
-	public void setWidth(int width){
+	public void setWidth(float width){
 		area.width = width;
 	}
 	
 	/**
 	 * @return
 	 */
-	public int getWidth(){
+	public float getWidth(){
 		return area.width;
 	}
 	
@@ -214,14 +215,14 @@ public abstract class UIElement{
 	 * 
 	 * @param height
 	 */
-	public void setHeight(int height){
+	public void setHeight(float height){
 		area.height = height;
 	}
 	
 	/**
 	 * @return
 	 */
-	public int getHeight(){
+	public float getHeight(){
 		return area.height;
 	}
 	
@@ -229,8 +230,9 @@ public abstract class UIElement{
 	 * @param width
 	 * @param height
 	 */
-	public void setSize(int width, int height){
-		area.setSize(width, height);
+	public void setSize(float width, float height){
+		area.width = width;
+		area.height = height;
 	}
 	
 	/**

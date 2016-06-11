@@ -2,7 +2,7 @@ package demos.tests;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class UITest implements GameInitializer {
 	
 	@Override
 	public void initialize(Game game, GameSettings settings) {
-		UI hud = new UI(new Rectangle(200, 100, 400, 400));
+		UI hud = new UI(new Rectangle2D.Float(200, 100, 400, 400));
 
 		BasicUIContainer container = new BasicUIContainer(200, 300);
 		Border border = new SolidBorder(20, Color.MAGENTA);

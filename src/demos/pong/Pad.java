@@ -1,6 +1,5 @@
 package demos.pong;
 
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
@@ -39,7 +38,7 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 
 	private Side side;
 
-	private Rectangle outerBounds;
+	private Rectangle2D.Float outerBounds;
 
 	private int upKeyCode;
 	private int downKeyCode;
@@ -65,7 +64,7 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 	 * @param outerBounds
 	 * @param side
 	 */
-	public Pad(int x, int y, int width, int height, int upKeyCode, int downKeyCode, Rectangle outerBounds, Side side) {
+	public Pad(float x, float y, float width, float height, int upKeyCode, int downKeyCode, Rectangle2D.Float outerBounds, Side side) {
 		super(x, y, width, height);
 		this.upKeyCode = upKeyCode;
 		this.downKeyCode = downKeyCode;

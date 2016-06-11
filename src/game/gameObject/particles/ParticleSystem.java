@@ -2,7 +2,6 @@ package game.gameObject.particles;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -82,7 +81,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	 * @param zOrder
 	 * @param maxParticles 
 	 */
-	public ParticleSystem(Rectangle rect, int zOrder, int maxParticles) {
+	public ParticleSystem(Rectangle2D.Float rect, int zOrder, int maxParticles) {
 		super(rect, zOrder);
 		particles = new Particle[maxParticles];
 		for (int i = 0; i < particles.length; i++) {

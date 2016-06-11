@@ -1,7 +1,7 @@
 package demos.pong;
 
-import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -25,7 +25,7 @@ public class Ball extends Sprite implements Collidable{
 
 	private int minDX = 150;
 
-	private Rectangle outerBounds;
+	private Rectangle2D.Float outerBounds;
 
 	private Sound beep;
 
@@ -36,7 +36,7 @@ public class Ball extends Sprite implements Collidable{
 	 * @param height
 	 * @param outerBounds
 	 */
-	public Ball(int x, int y, int width, int height, Rectangle outerBounds) {
+	public Ball(float x, float y, float width, float height, Rectangle2D.Float outerBounds) {
 		super(x, y, width, height);
 		this.outerBounds = outerBounds;
 		

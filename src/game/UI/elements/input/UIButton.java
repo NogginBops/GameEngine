@@ -68,7 +68,7 @@ public class UIButton extends UIElement implements MouseListener {
 	 * @param width
 	 * @param height
 	 */
-	public UIButton(int x, int y, int width, int height) {
+	public UIButton(float x, float y, float width, float height) {
 		super(x, y, width, height);
 		
 		
@@ -80,7 +80,7 @@ public class UIButton extends UIElement implements MouseListener {
 	 * @param width
 	 * @param height
 	 */
-	public UIButton(int width, int height) {
+	public UIButton(float width, float height) {
 		super(width, height);
 	}
 	

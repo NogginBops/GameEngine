@@ -3,7 +3,7 @@ package game;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 
 import game.UI.UI;
@@ -43,7 +43,7 @@ public class GameSettings {
 		defaultSettigns.putSetting("Resolution", res);
 		
 		//TODO: Should camera be a setting or should it be in game init? Probably game init so that it works when switching scenes
-		defaultSettigns.putSetting("MainCamera", new Camera(new Rectangle(res), ScreenRect.FULL, new Color(0.15f, 0.15f, 0.15f, 1f)));
+		defaultSettigns.putSetting("MainCamera", new Camera(new Rectangle2D.Float(0, 0, res.width, res.height), ScreenRect.FULL, new Color(0.15f, 0.15f, 0.15f, 1f)));
 		
 		defaultSettigns.putSetting("OnScreenDebug", false);
 		
@@ -77,7 +77,7 @@ public class GameSettings {
 				
 				outerContainer.setBorderSize(2);
 				
-				UI ui = new UI(new Rectangle(0, 0, 800, 600), outerContainer);
+				UI ui = new UI(new Rectangle2D.Float(0, 0, 800, 600), outerContainer);
 		
 				Game.gameObjectHandler.addGameObject(ui, "Demo UI");
 				

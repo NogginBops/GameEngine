@@ -1,7 +1,7 @@
 package demos.tests;
 
 import java.awt.Color;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +61,58 @@ public class ParticleTest implements GameInitializer {
 			e.printStackTrace();
 		}
 		
-		ParticleSystem pSystem = new ParticleSystem(new Rectangle(100, 100, 400, 400), 5, 1000);
+		int width = 100;
+		int height = 100;
+		int maxParticles = 100;
+		
+		int numX = 10;
+		int numY = 10;
+		
+		for (int x = 0; x < numX; x++) {
+			for (int y = 0; y < numY; y++) {
+				
+				ParticleSystem system = new ParticleSystem(new Rectangle2D.Float((int)(x * (width * 1.1f)), (int)(y * (height * 1.1f)), width, height), 5, maxParticles);
+				
+				system.setAllGranularities(10);
+				
+				ParticleEmitter.ParticleCustomizer customizer = (particle) -> {
+					
+				};
+				
+				ParticleEmitter emitter = new ParticleEmitter(0, 0, system.getWidth(), system.getHeight(), maxParticles);
+				
+				emitter.customizer = customizer;
+				
+				system.addEmitter(emitter);
+				
+				ParticleEffector effector = new ParticleEffector() {
+					
+					@Override
+					public void effect(Particle particle, float deltaTime) {
+						
+						particle.dx = rand.nextFloat() * 10;
+						particle.dy = rand.nextFloat() * 20;
+						
+					}
+				};
+				
+				system.addEffector(effector);
+				
+				system.addEffector(ParticleEffector.createScaleOverLifetimeEffector(ParticleEffector.ACCEPT_ALL, (ratio) -> { return MathUtils.max(0.2f, ratio); })); 
+				
+				system.addEffector(ParticleEffector.createColorOverLifetimeEffector(ParticleEffector.ACCEPT_ALL, (ratio) -> { return ColorUtils.Lerp(Color.YELLOW, Color.MAGENTA, 1-ratio); }));
+				
+				system.addImage(0, particleImage);
+				
+				system.setDX(rand.nextFloat() * 10);
+				
+				system.setDY(rand.nextFloat() * 10);
+				
+				Game.gameObjectHandler.addGameObject(system);
+			}
+		}
+		
+		/*ParticleSystem pSystem = new ParticleSystem(new Rectangle(100, 100, 400, 400), 5, 1000);
 		
 		pSystem.addImage(0, particleImage);
 		
@@ -129,6 +180,6 @@ public class ParticleTest implements GameInitializer {
 		
 		pSys2.debug = true;
 		
-		//Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");
+		//Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");*/
 	}
 }

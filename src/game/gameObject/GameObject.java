@@ -1,6 +1,6 @@
 package game.gameObject;
 
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 /**
  * 
@@ -10,14 +10,34 @@ import java.awt.Rectangle;
 public interface GameObject extends Comparable<GameObject> {
 
 	// JAVADOC: GameObject
-
+	
+	/**
+	 * @return
+	 */
+	public float getX();
+	
+	/**
+	 * @return
+	 */
+	public float getY();
+	
+	/**
+	 * @return
+	 */
+	public float getWidth();
+	
+	/**
+	 * @return
+	 */
+	public float getHeight();
+	
 	/**
 	 * Returns the GameObject bounds. Used to determine if the GameObjects
 	 * methods should be called or not.
 	 * 
 	 * @return the GameObject bounds
 	 */
-	public Rectangle getBounds();
+	public Rectangle2D.Float getBounds();
 
 	/**
 	 * <p>

@@ -2,12 +2,11 @@ package game.gameObject.graphics;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 import game.Game;
-import game.gameObject.GameObject;
 import game.gameObject.physics.BasicMovable;
 import game.image.effects.ColorTintFilter;
 
@@ -54,7 +53,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	 * @param height
 	 *            the height of the Sprite (in pixels)
 	 */
-	public Sprite(float x, float y, int width, int height) {
+	public Sprite(float x, float y, float width, float height) {
 		super(x, y, width, height, 5);
 		imageCache = new HashMap<>();
 		
@@ -94,7 +93,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	 * @param sprite 
 	 * 			  the image of the Sprite
 	 */
-	public Sprite(float x, float y, int width, int height, BufferedImage sprite) {
+	public Sprite(float x, float y, float width, float height, BufferedImage sprite) {
 		super(x, y, width, height, 5);
 		imageCache = new HashMap<>();
 		
@@ -116,7 +115,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	 * @param color 
 	 * 			  the color of the Sprite
 	 */
-	public Sprite(float x, float y, int width, int height, Color color) {
+	public Sprite(float x, float y, float width, float height, Color color) {
 		super(x, y, width, height, 5);
 		imageCache = new HashMap<>();
 		
@@ -140,7 +139,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	 * @param color 
 	 * 			  the color of the Sprite
 	 */
-	public Sprite(float x, float y, int width, int height, BufferedImage sprite, Color color) {
+	public Sprite(float x, float y, float width, float height, BufferedImage sprite, Color color) {
 		super(x, y, width, height, 5);
 		imageCache = new HashMap<>();
 		
@@ -153,7 +152,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	/**
 	 * @param bounds
 	 */
-	public Sprite(Rectangle bounds) {
+	public Sprite(Rectangle2D.Float bounds) {
 		super(bounds, 5);
 		imageCache = new HashMap<>();
 		
@@ -167,28 +166,13 @@ public class Sprite extends BasicMovable implements Paintable {
 			g2d.setColor(color);
 			g2d.fill(bounds);
 		}else{
-			g2d.drawImage(graphicsReadySprite, (int)x, (int)y, width, height, null);
+			g2d.drawImage(graphicsReadySprite, (int)x, (int)y, (int)width, (int)height, null);
 		}
 	}
 	
 	@Override
 	public BufferedImage getImage() {
 		return graphicsReadySprite;
-	}
-
-	@Override
-	public int getZOrder() {
-		return zOrder;
-	}
-
-	@Override
-	public int compareTo(GameObject object) {
-		return zOrder - object.getZOrder();
-	}
-
-	@Override
-	public Rectangle getBounds() {
-		return bounds;
 	}
 
 	/**

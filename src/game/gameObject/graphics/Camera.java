@@ -3,8 +3,8 @@ package game.gameObject.graphics;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import game.Game;
@@ -59,8 +59,8 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * @param height
 	 *            - The height of the Camera viewport (in pixels).
 	 */
-	public Camera(int x, int y, int width, int height) {
-		super((int)x, (int)y, width, height, Integer.MAX_VALUE - 8);
+	public Camera(float x, float y, float width, float height) {
+		super(x, y, width, height, Integer.MAX_VALUE - 8);
 		
 		updateBounds();
 	}
@@ -71,7 +71,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * @param screenRect
 	 * @param bgColor
 	 */
-	public Camera(Rectangle rect, ScreenRect screenRect, Color bgColor) {
+	public Camera(Rectangle2D.Float rect, ScreenRect screenRect, Color bgColor) {
 		super(rect.x, rect.y, rect.width, rect.height, Integer.MAX_VALUE - 8);
 		
 		setScreenRectangle(screenRect);
@@ -145,7 +145,8 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * 
 	 * @return The width of the camera viewport.
 	 */
-	public int getWidth() {
+	@Override
+	public float getWidth() {
 		return width;
 	}
 
@@ -154,7 +155,8 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * 
 	 * @return The height of the camera viewport.
 	 */
-	public int getHeight() {
+	@Override
+	public float getHeight() {
 		return height;
 	}
 	
@@ -167,7 +169,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 		this.width = width;
 		updateBounds();
 		
-		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
 		originalTransform = translatedGraphics.getTransform();
@@ -182,7 +184,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 		this.height = height;
 		updateBounds();
 		
-		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
 		originalTransform = translatedGraphics.getTransform();
@@ -233,15 +235,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 		
 		g2d.setBackground(backgroundColor);
 		g2d.setColor(backgroundColor);
-		g2d.fillRect(0, 0, width, height);
-		
-		//This thread is not synced with gameobjecthandler and such should not update them here
-		
-		/*if (gameObjectHandler.shouldUpdateObjects()) {
-			paintables = gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
-			
-			System.out.println("Updated paintables");
-		}*/
+		g2d.fillRect(0, 0, (int)width, (int)height);
 		
 		super.paint(g2d);
 	}
@@ -255,9 +249,11 @@ public class Camera extends Painter implements Movable, KeyListener {
 			originalTransform = translatedGraphics.getTransform();
 		}
 		
+		//NOTE: Should this be done in the painter?
+		
 		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 		translatedGraphics.setColor(backgroundColor);
-		translatedGraphics.fillRect(0, 0, width, height);
+		translatedGraphics.fillRect(0, 0, (int)width, (int)height);
 		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 		
 		return super.getImage();
@@ -288,7 +284,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * </p>
 	 */
 	@Override
-	public Rectangle getBounds() {
+	public Rectangle2D.Float getBounds() {
 		return bounds;
 	}
 

@@ -22,7 +22,7 @@ public class UIImage extends UIElement {
 	 * @param x
 	 * @param y
 	 */
-	public UIImage(Image image, int x, int y) {
+	public UIImage(Image image, float x, float y) {
 		super(x, y, image.getWidth(null), image.getHeight(null));
 		this.image = image;
 	}
@@ -34,7 +34,7 @@ public class UIImage extends UIElement {
 	 * @param height
 	 * @param image
 	 */
-	public UIImage(int x, int y, int width, int height, Image image){
+	public UIImage(float x, float y, float width, float height, Image image){
 		super(x, y, width, height);
 		this.image = image;
 	}
@@ -44,7 +44,8 @@ public class UIImage extends UIElement {
 	 */
 	public void setNativeSize(){
 		if(image != null){
-			area.setSize(image.getWidth(null), image.getHeight(null));
+			area.width = image.getWidth(null);
+			area.height = image.getHeight(null);
 		}
 	}
 	
@@ -59,7 +60,7 @@ public class UIImage extends UIElement {
 	@Override
 	public void paint(Graphics2D g2d) {
 		if(image != null){
-			g2d.drawImage(image, area.x, area.y, area.width, area.height, null);
+			g2d.drawImage(image, (int)area.x, (int)area.y, (int)area.width, (int)area.height, null);
 		}else{
 			g2d.setColor(Color.WHITE);
 			g2d.fill(area);

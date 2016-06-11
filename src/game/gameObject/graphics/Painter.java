@@ -54,10 +54,10 @@ public abstract class Painter extends BasicGameObject {
 	 * @param height
 	 * @param zOrder
 	 */
-	public Painter(float x, float y, int width, int height, int zOrder) {
+	public Painter(float x, float y, float width, float height, int zOrder) {
 		super(x, y, width, height, zOrder);
 		
-		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
 	}
 	
 	/**
@@ -115,6 +115,10 @@ public abstract class Painter extends BasicGameObject {
 				translatedGraphics = image.createGraphics();
 				originalTransform = translatedGraphics.getTransform();
 			}
+			
+			//TODO: Find better way to handle this
+			//translatedGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			
 			translatedGraphics.translate(-bounds.x, -bounds.y);
 			for (Paintable paintable : paintables) {
 				if(paintable.isActive()){
@@ -122,10 +126,10 @@ public abstract class Painter extends BasicGameObject {
 						paintableImage = paintable.getImage();
 						if(paintableImage != null){
 							translatedGraphics.drawImage(paintableImage,
-									paintable.getBounds().x,
-									paintable.getBounds().y,
-									paintable.getBounds().width,
-									paintable.getBounds().height, null);
+									(int)paintable.getX(),
+									(int)paintable.getY(),
+									(int)paintable.getWidth(),
+									(int)paintable.getHeight(), null);
 						}else{
 							paintable.paint(translatedGraphics);
 						}

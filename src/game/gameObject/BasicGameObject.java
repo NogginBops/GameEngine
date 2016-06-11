@@ -1,6 +1,6 @@
 package game.gameObject;
 
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 /**
  * 
@@ -25,16 +25,16 @@ public class BasicGameObject implements GameObject {
 	/**
 	 * 
 	 */
-	protected int width;
+	protected float width;
 	/**
 	 * 
 	 */
-	protected int height;
+	protected float height;
 	
 	/**
 	 * 
 	 */
-	protected Rectangle bounds;
+	protected Rectangle2D.Float bounds;
 	
 	/**
 	 * The current Z-order of the GameObject
@@ -53,12 +53,12 @@ public class BasicGameObject implements GameObject {
 	 * @param height
 	 * @param zOrder
 	 */
-	public BasicGameObject(float x, float y, int width, int height, int zOrder) {
+	public BasicGameObject(float x, float y, float width, float height, int zOrder) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		bounds = new Rectangle((int)x, (int)y, width, height);
+		bounds = new Rectangle2D.Float(x, y, width, height);
 		this.zOrder = zOrder;
 	}
 	
@@ -66,7 +66,7 @@ public class BasicGameObject implements GameObject {
 	 * @param bounds
 	 * @param zOrder
 	 */
-	public BasicGameObject(Rectangle bounds, int zOrder) {
+	public BasicGameObject(Rectangle2D.Float bounds, int zOrder) {
 		this.x = bounds.x;
 		this.y = bounds.y;
 		this.width = bounds.width;
@@ -74,9 +74,29 @@ public class BasicGameObject implements GameObject {
 		this.bounds = bounds;
 		this.zOrder = zOrder;
 	}
+	
+	@Override
+	public float getX() {
+		return x;
+	}
 
 	@Override
-	public Rectangle getBounds() {
+	public float getY() {
+		return y;
+	}
+
+	@Override
+	public float getWidth() {
+		return width;
+	}
+
+	@Override
+	public float getHeight() {
+		return height;
+	}
+
+	@Override
+	public Rectangle2D.Float getBounds() {
 		return bounds;
 	}
 

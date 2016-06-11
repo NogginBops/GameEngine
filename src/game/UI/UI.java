@@ -1,7 +1,7 @@
 package game.UI;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import game.UI.elements.UIElement;
@@ -28,7 +28,7 @@ public class UI extends UIContainer implements Paintable {
 	 * @param area
 	 * @param elements
 	 */
-	public UI(Rectangle area, UIElement... elements) {
+	public UI(Rectangle2D.Float area, UIElement... elements) {
 		super(area, elements);
 		setBorder(null);
 		root = this;
@@ -51,7 +51,7 @@ public class UI extends UIContainer implements Paintable {
 	}
 
 	@Override
-	public Rectangle getBounds() {
+	public Rectangle2D.Float getBounds() {
 		return area;
 	}
 

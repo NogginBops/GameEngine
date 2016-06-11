@@ -1,6 +1,6 @@
 package game.gameObject.physics;
 
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 import game.gameObject.BasicGameObject;
 
@@ -29,7 +29,7 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	 * @param height
 	 * @param zOrder
 	 */
-	public BasicMovable(float x, float y, int width, int height, int zOrder) {
+	public BasicMovable(float x, float y, float width, float height, int zOrder) {
 		super(x, y, width, height, zOrder);
 	}
 	
@@ -37,7 +37,7 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	 * @param rect
 	 * @param zOrder
 	 */
-	public BasicMovable(Rectangle rect, int zOrder) {
+	public BasicMovable(Rectangle2D.Float rect, int zOrder) {
 		super(rect, zOrder);
 	}
 

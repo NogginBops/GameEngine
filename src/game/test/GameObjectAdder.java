@@ -1,9 +1,9 @@
 package game.test;
 
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Rectangle2D;
 
 import demos.town.buildings.Building;
 import demos.town.buildings.houses.House;
@@ -27,7 +27,7 @@ public class GameObjectAdder extends BasicGameObject implements MouseListener, K
 	 * @param objectHandler
 	 */
 	public GameObjectAdder() {
-		super(new Rectangle(10, 10), Integer.MAX_VALUE - 10);
+		super(new Rectangle2D.Float(0, 0, 10, 10), Integer.MAX_VALUE - 10);
 		currentBuilding = new House(0, 0, 24, 30);
 		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
 		

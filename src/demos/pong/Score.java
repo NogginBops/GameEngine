@@ -2,8 +2,8 @@ package demos.pong;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -29,7 +29,7 @@ public class Score extends UI implements KeyListener {
 
 	private int right = 0;
 
-	private Rectangle deviderRect;
+	private Rectangle2D.Float deviderRect;
 
 	private int deviderWidth = 4;
 	
@@ -43,9 +43,9 @@ public class Score extends UI implements KeyListener {
 	/**
 	 * @param area
 	 */
-	public Score(Rectangle area) {
+	public Score(Rectangle2D.Float area) {
 		super(area);
-		deviderRect = new Rectangle((int) (area.getWidth() / 2 - deviderWidth / 2), area.y, deviderWidth,
+		deviderRect = new Rectangle2D.Float((area.width / 2 - deviderWidth / 2), area.y, deviderWidth,
 				area.height);
 		
 		devider = new UIRect(deviderRect, Color.WHITE);

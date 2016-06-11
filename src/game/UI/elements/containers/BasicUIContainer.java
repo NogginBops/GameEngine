@@ -35,10 +35,10 @@ public class BasicUIContainer extends UIContainer {
 	 * @param insetBottom
 	 */
 	//FIXME: This constructor is broken!!
-	public BasicUIContainer(UIContainer container, int insetLeft, int insetTop, int insetRight, int insetBottom) {
+	public BasicUIContainer(UIContainer container, float insetLeft, float insetTop, float insetRight, float insetBottom) {
 		super();
 		area = container.getContainerArea();
-		area.setBounds(area.x + insetLeft, area.y + insetTop, area.width - (insetLeft + insetRight), area.height - (insetTop - insetBottom));
+		area.setRect(area.x + insetLeft, area.y + insetTop, area.width - (insetLeft + insetRight), area.height - (insetTop - insetBottom));
 		computeContainerArea();
 		
 		setParent(container);
@@ -48,7 +48,7 @@ public class BasicUIContainer extends UIContainer {
 	 * @param width
 	 * @param height
 	 */
-	public BasicUIContainer(int width, int height) {
+	public BasicUIContainer(float width, float height) {
 		super(width, height);
 	}
 
@@ -58,7 +58,7 @@ public class BasicUIContainer extends UIContainer {
 	 * @param width
 	 * @param height
 	 */
-	public BasicUIContainer(int x, int y, int width, int height) {
+	public BasicUIContainer(float x, float y, float width, float height) {
 		super(x, y, width, height);
 	}
 
@@ -69,8 +69,22 @@ public class BasicUIContainer extends UIContainer {
 	 * @param height
 	 * @param elements
 	 */
-	public BasicUIContainer(int x, int y, int width, int height, UIElement... elements) {
+	public BasicUIContainer(float x, float y, float width, float height, UIElement... elements) {
 		super(x, y, width, height, elements);
+	}
+	
+	/**
+	 * @param color
+	 */
+	public void setBackgroundColor(Color color){
+		this.color = color;
+	}
+	
+	/**
+	 * @return
+	 */
+	public Color getColor(){
+		return color;
 	}
 	
 	@Override

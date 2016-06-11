@@ -2,7 +2,7 @@ package game.UI.elements.containers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.UI.UISorter;
@@ -18,7 +18,7 @@ public abstract class UIContainer extends UIElement {
 	
 	//JAVADOC: UIContainer
 
-	protected Rectangle containedArea;
+	protected Rectangle2D.Float containedArea;
 
 	protected Graphics2D translatedGraphics;
 
@@ -33,7 +33,7 @@ public abstract class UIContainer extends UIElement {
 		super();
 		this.children = new CopyOnWriteArrayList<UIElement>();
 		addUIElements(elements);
-		containedArea = new Rectangle();
+		containedArea = new Rectangle2D.Float();
 		border = new SolidBorder(5);
 	}
 	
@@ -41,11 +41,11 @@ public abstract class UIContainer extends UIElement {
 	 * @param rect
 	 * @param elements
 	 */
-	public UIContainer(Rectangle rect, UIElement... elements) {
+	public UIContainer(Rectangle2D.Float rect, UIElement... elements) {
 		super(rect);
 		this.children = new CopyOnWriteArrayList<UIElement>();
 		addUIElements(elements);
-		containedArea = new Rectangle();
+		containedArea = new Rectangle2D.Float();
 		border = new SolidBorder(5);
 	}
 	
@@ -54,7 +54,7 @@ public abstract class UIContainer extends UIElement {
 	 * @param height
 	 * @param elements
 	 */
-	public UIContainer(int width, int height, UIElement ... elements){
+	public UIContainer(float width, float height, UIElement ... elements){
 		super(width, height);
 		this.children = new CopyOnWriteArrayList<UIElement>();
 		addUIElements(elements);
@@ -69,7 +69,7 @@ public abstract class UIContainer extends UIElement {
 	 * @param height
 	 * @param elements
 	 */
-	public UIContainer(int x, int y, int width, int height, UIElement ... elements){
+	public UIContainer(float x, float y, float width, float height, UIElement ... elements){
 		super(x, y, width, height);
 		this.children = new CopyOnWriteArrayList<UIElement>();
 		addUIElements(elements);
@@ -85,7 +85,7 @@ public abstract class UIContainer extends UIElement {
 	 * @param border
 	 * @param elements
 	 */
-	public UIContainer(int x, int y, int width, int height, Border border, UIElement ... elements){
+	public UIContainer(float x, float y, float width, float height, Border border, UIElement ... elements){
 		super(x, y, width, height);
 		this.children = new CopyOnWriteArrayList<UIElement>();
 		addUIElements(elements);
@@ -206,8 +206,8 @@ public abstract class UIContainer extends UIElement {
 			border.paint(g2d, area);
 		}
 		if(children.size() > 0){
-			translatedGraphics = (Graphics2D) g2d.create(containedArea.x, containedArea.y, containedArea.width,
-					containedArea.height);
+			translatedGraphics = (Graphics2D) g2d.create((int)containedArea.x, (int)containedArea.y,
+					(int)containedArea.width, (int)containedArea.height);
 			for (UIElement element : children) {
 				element.paint(translatedGraphics);
 			}
@@ -219,7 +219,7 @@ public abstract class UIContainer extends UIElement {
 	 * This method updates the containedArea member variable.
 	 * @return
 	 */
-	protected Rectangle computeContainerArea() {
+	protected Rectangle2D.Float computeContainerArea() {
 		if(border != null){
 			return containedArea = border.getInnerArea(area);
 		}else{
@@ -230,15 +230,15 @@ public abstract class UIContainer extends UIElement {
 	/**
 	 * @return
 	 */
-	public Rectangle getContainerArea() {
+	public Rectangle2D.Float getContainerArea() {
 		return containedArea;
 	}
 	
 	@Override
-	public Rectangle getBounds() {
-		Rectangle parentArea = parent.getBounds();
+	public Rectangle2D.Float getBounds() {
+		Rectangle2D.Float parentArea = parent.getBounds();
 		computeContainerArea();
-		return new Rectangle(containedArea.x + parentArea.x, containedArea.y + parentArea.y, containedArea.width, containedArea.height);
+		return new Rectangle2D.Float(containedArea.x + parentArea.x, containedArea.y + parentArea.y, containedArea.width, containedArea.height);
 	}
 
 	
