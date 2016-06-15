@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
+import game.util.math.MathUtils;
+
 /**
  * @author Julius Häger
  *
@@ -27,8 +29,9 @@ public abstract class ParticleEffector{
 			@Override
 			public void effect(Particle particle, float deltaTime) {
 				if(pred.test(particle, deltaTime)){
-					particle.scaleX = func.apply(particle.currLifetime / particle.lifetime);
-					particle.scaleY = func.apply(particle.currLifetime / particle.lifetime);
+					//NOTE: Should these be clamped? Or should weird values be accepted
+					particle.scaleX = func.apply(MathUtils.clamp01(particle.currLifetime / particle.lifetime));
+					particle.scaleY = func.apply(MathUtils.clamp01(particle.currLifetime / particle.lifetime));
 				}
 			}
 		};
@@ -44,7 +47,8 @@ public abstract class ParticleEffector{
 			@Override
 			public void effect(Particle particle, float deltaTime) {
 				if(pred.test(particle, deltaTime)){
-					particle.color = func.apply(particle.currLifetime / particle.lifetime);
+					//NOTE: Should these be clamped? Or should weird values be accepted
+					particle.color = func.apply(MathUtils.clamp01(particle.currLifetime / particle.lifetime));
 				}
 			}
 		};

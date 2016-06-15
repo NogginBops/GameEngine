@@ -122,12 +122,16 @@ public class Game extends Updater {
 		//TODO: Clean up and make more streamline. (Think about the order of initialization)
 		//Should things really be static?
 		
+		//TODO: Is this really doing anything?
+		//The engine should be usable even though no hardware acceleration is present.
+		System.setProperty("sun.java2d.opengl", "true");
+		
 		initTime = System.nanoTime();
 		
 		Game.settings = settings;
 		
 		if(settings == null){
-			settings = GameSettings.DEFAULT;
+			settings = GameSettings.createDefaultGameSettings();
 		}
 		//TODO: Use the GameSettings
 		
@@ -175,21 +179,23 @@ public class Game extends Updater {
 	}
 	
 	private void setup(GameSettings settings){
+		final GameSettings DEFAULT = GameSettings.createDefaultGameSettings();
+		
 		Game.game = this;
 		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
 		
-		name = GameSettings.DEFAULT.getSettingAs("Name", String.class);
+		name = DEFAULT.getSettingAs("Name", String.class);
 		if(settings.containsSetting("Name")){
 			name = settings.getSettingAs("Name", String.class);
 		}
 		
-		Dimension res = GameSettings.DEFAULT.getSettingAs("Resolution", Dimension.class);
+		Dimension res = DEFAULT.getSettingAs("Resolution", Dimension.class);
 		if(settings.containsSetting("Resolution")){
 			res = settings.getSettingAs("Resolution", Dimension.class);
 		}
 		
-		int mode = GameSettings.DEFAULT.getSettingAs("ScreenMode", Integer.class);
+		int mode = DEFAULT.getSettingAs("ScreenMode", Integer.class);
 		if(settings.containsSetting("ScreenMode")){
 			mode = settings.getSettingAs("ScreenMode", Integer.class);
 		}
@@ -201,8 +207,10 @@ public class Game extends Updater {
 		}
 
 		if(camera == null){
-			camera = GameSettings.DEFAULT.getSettingAs("MainCamera", Camera.class);
+			camera = DEFAULT.getSettingAs("MainCamera", Camera.class);
 		}
+		
+		camera.setSize(res.width, res.height);
 		
 		mouseHandler = new MouseInputHandler(camera);
 		keyHandler = new KeyInputHandler();

@@ -22,14 +22,9 @@ public class GameSettings {
 	//JAVADOC: GameSettings
 	
 	/**
-	 * Note: Should not be modified! Use {@link GameSettings#getDefaultGameSettings() getDefaultGameSettings()} to get a modifiable one.
-	 */
-	public final static GameSettings DEFAULT = getDefaultGameSettings();
-	
-	/**
 	 * @return
 	 */
-	public static GameSettings getDefaultGameSettings() {
+	public static GameSettings createDefaultGameSettings() {
 		
 		GameSettings defaultSettigns = new GameSettings();
 		
@@ -52,6 +47,9 @@ public class GameSettings {
 		defaultSettigns.putSetting("DebugID", false);
 		
 		defaultSettigns.putSetting("GameInit", new GameInitializer() {
+			
+			//TODO: This screen should display a nicer error log or similar
+			//The way it is now it's unacceptably ugly and serves no purpose.
 			
 			@Override
 			public void initialize(Game game, GameSettings settings) {

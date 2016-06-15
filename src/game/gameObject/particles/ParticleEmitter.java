@@ -78,10 +78,6 @@ public class ParticleEmitter{
 	
 	private float timer;
 	
-	//TODO: Particle imageId things
-	
-	//TODO: Particle spawning arguments
-	
 	/**
 	 * @param x
 	 * @param y
@@ -154,18 +150,5 @@ public class ParticleEmitter{
 			Game.log.logError("Unknown particle emission shape " + shape, "ParticleSystem", "Emission", "ParticleEmission");
 			return null;
 		}
-	}
-	
-	/**
-	 * @author Julius Häger
-	 *
-	 */
-	public interface ParticleCustomizer{
-		//TODO: Better name
-		
-		/**
-		 * @param particle
-		 */
-		public void customize(Particle particle);
 	}
 }

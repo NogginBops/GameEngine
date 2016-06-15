@@ -27,7 +27,19 @@ import game.util.IDHandler;
  */
 public final class IOHandler {
 
-	// JAVADOC: IOHandeler
+	// JAVADOC: IOHandeler¨
+	
+	/* 
+	 * TODO: Virtual folders or some other system to make file management easier.
+	 * Something like mount( 'sfx', './res/sfx/' ) and then load( 'sfx/explosion' )
+	 * would actually mean load( './res/sfx/explosion' ). This would mean implementing
+	 * some kind of search algorithm thing to figure out what file the user wants to load.
+	 * 
+	 * What happens if there are multiple files with the same name? 
+	 * Multiple mappings to different folders?
+	 * 
+	 * How would the load request need to change? Would it still use java.io.File?
+	*/
 	
 	private static IDHandler<Loader<?>> loaderIDHandler;
 

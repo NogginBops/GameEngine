@@ -203,9 +203,11 @@ public class Camera extends Painter implements Movable, KeyListener {
 		
 		//TODO: Synchronize?
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		translatedGraphics.dispose();
-		translatedGraphics = image.createGraphics();
-		originalTransform = translatedGraphics.getTransform();
+		if(translatedGraphics != null){
+			translatedGraphics.dispose();
+			translatedGraphics = image.createGraphics();
+			originalTransform = translatedGraphics.getTransform();
+		}
 	}
 
 	@Override

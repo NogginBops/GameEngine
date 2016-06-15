@@ -6,6 +6,7 @@ import game.Game;
 import game.GameInitializer;
 import game.GameSettings;
 import game.gameObject.graphics.Camera;
+import game.gameObject.graphics.Sprite;
 import game.screen.ScreenRect;
 
 /**
@@ -22,7 +23,7 @@ public class CameraTest1 implements GameInitializer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		GameSettings settings = GameSettings.getDefaultGameSettings();
+		GameSettings settings = GameSettings.createDefaultGameSettings();
 		
 		settings.putSetting("Name", "Camera Test #1");
 		
@@ -50,6 +51,10 @@ public class CameraTest1 implements GameInitializer {
 		Game.screen.addPainter(newCamera);
 		
 		Game.gameObjectHandler.addGameObject(newCamera, "Secondary camera");
+		
+		Sprite testSprite = new Sprite(100, 100, 100, 100, Color.BLUE);
+		
+		Game.gameObjectHandler.addGameObject(testSprite, "TestSprite");
 	}
 
 }

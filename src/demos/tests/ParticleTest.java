@@ -1,6 +1,7 @@
 package demos.tests;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,6 +15,7 @@ import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.gameObject.graphics.Camera;
 import game.gameObject.particles.Particle;
+import game.gameObject.particles.ParticleCustomizer;
 import game.gameObject.particles.ParticleEffector;
 import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.particles.ParticleSystem;
@@ -32,13 +34,15 @@ public class ParticleTest implements GameInitializer {
 	public static void main(String[] args) {
 		System.setProperty("sun.java2d.opengl", "true");
 		
-		GameSettings settings = GameSettings.getDefaultGameSettings();
+		GameSettings settings = GameSettings.createDefaultGameSettings();
 		
 		settings.putSetting("Name", "Particle Test");
 		
 		settings.putSetting("OnScreenDebug", true);
 		
 		settings.putSetting("DebugID", false);
+		
+		settings.putSetting("Resolution", new Dimension(1000, 800));
 		
 		settings.putSetting("GameInit", new ParticleTest());
 		
@@ -61,9 +65,9 @@ public class ParticleTest implements GameInitializer {
 			e.printStackTrace();
 		}
 		
-		int width = 100;
-		int height = 100;
-		int maxParticles = 100;
+		int width = 60;
+		int height = 60;
+		int maxParticles = 10;
 		
 		int numX = 10;
 		int numY = 10;
@@ -71,12 +75,13 @@ public class ParticleTest implements GameInitializer {
 		for (int x = 0; x < numX; x++) {
 			for (int y = 0; y < numY; y++) {
 				
-				ParticleSystem system = new ParticleSystem(new Rectangle2D.Float((int)(x * (width * 1.1f)), (int)(y * (height * 1.1f)), width, height), 5, maxParticles);
+				ParticleSystem system = new ParticleSystem(new Rectangle2D.Float((int)(x * (width * 1.1f)), (int)(y * (height * 1.1f)), width, height), 5, maxParticles, null);
 				
 				system.setAllGranularities(10);
 				
-				ParticleEmitter.ParticleCustomizer customizer = (particle) -> {
-					
+				ParticleCustomizer customizer = (particle) -> {
+					particle.dx = (rand.nextFloat()-0.5f) * 10;
+					particle.dy = (rand.nextFloat()-0.5f) * 20;
 				};
 				
 				ParticleEmitter emitter = new ParticleEmitter(0, 0, system.getWidth(), system.getHeight(), maxParticles);
@@ -90,9 +95,8 @@ public class ParticleTest implements GameInitializer {
 					@Override
 					public void effect(Particle particle, float deltaTime) {
 						
-						particle.dx = rand.nextFloat() * 10;
-						particle.dy = rand.nextFloat() * 20;
-						
+						//particle.dx = (rand.nextFloat()-0.5f) * 10;
+						//particle.dy = (rand.nextFloat()-0.5f) * 20;
 					}
 				};
 				
@@ -104,9 +108,16 @@ public class ParticleTest implements GameInitializer {
 				
 				system.addImage(0, particleImage);
 				
+				system.edgeAction = (particle) -> { 
+					//This is here to remove the default action of 
+					//deactivating the particle when hitting the edge of the system.
+				};
+				
 				system.setDX(rand.nextFloat() * 10);
 				
 				system.setDY(rand.nextFloat() * 10);
+				
+				//system.debug = true;
 				
 				Game.gameObjectHandler.addGameObject(system);
 			}

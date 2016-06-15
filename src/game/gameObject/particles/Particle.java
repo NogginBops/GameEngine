@@ -10,7 +10,7 @@ public class Particle {
 	
 	//JAVADOC: Particle
 	
-	//Should particle be final?
+	//NOTE: Should particle be final?
 	
 	//TODO: Should these be public or private/protected (Probably private)
 	

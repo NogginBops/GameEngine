@@ -33,7 +33,7 @@ public class UITest implements GameInitializer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		GameSettings settings = GameSettings.getDefaultGameSettings();
+		GameSettings settings = GameSettings.createDefaultGameSettings();
 		
 		settings.putSetting("Name", "UITest #1");
 		

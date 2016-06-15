@@ -21,6 +21,7 @@ public class MouseInputHandler {
 	// JAVADOC: MouseInputHandler
 	
 	//FIXME: Respond to multiple cameras
+	//NOTE: Its better to fix this when multiple screens are supported as that will also effect input.
 
 	private CopyOnWriteArrayList<MouseListener> listeners;
 

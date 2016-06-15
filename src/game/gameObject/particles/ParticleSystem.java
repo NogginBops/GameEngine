@@ -23,17 +23,18 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	
 	//TODO: Figure out what should and should not be relative coordinates. (Most things probably)
 	
-	//TODO: ParticleColliders
-	
-	//TODO: Other particle related things like color/size over lifetime and other effects
-	
+	//TODO: ParticleColliders?
+	//Should these be a separate thing or should they just be implemented through a particleEffector
+	//Maybe the physics system could do this.
+		
 	//TODO: Rotation?
 	
+	/**
+	 * 
+	 */
+	public static final ParticleCustomizer DESTROY = (particle) -> { particle.active = false; };
+
 	//NOTE: When thread scheduling tasks are implemented, should this be it's own task?
-	
-	//TODO: Particle coordinates should represent the center of the particle.
-	//Only the center should be collision checked for speed.
-	//Most of the times this wont even be noticed.
 	
 	private Particle[] particles;
 	
@@ -69,6 +70,11 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	 * 
 	 */
 	public int aGranularity = 5;
+	
+	/**
+	 * 
+	 */
+	public ParticleCustomizer edgeAction = DESTROY;
 
 	//TODO: Remove?
 	/**
@@ -80,14 +86,20 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	 * @param rect
 	 * @param zOrder
 	 * @param maxParticles 
+	 * @param customizer 
 	 */
-	public ParticleSystem(Rectangle2D.Float rect, int zOrder, int maxParticles) {
+	public ParticleSystem(Rectangle2D.Float rect, int zOrder, int maxParticles, ParticleCustomizer customizer) {
 		super(rect, zOrder);
 		particles = new Particle[maxParticles];
 		for (int i = 0; i < particles.length; i++) {
-			//TODO: A way to change the way particles are being initialized.
+			//NOTE: How should the standard particle look like?
 			particles[i] = new Particle(0, 0, 10, 10, 1, Color.WHITE, 0);
 			particles[i].active = false;
+			
+			//A initial customization of the particles
+			if(customizer != null){
+				customizer.customize(particles[i]);
+			}
 		}
 		emitters = new ArrayList<>();
 		effectors = new ArrayList<>();
@@ -157,6 +169,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	}
 	
 	//TODO: roundColor is being called 3 times in succession, there is a better solution
+	//Should the methods be merged
 	
 	private BufferedImage getParticleImage(Particle particle) {
 		Color rColor = roundColor(particle.color);
@@ -205,8 +218,6 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		}
 		
 		//TODO: Find a more efficient way to do this
-		
-		//TODO: Fix this algorithm, its almost right
 		
 		int r = color.getRed();
 		r = roundColorValue(r, rGranularity);
@@ -284,19 +295,44 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 					generateParticleImage(particles[i], rColor);
 				}
 				
-				if(MathUtils.isOutside(x + particles[i].x, x, x + (width - (particles[i].width * particles[i].scaleX)))!= 0 ||
-						MathUtils.isOutside(y + particles[i].y, y, y + (height - (particles[i].height * particles[i].scaleY)))!= 0){
+				//NOTE: Should these be temporary variables or not
+				int isOutsideX = MathUtils.isOutside(x + particles[i].x, x, x + width);
+				int isOutsideY = MathUtils.isOutside(y + particles[i].y, y, y + height);
+				
+				//NOTE: Should both axis be stopped when colliding a edge or should just one be stopped?
+				//If that behavoiur is desired should that be implemented using the edgeAction;
+				if(isOutsideX != 0){
+					particles[i].dx = 0;
+					particles[i].x = isOutsideX < 0 ? 0 : width;
+				}
+				
+				if(isOutsideY != 0){
+					particles[i].dy = 0;
+					particles[i].y = isOutsideY < 0 ? 0 : height;
+				}
+				
+				if(isOutsideX != 0 || isOutsideY != 0){
+					edgeAction.customize(particles[i]);
+				}
+				
+				/*
+				//NOTE: Does this consider particle width? Should this be done?
+				if(MathUtils.isOutside(x + particles[i].x, x, x + (width - (particles[i].width * particles[i].scaleX))) != 0 ||
+						MathUtils.isOutside(y + particles[i].y, y, y + (height - (particles[i].height * particles[i].scaleY))) != 0){
 					
 					//TODO: Different edge modes
 					
-					particles[i].active = false;
+					edgeMode.customize(particles[i]);
 					
-					/*particles[i].x = MathUtils.clamp(particles[i].x, x, x + (width - particles[i].width));
+					//particles[i].active = false;
+					
+					particles[i].x = MathUtils.clamp(particles[i].x, x, x + (width - particles[i].width));
 					particles[i].y = MathUtils.clamp(particles[i].y, y, y + (height - particles[i].height));
 					
 					particles[i].dx = -particles[i].dx;
-					particles[i].dy = -particles[i].dy;*/
+					particles[i].dy = -particles[i].dy;
 				}
+			*/
 			}
 		}
 	}
@@ -355,7 +391,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		effectors.add(effector);
 	}
 	
-	//NOTE: Should there be a better way of keeping track of the different particle images 
+	//NOTE: Should there be a better way of keeping track of the different particle images?
 	/**
 	 * @param imageID
 	 * @param image

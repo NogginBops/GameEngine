@@ -24,7 +24,14 @@ public class Screen implements Runnable {
 	
 	//FIXME: Merge with ScreenManager!!!
 	
+	//FIXME: Full screen performance is really bad, find a way to fix this.
+	//With a full HD res the frame rate never goes above 50fps
+	//This might improve with the task system, but some other solution could need to be implemented.
+	
 	//TODO: Add lighting when the task system is implemented
+	
+	//NOTE: Should a multi-threaded rendering system be implemented before the task system is?
+	//It would be a lot easier and would increase performance a lot (I think)
 
 	private boolean isRunning = false;
 
@@ -98,6 +105,7 @@ public class Screen implements Runnable {
 	//TODO: Remove
 	int i = 0;
 	
+	//NOTE: This method has no reason to be its own method
 	private void loop() {
 		long currentTime = System.nanoTime();
 		long elapsedTime = 0;
@@ -184,6 +192,7 @@ public class Screen implements Runnable {
 				//System.gc();
 			}
 			
+			//TODO: Dynamic sleep time
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
