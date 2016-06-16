@@ -12,6 +12,8 @@ import game.UI.elements.text.UILabel;
 import game.gameObject.graphics.Camera;
 import game.screen.ScreenManager;
 import game.screen.ScreenRect;
+import game.util.UpdateListener;
+import game.util.Updater;
 
 /**
  * @author Julius Häger
@@ -40,12 +42,24 @@ public class GameSettings {
 		//TODO: Should camera be a setting or should it be in game init? Probably game init so that it works when switching scenes
 		defaultSettigns.putSetting("MainCamera", new Camera(new Rectangle2D.Float(0, 0, res.width, res.height), ScreenRect.FULL, new Color(0.15f, 0.15f, 0.15f, 1f)));
 		
+		defaultSettigns.putSetting("Updater", new Updater(){
+			@Override
+			public void propagateUpdate(float deltaTime) {
+				if(Game.gameObjectHandler.shouldUpdateObjects()){
+					listeners = Game.gameObjectHandler.getAllActiveGameObjectsExtending(UpdateListener.class);
+				}
+				
+				super.propagateUpdate(deltaTime);
+			}
+		});
+		
 		defaultSettigns.putSetting("OnScreenDebug", false);
 		
 		defaultSettigns.putSetting("DebugLog", false);
 		
 		defaultSettigns.putSetting("DebugID", false);
 		
+		//NOTE: Should this happen in settings or should there ba another way to handle it
 		defaultSettigns.putSetting("GameInit", new GameInitializer() {
 			
 			//TODO: This screen should display a nicer error log or similar

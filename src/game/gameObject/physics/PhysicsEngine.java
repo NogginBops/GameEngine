@@ -79,37 +79,9 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 							Shape collitionShape1 = collidablesInLayer.get(c1).getCollitionShape();
 							Shape collitionShape2 = collidablesInLayer.get(c2).getCollitionShape();
 							
-							if(collitionShape1 instanceof Rectangle2D && collitionShape2 instanceof Rectangle2D){
-								if(((Rectangle2D)collitionShape1).intersects((Rectangle2D)collitionShape2)){
-									collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
-								}
+							if(collides(collitionShape1, collitionShape2)){
+								collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
 							}
-							else if(collitionShape1 instanceof Rectangle2D){
-								//NOTE: Is this accurate enough?
-								if(collitionShape2.intersects((Rectangle2D)collitionShape1)){
-									collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
-								}
-							}
-							else if(collitionShape2 instanceof Rectangle2D){
-								if(collitionShape1.intersects((Rectangle2D)collitionShape2)){
-									collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
-								}
-							}
-							else{
-								Area intersection = new Area(collitionShape1);
-								intersection.intersect(new Area(collitionShape2));
-								
-								if(!intersection.isEmpty()){
-									collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
-								}
-							}
-							
-							/*Area collition = collidablesInLayer.get(c1).getCollitionArea();
-							collition.intersect(collidablesInLayer.get(c2).getCollitionArea());
-							if (!collition.isEmpty()) {
-								collidablesInLayer.get(c1).hasCollided(collidablesInLayer.get(c2));
-								collidablesInLayer.get(c2).hasCollided(collidablesInLayer.get(c1));
-							}*/
 						}
 					}
 				}
@@ -136,5 +108,44 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	private void collide(Collidable c1, Collidable c2){
 		c1.hasCollided(c2);
 		c2.hasCollided(c1);
+	}
+	
+	/**
+	 * @param s1
+	 * @param s2
+	 * @return
+	 */
+	public static boolean collides(Shape s1, Shape s2){
+		//NOTE: We are doing this because you can't intersect two generic shapes.
+		//There 
+		if(s1 instanceof Rectangle2D && s2 instanceof Rectangle2D){
+			if(((Rectangle2D)s1).intersects((Rectangle2D)s2)){
+				return true;
+				//collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
+			}
+		}
+		else if(s1 instanceof Rectangle2D){
+			//NOTE: Is this accurate enough?
+			if(s2.intersects((Rectangle2D)s1)){
+				return true;
+				//collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
+			}
+		}
+		else if(s2 instanceof Rectangle2D){
+			if(s1.intersects((Rectangle2D)s2)){
+				return true;
+				//collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
+			}
+		}
+		else{
+			Area intersection = new Area(s1);
+			intersection.intersect(new Area(s2));
+			
+			if(!intersection.isEmpty()){
+				return true;
+				//collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
+			}
+		}
+		return false;
 	}
 }

@@ -22,7 +22,6 @@ import game.screen.ScreenManager;
 import game.sound.AudioEngine;
 import game.util.FPSCounter;
 import game.util.UpdateCounter;
-import game.util.UpdateListener;
 import game.util.Updater;
 import game.util.math.MathUtils;
 
@@ -32,7 +31,7 @@ import game.util.math.MathUtils;
  * @version 1.0
  * @author Julius Häger
  */
-public class Game extends Updater {
+public class Game {
 
 	//JAVADOC: Game
 	
@@ -105,6 +104,11 @@ public class Game extends Updater {
 	 */
 	public static KeyInputHandler keyHandler;
 	
+	/**
+	 * 
+	 */
+	public static Updater updater;
+	
 	private static Input inputHandler;
 
 	private static long initTime;
@@ -137,6 +141,7 @@ public class Game extends Updater {
 		
 		setup(settings);
 		
+		//NOTE: This should be done in setup
 		
 		if(settings.containsSetting("OnScreenDebug")){
 			if(settings.getSettingAs("OnScreenDebug", Boolean.class)){
@@ -208,6 +213,13 @@ public class Game extends Updater {
 
 		if(camera == null){
 			camera = DEFAULT.getSettingAs("MainCamera", Camera.class);
+		}
+		
+		updater = DEFAULT.getSettingAs("Updater", Updater.class);
+		if(settings.containsSetting("Updater")){
+			updater = settings.getSettingAs("Updater", Updater.class);
+		}else{
+			log.logMessage("Using the standard updater.");
 		}
 		
 		camera.setSize(res.width, res.height);
@@ -351,11 +363,7 @@ public class Game extends Updater {
 				continue;
 			}
 			
-			if(gameObjectHandler.shouldUpdateObjects()){
-				listeners = gameObjectHandler.getAllGameObjectsExtending(UpdateListener.class);
-			}
-			
-			propagateUpdate((elapsedTime / 1000000000f) * timeScale);
+			updater.propagateUpdate((elapsedTime / 1000000000f) * timeScale);
 			
 			UpdateCounter.update(elapsedTime / 1000000000f);
 			

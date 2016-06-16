@@ -17,8 +17,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class Updater {
 
 	// JAVADOC: Updater
-
-	//TODO: Merge with Game.java
 	
 	protected CopyOnWriteArrayList<UpdateListener> listeners;
 
@@ -33,10 +31,9 @@ public abstract class Updater {
 	 * Called to propagate a update call to all {@link UpdateListener
 	 * UpdateListeners} in the protected {@link #listeners} list.
 	 * 
-	 * @param timeNano
-	 *            time since last update (in milliseconds)
+	 * @param deltaTime
 	 */
-	protected void propagateUpdate(float deltaTime) {
+	public void propagateUpdate(float deltaTime) {
 		for (UpdateListener listener : listeners) {
 			if(listener.isActive()){
 				listener.update(deltaTime);
