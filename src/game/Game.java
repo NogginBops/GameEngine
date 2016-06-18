@@ -32,12 +32,12 @@ import game.util.math.MathUtils;
  * @author Julius Häger
  */
 public class Game {
-
+	
 	//JAVADOC: Game
 	
 	//TODO: Restructure project packages to make more sense
 	
-	//NOTE: Should everything be static? There is only ever going to be one game.
+	//NOTE: Should everything be static? There is only ever going to be one game... (or?)
 	
 	//TODO: Clean up
 	
