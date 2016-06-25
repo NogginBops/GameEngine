@@ -23,6 +23,10 @@ public class GameSettings {
 	
 	//JAVADOC: GameSettings
 	
+	//NOTE: Should the game settigns be statically available for easier access
+	//This would allow for batter use of the settigns system for things like,
+	//resource paths and other variables that are shared by the different components of the game
+	
 	/**
 	 * @return
 	 */

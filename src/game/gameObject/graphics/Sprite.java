@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 import game.Game;
+import game.gameObject.graphics.animation.Animation;
 import game.gameObject.physics.BasicMovable;
 import game.image.effects.ColorTintFilter;
 
@@ -31,6 +32,13 @@ public class Sprite extends BasicMovable implements Paintable {
 	 * else the color will tint the image, white will do nothing.
 	 */
 	private Color color = Color.WHITE;
+	
+	//NOTE: Should this system be implemented or should there a another more flexible way to do it? (AnimationManager?)
+	
+	/**
+	 * The animation of the sprite if any
+	 */
+	private Animation animation = null;
 	
 	private BufferedImage graphicsReadySprite = null;
 	
@@ -147,6 +155,24 @@ public class Sprite extends BasicMovable implements Paintable {
 		setSprite(sprite);
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param animation
+	 */
+	//FIXME: Temporary constructor!!
+	public Sprite(float x, float y, float width, float height, Animation animation) {
+		super(x, y, width, height, 5);
+		imageCache = new HashMap<>();
+		
+		this.animation = animation;
+		
+		setColor(color);
+		setSprite(animation.getCurrentImage());
+	}
+	
 	//TODO: Add sorting layers for sprites and such
 	
 	/**
@@ -198,6 +224,12 @@ public class Sprite extends BasicMovable implements Paintable {
 		x += dx * deltaTime;
 		y += dy * deltaTime;
 		updateBounds();
+		
+		//TODO: Animation!
+		if(animation != null){
+			animation.update(deltaTime);
+			setSprite(animation.getCurrentImage());
+		}
 	}
 	
 	/**
@@ -221,10 +253,17 @@ public class Sprite extends BasicMovable implements Paintable {
 	}
 	
 	/**
+	 * @param animation
+	 */
+	public void setAnimation(Animation animation){
+		this.animation = animation;
+		preloadSprites(animation.getImages());
+	}
+	
+	/**
 	 * @param sprite
 	 */
 	public void setSprite(BufferedImage sprite){
-		
 		if(sprite == null){
 			
 			this.sprite = null;

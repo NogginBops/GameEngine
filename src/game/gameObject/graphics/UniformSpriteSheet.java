@@ -210,8 +210,10 @@ public class UniformSpriteSheet {
 			throw new IllegalArgumentException("Start value must be less than end value! " + (startX > endX ? " startX: " + startX + " endX: " + endX : "") + (startY > endY ? " startY: " + startY + " endY: " + endY : ""));
 		}
 		
-		int imgWidth = endX - startX;
-		int imgHeight = endY - startY;
+		
+		//TODO: Remove endX and endY and replace them with width and height
+		int imgWidth = 1 + (endX - startX);
+		int imgHeight = 1 + (endY - startY);
 		
 		if(cutoutFilter != null){
 			return cutoutFilter.filter(sheet.getSubimage(startX * width, startY * height, imgWidth * width, imgHeight * height), null);
