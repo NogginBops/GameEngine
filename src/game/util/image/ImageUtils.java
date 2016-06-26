@@ -1,5 +1,8 @@
 package game.util.image;
 
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
@@ -10,6 +13,66 @@ import java.awt.image.WritableRaster;
  *
  */
 public final class ImageUtils {
+	
+	//TODO: Remove
+	/**
+	 * 
+	 */
+	public static int calls = 0;
+	
+	//TODO: Remove
+	/**
+	 * 
+	 */
+	public static int usefullCalls = 0;
+	
+	//TODO: Is this really generating a preferable result? Figure out what to do to make it work as wanted.
+	//It's seems like its making a difference, but the images produced are not being accelerated.
+	
+	/**
+	 * This method is called for every image loaded using the default image loaders.
+	 * 
+	 * @param image
+	 * @return
+	 */
+	public static BufferedImage toSystemCompatibleImage(BufferedImage image){
+		
+		calls++;
+		
+		if(image == null){
+			return null;
+		}
+		
+		// Obtain the current system graphical settings
+		GraphicsConfiguration gfx_config = GraphicsEnvironment.
+			getLocalGraphicsEnvironment().getDefaultScreenDevice().
+			getDefaultConfiguration();
+		
+		/*
+		 * If image is already compatible and optimized for current system 
+		 * settings, simply return it
+		 */
+		if (image.getColorModel().equals(gfx_config.getColorModel())){
+			
+			return image;
+		}
+		
+		// Image is not optimized, so create a new image that is
+		BufferedImage new_image = gfx_config.createCompatibleImage(
+				image.getWidth(), image.getHeight(), image.getTransparency());
+
+		// Get the graphics context of the new image to draw the old image on
+		Graphics2D g2d = new_image.createGraphics();
+
+		// Actually draw the image and dispose of context no longer needed
+		g2d.drawImage(image, 0, 0, null);
+		g2d.dispose();
+		
+		usefullCalls++;
+		
+		// Return the new optimized image
+		return new_image; 
+	}
 	
 	//NOTE: The deepCopy method might not be needed.
 	

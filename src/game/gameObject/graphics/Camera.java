@@ -13,6 +13,7 @@ import game.gameObject.handler.GameObjectHandler;
 import game.gameObject.physics.Movable;
 import game.input.keys.KeyListener;
 import game.screen.ScreenRect;
+import game.util.image.ImageUtils;
 
 /**
  * A Camera is the object responsible for looking into a {@link Game Games}
@@ -170,6 +171,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 		updateBounds();
 		
 		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
+		image = ImageUtils.toSystemCompatibleImage(image);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
 		originalTransform = translatedGraphics.getTransform();
@@ -185,6 +187,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 		updateBounds();
 		
 		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
+		image = ImageUtils.toSystemCompatibleImage(image);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
 		originalTransform = translatedGraphics.getTransform();
@@ -203,6 +206,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 		
 		//TODO: Synchronize?
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		image = ImageUtils.toSystemCompatibleImage(image);
 		if(translatedGraphics != null){
 			translatedGraphics.dispose();
 			translatedGraphics = image.createGraphics();

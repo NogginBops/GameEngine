@@ -23,6 +23,7 @@ import game.sound.AudioEngine;
 import game.util.FPSCounter;
 import game.util.UpdateCounter;
 import game.util.Updater;
+import game.util.image.ImageUtils;
 import game.util.math.MathUtils;
 
 /**
@@ -291,7 +292,9 @@ public class Game {
 				"Camera X: " + camera.getBounds().x,
 				"Camera Y: " + camera.getBounds().y,
 				"Objects: " + gameObjectHandler.numberOfGameObjects(),
-				"Time scale: " + timeScale
+				"Time scale: " + timeScale,
+				"Image optimizeation calls: " + ImageUtils.calls,
+				"Usefull image optimizeation calls: " + ImageUtils.usefullCalls
 			};
 		});
 	}

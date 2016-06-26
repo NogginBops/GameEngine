@@ -11,6 +11,7 @@ import java.util.HashMap;
 import game.gameObject.graphics.Paintable;
 import game.gameObject.physics.BasicMovable;
 import game.image.effects.ColorTintFilter;
+import game.util.image.ImageUtils;
 import game.util.math.MathUtils;
 
 /**
@@ -397,6 +398,8 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	 * @param image
 	 */
 	public void addImage(int imageID, BufferedImage image){
+		image = ImageUtils.toSystemCompatibleImage(image);
+		
 		HashMap<Color, BufferedImage> tempMap = new HashMap<>();
 		tempMap.put(Color.WHITE, image);
 		imageMap.put(imageID, tempMap);

@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.gameObject.BasicGameObject;
 import game.screen.ScreenRect;
+import game.util.image.ImageUtils;
 
 /**
  * Extended to make a object that can be used to paint graphics using a
@@ -58,6 +59,7 @@ public abstract class Painter extends BasicGameObject {
 		super(x, y, width, height, zOrder);
 		
 		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
+		image = ImageUtils.toSystemCompatibleImage(image);
 	}
 	
 	/**

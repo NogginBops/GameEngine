@@ -2,7 +2,9 @@ package game.gameObject.graphics;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
@@ -10,6 +12,7 @@ import game.Game;
 import game.gameObject.graphics.animation.Animation;
 import game.gameObject.physics.BasicMovable;
 import game.image.effects.ColorTintFilter;
+import game.util.image.ImageUtils;
 
 /**
  * 
@@ -265,14 +268,10 @@ public class Sprite extends BasicMovable implements Paintable {
 	 */
 	public void setSprite(BufferedImage sprite){
 		if(sprite == null){
-			
 			this.sprite = null;
-			
 		} else {
-			
 			this.sprite = sprite;
 			graphicsReadySprite = getGraphicsReadySprite(sprite);
-			
 		}
 	}
 	
@@ -335,9 +334,15 @@ public class Sprite extends BasicMovable implements Paintable {
 		return imageCache.get(sprite);
 	}
 	
+	//TODO: Is the scaling working? 
+	//Is it producing a correctly scaled image or is it being scaled when its drawn? 
+	//Is it slower than scaling when drawing?
 	private BufferedImage createGraphicsReadySprite(BufferedImage sprite){
 		if(sprite != null){
-			return colorTinter.filter(sprite, null);
+			AffineTransform at = new AffineTransform();
+			at.scale(scale, scale);
+			AffineTransformOp scaleFilter = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+			return scaleFilter.filter(colorTinter.filter(ImageUtils.toSystemCompatibleImage(sprite), null), null);
 		} else {
 			Game.log.logError("Tried to create a graphics ready image from a null image!", new String[]{ "Sprite", "Image", "Graphics ready" });
 			return null;

@@ -11,6 +11,7 @@ import game.debug.DebugOutputProvider;
 import game.gameObject.graphics.Painter;
 import game.input.Input;
 import game.util.FPSCounter;
+import game.util.image.ImageUtils;
 
 /**
  * A screen object manages repainting of a window
@@ -78,6 +79,7 @@ public class Screen implements Runnable {
 		ScreenManager.createFrame(res.width, res.height, state, title);
 		
 		image = new BufferedImage(res.width, res.height, BufferedImage.TYPE_INT_ARGB);
+		image = ImageUtils.toSystemCompatibleImage(image);
 		
 		painters = new ArrayList<Painter>();
 		
@@ -126,6 +128,7 @@ public class Screen implements Runnable {
 			//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 			if(image.getWidth() != ScreenManager.getWidth() || image.getHeight() != ScreenManager.getHeight()){
 				image = new BufferedImage(ScreenManager.getWidth(), ScreenManager.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				image = ImageUtils.toSystemCompatibleImage(image);
 				if(imageGraphics != null){
 					imageGraphics.dispose();
 					imageGraphics = null;
