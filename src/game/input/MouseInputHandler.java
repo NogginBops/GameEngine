@@ -23,7 +23,7 @@ public class MouseInputHandler {
 	//FIXME: Respond to multiple cameras
 	//NOTE: Its better to fix this when multiple screens are supported as that will also effect input.
 
-	private CopyOnWriteArrayList<MouseListener> listeners;
+	private CopyOnWriteArrayList<MouseListener> listeners = new CopyOnWriteArrayList<>();
 
 	private CopyOnWriteArrayList<MouseListener> enteredListeners;
 
@@ -178,10 +178,6 @@ public class MouseInputHandler {
 	 * 
 	 */
 	public void computeEnteredListeners() {
-		if (Game.gameObjectHandler.shouldUpdateObjects()) {
-			listeners = Game.gameObjectHandler.getAllGameObjectsExtending(MouseListener.class);
-		}
-		
 		if (lastEvent != null) {
 			listeners.sort(invComparator);
 			for (MouseListener listener : listeners) {
@@ -202,5 +198,21 @@ public class MouseInputHandler {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * @param listener
+	 */
+	public void addListener(MouseListener listener){
+		listeners.add(listener);
+		computeEnteredListeners();
+	}
+	
+	/**
+	 * @param listener
+	 */
+	public void removeListener(MouseListener listener){
+		listeners.remove(listener);
+		computeEnteredListeners();
 	}
 }

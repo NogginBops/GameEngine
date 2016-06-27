@@ -6,6 +6,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import game.gameObject.graphics.Paintable;
@@ -44,6 +45,8 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	private ArrayList<ParticleEffector> effectors;
 	
 	private ArrayList<ParticleEffector> activeEffectors;
+	
+	private int activeParticles = 0;
 	
 	//NOTE: Does this need optimization?
 	//FIXME: This solution is generating a lot of entries. Find a way to cut number entries!
@@ -100,6 +103,10 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 			//A initial customization of the particles
 			if(customizer != null){
 				customizer.customize(particles[i]);
+				
+				if(particles[i].active){
+					activeParticles++;
+				}
 			}
 		}
 		emitters = new ArrayList<>();
@@ -280,6 +287,8 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				particles[i].currLifetime -= (deltaTime);
 				if(particles[i].currLifetime <= 0){
 					particles[i].active = false;
+					activeParticles--;
+					continue;
 				}
 				
 				//Apply effectors to all particle
@@ -314,6 +323,11 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				
 				if(isOutsideX != 0 || isOutsideY != 0){
 					edgeAction.customize(particles[i]);
+					
+					if(particles[i].active == false){
+						activeParticles--;
+						continue;
+					}
 				}
 				
 				/*
@@ -354,6 +368,8 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				
 				//Reset lifetime
 				particles[i].currLifetime = particles[i].lifetime;
+				
+				activeParticles++;
 				
 				//Activate and return
 				particles[i].active = true;
@@ -415,5 +431,21 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		gGranularity = granularity;
 		bGranularity = granularity;
 		aGranularity = granularity;
+	}
+	
+	@Override
+	public String[] getDebugValues() {
+		String[] prevDebug = super.getDebugValues();
+		
+		String[] newDebug = new String[]{ 
+				"<b>Particles: </b>" + particles.length,
+				"<b>Active particles: </b>" + activeParticles
+		};
+		
+		String[] merge = new String[prevDebug.length + newDebug.length];
+		System.arraycopy(prevDebug, 0, merge, 0, prevDebug.length);
+		System.arraycopy(newDebug, 0, merge, prevDebug.length, newDebug.length);
+		
+		return merge;
 	}
 }

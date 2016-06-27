@@ -1,9 +1,5 @@
 package game.input;
 
-import game.Game;
-import game.gameObject.BasicGameObject;
-import game.util.UpdateListener;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -12,12 +8,19 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.event.MouseInputListener;
 
+import game.Game;
+import game.controller.event.EventListener;
+import game.controller.event.GameEvent;
+import game.gameObject.BasicGameObject;
+import game.gameObject.handler.event.GameObjectEvent;
+import game.input.mouse.MouseListener;
+
 /**
  * 
  * @version 1.0
  * @author Julius Häger
  */
-public class Input extends BasicGameObject implements KeyListener, MouseInputListener, MouseWheelListener, UpdateListener {
+public class Input extends BasicGameObject implements KeyListener, MouseInputListener, MouseWheelListener, EventListener {
 	
 	//TODO: Merge Input, MouseInputHandler and KeyInputHandler
 
@@ -35,6 +38,8 @@ public class Input extends BasicGameObject implements KeyListener, MouseInputLis
 		super(0, 0, 0, 0, 0);
 		this.mouseHandler = mouseHandeler;
 		this.keyHandler = keyHandeler;
+		
+		Game.eventMachine.addEventListener(GameObjectEvent.class, this);
 	}
 
 	@Override
@@ -93,11 +98,30 @@ public class Input extends BasicGameObject implements KeyListener, MouseInputLis
 	}
 
 	@Override
-	public void update(float deltaTime) {
-		mouseHandler.computeEnteredListeners();
-		
-		if(Game.gameObjectHandler.shouldUpdateObjects()){
-			keyHandler.updateListeners();
+	public <T extends GameEvent<?>> void eventFired(T event) {
+		if(event instanceof GameObjectEvent){
+			GameObjectEvent goEvent = (GameObjectEvent) event;
+			
+			switch (goEvent.command) {
+			case "Created":
+				if(goEvent.object instanceof MouseListener){
+					mouseHandler.addListener((MouseListener) goEvent.object);
+				}
+				if(goEvent.object instanceof game.input.keys.KeyListener){
+					keyHandler.addListener((game.input.keys.KeyListener) goEvent.object);
+				}
+				break;
+			case "Destroyed":
+				if(goEvent.object instanceof MouseListener){
+					mouseHandler.removeListener((MouseListener) goEvent.object);
+				}
+				if(goEvent.object instanceof game.input.keys.KeyListener){
+					keyHandler.removeListener((game.input.keys.KeyListener) goEvent.object);
+				}
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }

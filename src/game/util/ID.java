@@ -38,6 +38,6 @@ public class ID<T> {
 
 	@Override
 	public String toString() {
-		return "ID[Name/ID: \"" + name + "\n ID: " + id + "]";
+		return "ID[Name/ID: \"" + name + "\" ID: " + id + "]";
 	}
 }

@@ -8,8 +8,11 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import game.Game;
+import game.controller.event.EventListener;
+import game.controller.event.GameEvent;
 import game.gameObject.GameObject;
 import game.gameObject.handler.GameObjectHandler;
+import game.gameObject.handler.event.GameObjectEvent;
 import game.gameObject.physics.Movable;
 import game.input.keys.KeyListener;
 import game.screen.ScreenRect;
@@ -22,7 +25,7 @@ import game.util.image.ImageUtils;
  * @version 1.0
  * @author Julius Häger
  */
-public class Camera extends Painter implements Movable, KeyListener {
+public class Camera extends Painter implements Movable, KeyListener, EventListener {
 
 	// TODO: Remove movement code
 	
@@ -63,6 +66,8 @@ public class Camera extends Painter implements Movable, KeyListener {
 	public Camera(float x, float y, float width, float height) {
 		super(x, y, width, height, Integer.MAX_VALUE - 8);
 		
+		Game.eventMachine.addEventListener(GameObjectEvent.class, this);
+		
 		updateBounds();
 	}
 	
@@ -74,6 +79,8 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 */
 	public Camera(Rectangle2D.Float rect, ScreenRect screenRect, Color bgColor) {
 		super(rect.x, rect.y, rect.width, rect.height, Integer.MAX_VALUE - 8);
+		
+		Game.eventMachine.addEventListener(GameObjectEvent.class, this);
 		
 		setScreenRectangle(screenRect);
 		
@@ -221,9 +228,9 @@ public class Camera extends Painter implements Movable, KeyListener {
 		updateBounds();
 		
 		//This update is synced with the gameobjecthandler
-		if (Game.gameObjectHandler.shouldUpdateObjects()) {
-			paintables = Game.gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
-		}
+		//if (Game.gameObjectHandler.shouldUpdateObjects()) {
+		//	paintables = Game.gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
+		//}
 	}
 
 	/**
@@ -374,5 +381,27 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 */
 	public void setBackgroundColor(Color color) {
 		backgroundColor = color;
+	}
+
+
+	@Override
+	public <T extends GameEvent<?>> void eventFired(T event) {
+		if(event instanceof GameObjectEvent){
+			GameObjectEvent goEvent = (GameObjectEvent) event;
+			if(goEvent.object instanceof Paintable){
+				switch (event.command) {
+				case "Created":
+					paintables.add((Paintable) goEvent.object);
+					paintables.sort(null);
+					break;
+				case "Destroyed":
+					paintables.remove((Paintable) goEvent.object);
+					paintables.sort(null);
+					break;
+				default:
+					break;
+				}
+			}
+		}
 	}
 }

@@ -97,9 +97,9 @@ public class IDHandler<T> {
 	 * @param classT
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
-	public ID[] getAllIDs() {
-		return IDs.toArray(new ID[] {});
+	@SuppressWarnings("unchecked") 	//NOTE: This is needed because java hates generics. (when dealing with arrays anyways)
+	public ID<T>[] getAllIDs() {
+		return IDs.toArray(new ID[]{});
 	}
 
 	/**

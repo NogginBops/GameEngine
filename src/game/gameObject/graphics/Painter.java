@@ -23,7 +23,7 @@ public abstract class Painter extends BasicGameObject {
 	 * The paintables the painter will paint when the {@link #paint(Graphics2D)}
 	 * method is called.
 	 */
-	protected CopyOnWriteArrayList<Paintable> paintables;
+	protected CopyOnWriteArrayList<Paintable> paintables = new CopyOnWriteArrayList<>();
 	
 	/*
 	/**
@@ -104,6 +104,12 @@ public abstract class Painter extends BasicGameObject {
 		return screenRectange;
 	}
 	
+	/**
+	 * 
+	 */
+	public int drawnObjects = 0;
+	int tempDrawnObjects = 0;
+	
 	BufferedImage paintableImage;
 	
 	//JAVADOC: Painter
@@ -112,6 +118,8 @@ public abstract class Painter extends BasicGameObject {
 	 * @return
 	 */
 	public BufferedImage getImage(){
+		tempDrawnObjects = 0;
+		
 		if (paintables != null && paintables.size() > 0) {
 			if(translatedGraphics == null){
 				translatedGraphics = image.createGraphics();
@@ -135,11 +143,16 @@ public abstract class Painter extends BasicGameObject {
 						}else{
 							paintable.paint(translatedGraphics);
 						}
+						
+						tempDrawnObjects++;
 					}
 				}
 			}
 			translatedGraphics.setTransform(originalTransform);
 		}
+		
+		drawnObjects = tempDrawnObjects;
+		
 		return image;
 	}
 }

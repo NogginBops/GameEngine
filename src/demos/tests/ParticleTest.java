@@ -40,7 +40,7 @@ public class ParticleTest implements GameInitializer {
 		
 		settings.putSetting("OnScreenDebug", true);
 		
-		settings.putSetting("DebugID", false);
+		settings.putSetting("DebugID", true);
 		
 		settings.putSetting("Resolution", new Dimension(1000, 800));
 		

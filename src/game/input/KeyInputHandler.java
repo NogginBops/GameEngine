@@ -89,10 +89,17 @@ public class KeyInputHandler {
 	}
 	
 	/**
-	 * 
+	 * @param listener
 	 */
-	public void updateListeners(){
-		listeners = Game.gameObjectHandler.getAllGameObjectsExtending(KeyListener.class);
+	public void addListener(KeyListener listener){
+		listeners.add(listener);
+	}
+	
+	/**
+	 * @param listener
+	 */
+	public void removeListener(KeyListener listener){
+		listeners.remove(listener);
 	}
 
 	/**

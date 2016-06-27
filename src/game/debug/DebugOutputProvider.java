@@ -11,6 +11,6 @@ public interface DebugOutputProvider {
 	/**
 	 * @return
 	 */
-	public String[] GetDebugValues();
+	public String[] getDebugValues();
 	
 }

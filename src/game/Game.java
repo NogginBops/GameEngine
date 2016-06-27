@@ -294,7 +294,8 @@ public class Game {
 				"Objects: " + gameObjectHandler.numberOfGameObjects(),
 				"Time scale: " + timeScale,
 				"Image optimizeation calls: " + ImageUtils.calls,
-				"Usefull image optimizeation calls: " + ImageUtils.usefullCalls
+				"Usefull image optimization calls: " + ImageUtils.usefullCalls,
+				"Objects drawn: " + camera.drawnObjects
 			};
 		});
 	}

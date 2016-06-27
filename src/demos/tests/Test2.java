@@ -26,6 +26,8 @@ public class Test2 implements GameInitializer {
 		
 		settings.putSetting("OnScreenDebug", true);
 		
+		settings.putSetting("DebugID", true);
+		
 		settings.putSetting("GameInit", new Test2());
 		
 		Game game = new Game(settings);

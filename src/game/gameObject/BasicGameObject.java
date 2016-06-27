@@ -2,12 +2,14 @@ package game.gameObject;
 
 import java.awt.geom.Rectangle2D;
 
+import game.debug.DebugOutputProvider;
+
 /**
  * 
  * @version 1.0
  * @author Julius Häger
  */
-public class BasicGameObject implements GameObject {
+public class BasicGameObject implements GameObject, DebugOutputProvider {
 	
 	//JAVADOC: BasicGameObject
 
@@ -130,5 +132,17 @@ public class BasicGameObject implements GameObject {
 		} else {
 			return zOrder > object.getZOrder() ? 1 : -1;
 		}
+	}
+
+	@Override
+	public String[] getDebugValues() {
+		return new String[]{
+				"<b>Active: </b>" + active,
+				"<b>X: </b>" + x,
+				"<b>Y:</b> " + y,
+				"<b>Width: </b>" + width,
+				"<b>Height: </b>" + height,
+				"<b>ZOrder: </b>" + zOrder
+		};
 	}
 }
