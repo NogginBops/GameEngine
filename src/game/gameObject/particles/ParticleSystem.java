@@ -6,7 +6,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import game.gameObject.graphics.Paintable;
@@ -48,11 +47,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	
 	private int activeParticles = 0;
 	
-	//NOTE: Does this need optimization?
-	//FIXME: This solution is generating a lot of entries. Find a way to cut number entries!
-	//The images can not be generated at draw-time for performance, a few solutions could be;
-	//  - Approximation of the color key in the second hashmap. (This solution will probably cut the allocation the most)
-	//  - A way to draw all the particles with the same image at the same time (batching)
+	//NOTE: Does this need further optimization?
 	private HashMap<Integer, HashMap<Color, BufferedImage>> imageMap;
 	
 	/**
@@ -124,6 +119,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				//Paint
 				
 				//FIXME: This is generating a lot of memory
+				//Is this fixed with the granularities?
 				 image = getParticleImage(particles[i]);
 				
 				if(image == null){
@@ -380,6 +376,9 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		return null;
 	}
 	
+	//TODO: Get and set particles mess up the particle metrics and they do not really add any useful functionality.
+	//Consider removing them.
+	
 	/**
 	 * @return
 	 */
@@ -392,6 +391,28 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	 */
 	public void setParticles(Particle[] particles){
 		this.particles = particles;
+	}
+	
+	/**
+	 * @param customizer
+	 */
+	public void customizeParticles(ParticleCustomizer customizer){
+		boolean wasActive;
+		for (int i = 0; i < particles.length; i++) {
+			wasActive = particles[i].active;
+			
+			if(customizer != null){
+				customizer.customize(particles[i]);
+				
+				if(particles[i].active != wasActive){
+					if(wasActive == true){
+						activeParticles--;
+					}else{
+						activeParticles++;
+					}
+				}
+			}
+		}
 	}
 	
 	/**
@@ -414,7 +435,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	 * @param image
 	 */
 	public void addImage(int imageID, BufferedImage image){
-		image = ImageUtils.toSystemCompatibleImage(image);
+		image = ImageUtils.toSystemOptimizedImage(image);
 		
 		HashMap<Color, BufferedImage> tempMap = new HashMap<>();
 		tempMap.put(Color.WHITE, image);

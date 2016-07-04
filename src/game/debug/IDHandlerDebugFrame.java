@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.ParameterizedType;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +15,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -38,6 +38,9 @@ import game.util.IDHandler;
 public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 
 	// TODO: Clean up
+	
+	//TODO: Either find a way to not replace the model but only add and remove the objects directly through the table or
+	// find a way to retain the selection when updating the table model.
 
 	// JAVADOC: IDHandlerDebugFrame<T>
 
@@ -50,14 +53,18 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	
 	private int width = 500;
 	private int height = 500;
+	
+	private int refreshDelay = 200;
 
 	private JPanel contentPane;
 	private JSplitPane splitPane;
 	private JPanel lowerPanel;
 	private JLabel debugOutput;
 	private JScrollPane scrollPane;
+	private JScrollPane outputScrollPane;
 	private JTable table;
 	private JButton btnRefresh;
+	private Timer debugOutputRefreshTimer;
 	
 	private ID<T>[] ids;
 
@@ -81,13 +88,23 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 
 		scrollPane = new JScrollPane();
 		
+		outputScrollPane = new JScrollPane();
+		//outputScrollPane.setLayout(new BorderLayout(0, 0));
+		
 		debugOutput = new JLabel("Select a gameobject to see debug info");
 		debugOutput.setFont(Font.getFont("Sanserif"));
 
 		lowerPanel = new JPanel();
 		lowerPanel.setBorder(new LineBorder(Color.lightGray));
 		lowerPanel.setLayout(new BorderLayout(0, 0));
-		lowerPanel.add(debugOutput, BorderLayout.NORTH);
+		lowerPanel.add(outputScrollPane, BorderLayout.CENTER);
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		outputScrollPane.setViewportView(panel);
+		
+		panel.add(debugOutput, BorderLayout.NORTH);
 		
 		splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, lowerPanel);
 		contentPane.add(splitPane, BorderLayout.CENTER);
@@ -117,12 +134,14 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 				if(e.getValueIsAdjusting() == false && table.getSelectedRow() != -1){
 					if(ids[table.getSelectedRow()].object instanceof DebugOutputProvider){
 						String text = "<html>";
-						text += "<b><u>" + ids[table.getSelectedRow()].name + "</u></b><br>";
+						text += "<b><u>" + ids[table.getSelectedRow()].name + "</u></b> - " + ids[table.getSelectedRow()].id + "<br>";
 						for (String line : ((DebugOutputProvider)ids[table.getSelectedRow()].object).getDebugValues()) {
 							text += line + "<br>";
 						}
 						text += "</html>";
 						debugOutput.setText(text);
+						
+						outputScrollPane.setPreferredSize(debugOutput.getPreferredSize());
 					}else{
 						debugOutput.setText("<html>" + ids[table.getSelectedRow()].object.getClass() + " does not support debug print outs.<br>For debug printouts to work the object needs to implement DebugOutputProvider!</html>");
 					}
@@ -146,6 +165,28 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 		SwingUtilities.invokeLater(() -> {
 			updateIDs(handler.getAllIDs());
 		});
+		
+		debugOutputRefreshTimer = new Timer(refreshDelay, new ActionListener() {
+			//TODO: This is duplicate code. Extract to variable.
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(table.getSelectedRow() != -1){
+					if(ids[table.getSelectedRow()].object instanceof DebugOutputProvider){
+						String text = "<html>";
+						text += "<b><u>" + ids[table.getSelectedRow()].name + "</u></b> - " + ids[table.getSelectedRow()].id + "<br>";
+						for (String line : ((DebugOutputProvider)ids[table.getSelectedRow()].object).getDebugValues()) {
+							text += line + "<br>";
+						}
+						text += "</html>";
+						debugOutput.setText(text);
+					}else{
+						debugOutput.setText("<html>" + ids[table.getSelectedRow()].object.getClass() + " does not support debug print outs.<br>For debug printouts to work the object needs to implement DebugOutputProvider!</html>");
+					}
+				}
+			}
+		});
+		
+		debugOutputRefreshTimer.start();
 	}
 	
 	/**

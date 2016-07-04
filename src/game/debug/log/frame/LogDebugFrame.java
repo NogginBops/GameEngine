@@ -21,8 +21,8 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import game.debug.log.Log;
+import game.debug.log.Log.LogImportance;
 import game.debug.log.LogMessage;
-import game.debug.log.LogMessage.LogImportance;
 
 /**
  * @author Julius Häger
@@ -31,6 +31,8 @@ import game.debug.log.LogMessage.LogImportance;
 public class LogDebugFrame extends JFrame implements Runnable{
 	
 	//TODO: Remove LogMessageComponent to optimize memory
+	
+	//TODO: Rewrite this whole util program to be a lot more efficient.
 
 	/**
 	 * 
@@ -130,7 +132,7 @@ public class LogDebugFrame extends JFrame implements Runnable{
 		btnTestmessage.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				log.logMessage(new LogMessage("TestMessage" + i++, LogImportance.DEBUG, "test"));
+				log.log("TestMessage" + i++, LogImportance.DEBUG, "test");
 				updateMessages();
 			}
 		});
@@ -211,7 +213,7 @@ public class LogDebugFrame extends JFrame implements Runnable{
 				lastMessage = new LogMessageComponent(messages.get(i));
 				logMessagePanel.add(lastMessage);
 			}
-					
+			
 			logMessagePanel.revalidate();
 			
 			JScrollBar scroll = scrollPane.getVerticalScrollBar();

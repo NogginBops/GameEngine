@@ -7,7 +7,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import game.Game;
 import game.gameObject.graphics.Camera;
 import game.input.mouse.MouseListener;
-import game.screen.ScreenManager;
 import game.util.InverseGameObjectComparator;
 
 /**
@@ -96,8 +95,8 @@ public class MouseInputHandler {
 	 * @param e
 	 */
 	public void mouseEntered(MouseEvent e) {
-		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
-				(int) camera.getY() - ScreenManager.getInsets().top);
+		e.translatePoint((int) camera.getX() - Game.screen.getInsets().right,
+				(int) camera.getY() - Game.screen.getInsets().top);
 		lastEvent = e;
 	}
 
@@ -106,8 +105,8 @@ public class MouseInputHandler {
 	 * @param e
 	 */
 	public void mouseExited(MouseEvent e) {
-		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
-				(int) camera.getY() - ScreenManager.getInsets().top);
+		e.translatePoint((int) camera.getX() - Game.screen.getInsets().right,
+				(int) camera.getY() - Game.screen.getInsets().top);
 		lastEvent = e;
 	}
 
@@ -116,8 +115,8 @@ public class MouseInputHandler {
 	 * @param e
 	 */
 	public void mouseDragged(MouseEvent e) {
-		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
-				(int) camera.getY() - ScreenManager.getInsets().top);
+		e.translatePoint((int) camera.getX() - Game.screen.getInsets().right,
+				(int) camera.getY() - Game.screen.getInsets().top);
 		if (Game.gameObjectHandler.shouldUpdateObjects()) {
 			listeners = Game.gameObjectHandler.getAllGameObjectsExtending(MouseListener.class);
 		}
@@ -132,8 +131,8 @@ public class MouseInputHandler {
 	 * @param e
 	 */
 	public void mouseMoved(MouseEvent e) {
-		e.translatePoint((int) camera.getX() - ScreenManager.getInsets().right,
-				(int) camera.getY() - ScreenManager.getInsets().top);
+		e.translatePoint((int) camera.getX() - Game.screen.getInsets().right,
+				(int) camera.getY() - Game.screen.getInsets().top);
 		
 		if (Game.gameObjectHandler.shouldUpdateObjects()) {
 			listeners = Game.gameObjectHandler.getAllGameObjectsExtending(MouseListener.class);

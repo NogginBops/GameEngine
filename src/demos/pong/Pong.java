@@ -7,7 +7,6 @@ import game.Game;
 import game.GameInitializer;
 import game.GameSettings;
 import game.gameObject.graphics.Camera;
-import game.screen.ScreenManager;
 
 /**
  * @author Julius Häger
@@ -51,7 +50,8 @@ public class Pong implements GameInitializer {
 
 		Game.gameObjectHandler.addGameObject(leftPad, "LeftPad");
 
-		Ball ball = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
+		//TODO: Remove ScreenManager
+		Ball ball = new Ball(Game.screen.getWidth() / 2 - 8, Game.screen.getHeight() / 2 - 8, 16, 16,
 				camera.getBounds());
 
 		Game.gameObjectHandler.addGameObject(ball, "Ball");

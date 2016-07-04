@@ -3,17 +3,19 @@ package game;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 import game.UI.UI;
 import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.text.UILabel;
 import game.gameObject.graphics.Camera;
-import game.screen.ScreenManager;
+import game.input.KeyInputHandler;
+import game.screen.Screen;
 import game.screen.ScreenRect;
-import game.util.UpdateListener;
-import game.util.Updater;
+import game.util.StandardUpdater;
 
 /**
  * @author Julius Häger
@@ -36,7 +38,7 @@ public class GameSettings {
 		
 		defaultSettigns.putSetting("Name", "Game");
 		
-		defaultSettigns.putSetting("ScreenMode", ScreenManager.NORMAL);
+		defaultSettigns.putSetting("ScreenMode", Screen.Mode.NORMAL);
 		
 		Dimension res = new Dimension(800, 600);
 		
@@ -46,14 +48,16 @@ public class GameSettings {
 		//TODO: Should camera be a setting or should it be in game init? Probably game init so that it works when switching scenes
 		defaultSettigns.putSetting("MainCamera", new Camera(new Rectangle2D.Float(0, 0, res.width, res.height), ScreenRect.FULL, new Color(0.15f, 0.15f, 0.15f, 1f)));
 		
-		defaultSettigns.putSetting("Updater", new Updater(){
+		//NOTE: Should the standard updater really be implemented here and not in Game.java?
+		defaultSettigns.putSetting("Updater", new StandardUpdater());
+		
+		defaultSettigns.putSetting("KeyBindings", new Consumer<KeyInputHandler>() {
 			@Override
-			public void propagateUpdate(float deltaTime) {
-				if(Game.gameObjectHandler.shouldUpdateObjects()){
-					listeners = Game.gameObjectHandler.getAllActiveGameObjectsExtending(UpdateListener.class);
-				}
-				
-				super.propagateUpdate(deltaTime);
+			public void accept(KeyInputHandler t) {
+				t.addKeyBinding("Up", KeyEvent.VK_UP, KeyEvent.VK_W);
+				t.addKeyBinding("Down", KeyEvent.VK_DOWN, KeyEvent.VK_S);
+				t.addKeyBinding("Right", KeyEvent.VK_RIGHT, KeyEvent.VK_D);
+				t.addKeyBinding("Left", KeyEvent.VK_LEFT, KeyEvent.VK_A);
 			}
 		});
 		
@@ -103,6 +107,8 @@ public class GameSettings {
 		
 		return defaultSettigns;
 	}
+	
+	
 	
 	private HashMap<String, Object> settings;
 	

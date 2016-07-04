@@ -3,27 +3,27 @@ package game.screen;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
+import java.awt.Insets;
+import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
+
+import javax.swing.JFrame;
 
 import game.Game;
 import game.debug.DebugOutputProvider;
 import game.gameObject.graphics.Painter;
 import game.input.Input;
 import game.util.FPSCounter;
-import game.util.image.ImageUtils;
 
 /**
  * A screen object manages repainting of a window
  * 
- * @version 1.0
+ * @version 2.0
  * @author Julius Häger
  */
-public class Screen implements Runnable {
-
-	// JAVADOC: Screen
+public class Screen implements Runnable{
 	
-	//FIXME: Merge with ScreenManager!!!
+	//JAVADOC: Screen
 	
 	//FIXME: Full screen performance is really bad, find a way to fix this.
 	//With a full HD res the frame rate never goes above 50fps
@@ -33,133 +33,143 @@ public class Screen implements Runnable {
 	
 	//NOTE: Should a multi-threaded rendering system be implemented before the task system is?
 	//It would be a lot easier and would increase performance a lot (I think)
-
-	private boolean isRunning = false;
-
-	private boolean debug = false;
-
-	private Graphics2D g2d;
 	
 	//TODO: Add support for image effects and filters
 	
 	//TODO: Support image effects for individual painters
+
+	/**
+	 * @author Julius Häger
+	 *
+	 */
+	public enum Mode{
+		/**
+		 * 
+		 */
+		NORMAL,
+		/**
+		 * 
+		 */
+		FULL_SCREEN
+	}
+	
+	/**
+	 * The number of frames dropped since the start of the program.
+	 */
+	public static int framesDropped = 0;
+	
+	private JFrame frame;
+	
+	private static BufferStrategy strategy;
+	
+	private Insets insets;
+	
+	private String title;
+	
+	private Mode mode;
+	
+	private Dimension size;
+	
+	
+	private boolean shouldRun = false;
 	
 	private ArrayList<Painter> painters;
 	
 	private ArrayList<DebugOutputProvider> debugPrintOuts;
 	
-	private BufferedImage image;
+	private boolean debug = false;
 	
-	//Temporary variable
-	private ScreenRect rect;
-
 	/**
 	 * @param width
 	 * @param height
-	 * @param state
+	 * @param mode
 	 * @param title
 	 */
-	public Screen(int width, int height, int state, String title) {
-		ScreenManager.createFrame(width, height, state, title);
+	public Screen(int width, int height, Mode mode, String title) {
 		
-		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		size = new Dimension(width, height);
+		this.mode = mode;
+		this.title = title;
 		
-		painters = new ArrayList<Painter>();
+		painters = new ArrayList<>();
 		
-		debugPrintOuts = new ArrayList<DebugOutputProvider>();
+		debugPrintOuts = new ArrayList<>();
+		
+		frame = new JFrame(title);
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		frame.setUndecorated(false);
+		frame.setExtendedState(JFrame.NORMAL);
+		frame.getContentPane().setPreferredSize(new Dimension(width, height));
+		frame.setIgnoreRepaint(true);
+		frame.setVisible(true);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.createBufferStrategy(2);
+		
+		insets = frame.getInsets();
+		
 	}
 	
 	/**
-	 * 
-	 * @param res
-	 * @param state
+	 * @param size 
+	 * @param mode
 	 * @param title
 	 */
-	public Screen(Dimension res, int state, String title) {
-		ScreenManager.createFrame(res.width, res.height, state, title);
+	public Screen(Dimension size, Mode mode, String title) {
 		
-		image = new BufferedImage(res.width, res.height, BufferedImage.TYPE_INT_ARGB);
-		image = ImageUtils.toSystemCompatibleImage(image);
+		this.size = size;
+		this.mode = mode;
+		this.title = title;
 		
-		painters = new ArrayList<Painter>();
+		painters = new ArrayList<>();
 		
-		debugPrintOuts = new ArrayList<DebugOutputProvider>();
-	}
-
-	/**
-	 * Sets up the screen using {@code setUpDisplay()} method then starts a
-	 * repaint-loop
-	 */
-	public void start() {
-		isRunning = true;
-		loop();
-	}
-
-	/**
-	 * Resets the screen to it's original settings.
-	 */
-	private void resetDisplay() {
-		ScreenManager.closeFrame();
+		debugPrintOuts = new ArrayList<>();
+		
+		frame = new JFrame(title);
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		frame.setUndecorated(false);
+		frame.setExtendedState(JFrame.NORMAL);
+		frame.getContentPane().setPreferredSize(size);
+		frame.setIgnoreRepaint(true);
+		frame.setVisible(true);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.createBufferStrategy(2);
+		
+		insets = frame.getInsets();
 	}
 	
-	Graphics2D imageGraphics;
-	
-	//TODO: Remove
-	int i = 0;
-	
-	//NOTE: This method has no reason to be its own method
-	private void loop() {
+	@Override
+	public void run() {
+		shouldRun = true;
+		
 		long currentTime = System.nanoTime();
 		long elapsedTime = 0;
 		
-		while (isRunning) {
-			
+		while (shouldRun) {
 			elapsedTime = System.nanoTime() - currentTime;
 			currentTime = System.nanoTime();
 			
-			g2d = ScreenManager.getGraphics();
-			
-			//FIXME: Figure out what should and shouldn't be done.
-			
-			//image = new BufferedImage(ScreenManager.getWidth(), ScreenManager.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			
-			//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
-			//g2d.fillRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
-			//g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
-			if(image.getWidth() != ScreenManager.getWidth() || image.getHeight() != ScreenManager.getHeight()){
-				image = new BufferedImage(ScreenManager.getWidth(), ScreenManager.getHeight(), BufferedImage.TYPE_INT_ARGB);
-				image = ImageUtils.toSystemCompatibleImage(image);
-				if(imageGraphics != null){
-					imageGraphics.dispose();
-					imageGraphics = null;
-				}
-			}
-			
-			if(imageGraphics == null){
-				imageGraphics = image.createGraphics();
-			}
-			
-			//imageGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
-			//imageGraphics.fillRect(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
-			//imageGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+			Graphics2D g2d = (Graphics2D) frame.getBufferStrategy().getDrawGraphics();
+			g2d.translate(insets.right, insets.top);
 			
 			//Get all painter images
 			for (Painter painter : painters) {
-				rect = painter.getScreenRectangle();
+				ScreenRect rect = painter.getScreenRectangle();
 				
-				imageGraphics.drawImage(painter.getImage(), 
-						(int) (rect.getX() * ScreenManager.getWidth()), 
-						(int) (rect.getY() * ScreenManager.getHeight()), 
-						(int) (rect.getX2() * ScreenManager.getWidth()), 
-						(int) (rect.getY2() * ScreenManager.getHeight()),
+				g2d.drawImage(painter.getImage(), 
+						(int) (rect.getX() * size.width), 
+						(int) (rect.getY() * size.height), 
+						(int) (rect.getX2() * size.width), 
+						(int) (rect.getY2() * size.height),
 						null);
 			}
 			
-			//imageGraphics.dispose();
-			
-			g2d.drawImage(image, 0, 0, null);
-			
-			//TODO: Better on screen debug
+			//g2d.drawImage(image, 0, 0, null);
 			
 			if (debug) {
 				g2d.setColor(Color.GREEN.brighter());
@@ -171,12 +181,18 @@ public class Screen implements Runnable {
 					}
 				}
 			}
-
+			
 			g2d.dispose();
-
-			// Update the ScreenManagers BufferStrategy
-			ScreenManager.update();
-
+			
+			if (frame != null) {
+				strategy = frame.getBufferStrategy();
+				if (!strategy.contentsLost()) {
+					strategy.show();
+				} else {
+					framesDropped++;
+				}
+			}
+			
 			FPSCounter.update(elapsedTime / 1000000000f);
 			
 			if((elapsedTime / 1000000f) > Game.deltaTimeWarningThreshold){
@@ -184,15 +200,6 @@ public class Screen implements Runnable {
 						Game.deltaTimeWarningThreshold + "ms with " +
 						((elapsedTime / 1000000f) - Game.deltaTimeWarningThreshold) + "ms",
 						"Graphics", "DeltaTime", "System");
-			}
-			
-			//FIXME: THERE IS A BIG GC ISSUE WITH PARTICLE SYSTEMS, THIS IS A ADHOC SOLUTION!!
-			i++;
-			
-			if(i % 100 == 0){
-				i = 0;
-				
-				//System.gc();
 			}
 			
 			//TODO: Dynamic sleep time
@@ -203,43 +210,46 @@ public class Screen implements Runnable {
 			}
 		}
 		
-		//closeRequested == true, clean up
-		
-		imageGraphics.dispose();
-	}
-
-	/**
-	 * Stops the repaint-loop effectively terminating the thread.
-	 */
-	public void stop() {
-		isRunning = false;
-		resetDisplay();
-	}
-
-	/**
-	 * 
-	 */
-	@Override
-	public void run() {
-		start();
-	}
-
-	/**
-	 * Sets the painter that should paint to the screen
-	 * 
-	 * @param painter
-	 *            the painter to paint with
-	 */
-	public void addPainter(Painter painter) {
-		this.painters.add(painter);
+		frame.dispose();
 	}
 	
 	/**
 	 * 
+	 */
+	public void stop(){
+		shouldRun = false;
+	}
+	
+	/**
+	 * 
+	 * @param inputListener
+	 */
+	public void addInputListener(Input inputListener) {
+		frame.addKeyListener(inputListener);
+		frame.addMouseListener(inputListener);
+		frame.addMouseMotionListener(inputListener);
+		frame.addMouseWheelListener(inputListener);
+	}
+	
+	/**
+	 * @return
+	 */
+	public Painter[] getPainters(){
+		return painters.toArray(null);
+	}
+	
+	/**
+	 * @param painter
+	 */
+	public void addPainter(Painter painter){
+		painters.add(painter);
+	}
+	
+	/**
 	 * @param painter
 	 */
 	public void removePainter(Painter painter){
-		this.painters.remove(painter);
+		painters.remove(painter);
 	}
 	
 	/**
@@ -249,51 +259,6 @@ public class Screen implements Runnable {
 	public void setDebugEnabled(boolean enabled) {
 		debug = enabled;
 	}
-
-	/**
-	 * 
-	 * @param title
-	 */
-	public void setTitle(String title) {
-		ScreenManager.setTitle(title);
-	}
-
-	/**
-	 * 
-	 * @param state
-	 */
-	public void setState(int state) {
-		ScreenManager.setState(state);
-	}
-
-	/**
-	 * 
-	 * @param width
-	 * @param height
-	 */
-	public void setResolution(int width, int height) {
-		ScreenManager.setRes(width, height);
-		
-		synchronized (image) {
-			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-			imageGraphics.dispose();
-			imageGraphics = image.createGraphics();
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	public void requestFocus(){
-		ScreenManager.requestFocus();
-	}
-
-	/**
-	 * @param inputHandler
-	 */
-	public void addInputListener(Input inputHandler) {
-		ScreenManager.addInputListener(inputHandler);
-	}
 	
 	/**
 	 * 
@@ -301,5 +266,99 @@ public class Screen implements Runnable {
 	 */
 	public void addDebugText(DebugOutputProvider provider){
 		debugPrintOuts.add(provider);
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * @param title
+	 */
+	public void setTitle(String title) {
+		this.title = title;
+		frame.setTitle(title);
+	}
+
+	/**
+	 * @return
+	 */
+	public int getWidth() {
+		return size.width;
+	}
+
+	/**
+	 * @param width
+	 */
+	public void setWidth(int width) {
+		size.width = width;
+		frame.getContentPane().setPreferredSize(size);
+		frame.pack();
+	}
+
+	/**
+	 * @return
+	 */
+	public int getHeight() {
+		return size.height;
+	}
+
+	/**
+	 * @param height
+	 */
+	public void setHeight(int height) {
+		size.height = height;
+		frame.getContentPane().setPreferredSize(size);
+		frame.pack();
+	}
+	
+	/**
+	 * @return
+	 */
+	public Dimension getSize(){
+		return size;
+	}
+	
+	/**
+	 * @param width
+	 * @param height
+	 */
+	public void setSize(int width, int height){
+		size.setSize(width, height);
+		frame.getContentPane().setPreferredSize(size);
+		frame.pack();
+	}
+	
+	
+	/**
+	 * @return
+	 */
+	public Mode getMode() {
+		return mode;
+	}
+
+	/**
+	 * @param mode
+	 */
+	public void setMode(Mode mode) {
+		this.mode = mode;
+		//TODO: Actually change the mode
+	}
+	
+	/**
+	 * @return
+	 */
+	public Insets getInsets() {
+		return insets;
+	}
+	
+	/**
+	 * 
+	 */
+	public void requestFocus(){
+		frame.requestFocus();
 	}
 }

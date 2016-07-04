@@ -41,6 +41,8 @@ public class UITest implements GameInitializer {
 		
 		settings.putSetting("OnScreenDebug", true);
 		
+		settings.putSetting("DebugID", true);
+		
 		settings.putSetting("GameInit", new UITest());
 		
 		Game game = new Game(settings);

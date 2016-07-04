@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
@@ -13,53 +12,55 @@ import java.awt.image.WritableRaster;
  *
  */
 public final class ImageUtils {
-	
-	//TODO: Remove
+
+	// TODO: Remove
 	/**
 	 * 
 	 */
 	public static int calls = 0;
-	
-	//TODO: Remove
+
+	// TODO: Remove
 	/**
 	 * 
 	 */
 	public static int usefullCalls = 0;
-	
-	//TODO: Is this really generating a preferable result? Figure out what to do to make it work as wanted.
-	//It's seems like its making a difference, but the images produced are not being accelerated.
-	
+
+	// TODO: Is this really generating a preferable result? Figure out what to
+	// do to make it work as wanted.
+	// It's seems like its making a difference, but the images produced are not
+	// being accelerated.
+
 	/**
-	 * This method is called for every image loaded using the default image loaders.
+	 * This method is called for every image loaded using the default image
+	 * loaders.
 	 * 
 	 * @param image
 	 * @return
 	 */
-	public static BufferedImage toSystemCompatibleImage(BufferedImage image){
-		
+	public static BufferedImage toSystemOptimizedImage(BufferedImage image) {
+
 		calls++;
-		
-		if(image == null){
+
+		if (image == null) {
 			return null;
 		}
-		
+
 		// Obtain the current system graphical settings
-		GraphicsConfiguration gfx_config = GraphicsEnvironment.
-			getLocalGraphicsEnvironment().getDefaultScreenDevice().
-			getDefaultConfiguration();
-		
+		GraphicsConfiguration gfx_config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration();
+
 		/*
-		 * If image is already compatible and optimized for current system 
+		 * If image is already compatible and optimized for current system
 		 * settings, simply return it
 		 */
-		if (image.getColorModel().equals(gfx_config.getColorModel())){
-			
+		if (image.getColorModel().equals(gfx_config.getColorModel())) {
+
 			return image;
 		}
-		
+
 		// Image is not optimized, so create a new image that is
-		BufferedImage new_image = gfx_config.createCompatibleImage(
-				image.getWidth(), image.getHeight(), image.getTransparency());
+		BufferedImage new_image = gfx_config.createCompatibleImage(image.getWidth(), image.getHeight(),
+				image.getTransparency());
 
 		// Get the graphics context of the new image to draw the old image on
 		Graphics2D g2d = new_image.createGraphics();
@@ -67,29 +68,44 @@ public final class ImageUtils {
 		// Actually draw the image and dispose of context no longer needed
 		g2d.drawImage(image, 0, 0, null);
 		g2d.dispose();
-		
+
 		usefullCalls++;
-		
+
 		// Return the new optimized image
-		return new_image; 
+		return new_image;
 	}
-	
-	//NOTE: The deepCopy method might not be needed.
-	
+
 	/**
-	 * @param bi
+	 * @param width
+	 * @param height
+	 * @param transparency
 	 * @return
 	 */
-	public static BufferedImage deepCopy(BufferedImage bi) {
-	    ColorModel cm = bi.getColorModel();
-	    boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-	    WritableRaster raster = bi.copyData(bi.getRaster().createCompatibleWritableRaster());
-	    raster = bi.copyData(null);
-	    return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+	public static BufferedImage createSystemOptimizedImage(int width, int height, int transparency) {
+		if (width <= 0) {
+			throw new IllegalArgumentException("Width cannot be less than or equal to zero!");
+		} else if (height <= 0) {
+			throw new IllegalArgumentException("Height cannot be less than or equal to zero!");
+		} else if ((transparency != BufferedImage.OPAQUE || transparency != BufferedImage.BITMASK
+				|| transparency != BufferedImage.TRANSLUCENT) == false) {
+			throw new IllegalArgumentException("Transparency must be either OPAQUE, BITMASK or TRANSLUCENT!");
+		}
+		
+		return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
+				.getDefaultConfiguration().createCompatibleImage(width, height, transparency);
 	}
-	
-	//TODO: A better system for working with image filters
-	
+
+	/**
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	public static BufferedImage createSystemOptimizedImage(int width, int height) {
+		return createSystemOptimizedImage(width, height, BufferedImage.TRANSLUCENT);
+	}
+
+	// TODO: A better system for working with image filters
+
 	/**
 	 * @param img
 	 * @param x

@@ -127,6 +127,15 @@ public class Particle {
 		this.x = x;
 		this.y = y;
 	}
+	
+	/**
+	 * @param width
+	 * @param height
+	 */
+	public void setSize(float width, float height){
+		this.width = width;
+		this.height = height;
+	}
 
 	/**
 	 * @param dx
@@ -149,5 +158,12 @@ public class Particle {
 	public void setVelocity(float dx , float dy){
 		this.dx = dx;
 		this.dy = dy;
+	}
+	
+	/**
+	 * @param lifetime
+	 */
+	public void setLifetime(float lifetime){
+		this.lifetime = this.currLifetime = lifetime;
 	}
 }

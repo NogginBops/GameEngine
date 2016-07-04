@@ -127,11 +127,7 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 
 	@Override
 	public int compareTo(GameObject object) {
-		if (zOrder == object.getZOrder()) {
-			return 0;
-		} else {
-			return zOrder > object.getZOrder() ? 1 : -1;
-		}
+		return zOrder - object.getZOrder();
 	}
 
 	@Override

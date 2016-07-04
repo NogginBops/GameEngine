@@ -2,13 +2,14 @@ package game;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.function.Consumer;
 
 import game.controller.event.EventMachine;
 import game.controller.event.engineEvents.GameQuitEvent;
 import game.controller.event.engineEvents.GameStartEvent;
 import game.debug.IDHandlerDebugFrame;
 import game.debug.log.Log;
-import game.debug.log.LogMessage.LogImportance;
+import game.debug.log.Log.LogImportance;
 import game.debug.log.frame.LogDebugFrame;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
@@ -18,7 +19,6 @@ import game.input.Input;
 import game.input.KeyInputHandler;
 import game.input.MouseInputHandler;
 import game.screen.Screen;
-import game.screen.ScreenManager;
 import game.sound.AudioEngine;
 import game.util.FPSCounter;
 import game.util.UpdateCounter;
@@ -74,7 +74,7 @@ public class Game {
 	/**
 	 * The debug log associated with the game.
 	 */
-	public static Log log = new Log();
+	public static Log log = new Log(); //TODO: Figure out a way to not have any logReader
 	
 	/**
 	 * The main EventMachine.
@@ -119,7 +119,8 @@ public class Game {
 	private static IDHandlerDebugFrame<GameObject> IDDebug;
 	
 	//FIXME: Giant GC freeze
-
+	//NOTE: The solution for now are the -XX:+UseG1GC -XX:MaxGCPauseMillis=50 VM flags that seem to have a satisfactory result.
+	
 	/**
 	 * @param settings
 	 */
@@ -133,9 +134,12 @@ public class Game {
 		
 		initTime = System.nanoTime();
 		
+		log.logMessage("Initializing the game!", "System", "Game");
+		
 		Game.settings = settings;
 		
 		if(settings == null){
+			log.logWarning("No settings provided! Using the default settings!");
 			settings = GameSettings.createDefaultGameSettings();
 		}
 		//TODO: Use the GameSettings
@@ -201,9 +205,9 @@ public class Game {
 			res = settings.getSettingAs("Resolution", Dimension.class);
 		}
 		
-		int mode = DEFAULT.getSettingAs("ScreenMode", Integer.class);
+		Screen.Mode mode = DEFAULT.getSettingAs("ScreenMode", Screen.Mode.class);
 		if(settings.containsSetting("ScreenMode")){
-			mode = settings.getSettingAs("ScreenMode", Integer.class);
+			mode = settings.getSettingAs("ScreenMode", Screen.Mode.class);
 		}
 		
 		screen = new Screen(res, mode, name);
@@ -228,6 +232,15 @@ public class Game {
 		mouseHandler = new MouseInputHandler(camera);
 		keyHandler = new KeyInputHandler();
 		inputHandler = new Input(mouseHandler, keyHandler);
+		
+		@SuppressWarnings("unchecked")
+		Consumer<KeyInputHandler> keyBindings = (Consumer<KeyInputHandler>) settings.getSettingAs("KeyBindings", Consumer.class);
+		if(keyBindings != null){
+			keyBindings.accept(keyHandler);
+		}else{
+			log.logMessage("No keybinding setup found in settigns.");
+			//NOTE: Should there be a add default settings flag that adds the users keybindings onto of the standard ones.
+		}
 		
 		screen.addPainter(camera);
 		screen.addInputListener(inputHandler);
@@ -254,8 +267,8 @@ public class Game {
 		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
 		
-		screen = new Screen(800, 600, ScreenManager.NORMAL, "Game");
-		camera = new Camera(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+		screen = new Screen(800, 600, Screen.Mode.NORMAL, "Game");
+		camera = new Camera(0, 0, screen.getWidth(), screen.getHeight());
 		
 		camera.setBackgroundColor(new Color(0.15f, 0.15f, 0.15f, 1f));
 		
@@ -286,14 +299,14 @@ public class Game {
 				"Time: " + FPSCounter.timeTot,
 				"FPS: " + FPSCounter.fps,
 				"Average FPS: " + FPSCounter.averageFPS,
-				"Frames dropped: " + ScreenManager.framesDropped,
+				"Frames dropped: " + Screen.framesDropped,
 				"UPS: " + UpdateCounter.ups,
 				"Average UPS: " + UpdateCounter.averageUPS,
 				"Camera X: " + camera.getBounds().x,
 				"Camera Y: " + camera.getBounds().y,
 				"Objects: " + gameObjectHandler.numberOfGameObjects(),
 				"Time scale: " + timeScale,
-				"Image optimizeation calls: " + ImageUtils.calls,
+				"Image optimization calls: " + ImageUtils.calls,
 				"Usefull image optimization calls: " + ImageUtils.usefullCalls,
 				"Objects drawn: " + camera.drawnObjects
 			};

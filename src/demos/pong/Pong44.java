@@ -7,7 +7,6 @@ import game.Game;
 import game.GameInitializer;
 import game.GameSettings;
 import game.gameObject.graphics.Camera;
-import game.screen.ScreenManager;
 
 /**
  * @author Julius Häger
@@ -41,12 +40,12 @@ public class Pong44 implements GameInitializer {
 	@Override
 	public void initialize(Game game, GameSettings settings) {
 
-		Pad rightPad = new Pad(ScreenManager.getWidth() - 50, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
+		Pad rightPad = new Pad(Game.screen.getWidth() - 50, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
 				camera.getBounds(), Side.RIGHT);
 
 		Game.gameObjectHandler.addGameObject(rightPad, "RightPad");
 
-		Pad rightPad2 = new Pad(ScreenManager.getWidth() - 100, 40, 10, 50, KeyEvent.VK_O, KeyEvent.VK_L,
+		Pad rightPad2 = new Pad(Game.screen.getWidth() - 100, 40, 10, 50, KeyEvent.VK_O, KeyEvent.VK_L,
 				camera.getBounds(), Side.RIGHT);
 
 		Game.gameObjectHandler.addGameObject(rightPad2, "RightPad2");
@@ -59,12 +58,12 @@ public class Pong44 implements GameInitializer {
 
 		Game.gameObjectHandler.addGameObject(leftPad2, "LeftPad2");
 
-		Ball ball = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
+		Ball ball = new Ball(Game.screen.getWidth() / 2 - 8, Game.screen.getHeight() / 2 - 8, 16, 16,
 				camera.getBounds());
 
 		Game.gameObjectHandler.addGameObject(ball, "Ball");
 
-		Ball ball2 = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
+		Ball ball2 = new Ball(Game.screen.getWidth() / 2 - 8, Game.screen.getHeight() / 2 - 8, 16, 16,
 				camera.getBounds());
 
 		Game.gameObjectHandler.addGameObject(ball2, "Ball2");

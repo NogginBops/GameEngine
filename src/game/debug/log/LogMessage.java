@@ -3,48 +3,29 @@ package game.debug.log;
 import java.time.Instant;
 import java.util.Date;
 
+import game.debug.log.Log.LogImportance;
+
 /**
  * @author Julius Häger
  *
  */
 public class LogMessage implements Comparable<LogMessage>{
 	
-	//JAVADOC: LogMessage
-	
-	/**
-	 * @author Julius Häger
-	 *
-	 */
-	public enum LogImportance{
-		/**
-		 * 
-		 */
-		ALERT,
-		/**
-		 * 
-		 */
-		CRITICAL,
-		/**
-		 * 
-		 */
-		ERROR,
-		/**
-		 * 
-		 */
-		WARNING,
-		/**
-		 * 
-		 */
-		NOTICE,
-		/**
-		 * 
-		 */
-		INFORMATIONAL,
-		/**
-		 * 
-		 */
-		DEBUG;
+	private static int findStackTraceIndex(StackTraceElement[] stackTrace){
+		//Start at one to ignore the java.lang.Thread.getStackTrace(Thread.java:<line>) in the beginning.
+		for (int i = 1; i < stackTrace.length; i++) {
+			try {
+				if(Class.forName(stackTrace[i].getClassName()).getPackage() != LogMessage.class.getPackage()){
+					return i;
+				}
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;
 	}
+	
+	//JAVADOC: LogMessage
 	
 	private final String message;
 	
@@ -54,15 +35,21 @@ public class LogMessage implements Comparable<LogMessage>{
 	
 	private final StackTraceElement[] stackTrace;
 	
+	private final int stackTraceIndex;
+	
 	private final Date date;
+	
+	//NOTE: The constructors don't have a modifier to limit their construction to the Log class (because they are in the same package)
+	//This is done to speed up the Log implementation.
 	
 	/**
 	 * Creates a new log message
 	 * @param message
 	 */
-	public LogMessage(String message){
+	LogMessage(String message){
 		date = Date.from(Instant.now());
 		stackTrace = Thread.currentThread().getStackTrace();
+		stackTraceIndex = findStackTraceIndex(stackTrace);
 		
 		this.message = message;
 		importance = LogImportance.INFORMATIONAL;
@@ -74,9 +61,10 @@ public class LogMessage implements Comparable<LogMessage>{
 	 * @param message
 	 * @param importance
 	 */
-	public LogMessage(String message, LogImportance importance){
+	LogMessage(String message, LogImportance importance){
 		date = Date.from(Instant.now());
 		stackTrace = Thread.currentThread().getStackTrace();
+		stackTraceIndex = findStackTraceIndex(stackTrace);
 		
 		this.importance = importance;
 		this.message = message;
@@ -88,9 +76,10 @@ public class LogMessage implements Comparable<LogMessage>{
 	 * @param message
 	 * @param tags
 	 */
-	public LogMessage(String message, String ... tags){
+	LogMessage(String message, String ... tags){
 		date = Date.from(Instant.now());
 		stackTrace = Thread.currentThread().getStackTrace();
+		stackTraceIndex = findStackTraceIndex(stackTrace);
 		
 		importance = LogImportance.INFORMATIONAL;
 		this.message = message;
@@ -103,9 +92,10 @@ public class LogMessage implements Comparable<LogMessage>{
 	 * @param importance
 	 * @param tags
 	 */
-	public LogMessage(String message, LogImportance importance, String ... tags){
+	LogMessage(String message, LogImportance importance, String ... tags){
 		date = Date.from(Instant.now());
 		stackTrace = Thread.currentThread().getStackTrace();
+		stackTraceIndex = findStackTraceIndex(stackTrace);
 		
 		this.importance = importance;
 		this.message = message;
@@ -166,9 +156,6 @@ public class LogMessage implements Comparable<LogMessage>{
 	
 	@Override
 	public String toString() {
-		//NOTE: stackTrace[4] - we are apparently 4 method calls in from the log.logMessage(); method call. 
-		//There should maybe be a safer way that guarantees that the callers stack element is shown.
-		//One way is to record where the message is being created and use that stack trace.
-		return "LogMessage[ \"" + message + "\", Importance: " + importance.toString() + ", Tags: \"" + getTagsString() + "\", At: " + stackTrace[4] + " ]";
+		return "LogMessage[ \"" + message + "\", Importance: " + importance.toString() + ", Tags: \"" + getTagsString() + "\", At: " + stackTrace[stackTraceIndex] + " ]";
 	}
 }

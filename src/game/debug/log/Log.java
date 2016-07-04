@@ -1,8 +1,8 @@
 package game.debug.log;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import game.debug.log.LogMessage.LogImportance;
+import java.util.function.Consumer;
 
 /**
  * @author Julius Häger
@@ -12,35 +12,78 @@ public class Log {
 	
 	//JAVADOC: Log
 	
-	private CopyOnWriteArrayList<LogMessage> messages;
+	/**
+	 * @author Julius Häger
+	 *
+	 */
+	public enum LogImportance{
+		
+		//JAVADOC: LogImportance
+		
+		/**
+		 * 
+		 */
+		ALERT,
+		/**
+		 * 
+		 */
+		CRITICAL,
+		/**
+		 * 
+		 */
+		ERROR,
+		/**
+		 * 
+		 */
+		WARNING,
+		/**
+		 * 
+		 */
+		NOTICE,
+		/**
+		 * 
+		 */
+		INFORMATIONAL,
+		/**
+		 * 
+		 */
+		DEBUG;
+	}
+	
+	//TODO: Clean up the different method calls so that they make more sense (e.g. the calls logDebug() -> log() -> logMessage() does not make sense)
+	//While doing this one should look at optimizing the add so that you don't have to sort, because that can take a lot of CPU when dealing with a lot of messages
 	
 	/**
 	 * 
 	 */
-	public boolean printDebug = false;
+	public LogImportance acceptLevel = LogImportance.INFORMATIONAL;
+	
+	private ConcurrentLinkedQueue<LogMessage> messages;
+	
+	private Consumer<LogMessage> logReader;
 	
 	/**
 	 * Creates a empty log.
+	 * @param logReader 
 	 */
-	public Log() {
-		messages = new CopyOnWriteArrayList<>();
+	public Log(Consumer<LogMessage> logReader) {
+		this.logReader = logReader;
+		messages = new ConcurrentLinkedQueue<>();
 	}
 	
 	/**
-	 * @param message
+	 * Creates a empty log with a default logReader the prints out the log to System.out.
 	 */
-	public void logMessage(LogMessage message){
-		messages.add(message);
-		messages.sort(null);
-		
-		//TODO: Fix?
-		if(message.getImportance().compareTo(LogImportance.ERROR) <= 0){
-			System.err.println(message.toString());
-		}else{
-			if(message.getImportance() != LogImportance.DEBUG || printDebug){
-				System.out.println(message.toString());
-			}
-		}
+	public Log() {
+		this.logReader = (message) -> { System.out.println(message); };
+		messages = new ConcurrentLinkedQueue<>();
+	}
+	
+	/**
+	 * @param reader
+	 */
+	public void addReader(Consumer<LogMessage> reader) {
+		logReader = logReader.andThen(reader); //NOTE: This will work well for a small number of readers, might create a long call chain though.
 	}
 	
 	/**
@@ -54,7 +97,15 @@ public class Log {
 	 * the tags associated with the message (for easy filtering of messages)
 	 */
 	public void log(String message, LogImportance impotrance, String ... tagFilter){
-		logMessage(new LogMessage(message, impotrance, tagFilter));
+		if(acceptLevel.compareTo(impotrance) < 0) return; //If the acceptLevel is too high ignore the message
+		
+		LogMessage logMessage = new LogMessage(message, impotrance, tagFilter);
+		
+		messages.add(logMessage);
+		
+		if(logReader != null){
+			logReader.accept(logMessage);
+		}
 	}
 	
 	/**
@@ -62,6 +113,8 @@ public class Log {
 	 * @param message
 	 */
 	public void logDebug(String message){
+		if(acceptLevel.compareTo(LogImportance.DEBUG) < 0) return; //If the acceptLevel is too high ignore the message
+		
 		log(message, LogImportance.DEBUG);
 	}
 	
@@ -71,6 +124,8 @@ public class Log {
 	 * @param tagFilter
 	 */
 	public void logDebug(String message, String ... tagFilter){
+		if(acceptLevel.compareTo(LogImportance.DEBUG) < 0) return; //If the acceptLevel is too high ignore the message
+		
 		log(message, LogImportance.DEBUG, tagFilter);
 	}
 	
@@ -79,6 +134,8 @@ public class Log {
 	 * @param message
 	 */
 	public void logMessage(String message){
+		if(acceptLevel.compareTo(LogImportance.INFORMATIONAL) < 0) return; //If the acceptLevel is too high ignore the message
+
 		log(message, LogImportance.INFORMATIONAL);
 	}
 	
@@ -88,6 +145,8 @@ public class Log {
 	 * @param tagFilter
 	 */
 	public void logMessage(String message, String ... tagFilter){
+		if(acceptLevel.compareTo(LogImportance.INFORMATIONAL) < 0) return; //If the acceptLevel is too high ignore the message
+
 		log(message, LogImportance.INFORMATIONAL, tagFilter);
 	}
 	
@@ -96,6 +155,8 @@ public class Log {
 	 * @param message
 	 */
 	public void logWarning(String message){
+		if(acceptLevel.compareTo(LogImportance.WARNING) < 0) return; //If the acceptLevel is too high ignore the message
+
 		log(message, LogImportance.WARNING);
 	}
 	
@@ -105,6 +166,8 @@ public class Log {
 	 * @param tagFilter
 	 */
 	public void logWarning(String message, String ... tagFilter){
+		if(acceptLevel.compareTo(LogImportance.WARNING) < 0) return; //If the acceptLevel is too high ignore the message
+
 		log(message, LogImportance.WARNING, tagFilter);
 	}
 	
@@ -113,6 +176,8 @@ public class Log {
 	 * @param message
 	 */
 	public void logError(String message){
+		if(acceptLevel.compareTo(LogImportance.ERROR) < 0) return; //If the acceptLevel is too high ignore the message
+
 		log(message, LogImportance.ERROR);
 	}
 	
@@ -122,6 +187,8 @@ public class Log {
 	 * @param tagFilter
 	 */
 	public void logError(String message, String ... tagFilter){
+		if(acceptLevel.compareTo(LogImportance.ERROR) < 0) return; //If the acceptLevel is too high ignore the message
+
 		log(message, LogImportance.ERROR, tagFilter);
 	}
 	
@@ -129,7 +196,7 @@ public class Log {
 	 * Gets all the messages in this log
 	 * @return
 	 */
-	public CopyOnWriteArrayList<LogMessage> getMessages(){
+	public ConcurrentLinkedQueue<LogMessage> getMessages(){
 		return messages;
 	}
 	
@@ -140,7 +207,7 @@ public class Log {
 	 */
 	public CopyOnWriteArrayList<LogMessage> getMessages(LogImportance importanceFilter){
 		if(importanceFilter == LogImportance.DEBUG){
-			return getMessages();
+			return new CopyOnWriteArrayList<>(getMessages());
 		}
 		
 		CopyOnWriteArrayList<LogMessage> returnList = new CopyOnWriteArrayList<>();
@@ -159,7 +226,7 @@ public class Log {
 	 */
 	public CopyOnWriteArrayList<LogMessage> getMessages(String ... tagFilter){
 		if(tagFilter.length == 0){
-			return getMessages();
+			return new CopyOnWriteArrayList<>(getMessages());
 		}
 		
 		CopyOnWriteArrayList<LogMessage> returnList = new CopyOnWriteArrayList<>();

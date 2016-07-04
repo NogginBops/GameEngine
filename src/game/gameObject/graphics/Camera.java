@@ -178,7 +178,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		updateBounds();
 		
 		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
-		image = ImageUtils.toSystemCompatibleImage(image);
+		image = ImageUtils.toSystemOptimizedImage(image);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
 		originalTransform = translatedGraphics.getTransform();
@@ -194,7 +194,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		updateBounds();
 		
 		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
-		image = ImageUtils.toSystemCompatibleImage(image);
+		image = ImageUtils.toSystemOptimizedImage(image);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
 		originalTransform = translatedGraphics.getTransform();
@@ -213,7 +213,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		
 		//TODO: Synchronize?
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		image = ImageUtils.toSystemCompatibleImage(image);
+		image = ImageUtils.toSystemOptimizedImage(image);
 		if(translatedGraphics != null){
 			translatedGraphics.dispose();
 			translatedGraphics = image.createGraphics();
@@ -331,29 +331,44 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+		
+		if(Game.keyHandler.isBound("Left", e.getKeyCode())){
 			moveLeft = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+		}
+		
+		if(Game.keyHandler.isBound("Right", e.getKeyCode())){
 			moveRight = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
+		}
+		
+		if(Game.keyHandler.isBound("Up", e.getKeyCode())){
 			moveUp = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+		}
+		
+		if(Game.keyHandler.isBound("Down", e.getKeyCode())){
 			moveDown = true;
 		}
+		
 		updateMovement();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+		if(Game.keyHandler.isBound("Left", e.getKeyCode())){
 			moveLeft = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+		}
+		
+		if(Game.keyHandler.isBound("Right", e.getKeyCode())){
 			moveRight = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
+		}
+		
+		if(Game.keyHandler.isBound("Up", e.getKeyCode())){
 			moveUp = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+		}
+		
+		if(Game.keyHandler.isBound("Down", e.getKeyCode())){
 			moveDown = false;
 		}
+		
 		updateMovement();
 	}
 

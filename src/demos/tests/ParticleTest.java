@@ -14,8 +14,6 @@ import game.GameSettings;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
 import game.gameObject.graphics.Camera;
-import game.gameObject.particles.Particle;
-import game.gameObject.particles.ParticleCustomizer;
 import game.gameObject.particles.ParticleEffector;
 import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.particles.ParticleSystem;
@@ -65,6 +63,7 @@ public class ParticleTest implements GameInitializer {
 			e.printStackTrace();
 		}
 		
+		/*
 		int width = 60;
 		int height = 60;
 		int maxParticles = 10;
@@ -121,22 +120,24 @@ public class ParticleTest implements GameInitializer {
 				
 				Game.gameObjectHandler.addGameObject(system);
 			}
-		}
+		}*/
 		
-		/*ParticleSystem pSystem = new ParticleSystem(new Rectangle(100, 100, 400, 400), 5, 1000);
+		ParticleSystem pSystem = new ParticleSystem(new Rectangle2D.Float(100, 100, 400, 400), 5, 1000, null);
+		
+		pSystem.customizeParticles((particle) -> {
+			particle.setPosition(pSystem.getX() + (pSystem.getBounds().width * rand.nextFloat()), pSystem.getY() + (pSystem.getBounds().height * rand.nextFloat()));
+			
+			particle.setSize(50, 50);
+			
+			particle.setLifetime(rand.nextFloat() * 10);
+			
+			particle.dx = (rand.nextFloat()- 0.5f) * 20;
+			particle.dy = (rand.nextFloat()- 0.5f) * 20;
+			
+			particle.active = true;
+		});
 		
 		pSystem.addImage(0, particleImage);
-		
-		Particle[] particles = pSystem.getParticles();
-		
-		for (int i = 0; i < particles.length; i++) {
-			particles[i] = new Particle(pSystem.getY() + (pSystem.getBounds().width * rand.nextFloat()), pSystem.getY() + (pSystem.getBounds().height * rand.nextFloat()), 50, 50, rand.nextFloat() * 10, Color.WHITE, 0);
-			
-			particles[i].dx = (rand.nextFloat()- 0.5f) * 20;
-			particles[i].dy = (rand.nextFloat()- 0.5f) * 20;
-		}
-		
-		pSystem.setParticles(particles);
 		
 		ParticleEmitter emitter = new ParticleEmitter(120, 200, 100, 10);
 		
@@ -160,37 +161,21 @@ public class ParticleTest implements GameInitializer {
 		pSystem.gGranularity = 64;
 		pSystem.bGranularity = 64;
 		
-		//pSystem.debug = true;
+		pSystem.debug = true;
 		
-		Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
+		//Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
 		
-		ParticleSystem pSys2 = new ParticleSystem(new Rectangle(100, 100, 500, 500), 5, 2000);
+		ParticleSystem pSys2 = new ParticleSystem(new Rectangle2D.Float(100, 100, 500, 500), 5, 2000, null);
 		
 		pSys2.addImage(0, particleImage);
 		
-		Particle[] particles2 = pSys2.getParticles();
-		
-		for (int i = 0; i < particles2.length; i++) {
-			particles2[i] = new Particle(pSys2.getX() + (pSys2.getBounds().width * rand.nextFloat()), pSys2.getY() + (pSys2.getBounds().height * rand.nextFloat()), 10, 10, 5 + rand.nextFloat() * 10, Color.WHITE, 0);
-			
-			particles2[i].dx = (rand.nextFloat()- 0.5f) * 20;
-			particles2[i].dy = (rand.nextFloat()- 0.5f) * 20;
-			
-			particles2[i].color = Color.cyan;
-			
-			particles2[i].active = false;
-		}
-		
 		pSys2.addEmitter(new ParticleEmitter(0, 0, 500, 500, 100f));
-		
-		//FIXME: Something weird is happening with the bounding box when the particle system is moving!
-		//Probably a error with relative coordinates.
 		
 		pSys2.setDX(20);
 		pSys2.setDY(40);
 		
 		pSys2.debug = true;
 		
-		//Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");*/
+		Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");
 	}
 }

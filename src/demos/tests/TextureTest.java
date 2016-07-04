@@ -1,7 +1,6 @@
 package demos.tests;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -11,8 +10,9 @@ import game.GameInitializer;
 import game.GameSettings;
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
-import game.gameObject.graphics.MappedSpriteSheet;
+import game.gameObject.graphics.Camera;
 import game.gameObject.graphics.Sprite;
+import game.screen.Screen;
 
 /**
  * @author Julius Häger
@@ -30,6 +30,8 @@ public class TextureTest implements GameInitializer {
 		settings.putSetting("Name", "TextureTest");
 		
 		settings.putSetting("OnScreenDebug", true);
+		
+		settings.putSetting("ScreenMode", Screen.Mode.NORMAL);
 		
 		settings.putSetting("GameInit", new TextureTest());
 		
@@ -50,13 +52,13 @@ public class TextureTest implements GameInitializer {
 			e.printStackTrace();
 		}
 		
-		MappedSpriteSheet mappedSpritesheet = new MappedSpriteSheet(sheetImage, new Color(191, 220, 191));
+		settings.getSettingAs("MainCamera", Camera.class).receiveKeyboardInput(true);;
 		
-		mappedSpritesheet.addMapping("Sprite1", new Rectangle(0, 0, 80, 80));
+		Sprite s = new Sprite(100, 100, 2f, sheetImage);
 		
-		Sprite sprite1 = new Sprite(10, 10, 2, mappedSpritesheet.getSprite("Sprite1"));
+		s.setColor(Color.yellow);
 		
-		Game.gameObjectHandler.addGameObject(sprite1, "TestSprite1");
+		Game.gameObjectHandler.addGameObject(s, "Test sprite");
 		
 	}
 }

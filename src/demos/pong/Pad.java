@@ -20,6 +20,8 @@ import kuusisto.tinysound.Sound;
  *
  */
 public class Pad extends Sprite implements KeyListener, Collidable {
+	
+	//TODO: Rewrite the pong demo to use the new keybinding system
 
 	/**
 	 * @author Julius Häger

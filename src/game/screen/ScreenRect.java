@@ -83,4 +83,9 @@ public class ScreenRect {
 	public void setY2(float y2) {
 		this.y2 = y2;
 	}
+	
+	@Override
+	public String toString() {
+		return "ScreenRect[x: " + x + ", y: " + y + ", x2: " + x2 + ", y2: " + y2 + "]";
+	}
 }
