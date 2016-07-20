@@ -13,14 +13,14 @@ import game.controller.event.EventListener;
 import game.controller.event.GameEvent;
 import game.gameObject.BasicGameObject;
 import game.gameObject.handler.event.GameObjectEvent;
-import game.input.mouse.MouseListener;
+import game.util.UpdateListener;
 
 /**
  * 
  * @version 1.0
  * @author Julius Häger
  */
-public class Input extends BasicGameObject implements KeyListener, MouseInputListener, MouseWheelListener, EventListener {
+public class Input extends BasicGameObject implements KeyListener, MouseInputListener, MouseWheelListener, EventListener, UpdateListener{
 	
 	//TODO: Merge Input, MouseInputHandler and KeyInputHandler
 
@@ -29,6 +29,8 @@ public class Input extends BasicGameObject implements KeyListener, MouseInputLis
 	private KeyInputHandler keyHandler;
 	
 	//TODO: Key-binding system
+	
+	//TODO: This class should be update synced and the Mouse and Key handlers should do their own thing?
 
 	/**
 	 * @param mouseHandeler
@@ -96,6 +98,11 @@ public class Input extends BasicGameObject implements KeyListener, MouseInputLis
 	public void keyReleased(KeyEvent e) {
 		keyHandler.keyReleased(e);
 	}
+	
+	@Override
+	public void update(float deltaTime) {
+		//mouseHandler.computeEnteredListeners();
+	}
 
 	@Override
 	public <T extends GameEvent<?>> void eventFired(T event) {
@@ -104,17 +111,11 @@ public class Input extends BasicGameObject implements KeyListener, MouseInputLis
 			
 			switch (goEvent.command) {
 			case "Created":
-				if(goEvent.object instanceof MouseListener){
-					mouseHandler.addListener((MouseListener) goEvent.object);
-				}
 				if(goEvent.object instanceof game.input.keys.KeyListener){
 					keyHandler.addListener((game.input.keys.KeyListener) goEvent.object);
 				}
 				break;
 			case "Destroyed":
-				if(goEvent.object instanceof MouseListener){
-					mouseHandler.removeListener((MouseListener) goEvent.object);
-				}
 				if(goEvent.object instanceof game.input.keys.KeyListener){
 					keyHandler.removeListener((game.input.keys.KeyListener) goEvent.object);
 				}

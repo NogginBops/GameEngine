@@ -59,7 +59,7 @@ public abstract class UIContainer extends UIElement {
 		this.children = new CopyOnWriteArrayList<UIElement>();
 		addUIElements(elements);
 		border = new SolidBorder(5);
-		computeContainerArea();
+		computeContainedArea();
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public abstract class UIContainer extends UIElement {
 		this.children = new CopyOnWriteArrayList<UIElement>();
 		addUIElements(elements);
 		border = new SolidBorder(5);
-		computeContainerArea();
+		computeContainedArea();
 	}
 	
 	/**
@@ -90,7 +90,7 @@ public abstract class UIContainer extends UIElement {
 		this.children = new CopyOnWriteArrayList<UIElement>();
 		addUIElements(elements);
 		this.border = border;
-		computeContainerArea();
+		computeContainedArea();
 	}
 	
 	/**
@@ -112,7 +112,7 @@ public abstract class UIContainer extends UIElement {
 	 */
 	public void setBorder(Border border) {
 		this.border = border;
-		computeContainerArea();
+		computeContainedArea();
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public abstract class UIContainer extends UIElement {
 	 */
 	public void setBorderSize(int width) {
 		border.setWidth(width);
-		computeContainerArea();
+		computeContainedArea();
 	}
 
 	/**
@@ -128,7 +128,7 @@ public abstract class UIContainer extends UIElement {
 	 */
 	public void setBorderColor(Color color) {
 		border.setColor(color);
-		computeContainerArea();
+		computeContainedArea();
 	}
 	
 	boolean result;
@@ -201,7 +201,7 @@ public abstract class UIContainer extends UIElement {
 	 */
 	@Override
 	public void paint(Graphics2D g2d) {
-		computeContainerArea();
+		computeContainedArea();
 		if(border != null){
 			border.paint(g2d, area);
 		}
@@ -219,7 +219,7 @@ public abstract class UIContainer extends UIElement {
 	 * This method updates the containedArea member variable.
 	 * @return
 	 */
-	protected Rectangle2D.Float computeContainerArea() {
+	protected Rectangle2D.Float computeContainedArea() {
 		if(border != null){
 			return containedArea = border.getInnerArea(area);
 		}else{
@@ -230,14 +230,14 @@ public abstract class UIContainer extends UIElement {
 	/**
 	 * @return
 	 */
-	public Rectangle2D.Float getContainerArea() {
+	public Rectangle2D.Float getContainedArea() {
 		return containedArea;
 	}
 	
 	@Override
 	public Rectangle2D.Float getBounds() {
 		Rectangle2D.Float parentArea = parent.getBounds();
-		computeContainerArea();
+		computeContainedArea();
 		return new Rectangle2D.Float(containedArea.x + parentArea.x, containedArea.y + parentArea.y, containedArea.width, containedArea.height);
 	}
 

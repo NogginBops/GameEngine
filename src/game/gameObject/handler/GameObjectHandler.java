@@ -320,4 +320,13 @@ public class GameObjectHandler {
 	public IDHandler<GameObject> getIDHandler() {
 		return idHandler;
 	}
+
+	/**
+	 * 
+	 */
+	public void clear() {
+		for (GameObject gameObject : getAllGameObjects()) {
+			removeGameObject(gameObject);
+		}
+	}
 }

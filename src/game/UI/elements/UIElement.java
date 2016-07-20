@@ -61,9 +61,6 @@ public abstract class UIElement{
 	 * @param parent
 	 */
 	public void setParent(UIContainer parent){
-		//FIXME: UI NOT WORKING!!!!
-		//Something about removing itself after removing itself from its parent.
-		
 		if(this.parent != parent){
 			if(parent == null){
 				this.parent = null;
@@ -153,7 +150,6 @@ public abstract class UIElement{
 	 * @return
 	 */
 	public Rectangle2D.Float getBounds() {
-		
 		//TODO: Pre compute?
 		Rectangle2D.Float parentArea = parent.getBounds();
 		return new Rectangle2D.Float(area.x + parentArea.x, area.y + parentArea.y, area.width, area.height);

@@ -161,9 +161,9 @@ public class ParticleTest implements GameInitializer {
 		pSystem.gGranularity = 64;
 		pSystem.bGranularity = 64;
 		
-		pSystem.debug = true;
+		//pSystem.debug = true;
 		
-		//Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
+		Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
 		
 		ParticleSystem pSys2 = new ParticleSystem(new Rectangle2D.Float(100, 100, 500, 500), 5, 2000, null);
 		
@@ -176,6 +176,6 @@ public class ParticleTest implements GameInitializer {
 		
 		pSys2.debug = true;
 		
-		Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");
+		//Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");
 	}
 }

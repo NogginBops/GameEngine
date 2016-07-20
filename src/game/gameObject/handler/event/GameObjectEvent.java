@@ -29,4 +29,9 @@ public class GameObjectEvent extends GameEvent<GameObjectHandler> {
 		super(origin, command);
 		this.object = object;
 	}
+	
+	@Override
+	public String toString() {
+		return "GameObjectEvent[Origin: " + origin + ", Command: " + command + ", Object: " + object + "]";
+	}
 }

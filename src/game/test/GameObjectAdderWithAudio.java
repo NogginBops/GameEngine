@@ -84,7 +84,7 @@ public class GameObjectAdderWithAudio extends BasicGameObject implements GameObj
 	}
 
 	@Override
-	public void mouseWeelMoved(MouseWheelEvent e) {
+	public void mouseWheelMoved(MouseWheelEvent e) {
 
 	}
 

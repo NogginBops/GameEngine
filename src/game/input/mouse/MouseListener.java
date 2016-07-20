@@ -2,7 +2,6 @@ package game.input.mouse;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.awt.geom.Rectangle2D;
 
 import game.gameObject.GameObject;
 
@@ -14,19 +13,7 @@ import game.gameObject.GameObject;
 public interface MouseListener extends GameObject {
 
 	// JAVADOC: MouseListener
-
-	/**
-	 * 
-	 */
-	@Override
-	public Rectangle2D.Float getBounds();
-
-	/**
-	 * 
-	 */
-	@Override
-	public int getZOrder();
-
+	
 	/**
 	 * 
 	 * 
@@ -74,7 +61,7 @@ public interface MouseListener extends GameObject {
 	 * 
 	 * @param e
 	 */
-	public void mouseWeelMoved(MouseWheelEvent e);
+	public void mouseWheelMoved(MouseWheelEvent e);
 
 	/**
 	 * This function is called to determine if the input should be absorbed by
