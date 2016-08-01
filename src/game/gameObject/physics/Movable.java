@@ -18,7 +18,6 @@ public interface Movable extends UpdateListener {
 	 * 
 	 * @return the x value of the Movable
 	 */
-	@Override
 	public float getX();
 
 	/**
@@ -26,7 +25,6 @@ public interface Movable extends UpdateListener {
 	 * 
 	 * @return the y value of the Movable
 	 */
-	@Override
 	public float getY();
 
 	/**
@@ -85,6 +83,15 @@ public interface Movable extends UpdateListener {
 	 * @param dy
 	 */
 	public void setDY(float dy);
+	
+	/**
+	 * Used to set the dynamic x and y (X- and Y-axis movement) of the movable. <br>
+	 * Dynamic x and y is measured in pixels per second.
+	 * 
+	 * @param dx
+	 * @param dy
+	 */
+	public void setVelocity(float dx, float dy);
 	
 	//TODO: Make movement be updated by the PhysicsEngine (RigidBody interface?)
 

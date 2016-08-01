@@ -27,7 +27,7 @@ public class GameObjectAdder extends BasicGameObject implements MouseListener, K
 	 * @param objectHandler
 	 */
 	public GameObjectAdder() {
-		super(new Rectangle2D.Float(0, 0, 10, 10), Integer.MAX_VALUE - 10);
+		super(0, 0, new Rectangle2D.Float(0, 0, 10, 10), Integer.MAX_VALUE - 10);
 		currentBuilding = new House(0, 0, 24, 30);
 		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
 		
@@ -46,7 +46,6 @@ public class GameObjectAdder extends BasicGameObject implements MouseListener, K
 		// rand.nextInt(255), rand.nextInt(255)));
 		// gameObjectHandler.addGameObject(p, "Square");
 		currentBuilding.placed();
-		currentBuilding.updateBounds();
 		currentBuilding = new House(e.getX(), e.getY(), 24, 30);
 		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
 	}
@@ -80,7 +79,6 @@ public class GameObjectAdder extends BasicGameObject implements MouseListener, K
 	@Override
 	public void mouseWeelMoved(MouseWheelEvent e) {
 		currentBuilding.placed();
-		currentBuilding.updateBounds();
 		currentBuilding = new House(e.getX(), e.getY(), 24, 30);
 		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
 	}

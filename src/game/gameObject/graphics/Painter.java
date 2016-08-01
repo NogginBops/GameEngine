@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.gameObject.BasicGameObject;
+import game.gameObject.physics.PhysicsEngine;
+import game.gameObject.transform.Transform;
 import game.screen.ScreenRect;
 import game.util.image.ImageUtils;
 
@@ -79,9 +81,9 @@ public abstract class Painter extends BasicGameObject {
 	public void paint(Graphics2D g2d) {
 		if (paintables != null && paintables.size() > 0) {
 			translatedGraphics = (Graphics2D) g2d.create();
-			translatedGraphics.translate(-bounds.x, -bounds.y);
+			translatedGraphics.transform(transform.getAffineTransform());
 			for (Paintable paintable : paintables) {
-				if (paintable.getBounds().intersects(bounds)) {
+				if(PhysicsEngine.collides(paintable.getBounds(), getBounds())){
 					paintable.paint(translatedGraphics);
 				}
 			}
@@ -128,21 +130,25 @@ public abstract class Painter extends BasicGameObject {
 			
 			//TODO: Find better way to handle this
 			//translatedGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			
-			translatedGraphics.translate(-bounds.x, -bounds.y);
+			AffineTransform originalAT = transform.getAffineTransform();
+			originalAT.setToTranslation(-originalAT.getTranslateX(), -originalAT.getTranslateY());
+			translatedGraphics.transform(originalAT);
 			for (Paintable paintable : paintables) {
 				if(paintable.isActive()){
-					if (paintable.getBounds().intersects(bounds)) {
+					if(PhysicsEngine.collides(paintable.getBounds(), getBounds())){
+						Transform paintableTransform = paintable.getTransform();
+						translatedGraphics.transform(paintableTransform.getAffineTransform());
+						
 						paintableImage = paintable.getImage();
 						if(paintableImage != null){
 							translatedGraphics.drawImage(paintableImage,
-									(int)paintable.getX(),
-									(int)paintable.getY(),
-									(int)paintable.getWidth(),
-									(int)paintable.getHeight(), null);
+									0, 0, (int)paintable.getBounds().getWidth(),
+									(int)paintable.getBounds().getHeight(), null);
 						}else{
 							paintable.paint(translatedGraphics);
 						}
+						
+						translatedGraphics.setTransform(originalAT);
 						
 						tempDrawnObjects++;
 					}

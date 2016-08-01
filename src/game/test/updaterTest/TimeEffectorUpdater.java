@@ -47,7 +47,7 @@ public class TimeEffectorUpdater extends Updater {
 							timeMult *= timeEffector.getTimeMultiplier();
 						}
 					}else{
-						if(PhysicsEngine.collides(listener.getBounds(), timeEffector.getCollitionShape())){
+						if(PhysicsEngine.collides(listener.getShape(), timeEffector.getCollitionShape())){
 							timeMult *= timeEffector.getTimeMultiplier();
 						}
 					}

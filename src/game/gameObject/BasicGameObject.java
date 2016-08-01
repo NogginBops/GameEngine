@@ -1,8 +1,10 @@
 package game.gameObject;
 
+import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
 import game.debug.DebugOutputProvider;
+import game.gameObject.transform.Transform;
 
 /**
  * 
@@ -12,31 +14,16 @@ import game.debug.DebugOutputProvider;
 public class BasicGameObject implements GameObject, DebugOutputProvider {
 	
 	//JAVADOC: BasicGameObject
-
-	/**
-	 * 
-	 */
-	protected float x;
-	/**
-	 * 
-	 */
-	protected float y;
-	
-	//TODO: Should width and height be integer or float? (Probably a float)
 	
 	/**
 	 * 
 	 */
-	protected float width;
-	/**
-	 * 
-	 */
-	protected float height;
+	protected Transform transform = new Transform();
 	
 	/**
 	 * 
 	 */
-	protected Rectangle2D.Float bounds;
+	protected Shape shape;
 	
 	/**
 	 * The current Z-order of the GameObject
@@ -56,11 +43,8 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	 * @param zOrder
 	 */
 	public BasicGameObject(float x, float y, float width, float height, int zOrder) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		bounds = new Rectangle2D.Float(x, y, width, height);
+		transform.setPosition(x, y);
+		shape = new Rectangle2D.Float(0, 0, width, height);
 		this.zOrder = zOrder;
 	}
 	
@@ -68,46 +52,20 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	 * @param bounds
 	 * @param zOrder
 	 */
-	public BasicGameObject(Rectangle2D.Float bounds, int zOrder) {
-		this.x = bounds.x;
-		this.y = bounds.y;
-		this.width = bounds.width;
-		this.height = bounds.height;
-		this.bounds = bounds;
+	public BasicGameObject(float x, float y, Shape shape, int zOrder) {
+		transform.setPosition(x, y);
+		this.shape = shape;
 		this.zOrder = zOrder;
+	}
+
+	@Override
+	public Transform getTransform() {
+		return transform;
 	}
 	
 	@Override
-	public float getX() {
-		return x;
-	}
-
-	@Override
-	public float getY() {
-		return y;
-	}
-
-	@Override
-	public float getWidth() {
-		return width;
-	}
-
-	@Override
-	public float getHeight() {
-		return height;
-	}
-
-	@Override
-	public Rectangle2D.Float getBounds() {
-		return bounds;
-	}
-
-	@Override
-	public void updateBounds() {
-		bounds.x = (int) x;
-		bounds.y = (int) y;
-		bounds.width = width;
-		bounds.height = height;
+	public Shape getShape() {
+		return shape;
 	}
 	
 	@Override
@@ -126,18 +84,13 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	}
 
 	@Override
-	public int compareTo(GameObject object) {
-		return zOrder - object.getZOrder();
-	}
-
-	@Override
 	public String[] getDebugValues() {
 		return new String[]{
 				"<b>Active: </b>" + active,
-				"<b>X: </b>" + x,
-				"<b>Y:</b> " + y,
-				"<b>Width: </b>" + width,
-				"<b>Height: </b>" + height,
+				"<b>X: </b>" + transform.getX(),
+				"<b>Y:</b> " + transform.getY(),
+				"<b>Width: </b>" + getBounds().getWidth(),
+				"<b>Height: </b>" + getBounds().getHeight(),
 				"<b>ZOrder: </b>" + zOrder
 		};
 	}

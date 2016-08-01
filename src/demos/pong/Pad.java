@@ -40,7 +40,7 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 
 	private Side side;
 
-	private Rectangle2D.Float outerBounds;
+	private Rectangle2D outerBounds;
 
 	private int upKeyCode;
 	private int downKeyCode;
@@ -66,7 +66,7 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 	 * @param outerBounds
 	 * @param side
 	 */
-	public Pad(float x, float y, float width, float height, int upKeyCode, int downKeyCode, Rectangle2D.Float outerBounds, Side side) {
+	public Pad(float x, float y, float width, float height, int upKeyCode, int downKeyCode, Rectangle2D outerBounds, Side side) {
 		super(x, y, width, height);
 		this.upKeyCode = upKeyCode;
 		this.downKeyCode = downKeyCode;
@@ -115,20 +115,15 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 	@Override
 	public void update(float deltaTime) {
 		super.update(deltaTime);
-		if (!outerBounds.contains(bounds)) {
-			if (bounds.y + bounds.height > outerBounds.y + outerBounds.height) {
-				setY((int) outerBounds.getMaxY() - bounds.height);
-			} else if (bounds.y < outerBounds.y) {
-				setY(outerBounds.y);
+		if (!outerBounds.contains(shape.getBounds2D())) {
+			if (shape.getBounds2D().getY() + shape.getBounds2D().getHeight() > outerBounds.getY() + outerBounds.getHeight()) {
+				setY((int) outerBounds.getMaxY() - (float)shape.getBounds2D().getHeight());
+			} else if (shape.getBounds2D().getY() < outerBounds.getY()) {
+				setY((float)outerBounds.getY());
 			}
 		}
 	}
 	
-	@Override
-	public void updateBounds() {
-		super.updateBounds();
-	}
-
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
 		return true;
@@ -136,7 +131,7 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 	
 	@Override
 	public Shape getCollitionShape() {
-		return bounds;
+		return shape;
 	}
 
 	@Override
@@ -145,7 +140,7 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 		//System.out.println("Collided: " + this);
 		
 		Rectangle2D ballBounds = collisionObject.getBounds();
-		float inclenation = (float) (ballBounds.getY() - bounds.y) / bounds.height;
+		float inclenation = (float) (ballBounds.getY() - (float)shape.getBounds2D().getY()) / (float)shape.getBounds2D().getHeight();
 		inclenation = inclenation < 0 ? 0 : inclenation;
 		float newDX = Math.abs(collisionObject.getDX()) + speedChange;
 		float newDY = maxInclenationChange * inclenation * 2 - maxInclenationChange;
@@ -155,6 +150,6 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 			collisionObject.setDX(-newDX);
 		}
 		collisionObject.setDY(collisionObject.getDY() + newDY);
-		AudioEngine.playSound(new AudioSource(x, y, beep));
+		AudioEngine.playSound(new AudioSource(transform.getX(), transform.getY(), beep));
 	}
 }

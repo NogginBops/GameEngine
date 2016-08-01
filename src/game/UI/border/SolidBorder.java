@@ -30,11 +30,11 @@ public class SolidBorder extends Border {
 	}
 
 	@Override
-	public void paint(Graphics2D g2d, Rectangle2D.Float area) {
+	public void paint(Graphics2D g2d, Rectangle2D area) {
 		g2d.setColor(color);
-		g2d.fillRect((int)area.x, (int)area.y, (int)area.width, top);
-		g2d.fillRect((int)area.x, (int)(area.y + area.height - bottom), (int)area.width, bottom);
-		g2d.fillRect((int)area.x, (int)area.y, left, (int)area.height);
-		g2d.fillRect((int)(area.x + area.width - right), (int)area.y, right, (int)area.height);
+		g2d.fillRect((int)area.getX(), (int)area.getY(), (int)area.getWidth(), top);
+		g2d.fillRect((int)area.getX(), (int)(area.getY() + area.getHeight() - bottom), (int)area.getWidth(), bottom);
+		g2d.fillRect((int)area.getX(), (int)area.getY(), left, (int)area.getHeight());
+		g2d.fillRect((int)(area.getX() + area.getWidth() - right), (int)area.getY(), right, (int)area.getHeight());
 	}
 }

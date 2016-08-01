@@ -103,6 +103,7 @@ public class Screen implements Runnable{
 		frame.setExtendedState(JFrame.NORMAL);
 		frame.getContentPane().setPreferredSize(new Dimension(width, height));
 		frame.setIgnoreRepaint(true);
+		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.pack();
 		frame.setLocationRelativeTo(null);
@@ -135,6 +136,7 @@ public class Screen implements Runnable{
 		frame.setExtendedState(JFrame.NORMAL);
 		frame.getContentPane().setPreferredSize(size);
 		frame.setIgnoreRepaint(true);
+		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.pack();
 		frame.setLocationRelativeTo(null);

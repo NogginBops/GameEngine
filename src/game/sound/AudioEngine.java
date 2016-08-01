@@ -64,8 +64,8 @@ public class AudioEngine {
 			return;
 		}
 		
-		listenerLocation = new Point2D.Double(listener.getBounds().getBounds().getCenterX(),
-				listener.getBounds().getBounds().getCenterY());
+		listenerLocation = new Point2D.Double(listener.getBounds().getCenterX(),
+				listener.getBounds().getCenterY());
 		Point2D vector = AudioUtil.getVector(source.getLocation(), listenerLocation);
 		Double dist = AudioUtil.distance(source.getLocation(), listenerLocation);
 

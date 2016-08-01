@@ -1,6 +1,6 @@
 package game.gameObject.physics;
 
-import java.awt.geom.Rectangle2D;
+import java.awt.Shape;
 
 import game.gameObject.BasicGameObject;
 
@@ -37,37 +37,33 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	 * @param rect
 	 * @param zOrder
 	 */
-	public BasicMovable(Rectangle2D.Float rect, int zOrder) {
-		super(rect, zOrder);
+	public BasicMovable(float x, float y, Shape shape, int zOrder) {
+		super(x, y, shape, zOrder);
 	}
 
 	@Override
 	public float getX() {
-		return x;
+		return transform.getX();
 	}
 
 	@Override
 	public float getY() {
-		return y;
+		return transform.getY();
 	}
 
 	@Override
 	public void setX(float x) {
-		this.x = x;
-		updateBounds();
+		transform.setX(x);
 	}
 
 	@Override
 	public void setY(float y) {
-		this.y = y;
-		updateBounds();
+		transform.setY(y);
 	}
 	
 	@Override
 	public void setPosition(float x, float y) {
-		this.x = x;
-		this.y = y;
-		updateBounds();
+		transform.setPosition(x, y);
 	}
 
 	@Override
@@ -89,11 +85,15 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	public void setDY(float dy) {
 		this.dy = dy;
 	}
+	
+	@Override
+	public void setVelocity(float dx, float dy) {
+		this.dx = dx;
+		this.dy = dy;
+	}
 
 	@Override
 	public void update(float deltaTime) {
-		x += dx * deltaTime;
-		y += dy * deltaTime;
-		updateBounds();
+		transform.translate(dx * deltaTime, dy * deltaTime);
 	}
 }

@@ -40,7 +40,7 @@ public class ParticleTest implements GameInitializer {
 		
 		settings.putSetting("DebugID", true);
 		
-		settings.putSetting("Resolution", new Dimension(1000, 800));
+		settings.putSetting("Resolution", new Dimension(800, 600));
 		
 		settings.putSetting("GameInit", new ParticleTest());
 		
@@ -122,10 +122,12 @@ public class ParticleTest implements GameInitializer {
 			}
 		}*/
 		
-		ParticleSystem pSystem = new ParticleSystem(new Rectangle2D.Float(100, 100, 400, 400), 5, 1000, null);
+		ParticleSystem pSystem = new ParticleSystem(100, 100, new Rectangle2D.Float(0, 0, 400, 400), 5, 1000, null);
+		
+		pSystem.setDR(100);
 		
 		pSystem.customizeParticles((particle) -> {
-			particle.setPosition(pSystem.getX() + (pSystem.getBounds().width * rand.nextFloat()), pSystem.getY() + (pSystem.getBounds().height * rand.nextFloat()));
+			particle.setPosition(pSystem.getX() + ((float)pSystem.getBounds().getWidth() * rand.nextFloat()), pSystem.getY() + ((float)pSystem.getBounds().getHeight() * rand.nextFloat()));
 			
 			particle.setSize(50, 50);
 			
@@ -163,9 +165,9 @@ public class ParticleTest implements GameInitializer {
 		
 		pSystem.debug = true;
 		
-		//Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
+		Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
 		
-		ParticleSystem pSys2 = new ParticleSystem(new Rectangle2D.Float(100, 100, 500, 500), 5, 2000, null);
+		ParticleSystem pSys2 = new ParticleSystem(100, 100, new Rectangle2D.Float(0, 0, 500, 500), 5, 2000, null);
 		
 		pSys2.addImage(0, particleImage);
 		
@@ -176,6 +178,6 @@ public class ParticleTest implements GameInitializer {
 		
 		pSys2.debug = true;
 		
-		Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");
+		//Game.gameObjectHandler.addGameObject(pSys2, "ParticleTest2");
 	}
 }

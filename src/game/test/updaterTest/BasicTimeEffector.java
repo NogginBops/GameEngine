@@ -2,6 +2,7 @@ package game.test.updaterTest;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
@@ -34,8 +35,8 @@ public class BasicTimeEffector extends BasicCollidable implements TimeEffector, 
 	 * @param zOrder
 	 * @param shape
 	 */
-	public BasicTimeEffector(Rectangle2D.Float rect, int zOrder) {
-		super(rect, zOrder, rect);
+	public BasicTimeEffector(float x, float y, Shape shape, int zOrder) {
+		super(x, y, shape, zOrder);
 	}
 	
 	Color color = ColorUtils.createTransparent(Color.magenta, 0.2f);

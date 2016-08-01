@@ -18,7 +18,7 @@ public abstract class UIContainer extends UIElement {
 	
 	//JAVADOC: UIContainer
 
-	protected Rectangle2D.Float containedArea;
+	protected Rectangle2D containedArea;
 
 	protected Graphics2D translatedGraphics;
 
@@ -41,7 +41,7 @@ public abstract class UIContainer extends UIElement {
 	 * @param rect
 	 * @param elements
 	 */
-	public UIContainer(Rectangle2D.Float rect, UIElement... elements) {
+	public UIContainer(Rectangle2D rect, UIElement... elements) {
 		super(rect);
 		this.children = new CopyOnWriteArrayList<UIElement>();
 		addUIElements(elements);
@@ -206,8 +206,8 @@ public abstract class UIContainer extends UIElement {
 			border.paint(g2d, area);
 		}
 		if(children.size() > 0){
-			translatedGraphics = (Graphics2D) g2d.create((int)containedArea.x, (int)containedArea.y,
-					(int)containedArea.width, (int)containedArea.height);
+			translatedGraphics = (Graphics2D) g2d.create((int)containedArea.getX(), (int)containedArea.getY(),
+					(int)containedArea.getWidth(), (int)containedArea.getHeight());
 			for (UIElement element : children) {
 				element.paint(translatedGraphics);
 			}
@@ -219,7 +219,7 @@ public abstract class UIContainer extends UIElement {
 	 * This method updates the containedArea member variable.
 	 * @return
 	 */
-	protected Rectangle2D.Float computeContainerArea() {
+	protected Rectangle2D computeContainerArea() {
 		if(border != null){
 			return containedArea = border.getInnerArea(area);
 		}else{
@@ -230,15 +230,15 @@ public abstract class UIContainer extends UIElement {
 	/**
 	 * @return
 	 */
-	public Rectangle2D.Float getContainerArea() {
+	public Rectangle2D getContainerArea() {
 		return containedArea;
 	}
 	
 	@Override
-	public Rectangle2D.Float getBounds() {
-		Rectangle2D.Float parentArea = parent.getBounds();
+	public Rectangle2D getBounds() {
+		Rectangle2D parentArea = parent.getBounds();
 		computeContainerArea();
-		return new Rectangle2D.Float(containedArea.x + parentArea.x, containedArea.y + parentArea.y, containedArea.width, containedArea.height);
+		return new Rectangle2D.Float((float)containedArea.getX() + (float)parentArea.getX(), (float)containedArea.getY() + (float)parentArea.getY(), (float)containedArea.getWidth(), (float)containedArea.getHeight());
 	}
 
 	

@@ -69,13 +69,6 @@ public abstract class Building extends Sprite implements UpdateListener {
 		}
 	}
 
-	@Override
-	public void updateBounds() {
-		super.updateBounds();
-		centerMarginX = width / 2;
-		centerMarginY = height / 2;
-	}
-
 	/**
 	 * @return
 	 */

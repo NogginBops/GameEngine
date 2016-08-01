@@ -1,6 +1,9 @@
 package game.gameObject;
 
+import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
+
+import game.gameObject.transform.Transform;
 
 /**
  * 
@@ -12,24 +15,28 @@ public interface GameObject extends Comparable<GameObject> {
 	// JAVADOC: GameObject
 	
 	/**
+	 * 
 	 * @return
 	 */
-	public float getX();
+	public Transform getTransform();
+	
+	default public float getWidth(){
+		return (float) (getBounds().getWidth() * getTransform().getScaleX());
+	}
+	
+	default public float getHeight() {
+		return (float) (getBounds().getHeight() * getTransform().getScaleY());
+	}
 	
 	/**
+	 * 
 	 * @return
 	 */
-	public float getY();
+	public Shape getShape();
 	
-	/**
-	 * @return
-	 */
-	public float getWidth();
-	
-	/**
-	 * @return
-	 */
-	public float getHeight();
+	default Shape getTranformedShape(){
+		return getTransform().getAffineTransform().createTransformedShape(getShape());
+	}
 	
 	/**
 	 * Returns the GameObject bounds. Used to determine if the GameObjects
@@ -37,19 +44,10 @@ public interface GameObject extends Comparable<GameObject> {
 	 * 
 	 * @return the GameObject bounds
 	 */
-	public Rectangle2D.Float getBounds();
+	default public Rectangle2D getBounds(){
+		return getTranformedShape().getBounds2D();
+	}
 
-	/**
-	 * <p>
-	 * Updates the bounds of the GameObject
-	 * </p>
-	 * 
-	 * <p>
-	 * The bounds are used to determine if the GameObjects methods are called.
-	 * </p>
-	 */
-	public void updateBounds();
-	
 	/**
 	 * <p>Returns whether or not the GameObject is active.</p>
 	 * <p>This determines if some subsystems should include the GameObject. 
@@ -79,6 +77,7 @@ public interface GameObject extends Comparable<GameObject> {
 	 * Used to compare the Z-Order values of two GameObjects.
 	 */
 	@Override
-	public int compareTo(GameObject object);
-
+	default public int compareTo(GameObject object){
+		return getZOrder() - object.getZOrder();
+	}
 }

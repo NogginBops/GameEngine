@@ -51,7 +51,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	private HashMap<BufferedImage, BufferedImage> imageCache;
 
 	private float scale = 1;
-
+	
 	/**
 	 * 
 	 * 
@@ -183,8 +183,8 @@ public class Sprite extends BasicMovable implements Paintable {
 	/**
 	 * @param bounds
 	 */
-	public Sprite(Rectangle2D.Float bounds) {
-		super(bounds, 5);
+	public Sprite(float x, float y, Rectangle2D bounds) {
+		super(x, y, bounds, 5);
 		imageCache = new HashMap<>();
 
 		setColor(color);
@@ -195,9 +195,9 @@ public class Sprite extends BasicMovable implements Paintable {
 	public void paint(Graphics2D g2d) {
 		if (sprite == null) {
 			g2d.setColor(color);
-			g2d.fill(bounds);
+			g2d.fill(shape);
 		} else {
-			g2d.drawImage(graphicsReadySprite, (int) x, (int) y, (int) width, (int) height, null);
+			g2d.drawImage(graphicsReadySprite, (int) transform.getX(), (int) transform.getY(), (int) getBounds().getWidth(), (int) getBounds().getHeight(), null);
 		}
 	}
 
@@ -206,29 +206,11 @@ public class Sprite extends BasicMovable implements Paintable {
 		return graphicsReadySprite;
 	}
 
-	/**
-	 * <p>
-	 * Updates the bounds of the Sprite.
-	 * </p>
-	 * 
-	 * <p>
-	 * The bounds are used to determine if the object is drawn.
-	 * </p>
-	 */
-	@Override
-	public void updateBounds() {
-		bounds.x = (int) x;
-		bounds.y = (int) y;
-		bounds.width = width;
-		bounds.height = height;
-	}
-
 	@Override
 	public void update(float deltaTime) {
-		x += dx * deltaTime;
-		y += dy * deltaTime;
-		updateBounds();
-
+		
+		transform.translate(dx * deltaTime, dy * deltaTime);
+		
 		// TODO: Animation!
 		if (animation != null) {
 			animation.update(deltaTime);
@@ -241,19 +223,31 @@ public class Sprite extends BasicMovable implements Paintable {
 	 */
 	public void setScale(float scale) {
 		this.scale = scale;
-		if (sprite != null) {
-			width = (int) (sprite.getWidth() * scale);
-			height = (int) (sprite.getHeight() * scale);
-			updateBounds();
-		}
+		transform.setScale(scale, scale);
 	}
-
+	
 	/**
 	 * 
 	 * @return
 	 */
 	public float getScale() {
 		return scale;
+	}
+	
+	@Override
+	public float getWidth() {
+		if(sprite != null){
+			return sprite.getWidth() * scale;
+		}
+		return super.getWidth();
+	}
+	
+	@Override
+	public float getHeight() {
+		if(sprite != null){
+			return sprite.getHeight() * scale;
+		}
+		return super.getHeight();
 	}
 
 	/**

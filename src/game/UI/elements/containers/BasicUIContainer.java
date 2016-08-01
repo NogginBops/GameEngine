@@ -38,7 +38,7 @@ public class BasicUIContainer extends UIContainer {
 	public BasicUIContainer(UIContainer container, float insetLeft, float insetTop, float insetRight, float insetBottom) {
 		super();
 		area = container.getContainerArea();
-		area.setRect(area.x + insetLeft, area.y + insetTop, area.width - (insetLeft + insetRight), area.height - (insetTop - insetBottom));
+		area.setRect(area.getX() + insetLeft, area.getY() + insetTop, area.getWidth() - (insetLeft + insetRight), area.getHeight() - (insetTop - insetBottom));
 		computeContainerArea();
 		
 		setParent(container);

@@ -21,7 +21,7 @@ public abstract class UIElement{
 	
 	protected UIContainer parent;
 
-	protected Rectangle2D.Float area;
+	protected Rectangle2D area;
 
 	protected int zOrder = 10;
 
@@ -35,7 +35,7 @@ public abstract class UIElement{
 	/**
 	 * @param area
 	 */
-	public UIElement(Rectangle2D.Float area) {
+	public UIElement(Rectangle2D area) {
 		this.area = area;
 	}
 
@@ -145,46 +145,46 @@ public abstract class UIElement{
 	/**
 	 * @return
 	 */
-	public Rectangle2D.Float getArea(){
+	public Rectangle2D getArea(){
 		return area;
 	}
 	
 	/**
 	 * @return
 	 */
-	public Rectangle2D.Float getBounds() {
+	public Rectangle2D getBounds() {
 		
 		//TODO: Pre compute?
-		Rectangle2D.Float parentArea = parent.getBounds();
-		return new Rectangle2D.Float(area.x + parentArea.x, area.y + parentArea.y, area.width, area.height);
+		Rectangle2D parentArea = parent.getBounds();
+		return new Rectangle2D.Float((float)area.getX() + (float)parentArea.getX(), (float)area.getY() + (float)parentArea.getY(), (float)area.getWidth(), (float)area.getHeight());
 	}
 	
 	/**
 	 * @return
 	 */
 	public float getX(){
-		return area.x;
+		return (float)area.getX();
 	}
 	
 	/**
 	 * @param x
 	 */
 	public void setX(float x){
-		area.x = x;
+		area.setFrame(x, area.getY(), area.getWidth(), area.getHeight());
 	}
 	
 	/**
 	 * @return
 	 */
 	public float getY(){
-		return area.y;
+		return (float)area.getY();
 	}
 	
 	/**
 	 * @param y
 	 */
 	public void setY(float y){
-		area.y = y;
+		area.setFrame(area.getX(), y, area.getWidth(), area.getHeight());
 	}
 	
 	/**
@@ -192,8 +192,7 @@ public abstract class UIElement{
 	 * @param y
 	 */
 	public void setPosition(float x, float y){
-		area.x = x;
-		area.y = y;
+		area.setFrame(x, y, area.getWidth(), area.getHeight());
 	}
 	
 	/**
@@ -201,14 +200,14 @@ public abstract class UIElement{
 	 * @param width
 	 */
 	public void setWidth(float width){
-		area.width = width;
+		area.setFrame(area.getX(), area.getY(), width, area.getHeight());
 	}
 	
 	/**
 	 * @return
 	 */
 	public float getWidth(){
-		return area.width;
+		return (float)area.getWidth();
 	}
 	
 	/**
@@ -216,14 +215,14 @@ public abstract class UIElement{
 	 * @param height
 	 */
 	public void setHeight(float height){
-		area.height = height;
+		area.setFrame(area.getX(), area.getY(), area.getWidth(), height);
 	}
 	
 	/**
 	 * @return
 	 */
 	public float getHeight(){
-		return area.height;
+		return (float)area.getHeight();
 	}
 	
 	/**
@@ -231,8 +230,7 @@ public abstract class UIElement{
 	 * @param height
 	 */
 	public void setSize(float width, float height){
-		area.width = width;
-		area.height = height;
+		area.setFrame(area.getX(), area.getY(), width, height);
 	}
 	
 	/**

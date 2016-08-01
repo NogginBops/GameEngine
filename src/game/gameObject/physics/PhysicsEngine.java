@@ -74,13 +74,10 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 					//Unneeded check
 					if (c1 != c2) {
 						if(collidablesInLayer.get(c1).isActive() && collidablesInLayer.get(c2).isActive()){
-							
-							//TODO: Optimize collition checking
-							Shape collitionShape1 = collidablesInLayer.get(c1).getCollitionShape();
-							Shape collitionShape2 = collidablesInLayer.get(c2).getCollitionShape();
-							
-							if(collides(collitionShape1, collitionShape2)){
-								collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
+							if(collidablesInLayer.get(c1).getBounds().intersects(collidablesInLayer.get(c2).getBounds())){
+								if(collides(collidablesInLayer.get(c1).getCollitionShape(), collidablesInLayer.get(c2).getCollitionShape())){
+									collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
+								}
 							}
 						}
 					}

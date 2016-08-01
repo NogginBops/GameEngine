@@ -1,7 +1,6 @@
 package game.gameObject.physics;
 
 import java.awt.Shape;
-import java.awt.geom.Rectangle2D;
 
 /**
  * @author Julius Häger
@@ -30,10 +29,8 @@ public class BasicCollidable extends BasicMovable implements Collidable{
 	 * @param zOrder
 	 * @param shape 
 	 */
-	public BasicCollidable(Rectangle2D.Float rect, int zOrder, Shape shape) {
-		super(rect, zOrder);
-		
-		this.shape = shape;
+	public BasicCollidable(float x, float y, Shape shape, int zOrder) {
+		super(x, y, shape, zOrder);
 	}
 
 	@Override

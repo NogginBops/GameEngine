@@ -2,7 +2,6 @@ package game.input.mouse;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.awt.geom.Rectangle2D;
 
 import game.gameObject.GameObject;
 
@@ -14,13 +13,7 @@ import game.gameObject.GameObject;
 public interface MouseListener extends GameObject {
 
 	// JAVADOC: MouseListener
-
-	/**
-	 * 
-	 */
-	@Override
-	public Rectangle2D.Float getBounds();
-
+	
 	/**
 	 * 
 	 */

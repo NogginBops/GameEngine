@@ -33,7 +33,7 @@ public class OtherPaintable extends BasicGameObject implements Paintable {
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(color);
-		g2d.fillRect((int)x, (int)y, (int)width, (int)height);
+		g2d.fillRect(0, 0, (int)getWidth(), (int)getHeight());
 	}
 
 	@Override

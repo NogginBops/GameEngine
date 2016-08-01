@@ -31,6 +31,9 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	
 	//TODO: Implement a way to zoom
 	
+	private float width;
+	private float height;
+	
 	private float dx;
 	private float dy;
 	
@@ -66,9 +69,10 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	public Camera(float x, float y, float width, float height) {
 		super(x, y, width, height, Integer.MAX_VALUE - 8);
 		
-		Game.eventMachine.addEventListener(GameObjectEvent.class, this);
+		this.width = width;
+		this.height = height;
 		
-		updateBounds();
+		Game.eventMachine.addEventListener(GameObjectEvent.class, this);
 	}
 	
 	
@@ -85,8 +89,6 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		setScreenRectangle(screenRect);
 		
 		setBackgroundColor(bgColor);
-		
-		updateBounds();
 	}
 
 	/**
@@ -98,36 +100,36 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	public void receiveKeyboardInput(boolean bool) {
 		shouldReceiveKeyboardInput = bool;
 	}
-
+	
 	@Override
 	public float getX() {
-		return x;
+		return transform.getY();
 	}
+
 
 	@Override
 	public float getY() {
-		return y;
+		return transform.getX();
 	}
+
 
 	@Override
 	public void setX(float x) {
-		this.x = x;
-		updateBounds();
+		transform.setX(x);
 	}
+
 
 	@Override
 	public void setY(float y) {
-		this.y = y;
-		updateBounds();
-	}
-	
-	@Override
-	public void setPosition(float x, float y) {
-		this.x = x;
-		this.y = y;
-		updateBounds();
+		transform.setY(y);
 	}
 
+
+	@Override
+	public void setPosition(float x, float y) {
+		transform.setPosition(x, y);
+	}
+	
 	@Override
 	public float getDX() {
 		return dx;
@@ -147,25 +149,11 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	public void setDY(float dy) {
 		this.dy = dy;
 	}
-
-	/**
-	 * Returns the current width of the camera viewport.
-	 * 
-	 * @return The width of the camera viewport.
-	 */
+	
 	@Override
-	public float getWidth() {
-		return width;
-	}
-
-	/**
-	 * Returns the current height of the camera viewport.
-	 * 
-	 * @return The height of the camera viewport.
-	 */
-	@Override
-	public float getHeight() {
-		return height;
+	public void setVelocity(float dx, float dy) {
+		this.dx = dx;
+		this.dy = dy;
 	}
 	
 	/**
@@ -175,7 +163,6 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	 */
 	public void setWidth(int width){
 		this.width = width;
-		updateBounds();
 		
 		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
 		image = ImageUtils.toSystemOptimizedImage(image);
@@ -191,7 +178,6 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	 */
 	public void setHeight(int height){
 		this.height = height;
-		updateBounds();
 		
 		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
 		image = ImageUtils.toSystemOptimizedImage(image);
@@ -209,7 +195,6 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	public void setSize(int width, int height){
 		this.width = width;
 		this.height = height;
-		updateBounds();
 		
 		//TODO: Synchronize?
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -223,9 +208,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 
 	@Override
 	public void update(float deltaTime) {
-		x += dx * deltaTime;
-		y += dy * deltaTime;
-		updateBounds();
+		transform.translate(dx * deltaTime, dy * deltaTime);
 		
 		//This update is synced with the gameobjecthandler
 		//if (Game.gameObjectHandler.shouldUpdateObjects()) {
@@ -270,35 +253,6 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 		
 		return super.getImage();
-	}
-
-	/**
-	 * <p>
-	 * Updates the bounds of the camera.
-	 * </p>
-	 * 
-	 * <p>
-	 * The bounds are used to determine what objects to draw.
-	 * </p>
-	 */
-	@Override
-	public void updateBounds() {
-		bounds.x = (int) x;
-		bounds.y = (int) y;
-		bounds.width = width;
-		bounds.height = height;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>
-	 * The cameras bounds are used to determine what objects to paint.
-	 * </p>
-	 */
-	@Override
-	public Rectangle2D.Float getBounds() {
-		return bounds;
 	}
 
 	/**

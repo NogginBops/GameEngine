@@ -44,8 +44,7 @@ public class UIImage extends UIElement {
 	 */
 	public void setNativeSize(){
 		if(image != null){
-			area.width = image.getWidth(null);
-			area.height = image.getHeight(null);
+			setSize(image.getWidth(null), image.getHeight(null));
 		}
 	}
 	
@@ -60,7 +59,7 @@ public class UIImage extends UIElement {
 	@Override
 	public void paint(Graphics2D g2d) {
 		if(image != null){
-			g2d.drawImage(image, (int)area.x, (int)area.y, (int)area.width, (int)area.height, null);
+			g2d.drawImage(image, (int)area.getX(), (int)area.getY(), (int)area.getWidth(), (int)area.getHeight(), null);
 		}else{
 			g2d.setColor(Color.WHITE);
 			g2d.fill(area);

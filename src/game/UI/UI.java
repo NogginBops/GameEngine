@@ -1,6 +1,7 @@
 package game.UI;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
@@ -8,6 +9,7 @@ import game.UI.elements.UIElement;
 import game.UI.elements.containers.UIContainer;
 import game.gameObject.GameObject;
 import game.gameObject.graphics.Paintable;
+import game.gameObject.transform.Transform;
 
 /**
  * @author Julius Häger
@@ -28,7 +30,7 @@ public class UI extends UIContainer implements Paintable {
 	 * @param area
 	 * @param elements
 	 */
-	public UI(Rectangle2D.Float area, UIElement... elements) {
+	public UI(Rectangle2D area, UIElement... elements) {
 		super(area, elements);
 		setBorder(null);
 		root = this;
@@ -51,13 +53,8 @@ public class UI extends UIContainer implements Paintable {
 	}
 
 	@Override
-	public Rectangle2D.Float getBounds() {
+	public Shape getShape() {
 		return area;
-	}
-
-	@Override
-	public void updateBounds() {
-		//TODO: Fix UI bounds!
 	}
 	
 	@Override
@@ -88,6 +85,11 @@ public class UI extends UIContainer implements Paintable {
 	@Override
 	public BufferedImage getImage() {
 		//TODO: Add support for pre-rendered UI
+		return null;
+	}
+
+	@Override
+	public Transform getTransform() {
 		return null;
 	}
 }

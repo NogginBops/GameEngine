@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import game.gameObject.graphics.Paintable;
-import game.gameObject.physics.BasicMovable;
+import game.gameObject.physics.BasicRotatable;
+import game.gameObject.transform.BoxTransform;
 import game.image.effects.ColorTintFilter;
 import game.util.image.ImageUtils;
 import game.util.math.MathUtils;
@@ -18,7 +19,7 @@ import game.util.math.MathUtils;
  * @author Julius Häger
  *
  */
-public class ParticleSystem extends BasicMovable implements Paintable {
+public class ParticleSystem extends BasicRotatable implements Paintable {
 	
 	//JAVADOC: ParticleSystem
 	
@@ -49,6 +50,8 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	
 	//NOTE: Does this need further optimization?
 	private HashMap<Integer, HashMap<Color, BufferedImage>> imageMap;
+	
+	private BoxTransform boxTransform;
 	
 	/**
 	 * 
@@ -81,14 +84,18 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	 */
 	public boolean debug = false;
 	
+	//NOTE: Should a particle system be any other shape than a rectangle?
 	/**
 	 * @param rect
 	 * @param zOrder
 	 * @param maxParticles 
 	 * @param customizer 
 	 */
-	public ParticleSystem(Rectangle2D.Float rect, int zOrder, int maxParticles, ParticleCustomizer customizer) {
-		super(rect, zOrder);
+	public ParticleSystem(float x, float y, Rectangle2D rect, int zOrder, int maxParticles, ParticleCustomizer customizer) {
+		super(x, y, rect, zOrder, 0);
+		
+		transform = boxTransform = new BoxTransform(x, y, getWidth(), getHeight(), 0.7f, 0.5f);
+		
 		particles = new Particle[maxParticles];
 		for (int i = 0; i < particles.length; i++) {
 			//NOTE: How should the standard particle look like?
@@ -113,7 +120,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 	BufferedImage image;
 	
 	@Override
-	public void paint(Graphics2D g2d) {
+	public void paint(Graphics2D g2d) {		
 		for (int i = 0; i < particles.length; i++) {
 			if(particles[i].active == true){
 				//Paint
@@ -124,14 +131,14 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				
 				if(image == null){
 					g2d.setColor(particles[i].color);
-					g2d.drawRect((int)(x + (particles[i].x - (particles[i].width * particles[i].scaleX/2))),
-							(int)(y + (particles[i].y) - ((particles[i].height * particles[i].scaleY)/2)),
+					g2d.drawRect((int)((particles[i].x - (particles[i].width * particles[i].scaleX/2))),
+							(int)((particles[i].y) - ((particles[i].height * particles[i].scaleY)/2)),
 							(int)(particles[i].width * particles[i].scaleX),
 							(int)(particles[i].height * particles[i].scaleY));
 				}else{
 					g2d.drawImage(image,
-							(int)(x + (particles[i].x - ((particles[i].width * particles[i].scaleX)/2))),
-									(int)(y + (particles[i].y - ((particles[i].height * particles[i].scaleY)/2))),
+							(int)((particles[i].x - ((particles[i].width * particles[i].scaleX)/2))),
+									(int)((particles[i].y - ((particles[i].height * particles[i].scaleY)/2))),
 									(int)(particles[i].width * particles[i].scaleX),
 									(int)(particles[i].height * particles[i].scaleY), null);
 				}
@@ -141,15 +148,15 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		//TODO: Remove? Make a better system for debugging bounding areas?
 		if(debug){
 			g2d.setColor(Color.magenta);
-			g2d.draw(bounds);
+			g2d.draw(shape);
 			g2d.setColor(Color.cyan);
 			for (ParticleEmitter particleEmitter : emitters) {
 				switch (particleEmitter.shape) {
 				case RECTANGLE:
-					g2d.draw(new Rectangle2D.Float(x + particleEmitter.x, y + particleEmitter.y, particleEmitter.width, particleEmitter.height));
+					g2d.draw(new Rectangle2D.Float(particleEmitter.x, particleEmitter.y, particleEmitter.width, particleEmitter.height));
 					break;
 				case CIRCLE:
-					g2d.draw(new Ellipse2D.Float(x + particleEmitter.x - particleEmitter.radius, y + particleEmitter.y - particleEmitter.radius, particleEmitter.radius * 2, particleEmitter.radius * 2));
+					g2d.draw(new Ellipse2D.Float(particleEmitter.x - particleEmitter.radius, particleEmitter.y - particleEmitter.radius, particleEmitter.radius * 2, particleEmitter.radius * 2));
 					break;
 				default:
 					break;
@@ -159,16 +166,19 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 			for (int i = 0; i < particles.length; i++) {
 				if(particles[i].active == true){
 					g2d.setColor(Color.yellow);
-					g2d.drawRect((int)(x + (particles[i].x - (particles[i].width * particles[i].scaleX/2))),
-							(int)(y + (particles[i].y) - ((particles[i].height * particles[i].scaleY)/2)),
+					g2d.drawRect((int)((particles[i].x - (particles[i].width * particles[i].scaleX/2))),
+							(int)((particles[i].y) - ((particles[i].height * particles[i].scaleY)/2)),
 							(int)(particles[i].width * particles[i].scaleX),
 							(int)(particles[i].height * particles[i].scaleY));
 					g2d.setColor(Color.GREEN);
-					g2d.drawRect((int)(x + particles[i].x) - 1,
-							(int)(y + particles[i].y) - 1,
+					g2d.drawRect((int)(particles[i].x) - 1,
+							(int)(particles[i].y) - 1,
 							2, 2);
 				}
 			}
+			
+			g2d.setColor(Color.PINK);
+			g2d.fillRect((int)(boxTransform.getWidth() * boxTransform.getAnchorX()), (int)(boxTransform.getHeight() * boxTransform.getAnchorY()), 1, 1);
 		}
 	}
 	
@@ -258,6 +268,10 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 		return null;
 	}
 	
+	public BoxTransform getBoxTransform(){
+		return boxTransform;
+	}
+	
 	@Override
 	public void update(float deltaTime) {
 		super.update(deltaTime);
@@ -302,19 +316,19 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 				}
 				
 				//NOTE: Should these be temporary variables or not
-				int isOutsideX = MathUtils.isOutside(x + particles[i].x, x, x + width);
-				int isOutsideY = MathUtils.isOutside(y + particles[i].y, y, y + height);
+				int isOutsideX = MathUtils.isOutside(particles[i].x, 0, getWidth());
+				int isOutsideY = MathUtils.isOutside(particles[i].y, 0, getHeight());
 				
 				//NOTE: Should both axis be stopped when colliding a edge or should just one be stopped?
 				//If that behavoiur is desired should that be implemented using the edgeAction;
 				if(isOutsideX != 0){
 					particles[i].dx = 0;
-					particles[i].x = isOutsideX < 0 ? 0 : width;
+					particles[i].x = isOutsideX < 0 ? 0 : getWidth();
 				}
 				
 				if(isOutsideY != 0){
 					particles[i].dy = 0;
-					particles[i].y = isOutsideY < 0 ? 0 : height;
+					particles[i].y = isOutsideY < 0 ? 0 : getHeight();
 				}
 				
 				if(isOutsideX != 0 || isOutsideY != 0){
@@ -347,6 +361,7 @@ public class ParticleSystem extends BasicMovable implements Paintable {
 			}
 		}
 	}
+
 	
 	//NOTE: Should this be private to make this only accessible in the particleEmitter class
 	/**

@@ -2,6 +2,7 @@ package game.UI.elements.input;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -11,6 +12,7 @@ import javax.swing.Action;
 
 import game.UI.elements.UIElement;
 import game.gameObject.GameObject;
+import game.gameObject.transform.Transform;
 import game.input.mouse.MouseListener;
 
 /**
@@ -85,8 +87,8 @@ public class UIButton extends UIElement implements MouseListener {
 	}
 	
 	@Override
-	public void updateBounds() {
-		
+	public Shape getShape() {
+		return area;
 	}
 	
 	@Override
@@ -188,5 +190,10 @@ public class UIButton extends UIElement implements MouseListener {
 	@Override
 	public boolean souldReceiveMouseInput() {
 		return false;
+	}
+
+	@Override
+	public Transform getTransform() {
+		return null;
 	}
 }

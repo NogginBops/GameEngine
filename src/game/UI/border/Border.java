@@ -55,16 +55,16 @@ public abstract class Border {
 	 * @param g2d
 	 * @param area
 	 */
-	public abstract void paint(Graphics2D g2d, Rectangle2D.Float area);
+	public abstract void paint(Graphics2D g2d, Rectangle2D area);
 
 	/**
 	 * Returns a Rectangle that has had the border area removed
 	 * @param rect
 	 * @return
 	 */
-	public Rectangle2D.Float getInnerArea(Rectangle2D.Float rect) {
+	public Rectangle2D getInnerArea(Rectangle2D rect) {
 		//TODO: Pre compute?
-		return new Rectangle2D.Float(rect.x + left, rect.y + top, rect.width - right - left, rect.height - bottom - top);
+		return new Rectangle2D.Float((float)rect.getX() + left, (float)rect.getY() + top, (float)rect.getWidth() - right - left, (float)rect.getHeight() - bottom - top);
 	}
 
 	/**

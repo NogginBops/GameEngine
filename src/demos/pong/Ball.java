@@ -25,7 +25,7 @@ public class Ball extends Sprite implements Collidable{
 
 	private int minDX = 150;
 
-	private Rectangle2D.Float outerBounds;
+	private Rectangle2D outershape;
 
 	private Sound beep;
 
@@ -34,11 +34,11 @@ public class Ball extends Sprite implements Collidable{
 	 * @param y
 	 * @param width
 	 * @param height
-	 * @param outerBounds
+	 * @param outershape
 	 */
-	public Ball(float x, float y, float width, float height, Rectangle2D.Float outerBounds) {
+	public Ball(float x, float y, float width, float height, Rectangle2D outershape) {
 		super(x, y, width, height);
-		this.outerBounds = outerBounds;
+		this.outershape = outershape;
 		
 		try {
 			beep = IOHandler.load(new LoadRequest<Sound>("BeepSound", new File("./res/pongbeep.wav"), Sound.class, "DefaultSoundLoader")).result;
@@ -50,28 +50,28 @@ public class Ball extends Sprite implements Collidable{
 	@Override
 	public void update(float deltaTime) {
 		super.update(deltaTime);
-		if (!outerBounds.contains(bounds)) {
-			if (bounds.getMinY() < outerBounds.getMinY()) {
-				setY(outerBounds.y);
+		if (!outershape.contains(shape.getBounds2D())) {
+			if (shape.getBounds2D().getMinY() < outershape.getMinY()) {
+				setY((float)outershape.getY());
 				setDY(-getDY());
-			} else if (bounds.getMaxY() > outerBounds.getMaxY()) {
-				setY(outerBounds.y + outerBounds.height - bounds.height);
+			} else if (shape.getBounds2D().getMaxY() > outershape.getMaxY()) {
+				setY((float)outershape.getY() + (float)outershape.getHeight() - (float)shape.getBounds2D().getHeight());
 				setDY(-getDY());
 			}
-			if (bounds.getMinX() < outerBounds.getMinX()) {
+			if (shape.getBounds2D().getMinX() < outershape.getMinX()) {
 				
 				Game.eventMachine.fireEvent(new PlayerScoreEvent(this, Side.RIGHT));
 				
 				Game.log.logMessage("Right player scored", "Pong", "Score");
 				resetBall();
-			} else if (bounds.getMaxX() > outerBounds.getMaxX()) {
+			} else if (shape.getBounds2D().getMaxX() > outershape.getMaxX()) {
 				
 				Game.eventMachine.fireEvent(new PlayerScoreEvent(this, Side.LEFT));
 				
 				Game.log.logMessage("Left player scored", "Pong", "Score");
 				resetBall();
 			}
-			AudioEngine.playSound(new AudioSource(x, y, beep));
+			AudioEngine.playSound(new AudioSource(transform.getX(), transform.getY(), beep));
 		}
 	}
 
@@ -81,8 +81,8 @@ public class Ball extends Sprite implements Collidable{
 	public void resetBall() {
 		setDX(0);
 		setDY(0);
-		setX((float) (outerBounds.getMaxX() / 2 - width));
-		setY((float) (outerBounds.getMaxY() / 2 - height));
+		setX((float) (outershape.getMaxX() / 2 - getWidth()));
+		setY((float) (outershape.getMaxY() / 2 - getHeight()));
 		Random rand = new Random();
 		setDX(rand.nextInt(200) - 100);
 		setDY(rand.nextInt(200) - 100);
@@ -97,7 +97,7 @@ public class Ball extends Sprite implements Collidable{
 	
 	@Override
 	public Shape getCollitionShape() {
-		return bounds;
+		return shape;
 	}
 
 	@Override

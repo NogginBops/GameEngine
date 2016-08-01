@@ -82,12 +82,12 @@ public class UILabel extends UIElement {
 		//TODO: Handle this more elegantly and in a more useful way
 		g2d.setFont(font);
 		fontMetrics = g2d.getFontMetrics();
-		area.width = fontMetrics.stringWidth(text);
-		area.height = fontMetrics.getHeight();
+		setWidth(fontMetrics.stringWidth(text));
+		setHeight(fontMetrics.getHeight());
 		
 		g2d.setColor(color);
 		
-		g2d.drawString(text, area.x, area.y + fontMetrics.getHeight());
+		g2d.drawString(text, (int)area.getX(), (int)area.getY() + fontMetrics.getHeight());
 		
 		g2d.setFont(temp);
 	}

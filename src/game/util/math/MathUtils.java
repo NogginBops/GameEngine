@@ -110,6 +110,30 @@ public final class MathUtils {
 		}
 	}
 	
+	public static float wrap(float value, float min, float max){
+		if(min > max){
+			throw new IllegalArgumentException("Min cannot be larger than max");
+		}
+		
+		if(min == max){
+			return min;
+		}
+		
+		if(value < min){
+			while(value < min){
+				value += (max - min);
+			}
+			return value;
+		}else if(value > max){
+			while(value > max){
+				value -= (max - min);
+			}
+			return min;
+		}else{
+			return value;
+		}
+	}
+	
 	/**
 	 * @param value1
 	 * @param value2
