@@ -4,11 +4,11 @@ package game.util;
  * @author Julius Häger
  *
  */
-public interface UpdateProcedure {
+public interface Procedure {
 
 	/**
 	 * 
 	 */
-	public void proc(float deltaTime);
+	public void proc();
 	
 }
