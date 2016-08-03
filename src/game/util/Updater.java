@@ -23,7 +23,11 @@ public abstract class Updater {
 	protected CopyOnWriteArrayList<UpdateListener> listeners;
 	
 	protected CopyOnWriteArrayList<GameSystem> systems;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> refs/remotes/origin/GameEngine(Nightly)
 	/**
 	 * 
 	 */

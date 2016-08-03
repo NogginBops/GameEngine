@@ -2,13 +2,16 @@ package game.UI.elements.input;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+<<<<<<< HEAD
 import java.awt.Shape;
+=======
+import java.awt.event.ActionEvent;
+>>>>>>> refs/remotes/origin/GameEngine(Nightly)
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Rectangle2D.Float;
 import java.util.ArrayList;
-
-import javax.swing.Action;
 
 import game.UI.elements.UIElement;
 import game.gameObject.GameObject;
@@ -25,7 +28,7 @@ public class UIButton extends UIElement implements MouseListener {
 	
 	//TODO: UI active state!
 	
-	private boolean active;
+	private boolean active = true;
 	
 	/**
 	 * 
@@ -60,9 +63,7 @@ public class UIButton extends UIElement implements MouseListener {
 	 */
 	protected Color color = Color.BLACK;
 	
-	protected ArrayList<ActionListener> listeners;
-	
-	protected Action event;
+	protected ArrayList<ActionListener> listeners = new ArrayList<>();
 	
 	/**
 	 * @param x 
@@ -72,10 +73,6 @@ public class UIButton extends UIElement implements MouseListener {
 	 */
 	public UIButton(float x, float y, float width, float height) {
 		super(x, y, width, height);
-		
-		
-		
-		//listeners.get(0).actionPerformed(new ActionEvent(this, 1, ""));
 	}
 	
 	/**
@@ -84,6 +81,21 @@ public class UIButton extends UIElement implements MouseListener {
 	 */
 	public UIButton(float width, float height) {
 		super(width, height);
+	}
+	
+	/**
+	 * @param listener
+	 */
+	public void addActionListener(ActionListener listener){
+		listeners.add(listener);
+	}
+	
+	/**
+	 * @param listener
+	 * @return
+	 */
+	public boolean removeActionListener(ActionListener listener){
+		return listeners.remove(listener);
 	}
 	
 	@Override
@@ -99,6 +111,11 @@ public class UIButton extends UIElement implements MouseListener {
 	@Override
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+	
+	@Override
+	public Float getBounds() {
+		return super.getBounds();
 	}
 
 	@Override
@@ -129,16 +146,22 @@ public class UIButton extends UIElement implements MouseListener {
 		
 		g2d.setColor(color);
 		
-		g2d.fill(area);
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
+		g2d.fill(getArea());
 		
 	}
 
 	@Override
+	public void mouseClicked(MouseEvent e) {
+		//System.out.println("Clicked");
+		ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_FIRST, "");
+		for (ActionListener actionListener : listeners) {
+			actionListener.actionPerformed(event);
+		}
+	}
+
+	@Override
 	public void mousePressed(MouseEvent e) {
+		//System.out.println("Pressed");
 		if(state != ButtonState.ACTIVE){
 			state = ButtonState.ACTIVE;
 		}
@@ -146,6 +169,7 @@ public class UIButton extends UIElement implements MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		//System.out.println("Released");
 		if(state == ButtonState.ACTIVE){
 			state = ButtonState.HOVER;
 		}
@@ -153,6 +177,7 @@ public class UIButton extends UIElement implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
+		//System.out.println("Entered");
 		if(state != ButtonState.INACTIVE){
 			state = ButtonState.HOVER;
 		}
@@ -160,21 +185,20 @@ public class UIButton extends UIElement implements MouseListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		//System.out.println("Exited");
 		if(state == ButtonState.HOVER){
 			state = ButtonState.IDLE;
-		}else if(state == ButtonState.ACTIVE){
-			//TODO: UIButton:  Active until release
 		}
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		
+		//System.out.println("Dragged");
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		
+		//System.out.println("Moved");
 	}
 
 	@Override
@@ -189,7 +213,11 @@ public class UIButton extends UIElement implements MouseListener {
 
 	@Override
 	public boolean souldReceiveMouseInput() {
-		return false;
+		if(state == ButtonState.ACTIVE){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	@Override

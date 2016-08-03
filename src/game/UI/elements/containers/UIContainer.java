@@ -236,9 +236,15 @@ public abstract class UIContainer extends UIElement {
 	
 	@Override
 	public Rectangle2D.Float getBounds() {
+<<<<<<< HEAD
 		Rectangle2D parentArea = parent.getBounds();
 		computeContainedArea();
 		return new Rectangle2D.Float((float)containedArea.getX() + (float)parentArea.getX(), (float)containedArea.getY() + (float)parentArea.getY(), (float)containedArea.getWidth(), (float)containedArea.getHeight());
+=======
+		Rectangle2D.Float parentArea = parent.getBounds();
+		computeContainedArea();
+		return new Rectangle2D.Float(containedArea.x + parentArea.x, containedArea.y + parentArea.y, containedArea.width, containedArea.height);
+>>>>>>> refs/remotes/origin/GameEngine(Nightly)
 	}
 
 	
