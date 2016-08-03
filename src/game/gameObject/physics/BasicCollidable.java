@@ -34,11 +34,6 @@ public class BasicCollidable extends BasicMovable implements Collidable{
 	}
 
 	@Override
-	public Shape getCollitionShape() {
-		return shape;
-	}
-
-	@Override
 	public void hasCollided(Collidable collisionObject) {
 		
 	}

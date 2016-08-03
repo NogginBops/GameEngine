@@ -112,6 +112,10 @@ public class Transform {
 	public float getRotation() {
 		return rotation;
 	}
+	
+	public float getRotationRad(){
+		return (float) Math.toRadians(rotation);
+	}
 
 	public void setRotation(float rotation) {
 		this.rotation = MathUtils.wrap(rotation, 0, 360);

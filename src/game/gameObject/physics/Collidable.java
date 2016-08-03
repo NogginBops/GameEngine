@@ -22,7 +22,9 @@ public interface Collidable extends Movable {
 	 * 
 	 * @return the <code>Shape</code> of the collidable
 	 */
-	public Shape getCollitionShape();
+	default public Shape getCollitionShape(){
+		return getTranformedShape();
+	}
 
 	/**
 	 * This method is called when this object has collided with another

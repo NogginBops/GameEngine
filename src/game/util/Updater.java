@@ -19,12 +19,18 @@ public abstract class Updater {
 	// JAVADOC: Updater
 	
 	protected CopyOnWriteArrayList<UpdateListener> listeners;
+	
+	protected CopyOnWriteArrayList<UpdateProcedure> earlyProcedures;
+	
+	protected CopyOnWriteArrayList<UpdateProcedure> lateProcedures;
 
 	/**
 	 * 
 	 */
 	public Updater() {
 		listeners = new CopyOnWriteArrayList<UpdateListener>();
+		earlyProcedures = new CopyOnWriteArrayList<UpdateProcedure>();
+		lateProcedures = new CopyOnWriteArrayList<UpdateProcedure>();
 	}
 
 	/**
@@ -34,10 +40,32 @@ public abstract class Updater {
 	 * @param deltaTime
 	 */
 	public void propagateUpdate(float deltaTime) {
+		for (UpdateProcedure updateProcedure : earlyProcedures) {
+			updateProcedure.proc(deltaTime);
+		}
 		for (UpdateListener listener : listeners) {
 			if(listener.isActive()){
 				listener.update(deltaTime);
 			}
 		}
+		for (UpdateProcedure updateProcedure : lateProcedures) {
+			updateProcedure.proc(deltaTime);
+		}
+	}
+	
+	public void addEarlyUpdateProcedure(UpdateProcedure proc){
+		earlyProcedures.add(proc);
+	}
+	
+	public void removeEarlyUpdateProcedure(UpdateProcedure proc) {
+		earlyProcedures.remove(proc);
+	}
+	
+	public void addLateUpdateProcedure(UpdateProcedure proc){
+		lateProcedures.add(proc);
+	}
+	
+	public void removeLateUpdateProcedure(UpdateProcedure proc) {
+		lateProcedures.remove(proc);
 	}
 }

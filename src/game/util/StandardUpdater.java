@@ -10,6 +10,8 @@ import game.gameObject.handler.event.GameObjectEvent;
  *
  */
 public class StandardUpdater extends Updater implements EventListener{
+	
+	//NOTE: Is this event needed? Should this behavior just be a part of the Updater class
 
 	/**
 	 * 
@@ -38,5 +40,4 @@ public class StandardUpdater extends Updater implements EventListener{
 			}
 		}
 	}
-	
 }
