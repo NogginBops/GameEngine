@@ -1,13 +1,11 @@
 package game.gameObject.graphics;
 
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.gameObject.BasicGameObject;
 import game.gameObject.physics.PhysicsEngine;
-import game.gameObject.transform.Transform;
 import game.screen.ScreenRect;
 import game.util.image.ImageUtils;
 
@@ -46,8 +44,6 @@ public abstract class Painter extends BasicGameObject {
 	protected BufferedImage image;
 	
 	protected Graphics2D translatedGraphics;
-	
-	protected AffineTransform originalTransform;
 	
 	/**
 	 * 
@@ -123,6 +119,31 @@ public abstract class Painter extends BasicGameObject {
 		tempDrawnObjects = 0;
 		
 		if (paintables != null && paintables.size() > 0) {
+			for (Paintable paintable : paintables) {
+				if(paintable.isActive()){
+					if(PhysicsEngine.collides(paintable.getBounds(), getBounds())){
+						paintableImage = paintable.getImage();
+						if(paintableImage != null){
+							translatedGraphics.drawImage(paintableImage,
+									0, 0, (int)paintable.getBounds().getWidth(),
+									(int)paintable.getBounds().getHeight(), null);
+						}else{
+							paintable.paint(translatedGraphics);
+						}
+						
+						tempDrawnObjects++;
+					}
+				}
+			}
+		}
+		
+
+		drawnObjects = tempDrawnObjects;
+		
+		return image;
+		
+		/*
+		if (paintables != null && paintables.size() > 0) {
 			if(translatedGraphics == null){
 				translatedGraphics = image.createGraphics();
 				originalTransform = translatedGraphics.getTransform();
@@ -160,5 +181,6 @@ public abstract class Painter extends BasicGameObject {
 		drawnObjects = tempDrawnObjects;
 		
 		return image;
+		*/
 	}
 }

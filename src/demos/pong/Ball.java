@@ -1,6 +1,5 @@
 package demos.pong;
 
-import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
@@ -93,11 +92,6 @@ public class Ball extends Sprite implements Collidable{
 				setDX(minDX);
 			}
 		}
-	}
-	
-	@Override
-	public Shape getCollitionShape() {
-		return shape;
 	}
 
 	@Override

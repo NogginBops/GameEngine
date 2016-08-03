@@ -1,6 +1,5 @@
 package demos.pong;
 
-import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
@@ -127,11 +126,6 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
 		return true;
-	}
-	
-	@Override
-	public Shape getCollitionShape() {
-		return shape;
 	}
 
 	@Override
