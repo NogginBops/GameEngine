@@ -178,7 +178,7 @@ public class UIButton extends UIElement implements MouseListener {
 	}
 
 	@Override
-	public void mouseWeelMoved(MouseWheelEvent e) {
+	public void mouseWheelMoved(MouseWheelEvent e) {
 		
 	}
 

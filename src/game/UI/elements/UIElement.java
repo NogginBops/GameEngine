@@ -21,7 +21,7 @@ public abstract class UIElement{
 	
 	protected UIContainer parent;
 
-	protected Rectangle2D area;
+	protected Rectangle2D.Float area;
 
 	protected int zOrder = 10;
 
@@ -35,7 +35,7 @@ public abstract class UIElement{
 	/**
 	 * @param area
 	 */
-	public UIElement(Rectangle2D area) {
+	public UIElement(Rectangle2D.Float area) {
 		this.area = area;
 	}
 
@@ -142,7 +142,7 @@ public abstract class UIElement{
 	/**
 	 * @return
 	 */
-	public Rectangle2D getArea(){
+	public Rectangle2D.Float getArea(){
 		return area;
 	}
 	
@@ -151,7 +151,7 @@ public abstract class UIElement{
 	 */
 	public Rectangle2D.Float getBounds() {
 		//TODO: Pre compute?
-		Rectangle2D parentArea = parent.getBounds();
+		Rectangle2D.Float parentArea = parent.getBounds();
 		return new Rectangle2D.Float((float)area.getX() + (float)parentArea.getX(), (float)area.getY() + (float)parentArea.getY(), (float)area.getWidth(), (float)area.getHeight());
 	}
 	

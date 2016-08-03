@@ -18,7 +18,7 @@ public abstract class UIContainer extends UIElement {
 	
 	//JAVADOC: UIContainer
 
-	protected Rectangle2D containedArea;
+	protected Rectangle2D.Float containedArea;
 
 	protected Graphics2D translatedGraphics;
 
@@ -41,7 +41,7 @@ public abstract class UIContainer extends UIElement {
 	 * @param rect
 	 * @param elements
 	 */
-	public UIContainer(Rectangle2D rect, UIElement... elements) {
+	public UIContainer(Rectangle2D.Float rect, UIElement... elements) {
 		super(rect);
 		this.children = new CopyOnWriteArrayList<UIElement>();
 		addUIElements(elements);
@@ -219,11 +219,7 @@ public abstract class UIContainer extends UIElement {
 	 * This method updates the containedArea member variable.
 	 * @return
 	 */
-<<<<<<< HEAD
-	protected Rectangle2D computeContainerArea() {
-=======
 	protected Rectangle2D.Float computeContainedArea() {
->>>>>>> origin/GameEngine(Nightly)
 		if(border != null){
 			return containedArea = border.getInnerArea(area);
 		}else{
@@ -234,26 +230,15 @@ public abstract class UIContainer extends UIElement {
 	/**
 	 * @return
 	 */
-<<<<<<< HEAD
-	public Rectangle2D getContainerArea() {
-=======
 	public Rectangle2D.Float getContainedArea() {
->>>>>>> origin/GameEngine(Nightly)
 		return containedArea;
 	}
 	
 	@Override
-<<<<<<< HEAD
-	public Rectangle2D getBounds() {
-		Rectangle2D parentArea = parent.getBounds();
-		computeContainerArea();
-		return new Rectangle2D.Float((float)containedArea.getX() + (float)parentArea.getX(), (float)containedArea.getY() + (float)parentArea.getY(), (float)containedArea.getWidth(), (float)containedArea.getHeight());
-=======
 	public Rectangle2D.Float getBounds() {
-		Rectangle2D.Float parentArea = parent.getBounds();
+		Rectangle2D parentArea = parent.getBounds();
 		computeContainedArea();
-		return new Rectangle2D.Float(containedArea.x + parentArea.x, containedArea.y + parentArea.y, containedArea.width, containedArea.height);
->>>>>>> origin/GameEngine(Nightly)
+		return new Rectangle2D.Float((float)containedArea.getX() + (float)parentArea.getX(), (float)containedArea.getY() + (float)parentArea.getY(), (float)containedArea.getWidth(), (float)containedArea.getHeight());
 	}
 
 	

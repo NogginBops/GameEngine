@@ -30,7 +30,7 @@ public class UI extends UIContainer implements Paintable {
 	 * @param area
 	 * @param elements
 	 */
-	public UI(Rectangle2D area, UIElement... elements) {
+	public UI(Rectangle2D.Float area, UIElement... elements) {
 		super(area, elements);
 		setBorder(null);
 		root = this;

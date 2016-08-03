@@ -29,7 +29,7 @@ public class Score extends UI implements KeyListener {
 
 	private int right = 0;
 
-	private Rectangle2D deviderRect;
+	private Rectangle2D.Float deviderRect;
 
 	private int deviderWidth = 4;
 	
@@ -43,7 +43,7 @@ public class Score extends UI implements KeyListener {
 	/**
 	 * @param area
 	 */
-	public Score(Rectangle2D area) {
+	public Score(Rectangle2D.Float area) {
 		super(area);
 		deviderRect = new Rectangle2D.Float(((float)area.getWidth() / 2 - deviderWidth / 2), (float)area.getY(), deviderWidth,
 				(float)area.getHeight());

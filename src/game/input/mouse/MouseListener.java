@@ -14,15 +14,6 @@ public interface MouseListener extends GameObject {
 
 	// JAVADOC: MouseListener
 	
-<<<<<<< HEAD
-	/**
-	 * 
-	 */
-	@Override
-	public int getZOrder();
-
-=======
->>>>>>> origin/GameEngine(Nightly)
 	/**
 	 * 
 	 * 

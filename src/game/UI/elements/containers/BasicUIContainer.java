@@ -37,16 +37,9 @@ public class BasicUIContainer extends UIContainer {
 	//FIXME: This constructor is broken!!
 	public BasicUIContainer(UIContainer container, float insetLeft, float insetTop, float insetRight, float insetBottom) {
 		super();
-<<<<<<< HEAD
-		area = container.getContainerArea();
-		area.setRect(area.getX() + insetLeft, area.getY() + insetTop, area.getWidth() - (insetLeft + insetRight), area.getHeight() - (insetTop - insetBottom));
-		computeContainerArea();
-=======
 		area = container.getContainedArea();
-		area.setRect(area.x + insetLeft, area.y + insetTop, area.width - (insetLeft + insetRight), area.height - (insetTop - insetBottom));
+		area.setRect(area.getX() + insetLeft, area.getY() + insetTop, area.getWidth() - (insetLeft + insetRight), area.getHeight() - (insetTop - insetBottom));
 		computeContainedArea();
->>>>>>> origin/GameEngine(Nightly)
-		
 		setParent(container);
 	}
 

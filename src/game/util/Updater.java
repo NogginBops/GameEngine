@@ -22,11 +22,8 @@ public abstract class Updater {
 	
 	protected CopyOnWriteArrayList<UpdateListener> listeners;
 	
-<<<<<<< HEAD
-=======
 	protected CopyOnWriteArrayList<GameSystem> systems;
-
->>>>>>> origin/GameEngine(Nightly)
+	
 	/**
 	 * 
 	 */
