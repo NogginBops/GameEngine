@@ -163,7 +163,7 @@ public class ParticleTest implements GameInitializer {
 		pSystem.gGranularity = 64;
 		pSystem.bGranularity = 64;
 		
-		pSystem.debug = true;
+		//pSystem.debug = true;
 		
 		Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
 		

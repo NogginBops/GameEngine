@@ -21,7 +21,10 @@ import game.util.image.ImageUtils;
 public class Sprite extends BasicMovable implements Paintable {
 
 	// JAVADOC: Sprite
-
+	
+	//TODO: A flag to disable all of the sprites systems so that it basically behaves like a moving picture (no tint color, no graphicsReadySprite, no animation)
+	//Scale should still work
+	
 	/**
 	 * The sprite image of the sprite.
 	 */
@@ -257,6 +260,13 @@ public class Sprite extends BasicMovable implements Paintable {
 		this.animation = animation;
 		preloadSprites(animation.getImages());
 	}
+	
+	/**
+	 * @return
+	 */
+	public Animation getAnimation(){
+		return animation;
+	}
 
 	/**
 	 * @param sprite
@@ -305,7 +315,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	public Color getColor() {
 		return color;
 	}
-
+	
 	// TODO: Clean up, rename and optimize these methods
 
 	private ColorTintFilter createColorFilter() {

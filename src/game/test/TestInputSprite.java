@@ -3,6 +3,7 @@ package game.test;
 import game.gameObject.graphics.Sprite;
 import game.input.keys.KeyListener;
 import game.input.mouse.MouseListener;
+import game.util.math.ColorUtils;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -36,8 +37,8 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 		super(x, y, width, height);
 		zOrder = z;
 		this.absorb = absorb;
-		color = Color.GREEN;
-		secColor = Color.RED;
+		color = ColorUtils.createTransparent(Color.GREEN, 150);
+		secColor = ColorUtils.createTransparent(Color.YELLOW, 150);
 		lastXInSpriteBounds = x;
 		lastYInSpriteBounds = y;
 	}
@@ -113,7 +114,7 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 	}
 
 	@Override
-	public void mouseWeelMoved(MouseWheelEvent e) {
+	public void mouseWheelMoved(MouseWheelEvent e) {
 
 	}
 

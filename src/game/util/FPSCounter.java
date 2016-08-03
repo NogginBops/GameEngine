@@ -62,7 +62,7 @@ public final class FPSCounter {
 		frames++;
 		
 		//TODO: Use a variable for interval
-		if (time > 1) {
+		if (time >= 1) {
 			fps = (long) (frames / time);
 			averageFPS = (long) (framesTot / timeTot);
 			time = 0;

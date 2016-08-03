@@ -77,7 +77,7 @@ public class GameObjectAdder extends BasicGameObject implements MouseListener, K
 	}
 
 	@Override
-	public void mouseWeelMoved(MouseWheelEvent e) {
+	public void mouseWheelMoved(MouseWheelEvent e) {
 		currentBuilding.placed();
 		currentBuilding = new House(e.getX(), e.getY(), 24, 30);
 		Game.gameObjectHandler.addGameObject(currentBuilding, "House");

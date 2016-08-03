@@ -70,6 +70,7 @@ public class Screen implements Runnable{
 	
 	private Dimension size;
 	
+	private boolean resizable = false;
 	
 	private boolean shouldRun = false;
 	
@@ -79,17 +80,24 @@ public class Screen implements Runnable{
 	
 	private boolean debug = false;
 	
+	private int targetFPS;
+	
+	private boolean limitFPS = true;
+	
 	/**
 	 * @param width
 	 * @param height
 	 * @param mode
 	 * @param title
+	 * @param targetFPS 
 	 */
-	public Screen(int width, int height, Mode mode, String title) {
+	public Screen(int width, int height, Mode mode, String title, int targetFPS) {
 		
 		size = new Dimension(width, height);
 		this.mode = mode;
 		this.title = title;
+		
+		this.targetFPS = targetFPS;
 		
 		painters = new ArrayList<>();
 		
@@ -117,12 +125,15 @@ public class Screen implements Runnable{
 	 * @param size 
 	 * @param mode
 	 * @param title
+	 * @param targetFPS 
 	 */
-	public Screen(Dimension size, Mode mode, String title) {
+	public Screen(Dimension size, Mode mode, String title, int targetFPS) {
 		
 		this.size = size;
 		this.mode = mode;
 		this.title = title;
+		
+		this.targetFPS = targetFPS;
 		
 		painters = new ArrayList<>();
 		
@@ -132,6 +143,7 @@ public class Screen implements Runnable{
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		frame.setResizable(resizable);
 		frame.setUndecorated(false);
 		frame.setExtendedState(JFrame.NORMAL);
 		frame.getContentPane().setPreferredSize(size);
@@ -152,9 +164,13 @@ public class Screen implements Runnable{
 		long currentTime = System.nanoTime();
 		long elapsedTime = 0;
 		
+		long sleepTime = 0;
+		long targetTime = 0;
+		
 		while (shouldRun) {
-			elapsedTime = System.nanoTime() - currentTime;
-			currentTime = System.nanoTime();
+			long time = System.nanoTime();
+			elapsedTime = time - currentTime;
+			currentTime = time;
 			
 			Graphics2D g2d = (Graphics2D) frame.getBufferStrategy().getDrawGraphics();
 			g2d.translate(insets.right, insets.top);
@@ -204,11 +220,17 @@ public class Screen implements Runnable{
 						"Graphics", "DeltaTime", "System");
 			}
 			
-			//TODO: Dynamic sleep time
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if(limitFPS){
+				targetTime = (1000000000L / targetFPS);
+				sleepTime = targetTime - (elapsedTime - sleepTime);
+				
+				if(sleepTime > 0){
+					try {
+						Thread.sleep(sleepTime / 1000000, (int)(sleepTime % 1000000));
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		
@@ -268,6 +290,34 @@ public class Screen implements Runnable{
 	 */
 	public void addDebugText(DebugOutputProvider provider){
 		debugPrintOuts.add(provider);
+	}
+	
+	/**
+	 * @param target
+	 */
+	public void setTargetFPS(int target){
+		targetFPS = target;
+	}
+	
+	/**
+	 * @return
+	 */
+	public int getTargetFPS(){
+		return targetFPS;
+	}
+	
+	/**
+	 * @param limit
+	 */
+	public void limitFPS(boolean limit){
+		this.limitFPS = limit;
+	}
+	
+	/**
+	 * @return
+	 */
+	public boolean isLimitingFPS(){
+		return limitFPS;
 	}
 	
 	/**

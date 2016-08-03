@@ -21,6 +21,7 @@ import game.input.MouseInputHandler;
 import game.screen.Screen;
 import game.sound.AudioEngine;
 import game.util.FPSCounter;
+import game.util.StandardUpdater;
 import game.util.UpdateCounter;
 import game.util.Updater;
 import game.util.image.ImageUtils;
@@ -56,6 +57,10 @@ public class Game {
 	private static long startTime;
 	private static long currTime;
 	private static long elapsedTime;
+	
+	private int targetUPS;
+	
+	private boolean limitUPS = true;
 	
 	/**
 	 * 
@@ -139,7 +144,7 @@ public class Game {
 		Game.settings = settings;
 		
 		if(settings == null){
-			log.logWarning("No settings provided! Using the default settings!");
+			log.logWarning("No settings provided! Using the default settings!", "System", "Settings");
 			settings = GameSettings.createDefaultGameSettings();
 		}
 		//TODO: Use the GameSettings
@@ -153,7 +158,7 @@ public class Game {
 				basicDebug();
 			}
 		}else{
-			Game.log.logWarning("No OnScreenDebug property in game settings");;
+			Game.log.logWarning("No OnScreenDebug property in game settings", "System", "Settings");
 		}
 		
 		if(settings.containsSetting("DebugLog")){
@@ -161,7 +166,7 @@ public class Game {
 				addDebugLog();
 			}
 		}else{
-			Game.log.logWarning("No DebugLog property in game settings");;
+			Game.log.logWarning("No DebugLog property in game settings", "System", "Settings");
 		}
 		
 		if(settings.containsSetting("DebugID")){
@@ -169,7 +174,7 @@ public class Game {
 				addIDHandlerDebug();
 			}
 		}else{
-			Game.log.logWarning("No DebugID property in game settings");;
+			Game.log.logWarning("No DebugID property in game settings", "System", "Settings");
 		}
 	}
 	
@@ -198,33 +203,52 @@ public class Game {
 		name = DEFAULT.getSettingAs("Name", String.class);
 		if(settings.containsSetting("Name")){
 			name = settings.getSettingAs("Name", String.class);
+		}else{
+			log.logWarning("No 'Name' settigns in settigns! Using the default setting.", "System", "Settings");
 		}
 		
 		Dimension res = DEFAULT.getSettingAs("Resolution", Dimension.class);
 		if(settings.containsSetting("Resolution")){
 			res = settings.getSettingAs("Resolution", Dimension.class);
+		}else{
+			log.logWarning("No 'Resolution' settigns in settigns! Using the default setting.", "System", "Settings");
 		}
 		
 		Screen.Mode mode = DEFAULT.getSettingAs("ScreenMode", Screen.Mode.class);
 		if(settings.containsSetting("ScreenMode")){
 			mode = settings.getSettingAs("ScreenMode", Screen.Mode.class);
+		}else{
+			log.logWarning("No 'ScreenMode' settigns in settigns! Using the default setting.", "System", "Settings");
 		}
 		
-		screen = new Screen(res, mode, name);
+		int targetFPS = DEFAULT.getSettingAs("TargetFPS", Integer.class);
+		if(settings.containsSetting("TargetFPS")){
+			targetFPS = settings.getSettingAs("TargetFPS", Integer.class);
+		}else{
+			log.logWarning("No 'TargetFPS' settigns in settigns! Using the default setting.", "System", "Settings");
+		}
 		
+		screen = new Screen(res, mode, name, targetFPS);
+		
+		camera = DEFAULT.getSettingAs("MainCamera", Camera.class);
 		if(settings.containsSetting("MainCamera")){
 			camera = settings.getSettingAs("MainCamera", Camera.class);
-		}
-
-		if(camera == null){
-			camera = DEFAULT.getSettingAs("MainCamera", Camera.class);
+		}else{
+			log.logWarning("No 'MainCamera' settigns in settigns! Using the default setting.", "System", "Settings");
 		}
 		
-		updater = DEFAULT.getSettingAs("Updater", Updater.class);
+		targetUPS = DEFAULT.getSettingAs("TargetUPS", Integer.class);
+		if(settings.containsSetting("TargetFPS")){
+			targetUPS = settings.getSettingAs("TargetUPS", Integer.class);
+		}else{
+			log.logWarning("No 'TargetUPS' settigns in settigns! Using the default setting.", "System", "Settings");
+		}
+		
 		if(settings.containsSetting("Updater")){
 			updater = settings.getSettingAs("Updater", Updater.class);
+			log.logMessage("Found a custom updater!");
 		}else{
-			log.logMessage("Using the standard updater.");
+			updater = new StandardUpdater();
 		}
 		
 		camera.setSize(res.width, res.height);
@@ -232,6 +256,8 @@ public class Game {
 		mouseHandler = new MouseInputHandler(camera);
 		keyHandler = new KeyInputHandler();
 		inputHandler = new Input(mouseHandler, keyHandler);
+		
+		updater.addSystem(mouseHandler);
 		
 		@SuppressWarnings("unchecked")
 		Consumer<KeyInputHandler> keyBindings = (Consumer<KeyInputHandler>) settings.getSettingAs("KeyBindings", Consumer.class);
@@ -267,7 +293,8 @@ public class Game {
 		
 		physicsEngine = new PhysicsEngine(gameObjectHandler);
 		
-		screen = new Screen(800, 600, Screen.Mode.NORMAL, "Game");
+		//TODO: A settings for target fps
+		screen = new Screen(800, 600, Screen.Mode.NORMAL, "Game", 60);
 		camera = new Camera(0, 0, screen.getWidth(), screen.getHeight());
 		
 		camera.setBackgroundColor(new Color(0.15f, 0.15f, 0.15f, 1f));
@@ -292,7 +319,8 @@ public class Game {
 	//NOTE: Does this really have any performance hit?
 	private void basicDebug(){
 		screen.setDebugEnabled(true);
-		screen.addDebugText(() -> { return new String[]{
+		screen.addDebugText(() -> {
+			return new String[]{
 				"Frames: " + FPSCounter.framesTot,
 				"Updates: " + UpdateCounter.updatesTot,
 				"ElapsedTime (ns): " + elapsedTime,
@@ -351,15 +379,19 @@ public class Game {
 		currTime = startTime;
 		elapsedTime = 0;
 		
-		log.logMessage("Pre run time: " + (startTime - initTime) / 1000000000f, "System");
+		log.logMessage("Pre run time: " + (startTime - initTime) / 1000000000f + "s", "System");
+		
+		long sleepTime = 0;
+		long targetTime = 0;
 		
 		//FIXME: Allocating a lot of memory when updating many GameObjects
 
 		log.logMessage("Running " + name + "!", "System");
 		running = true;
 		while (running) {
-			elapsedTime = System.nanoTime() - currTime;
-			currTime += elapsedTime;
+			long time = System.nanoTime();
+			elapsedTime = time - currTime;
+			currTime = time;
 
 			if (closeRequested) {
 				screen.stop();
@@ -380,6 +412,8 @@ public class Game {
 				continue;
 			}
 			
+			//TODO: UpdateListeners that are not GameObjects (Systems)
+			
 			updater.propagateUpdate((elapsedTime / 1000000000f) * timeScale);
 			
 			UpdateCounter.update(elapsedTime / 1000000000f);
@@ -393,10 +427,17 @@ public class Game {
 			
 			gameObjectHandler.clearChange();
 			
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if(limitUPS){
+				targetTime = (1000000000L / targetUPS);
+				sleepTime = targetTime - (elapsedTime - sleepTime);
+				
+				if(sleepTime > 0){
+					try {
+						Thread.sleep(sleepTime / 1000000, (int)(sleepTime % 1000000));
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		onQuit();
@@ -454,7 +495,9 @@ public class Game {
 	public static void loadScene(GameInitializer sceneInit){
 		pause();
 		
-		gameObjectHandler = new GameObjectHandler();
+		log.logMessage("Loading scene..");
+		
+		gameObjectHandler.clear();
 		
 		//TODO: Figure out a good way to solve adding standard gameObjects to the new GOH
 		
@@ -464,13 +507,15 @@ public class Game {
 		
 		gameObjectHandler.addGameObject(camera, "Main camera");
 		
-		camera.receiveKeyboardInput(true);
+		camera.receiveKeyboardInput(false);
 		
 		sceneInit.initialize(game, settings);
 		
 		if(IDDebug != null){
 			IDDebug.setHandler(gameObjectHandler.getIDHandler());
 		}
+		
+		log.logMessage("Loaded scene!");
 		
 		resume();
 	}
@@ -504,5 +549,19 @@ public class Game {
 	 */
 	public static float getTimeScale(){
 		return timeScale;
+	}
+	
+	/**
+	 * @param limit
+	 */
+	public void limitUPS(boolean limit){
+		this.limitUPS = limit;
+	}
+	
+	/**
+	 * @return
+	 */
+	public boolean isLimitingUPS(){
+		return limitUPS;
 	}
 }

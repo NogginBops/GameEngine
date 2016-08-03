@@ -41,7 +41,7 @@ public class UITest implements GameInitializer {
 		
 		settings.putSetting("OnScreenDebug", true);
 		
-		settings.putSetting("DebugID", true);
+		settings.putSetting("DebugID", false);
 		
 		settings.putSetting("GameInit", new UITest());
 		
@@ -55,8 +55,8 @@ public class UITest implements GameInitializer {
 	
 	@Override
 	public void initialize(Game game, GameSettings settings) {
-		UI hud = new UI(new Rectangle2D.Float(200, 100, 400, 400));
-
+		UI hud = new UI(new Rectangle2D.Float(100, 100, 400, 400));
+		
 		BasicUIContainer container = new BasicUIContainer(200, 300);
 		Border border = new SolidBorder(20, Color.MAGENTA);
 		container.setBorder(border);
@@ -83,12 +83,19 @@ public class UITest implements GameInitializer {
 		UIimg.setZOrder(2);
 		container.addUIElement(UIimg);
 		
-		UIButton button = new UIButton(40, 40, 100, 40);
+		UIButton button = new UIButton(20, 20, 100, 40);
 		Game.gameObjectHandler.addGameObject(button);
 		button.setZOrder(10);
 		container.addUIElement(button);
 		
+		button.addActionListener((e) -> {
+			System.out.println("asdf");
+			System.out.println(e);
+		});
+		
 		Game.gameObjectHandler.addGameObject(hud);
+		
+		System.out.println(button.getBounds());
 	}
 
 }

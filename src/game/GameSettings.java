@@ -15,7 +15,6 @@ import game.gameObject.graphics.Camera;
 import game.input.KeyInputHandler;
 import game.screen.Screen;
 import game.screen.ScreenRect;
-import game.util.StandardUpdater;
 
 /**
  * @author Julius Häger
@@ -45,11 +44,13 @@ public class GameSettings {
 		//NOTE: This is probably also going to be replaced
 		defaultSettigns.putSetting("Resolution", res);
 		
+		defaultSettigns.putSetting("TargetFPS", 60);
+		
+		//NOTE: Should the default 'TargetUPS' be 1000 or 500. This requires testing on different machines to see if 1000 results in a OK CPU load.
+		defaultSettigns.putSetting("TargetUPS", 500);
+		
 		//TODO: Should camera be a setting or should it be in game init? Probably game init so that it works when switching scenes
 		defaultSettigns.putSetting("MainCamera", new Camera(new Rectangle2D.Float(0, 0, res.width, res.height), ScreenRect.FULL, new Color(0.15f, 0.15f, 0.15f, 1f)));
-		
-		//NOTE: Should the standard updater really be implemented here and not in Game.java?
-		defaultSettigns.putSetting("Updater", new StandardUpdater());
 		
 		defaultSettigns.putSetting("KeyBindings", new Consumer<KeyInputHandler>() {
 			@Override
@@ -107,8 +108,6 @@ public class GameSettings {
 		
 		return defaultSettigns;
 	}
-	
-	
 	
 	private HashMap<String, Object> settings;
 	

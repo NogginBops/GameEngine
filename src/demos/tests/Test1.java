@@ -69,11 +69,11 @@ public class Test1 implements GameInitializer {
 		t2.setDX(-60);
 		t2.setDY(-1);
 
-		TestInputSprite testInput = new TestInputSprite(100, 100, 100, 100, 10, false);
+		TestInputSprite testInput = new TestInputSprite(100, 100, 100, 100, 10, true);
 
 		Game.gameObjectHandler.addGameObject(testInput, "TestInputSprite1");
 
-		TestInputSprite testInput2 = new TestInputSprite(200, 150, 100, 100, 9, false);
+		TestInputSprite testInput2 = new TestInputSprite(150, 150, 100, 100, 9, false);
 
 		Game.gameObjectHandler.addGameObject(testInput2, "TestInuptSprite2");
 

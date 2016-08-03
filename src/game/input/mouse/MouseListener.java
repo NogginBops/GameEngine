@@ -14,12 +14,15 @@ public interface MouseListener extends GameObject {
 
 	// JAVADOC: MouseListener
 	
+<<<<<<< HEAD
 	/**
 	 * 
 	 */
 	@Override
 	public int getZOrder();
 
+=======
+>>>>>>> origin/GameEngine(Nightly)
 	/**
 	 * 
 	 * 
@@ -67,7 +70,7 @@ public interface MouseListener extends GameObject {
 	 * 
 	 * @param e
 	 */
-	public void mouseWeelMoved(MouseWheelEvent e);
+	public void mouseWheelMoved(MouseWheelEvent e);
 
 	/**
 	 * This function is called to determine if the input should be absorbed by

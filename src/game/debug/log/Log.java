@@ -56,7 +56,7 @@ public class Log {
 	/**
 	 * 
 	 */
-	public LogImportance acceptLevel = LogImportance.INFORMATIONAL;
+	private LogImportance acceptLevel = LogImportance.INFORMATIONAL;
 	
 	private ConcurrentLinkedQueue<LogMessage> messages;
 	
@@ -77,6 +77,20 @@ public class Log {
 	public Log() {
 		this.logReader = (message) -> { System.out.println(message); };
 		messages = new ConcurrentLinkedQueue<>();
+	}
+	
+	/**
+	 * @param importance
+	 */
+	public void setAcceptLevel(LogImportance importance){
+		acceptLevel = importance;
+	}
+	
+	/**
+	 * @return
+	 */
+	public LogImportance getAcceptLevel(){
+		return acceptLevel;
 	}
 	
 	/**

@@ -146,6 +146,7 @@ public final class IOHandler {
 					}
 				}
 			}
+			Game.log.logWarning("Could not find prefered loader: '" + request.preferredLoader + "'!");
 		}
 		for (Loader<?> loader : loaderIDHandler.getAllObjects()) {
 			if (request.dataType == loader.getSupportedDataType()) {
