@@ -89,7 +89,7 @@ public class Game {
 	
 	private static GameSettings settings;
 
-	public static PhysicsEngine physicsEngine; //Make static?
+	private static PhysicsEngine physicsEngine; //Make static?
 	
 	private static Camera camera; //TODO: This should support multiple cameras!
 

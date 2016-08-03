@@ -19,15 +19,9 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 
 	// JAVADOC: PhysicsEngine
 
-	//FIXME: Make the physics and collision into a procedure!
-	//NOTE: How should physics be implemented to facilitate good multi-threading?
-	
 	// TODO: PhysicsEngine
 	
-	// FIXME: Physics layers
-	//This would allow gameobjects to collide with each other while not being on the same z layer
-	//NOTE: Should the z layer property be a part of the paintable interface? It is to note that
-	// the mouse input is also dependent on the z layer of a gameobject.
+	// TODO: Physics layers
 	
 	// TODO: Implement a grid system for efficient collision checking.
 	//Could be hard as the Collidable itself does not know what position in the grid it has.
@@ -77,10 +71,13 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 			for (int c1 = 0; c1 < collidablesInLayer.size(); c1++) {
 				for (int c2 = c1 + 1; c2 < collidablesInLayer.size(); c2++) {
 					loopCount++;
-					if(collidablesInLayer.get(c1).isActive() && collidablesInLayer.get(c2).isActive()){
-						if(collidablesInLayer.get(c1).getBounds().intersects(collidablesInLayer.get(c2).getBounds())){
-							if(collides(collidablesInLayer.get(c1).getCollitionShape(), collidablesInLayer.get(c2).getCollitionShape())){
-								collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
+					//Unneeded check
+					if (c1 != c2) {
+						if(collidablesInLayer.get(c1).isActive() && collidablesInLayer.get(c2).isActive()){
+							if(collidablesInLayer.get(c1).getBounds().intersects(collidablesInLayer.get(c2).getBounds())){
+								if(collides(collidablesInLayer.get(c1).getCollitionShape(), collidablesInLayer.get(c2).getCollitionShape())){
+									collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
+								}
 							}
 						}
 					}

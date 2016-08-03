@@ -168,6 +168,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		image = ImageUtils.toSystemOptimizedImage(image);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
+		originalTransform = translatedGraphics.getTransform();
 	}
 	
 	/**
@@ -182,6 +183,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		image = ImageUtils.toSystemOptimizedImage(image);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
+		originalTransform = translatedGraphics.getTransform();
 	}
 	
 	/**
@@ -200,6 +202,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		if(translatedGraphics != null){
 			translatedGraphics.dispose();
 			translatedGraphics = image.createGraphics();
+			originalTransform = translatedGraphics.getTransform();
 		}
 	}
 
@@ -239,6 +242,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	public BufferedImage getImage() {
 		if(translatedGraphics == null){
 			translatedGraphics = image.createGraphics();
+			originalTransform = translatedGraphics.getTransform();
 		}
 		
 		//NOTE: Should this be done in the painter?
