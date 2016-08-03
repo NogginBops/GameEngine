@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 import game.Game;
 import game.gameObject.graphics.animation.Animation;
-import game.gameObject.physics.BasicMovable;
+import game.gameObject.physics.BasicRotatable;
 import game.image.effects.ColorTintFilter;
 import game.util.image.ImageUtils;
 
@@ -18,7 +18,7 @@ import game.util.image.ImageUtils;
  * @version 1.0
  * @author Julius Häger
  */
-public class Sprite extends BasicMovable implements Paintable {
+public class Sprite extends BasicRotatable implements Paintable {
 
 	// JAVADOC: Sprite
 	
@@ -68,7 +68,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	 *            the height of the Sprite (in pixels)
 	 */
 	public Sprite(float x, float y, float width, float height) {
-		super(x, y, width, height, 5);
+		super(x, y, width, height, 5, 0);
 		imageCache = new HashMap<>();
 
 		setColor(color);
@@ -85,7 +85,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	 * @param sprite
 	 */
 	public Sprite(float x, float y, float scale, BufferedImage sprite) {
-		super(x, y, sprite.getWidth(), sprite.getHeight(), 5);
+		super(x, y, sprite.getWidth(), sprite.getHeight(), 5, 0);
 		imageCache = new HashMap<>();
 
 		setColor(color);
@@ -108,7 +108,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	 *            the image of the Sprite
 	 */
 	public Sprite(float x, float y, float width, float height, BufferedImage sprite) {
-		super(x, y, width, height, 5);
+		super(x, y, width, height, 5, 0);
 		imageCache = new HashMap<>();
 
 		setColor(color);
@@ -130,7 +130,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	 *            the color of the Sprite
 	 */
 	public Sprite(float x, float y, float width, float height, Color color) {
-		super(x, y, width, height, 5);
+		super(x, y, width, height, 5, 0);
 		imageCache = new HashMap<>();
 
 		setColor(color);
@@ -154,7 +154,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	 *            the color of the Sprite
 	 */
 	public Sprite(float x, float y, float width, float height, BufferedImage sprite, Color color) {
-		super(x, y, width, height, 5);
+		super(x, y, width, height, 5, 0);
 		imageCache = new HashMap<>();
 
 		setColor(color);
@@ -170,7 +170,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	 */
 	// FIXME: Temporary constructor!!
 	public Sprite(float x, float y, float width, float height, Animation animation) {
-		super(x, y, width, height, 5);
+		super(x, y, width, height, 5, 0);
 		imageCache = new HashMap<>();
 
 		this.animation = animation;
@@ -187,7 +187,7 @@ public class Sprite extends BasicMovable implements Paintable {
 	 * @param bounds
 	 */
 	public Sprite(float x, float y, Rectangle2D bounds) {
-		super(x, y, bounds, 5);
+		super(x, y, bounds, 5, 0);
 		imageCache = new HashMap<>();
 
 		setColor(color);
@@ -211,8 +211,9 @@ public class Sprite extends BasicMovable implements Paintable {
 
 	@Override
 	public void update(float deltaTime) {
+		super.update(deltaTime);
 		
-		transform.translate(dx * deltaTime, dy * deltaTime);
+		//transform.translate(dx * deltaTime, dy * deltaTime);
 		
 		// TODO: Animation!
 		if (animation != null) {

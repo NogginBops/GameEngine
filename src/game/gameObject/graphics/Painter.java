@@ -1,10 +1,12 @@
 package game.gameObject.graphics;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.gameObject.BasicGameObject;
+import game.gameObject.physics.Collidable;
 import game.gameObject.physics.PhysicsEngine;
 import game.screen.ScreenRect;
 import game.util.image.ImageUtils;
@@ -44,6 +46,8 @@ public abstract class Painter extends BasicGameObject {
 	protected BufferedImage image;
 	
 	protected Graphics2D translatedGraphics;
+	
+	private boolean debug = true;
 	
 	/**
 	 * 
@@ -124,11 +128,21 @@ public abstract class Painter extends BasicGameObject {
 					if(PhysicsEngine.collides(paintable.getBounds(), getBounds())){
 						paintableImage = paintable.getImage();
 						if(paintableImage != null){
-							translatedGraphics.drawImage(paintableImage,
-									0, 0, (int)paintable.getBounds().getWidth(),
-									(int)paintable.getBounds().getHeight(), null);
+							//translatedGraphics.drawImage(paintableImage,(int)paintable.getBounds().getX(), (int)paintable.getBounds().getY(), (int)paintable.getBounds().getWidth(), (int)paintable.getBounds().getHeight(), null);
+							translatedGraphics.drawImage(paintableImage, paintable.getTransform().getAffineTransform(), null);
 						}else{
 							paintable.paint(translatedGraphics);
+						}
+						
+						if(debug){
+							translatedGraphics.setColor(Color.magenta);
+							translatedGraphics.draw(paintable.getBounds());
+							translatedGraphics.setColor(Color.green);
+							translatedGraphics.draw(paintable.getTranformedShape());
+							if(paintable instanceof Collidable){
+								translatedGraphics.setColor(Color.red);
+								translatedGraphics.draw(((Collidable)paintable).getCollitionShape());
+							}
 						}
 						
 						tempDrawnObjects++;

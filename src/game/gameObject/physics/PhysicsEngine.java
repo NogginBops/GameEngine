@@ -19,7 +19,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 
 	// JAVADOC: PhysicsEngine
 
-	//FIXME: Make the physics and collision into a procedure!
+	//FIXME: Make the physics and collision into a GameSystem!
 	//NOTE: How should physics be implemented to facilitate good multi-threading?
 	
 	// TODO: PhysicsEngine
@@ -41,7 +41,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	//TODO: Explore the HashMap solution.
 	private CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>> collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 
-	private boolean debug = false;
+	private boolean debug = true;
 	
 	/**
 	 * @param gameObjectHandeler
