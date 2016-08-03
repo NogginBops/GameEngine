@@ -45,7 +45,7 @@ public interface GameObject extends Comparable<GameObject> {
 	 * @return the GameObject bounds
 	 */
 	default public Rectangle2D getBounds(){
-		return getTranformedShape().getBounds2D();
+		return getTranformedShape().getBounds2D();//getTranformedShape().getBounds2D();
 	}
 
 	/**

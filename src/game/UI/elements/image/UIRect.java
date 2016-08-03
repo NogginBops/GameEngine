@@ -34,7 +34,7 @@ public class UIRect extends UIElement {
 	/**
 	 * @param rect
 	 */
-	public UIRect(Rectangle2D.Float rect) {
+	public UIRect(Rectangle2D rect) {
 		super(rect);
 	}
 	
@@ -42,7 +42,7 @@ public class UIRect extends UIElement {
 	 * @param rect
 	 * @param color
 	 */
-	public UIRect(Rectangle2D.Float rect, Color color) {
+	public UIRect(Rectangle2D rect, Color color) {
 		super(rect);
 		this.color = color;
 	}

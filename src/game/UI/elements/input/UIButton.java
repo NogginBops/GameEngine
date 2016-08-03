@@ -2,15 +2,12 @@ package game.UI.elements.input;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-<<<<<<< HEAD
 import java.awt.Shape;
-=======
 import java.awt.event.ActionEvent;
->>>>>>> refs/remotes/origin/GameEngine(Nightly)
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.awt.geom.Rectangle2D.Float;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 import game.UI.elements.UIElement;
@@ -114,7 +111,7 @@ public class UIButton extends UIElement implements MouseListener {
 	}
 	
 	@Override
-	public Float getBounds() {
+	public Rectangle2D getBounds() {
 		return super.getBounds();
 	}
 

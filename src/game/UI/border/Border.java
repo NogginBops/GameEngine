@@ -62,7 +62,7 @@ public abstract class Border {
 	 * @param rect
 	 * @return
 	 */
-	public Rectangle2D.Float getInnerArea(Rectangle2D rect) {
+	public Rectangle2D getInnerArea(Rectangle2D rect) {
 		//TODO: Pre compute?
 		return new Rectangle2D.Float((float)rect.getX() + left, (float)rect.getY() + top, (float)rect.getWidth() - right - left, (float)rect.getHeight() - bottom - top);
 	}
