@@ -35,6 +35,8 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	 * 
 	 */
 	public static final ParticleCustomizer DESTROY = (particle) -> { particle.active = false; };
+	
+	public static final ParticleCustomizer DO_NOTHING = (particle) -> { };
 
 	//NOTE: When thread scheduling tasks are implemented, should this be it's own task?
 	
@@ -94,7 +96,7 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	public ParticleSystem(float x, float y, Rectangle2D rect, int zOrder, int maxParticles, ParticleCustomizer customizer) {
 		super(x, y, rect, zOrder, 0);
 		
-		transform = boxTransform = new BoxTransform(x, y, getWidth(), getHeight(), 0.7f, 0.5f);
+		transform = boxTransform = new BoxTransform(x, y, getWidth(), getHeight(), 0.5f, 0.5f);
 		
 		particles = new Particle[maxParticles];
 		for (int i = 0; i < particles.length; i++) {
@@ -131,14 +133,14 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 				
 				if(image == null){
 					g2d.setColor(particles[i].color);
-					g2d.drawRect((int)((particles[i].x - (particles[i].width * particles[i].scaleX/2))),
-							(int)((particles[i].y) - ((particles[i].height * particles[i].scaleY)/2)),
+					g2d.drawRect((int)(transform.getX() + (particles[i].x - (particles[i].width * particles[i].scaleX/2))),
+							(int)(transform.getY() + (particles[i].y) - ((particles[i].height * particles[i].scaleY)/2)),
 							(int)(particles[i].width * particles[i].scaleX),
 							(int)(particles[i].height * particles[i].scaleY));
 				}else{
 					g2d.drawImage(image,
-							(int)((particles[i].x - ((particles[i].width * particles[i].scaleX)/2))),
-									(int)((particles[i].y - ((particles[i].height * particles[i].scaleY)/2))),
+							(int)(transform.getX() + (particles[i].x - ((particles[i].width * particles[i].scaleX)/2))),
+									(int)(transform.getY() + (particles[i].y - ((particles[i].height * particles[i].scaleY)/2))),
 									(int)(particles[i].width * particles[i].scaleX),
 									(int)(particles[i].height * particles[i].scaleY), null);
 				}
@@ -148,15 +150,18 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 		//TODO: Remove? Make a better system for debugging bounding areas?
 		if(debug){
 			g2d.setColor(Color.magenta);
-			g2d.draw(shape);
+			g2d.draw(getTranformedShape());
+			
+			//g2d.drawRect((int)transform.getX(), (int)transform.getY(), (int)getBoxTransform().getWidth(), (int)getBoxTransform().getHeight());
+			
 			g2d.setColor(Color.cyan);
 			for (ParticleEmitter particleEmitter : emitters) {
 				switch (particleEmitter.shape) {
 				case RECTANGLE:
-					g2d.draw(new Rectangle2D.Float(particleEmitter.x, particleEmitter.y, particleEmitter.width, particleEmitter.height));
+					g2d.draw(new Rectangle2D.Float(transform.getX() + particleEmitter.x, transform.getY() + particleEmitter.y, particleEmitter.width, particleEmitter.height));
 					break;
 				case CIRCLE:
-					g2d.draw(new Ellipse2D.Float(particleEmitter.x - particleEmitter.radius, particleEmitter.y - particleEmitter.radius, particleEmitter.radius * 2, particleEmitter.radius * 2));
+					g2d.draw(new Ellipse2D.Float(transform.getY() + particleEmitter.x - particleEmitter.radius, transform.getY() + particleEmitter.y - particleEmitter.radius, particleEmitter.radius * 2, particleEmitter.radius * 2));
 					break;
 				default:
 					break;
@@ -166,19 +171,19 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 			for (int i = 0; i < particles.length; i++) {
 				if(particles[i].active == true){
 					g2d.setColor(Color.yellow);
-					g2d.drawRect((int)((particles[i].x - (particles[i].width * particles[i].scaleX/2))),
-							(int)((particles[i].y) - ((particles[i].height * particles[i].scaleY)/2)),
+					g2d.drawRect((int)(transform.getX() + (particles[i].x - (particles[i].width * particles[i].scaleX/2))),
+							(int)(transform.getY() + (particles[i].y) - ((particles[i].height * particles[i].scaleY)/2)),
 							(int)(particles[i].width * particles[i].scaleX),
 							(int)(particles[i].height * particles[i].scaleY));
 					g2d.setColor(Color.GREEN);
-					g2d.drawRect((int)(particles[i].x) - 1,
-							(int)(particles[i].y) - 1,
+					g2d.drawRect((int)(transform.getX() + particles[i].x) - 1,
+							(int)(transform.getY() + particles[i].y) - 1,
 							2, 2);
 				}
 			}
 			
 			g2d.setColor(Color.PINK);
-			g2d.fillRect((int)(boxTransform.getWidth() * boxTransform.getAnchorX()), (int)(boxTransform.getHeight() * boxTransform.getAnchorY()), 1, 1);
+			g2d.fillRect((int)(transform.getX() + (boxTransform.getWidth() * boxTransform.getAnchorX())), (int)(transform.getY() + (boxTransform.getHeight() * boxTransform.getAnchorY())), 1, 1);
 		}
 	}
 	

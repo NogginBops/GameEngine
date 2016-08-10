@@ -47,7 +47,7 @@ public abstract class Painter extends BasicGameObject {
 	
 	protected Graphics2D translatedGraphics;
 	
-	private boolean debug = true;
+	private boolean debug = false;
 	
 	/**
 	 * 
@@ -135,10 +135,12 @@ public abstract class Painter extends BasicGameObject {
 						}
 						
 						if(debug){
-							translatedGraphics.setColor(Color.magenta);
-							translatedGraphics.draw(paintable.getBounds());
 							translatedGraphics.setColor(Color.green);
 							translatedGraphics.draw(paintable.getTranformedShape());
+							
+							translatedGraphics.setColor(Color.magenta);
+							translatedGraphics.draw(paintable.getBounds());
+							
 							if(paintable instanceof Collidable){
 								translatedGraphics.setColor(Color.red);
 								translatedGraphics.draw(((Collidable)paintable).getCollitionShape());

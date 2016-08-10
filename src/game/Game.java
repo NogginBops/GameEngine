@@ -1,6 +1,5 @@
 package game;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.util.function.Consumer;
 
@@ -178,21 +177,6 @@ public class Game {
 		}
 	}
 	
-	
-	//TODO: Remove?
-	/**
-	 * 
-	 */
-	public Game() {
-		initTime = System.nanoTime();
-
-		basicSetup();
-		
-		basicDebug();
-		
-		addIDHandlerDebug();
-	}
-	
 	private void setup(GameSettings settings){
 		final GameSettings DEFAULT = GameSettings.createDefaultGameSettings();
 		
@@ -251,7 +235,9 @@ public class Game {
 			updater = new StandardUpdater();
 		}
 		
-		camera.setSize(res.width, res.height);
+		System.out.println("Game: " + screen.getSize());
+		
+		camera.setSize(screen.getWidth(), screen.getHeight());
 		
 		mouseHandler = new MouseInputHandler(camera);
 		keyHandler = new KeyInputHandler();
@@ -286,33 +272,6 @@ public class Game {
 			stop();
 			System.exit(1);
 		}
-	}
-
-	private void basicSetup() {
-		Game.game = this;
-		
-		physicsEngine = new PhysicsEngine(gameObjectHandler);
-		
-		//TODO: A settings for target fps
-		screen = new Screen(800, 600, Screen.Mode.NORMAL, "Game", 60);
-		camera = new Camera(0, 0, screen.getWidth(), screen.getHeight());
-		
-		camera.setBackgroundColor(new Color(0.15f, 0.15f, 0.15f, 1f));
-		
-		MouseInputHandler mouseHandler = new MouseInputHandler(camera);
-		KeyInputHandler keyHandler = new KeyInputHandler();
-		Input inputHandler = new Input(mouseHandler, keyHandler);
-		
-		screen.addPainter(camera);
-		screen.addInputListener(inputHandler);
-
-		AudioEngine.init(camera);
-		
-		gameObjectHandler.addGameObject(physicsEngine, "Physics Engine");
-		
-		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
-		
-		gameObjectHandler.addGameObject(camera, "Main camera");
 	}
 	
 	//FIXME: This is a memory intensive solution, is there a better solution? 

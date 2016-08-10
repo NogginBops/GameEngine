@@ -2,7 +2,9 @@ package game.screen;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.DisplayMode;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
 import java.awt.Insets;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
@@ -85,43 +87,6 @@ public class Screen implements Runnable{
 	private boolean limitFPS = true;
 	
 	/**
-	 * @param width
-	 * @param height
-	 * @param mode
-	 * @param title
-	 * @param targetFPS 
-	 */
-	public Screen(int width, int height, Mode mode, String title, int targetFPS) {
-		
-		size = new Dimension(width, height);
-		this.mode = mode;
-		this.title = title;
-		
-		this.targetFPS = targetFPS;
-		
-		painters = new ArrayList<>();
-		
-		debugPrintOuts = new ArrayList<>();
-		
-		frame = new JFrame(title);
-		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		frame.setUndecorated(false);
-		frame.setExtendedState(JFrame.NORMAL);
-		frame.getContentPane().setPreferredSize(new Dimension(width, height));
-		frame.setIgnoreRepaint(true);
-		frame.setResizable(false);
-		frame.setVisible(true);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.createBufferStrategy(2);
-		
-		insets = frame.getInsets();
-		
-	}
-	
-	/**
 	 * @param size 
 	 * @param mode
 	 * @param title
@@ -143,10 +108,32 @@ public class Screen implements Runnable{
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		switch (mode) {
+		case NORMAL:
+			frame.setUndecorated(false);
+			frame.setExtendedState(JFrame.NORMAL);
+			frame.getContentPane().setPreferredSize(size);
+			break;
+		case FULL_SCREEN:
+			frame.setUndecorated(true);
+			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			
+			//TODO: Clean up the configuration of different screen modes
+			
+			GraphicsDevice device = frame.getGraphicsConfiguration().getDevice();
+			DisplayMode displayMode = device.getDisplayMode();
+			
+			this.size = new Dimension(displayMode.getWidth(), displayMode.getHeight());
+			
+			frame.getContentPane().setPreferredSize(new Dimension(displayMode.getWidth(), displayMode.getHeight()));
+			
+			device.setFullScreenWindow(frame);
+			break;
+		default:
+			break;
+		}
+		
 		frame.setResizable(resizable);
-		frame.setUndecorated(false);
-		frame.setExtendedState(JFrame.NORMAL);
-		frame.getContentPane().setPreferredSize(size);
 		frame.setIgnoreRepaint(true);
 		frame.setResizable(false);
 		frame.setVisible(true);

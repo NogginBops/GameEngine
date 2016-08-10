@@ -65,6 +65,8 @@ public class EventMachine {
 	
 	//NOTE: This method of firing events has O(n^2) time complexity, this might need optimization.
 	
+	//NOTE: Should all events be executed on another thread? Should there be a flag to expose this option?
+	
 	/**
 	 * @param event
 	 */

@@ -40,9 +40,9 @@ public class BoxTransform extends Transform {
 	public AffineTransform getAffineTransform() {
 		AffineTransform affineTransform = new AffineTransform();
 		
-		affineTransform.translate(x - (width * anchorX), y - (height * anchorY));
+		affineTransform.translate(x + (width * anchorX), y + (height * anchorY));
 		
-		affineTransform.translate((width * anchorX), (height * anchorY));
+		//affineTransform.translate((width * anchorX), (height * anchorY));
 		
 		affineTransform.scale(scaleX, scaleY);
 		
