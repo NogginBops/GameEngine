@@ -2,9 +2,15 @@ package game.gameObject.physics;
 
 import java.awt.Shape;
 
+import game.gameObject.transform.Transform;
+
 public abstract class BasicRotatable extends BasicMovable implements Rotatable {
 	
 	protected float dr = 0;
+	
+	public BasicRotatable(Transform transform, Shape shape, int zOrder, float rotation) {
+		super(transform, shape, zOrder);
+	}
 	
 	public BasicRotatable(float x, float y, float width, float height, int zOrder, float rotation) {
 		super(x, y, width, height, zOrder);

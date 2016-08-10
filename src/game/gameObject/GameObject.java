@@ -20,6 +20,8 @@ public interface GameObject extends Comparable<GameObject> {
 	 */
 	public Transform getTransform();
 	
+	public void setTransform(Transform transform);
+	
 	default public float getWidth(){
 		return (float) (getBounds().getWidth() * getTransform().getScaleX());
 	}

@@ -31,7 +31,12 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	protected int zOrder;
 	
 	private boolean active = true;
-
+	
+	public BasicGameObject(Transform transform, Shape shape, int zOrder) {
+		this.transform = transform;
+		this.shape = shape;
+		this.zOrder = zOrder;
+	}
 	
 	//NOTE: Should maybe not take the zOrder as a param
 	/**
@@ -61,6 +66,11 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	@Override
 	public Transform getTransform() {
 		return transform;
+	}
+	
+	@Override
+	public void setTransform(Transform transform) {
+		this.transform = transform;
 	}
 	
 	@Override

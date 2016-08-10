@@ -5,6 +5,7 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import game.Game;
 import game.UI.elements.UIElement;
 import game.UI.elements.containers.UIContainer;
 import game.gameObject.GameObject;
@@ -90,6 +91,12 @@ public class UI extends UIContainer implements Paintable {
 
 	@Override
 	public Transform getTransform() {
+		Game.log.logError("UI is not implemented! Fix this!");
 		return null;
+	}
+	
+	@Override
+	public void setTransform(Transform transform) {
+		Game.log.logError("UI is not implemented! Fix this!");
 	}
 }

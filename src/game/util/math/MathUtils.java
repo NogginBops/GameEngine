@@ -252,7 +252,7 @@ public final class MathUtils {
 	 */
 	public static float map(float value, float min, float max, float newMin, float newMax){
 		if(isOutside(value, min, max) != 0){
-			throw new IllegalArgumentException("Value can not be outside min and max!");
+			throw new IllegalArgumentException("Value can not be outside min and max! Value: " + value);
 		}
 		
 		if(min == max){

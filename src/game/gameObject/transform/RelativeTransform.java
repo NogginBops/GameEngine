@@ -12,6 +12,18 @@ public class RelativeTransform extends Transform {
 		this.transform = transform;
 	}
 	
+	public RelativeTransform(Transform originalTransform, Transform transform) {
+		super();
+		
+		setPosition(originalTransform.getX(), originalTransform.getX());
+		
+		setRotation(originalTransform.getRotation());
+		
+		setScale(originalTransform.getScaleX(), originalTransform.getScaleY());
+		
+		this.transform = transform;
+	}
+	
 	@Override
 	public AffineTransform getAffineTransform() {
 		AffineTransform affineTransform = super.getAffineTransform();

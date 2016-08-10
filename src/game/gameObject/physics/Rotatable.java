@@ -8,6 +8,10 @@ public interface Rotatable extends Movable {
 		return getTransform().getRotation();
 	}
 	
+	default public float getRotationRad(){
+		return getTransform().getRotationRad();
+	}
+	
 	default public void setRotation(float deg){
 		getTransform().setRotation((float) Math.toRadians(MathUtils.wrap(deg, 0, 360)));
 	}
