@@ -182,8 +182,12 @@ public class Sprite extends BasicRotatable implements Paintable {
 	// TODO: Add sorting layers for sprites and such
 	// The idea is more to separate the collision layer from the graphical layer
 	// than anything else.
+	
+	//NOTE: Should the param be named bounds? Shouldn't it be named something like 'shape'?
 
 	/**
+	 * @param x 
+	 * @param y 
 	 * @param bounds
 	 */
 	public Sprite(float x, float y, Rectangle2D bounds) {

@@ -2,14 +2,35 @@ package game.gameObject.physics;
 
 import java.awt.Shape;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public abstract class BasicRotatable extends BasicMovable implements Rotatable {
+	
+	//JAVADOC: BasicRotatable
 	
 	protected float dr = 0;
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param zOrder
+	 * @param rotation
+	 */
 	public BasicRotatable(float x, float y, float width, float height, int zOrder, float rotation) {
 		super(x, y, width, height, zOrder);
 	}
 
+	/**
+	 * @param x
+	 * @param y
+	 * @param shape
+	 * @param zOrder
+	 * @param rotation
+	 */
 	public BasicRotatable(float x, float y, Shape shape, int zOrder, float rotation) {
 		super(x, y, shape, zOrder);
 	}
@@ -19,6 +40,7 @@ public abstract class BasicRotatable extends BasicMovable implements Rotatable {
 		return dr;
 	}
 	
+	@Override
 	public void setDR(float dr) {
 		this.dr = dr;
 	}

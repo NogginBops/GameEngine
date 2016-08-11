@@ -34,7 +34,9 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	}
 	
 	/**
-	 * @param rect
+	 * @param x 
+	 * @param y 
+	 * @param shape
 	 * @param zOrder
 	 */
 	public BasicMovable(float x, float y, Shape shape, int zOrder) {

@@ -12,6 +12,8 @@ import game.util.UpdateListener;
  * @author Julius Häger
  */
 public interface Movable extends UpdateListener {
+	
+	//TODO: Movable should ba able to rotate! and the Rotatable interface should be scrapped
 
 	/**
 	 * Returns the current x value of the Movable

@@ -8,6 +8,8 @@ import java.awt.Shape;
  */
 public class BasicCollidable extends BasicMovable implements Collidable{
 	
+	//JAVADOC: BasicCollidable
+	
 	protected Shape shape;
 	
 	/**
@@ -25,6 +27,8 @@ public class BasicCollidable extends BasicMovable implements Collidable{
 	}
 	
 	/**
+	 * @param x 
+	 * @param y 
 	 * @param rect
 	 * @param zOrder
 	 * @param shape 

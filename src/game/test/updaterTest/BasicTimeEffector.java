@@ -31,6 +31,8 @@ public class BasicTimeEffector extends BasicCollidable implements TimeEffector, 
 	}
 
 	/**
+	 * @param x 
+	 * @param y 
 	 * @param rect
 	 * @param zOrder
 	 * @param shape

@@ -49,8 +49,10 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	}
 	
 	/**
-	 * @param bounds
-	 * @param zOrder
+	 * @param x 
+	 * @param y 
+	 * @param shape 
+	 * @param zOrder 
 	 */
 	public BasicGameObject(float x, float y, Shape shape, int zOrder) {
 		transform.setPosition(x, y);

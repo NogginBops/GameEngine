@@ -110,6 +110,12 @@ public final class MathUtils {
 		}
 	}
 	
+	/**
+	 * @param value
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public static float wrap(float value, float min, float max){
 		if(min > max){
 			throw new IllegalArgumentException("Min cannot be larger than max");

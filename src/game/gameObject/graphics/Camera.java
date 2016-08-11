@@ -103,13 +103,13 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	
 	@Override
 	public float getX() {
-		return transform.getY();
+		return transform.getX();
 	}
 
 
 	@Override
 	public float getY() {
-		return transform.getX();
+		return transform.getY();
 	}
 
 
@@ -168,6 +168,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		image = ImageUtils.toSystemOptimizedImage(image);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
+		originalTransform = translatedGraphics.getTransform();
 	}
 	
 	/**
@@ -182,6 +183,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		image = ImageUtils.toSystemOptimizedImage(image);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
+		originalTransform = translatedGraphics.getTransform();
 	}
 	
 	/**
@@ -200,6 +202,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		if(translatedGraphics != null){
 			translatedGraphics.dispose();
 			translatedGraphics = image.createGraphics();
+			originalTransform = translatedGraphics.getTransform();
 		}
 	}
 
@@ -239,6 +242,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	public BufferedImage getImage() {
 		if(translatedGraphics == null){
 			translatedGraphics = image.createGraphics();
+			originalTransform = translatedGraphics.getTransform();
 		}
 		
 		//NOTE: Should this be done in the painter?
@@ -323,13 +327,19 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	}
 
 	private void updateMovement() {
-		int dx = 0;
+		float dx = 0;
 		dx += moveLeft ? -cameraMovementSpeed : 0;
 		dx += moveRight ? cameraMovementSpeed : 0;
-		setDX(dx);
-		int dy = 0;
+		
+		float dy = 0;
 		dy += moveUp ? -cameraMovementSpeed : 0;
 		dy += moveDown ? cameraMovementSpeed : 0;
+		
+		dx = (float) ((dx * Math.cos(transform.getRotationRad())) - (dy * Math.sin(transform.getRotationRad())));
+		
+		dy = (float) ((dy * Math.cos(transform.getRotationRad())) + (dx * Math.sin(transform.getRotationRad())));
+		
+		setDX(dx);
 		setDY(dy);
 	}
 

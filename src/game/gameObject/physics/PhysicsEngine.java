@@ -7,15 +7,13 @@ import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.Game;
-import game.gameObject.BasicGameObject;
-import game.gameObject.handler.GameObjectHandler;
-import game.util.UpdateListener;
+import game.GameSystem;
 
 /**
  * 
  * @author Julius Häger
  */
-public class PhysicsEngine extends BasicGameObject implements UpdateListener {
+public class PhysicsEngine extends GameSystem {
 
 	// JAVADOC: PhysicsEngine
 
@@ -46,10 +44,9 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	/**
 	 * @param gameObjectHandeler
 	 */
-	public PhysicsEngine(GameObjectHandler gameObjectHandeler) {
-		super(0, 0, 0, 0, 0);
-		
-		Game.log.logMessage("PhysicsEngine created", "Physics");
+	public PhysicsEngine() {
+		super("Physics Engine");
+		Game.log.logMessage("PhysicsEngine created", "Physics"); //IS this really needed?
 	}
 	
 	CopyOnWriteArrayList<Collidable> tempList;
@@ -59,7 +56,12 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	int loopCount = 0;
 	
 	@Override
-	public void update(float deltaTime) {
+	public void earlyUpdate(float deltaTime) {
+		
+	}
+
+	@Override
+	public void lateUpdate(float deltaTime) {
 		if (Game.gameObjectHandler.shouldUpdateObjects()) {
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 			for (int z : Game.gameObjectHandler.getZLevels()) {
@@ -105,6 +107,7 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 		loopCount = 0;
 	}
 	
+
 	private void collide(Collidable c1, Collidable c2){
 		c1.hasCollided(c2);
 		c2.hasCollided(c1);
@@ -116,36 +119,35 @@ public class PhysicsEngine extends BasicGameObject implements UpdateListener {
 	 * @return
 	 */
 	public static boolean collides(Shape s1, Shape s2){
-		//NOTE: We are doing this because you can't intersect two generic shapes.
-		//There 
+		//TODO: Is this even needed?
+		
 		if(s1 instanceof Rectangle2D && s2 instanceof Rectangle2D){
 			if(((Rectangle2D)s1).intersects((Rectangle2D)s2)){
 				return true;
-				//collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
 			}
 		}
 		else if(s1 instanceof Rectangle2D){
 			//NOTE: Is this accurate enough?
 			if(s2.intersects((Rectangle2D)s1)){
 				return true;
-				//collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
 			}
 		}
 		else if(s2 instanceof Rectangle2D){
 			if(s1.intersects((Rectangle2D)s2)){
 				return true;
-				//collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
 			}
 		}
 		else{
+			//We are doing this because you can't intersect two generic shapes.
+			//TODO: Is there a better way to do this?
 			Area intersection = new Area(s1);
 			intersection.intersect(new Area(s2));
 			
 			if(!intersection.isEmpty()){
 				return true;
-				//collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
 			}
 		}
 		return false;
 	}
+
 }

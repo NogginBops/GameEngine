@@ -198,7 +198,7 @@ public class Game {
 		
 		Game.game = this;
 		
-		physicsEngine = new PhysicsEngine(gameObjectHandler);
+		physicsEngine = new PhysicsEngine();
 		
 		name = DEFAULT.getSettingAs("Name", String.class);
 		if(settings.containsSetting("Name")){
@@ -273,7 +273,7 @@ public class Game {
 
 		AudioEngine.init(camera);
 		
-		gameObjectHandler.addGameObject(physicsEngine, "Physics Engine");
+		updater.addSystem(physicsEngine);
 		
 		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
 		
@@ -291,7 +291,7 @@ public class Game {
 	private void basicSetup() {
 		Game.game = this;
 		
-		physicsEngine = new PhysicsEngine(gameObjectHandler);
+		physicsEngine = new PhysicsEngine();
 		
 		//TODO: A settings for target fps
 		screen = new Screen(800, 600, Screen.Mode.NORMAL, "Game", 60);
@@ -308,7 +308,7 @@ public class Game {
 
 		AudioEngine.init(camera);
 		
-		gameObjectHandler.addGameObject(physicsEngine, "Physics Engine");
+		updater.addSystem(physicsEngine);
 		
 		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
 		
@@ -500,11 +500,8 @@ public class Game {
 		gameObjectHandler.clear();
 		
 		//TODO: Figure out a good way to solve adding standard gameObjects to the new GOH
-		
-		gameObjectHandler.addGameObject(physicsEngine, "Physics Engine");
-		
+		//NOTE: A solution to this is to make the standard gameObjets into GameSystems and adding them to the updater
 		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
-		
 		gameObjectHandler.addGameObject(camera, "Main camera");
 		
 		camera.receiveKeyboardInput(false);

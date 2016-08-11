@@ -1,7 +1,10 @@
 package game.gameObject.graphics;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -46,6 +49,8 @@ public abstract class Painter extends BasicGameObject {
 	protected BufferedImage image;
 	
 	protected Graphics2D translatedGraphics;
+	
+	protected AffineTransform originalTransform;
 	
 	private boolean debug = true;
 	
@@ -123,6 +128,22 @@ public abstract class Painter extends BasicGameObject {
 		tempDrawnObjects = 0;
 		
 		if (paintables != null && paintables.size() > 0) {
+			if(translatedGraphics == null){
+				translatedGraphics = image.createGraphics();
+				originalTransform = translatedGraphics.getTransform();
+			}
+			
+			transform.setRotation(20);
+			
+			AffineTransform at = transform.getAffineTransform();
+			//at.setToTranslation(-at.getTranslateX(), -at.getTranslateY());
+			try {
+				at.invert();
+			} catch (NoninvertibleTransformException e) {
+				e.printStackTrace();
+			}
+			translatedGraphics.transform(at);
+			
 			for (Paintable paintable : paintables) {
 				if(paintable.isActive()){
 					if(PhysicsEngine.collides(paintable.getBounds(), getBounds())){
@@ -135,6 +156,7 @@ public abstract class Painter extends BasicGameObject {
 						}
 						
 						if(debug){
+							translatedGraphics.setStroke(new BasicStroke(1));
 							translatedGraphics.setColor(Color.magenta);
 							translatedGraphics.draw(paintable.getBounds());
 							translatedGraphics.setColor(Color.green);
@@ -149,6 +171,7 @@ public abstract class Painter extends BasicGameObject {
 					}
 				}
 			}
+			translatedGraphics.setTransform(originalTransform);
 		}
 		
 
@@ -158,10 +181,7 @@ public abstract class Painter extends BasicGameObject {
 		
 		/*
 		if (paintables != null && paintables.size() > 0) {
-			if(translatedGraphics == null){
-				translatedGraphics = image.createGraphics();
-				originalTransform = translatedGraphics.getTransform();
-			}
+			
 			
 			//TODO: Find better way to handle this
 			//translatedGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

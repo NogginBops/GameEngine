@@ -86,6 +86,8 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	
 	//NOTE: Should a particle system be any other shape than a rectangle?
 	/**
+	 * @param x 
+	 * @param y 
 	 * @param rect
 	 * @param zOrder
 	 * @param maxParticles 
@@ -268,6 +270,9 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 		return null;
 	}
 	
+	/**
+	 * @return
+	 */
 	public BoxTransform getBoxTransform(){
 		return boxTransform;
 	}

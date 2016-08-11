@@ -24,6 +24,8 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 	
 	//TODO: Have separate lists for the entered listeners and the listeners that always receive updates
 
+	//FIXME: Add support for multiple cameras and 
+	
 	private Camera camera;
 
 	private CopyOnWriteArrayList<MouseListener> listeners = new CopyOnWriteArrayList<>();
@@ -125,8 +127,22 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 	}
 	
 	private void processMouseEvent(MouseEvent e){
-		e.translatePoint((int) camera.getX() - Game.screen.getInsets().right,
+		
+		/*e.translatePoint((int) camera.getX() - Game.screen.getInsets().right,
 				(int) camera.getY() - Game.screen.getInsets().top);
+		*/
+		
+		e.translatePoint((int) camera.getX(),
+				(int) camera.getY());
+		
+		float rotation = camera.getTransform().getRotationRad();
+		
+		e.translatePoint(
+				(int)((((e.getX()) * Math.cos(rotation)) - ((e.getY()) * Math.sin(rotation))) - e.getX()),
+				(int)((((e.getY()) * Math.cos(rotation)) + ((e.getX()) * Math.sin(rotation))) - e.getY()));
+		
+		e.translatePoint((int) -camera.getX() - Game.screen.getInsets().right,
+				(int) -camera.getY() - Game.screen.getInsets().top);
 		
 		lastEvent = e;
 		
