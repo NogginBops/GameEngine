@@ -32,6 +32,11 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	
 	private boolean active = true;
 	
+	/**
+	 * @param transform
+	 * @param shape
+	 * @param zOrder
+	 */
 	public BasicGameObject(Transform transform, Shape shape, int zOrder) {
 		this.transform = transform;
 		this.shape = shape;

@@ -39,6 +39,9 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	 */
 	public static final ParticleCustomizer DESTROY = (particle) -> { particle.active = false; };
 	
+	/**
+	 * 
+	 */
 	public static final ParticleCustomizer DO_NOTHING = (particle) -> { };
 
 	//NOTE: When thread scheduling tasks are implemented, should this be it's own task?
@@ -91,10 +94,8 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	
 	//NOTE: Should a particle system be any other shape than a rectangle?
 	/**
-	 * @param x 
-	 * @param y 
-	 * @param rect
-	 * @param zOrder
+	 * @param transform 
+	 * @param zOrder 
 	 * @param maxParticles 
 	 * @param customizer 
 	 */
@@ -280,11 +281,9 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 		return null;
 	}
 	
-<<<<<<< HEAD
 	/**
 	 * @return
 	 */
-=======
 	@Override
 	public void setTransform(Transform transform) {
 		if(transform instanceof BoxTransform){
@@ -296,7 +295,9 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 		}
 	}
 	
->>>>>>> origin/TransformBranch
+	/**
+	 * @return
+	 */
 	public BoxTransform getBoxTransform(){
 		return boxTransform;
 	}

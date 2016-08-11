@@ -33,19 +33,13 @@ public class BoxTransform extends Transform {
 		anchorY = 0;
 	}
 	
-<<<<<<< HEAD
 	/**
 	 * @param x
 	 * @param y
 	 * @param width
 	 * @param height
-	 * @param anchorX
-	 * @param anchorY
 	 */
-	public BoxTransform(float x, float y, float width, float height, float anchorX, float anchorY){
-=======
 	public BoxTransform(float x, float y, float width, float height){
->>>>>>> origin/TransformBranch
 		super();
 		
 		translate(x, y);
@@ -58,6 +52,14 @@ public class BoxTransform extends Transform {
 		this.anchorY = 0;
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param anchorX
+	 * @param anchorY
+	 */
 	public BoxTransform(float x, float y, float width, float height, float anchorX, float anchorY){
 		super();
 		

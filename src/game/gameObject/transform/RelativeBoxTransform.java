@@ -2,18 +2,38 @@ package game.gameObject.transform;
 
 import java.awt.geom.AffineTransform;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class RelativeBoxTransform extends BoxTransform {
 	
 	//FIXME: Make transforms relative by default!
 	
 	protected Transform transform;
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param transform
+	 */
 	public RelativeBoxTransform(float x, float y, float width, float height, Transform transform) {
 		super(x, y, width, height, 0, 0);
 		
 		this.transform = transform;
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param anchorX
+	 * @param anchorY
+	 * @param transform
+	 */
 	public RelativeBoxTransform(float x, float y, float width, float height, float anchorX, float anchorY, Transform transform) {
 		super(x, y, width, height, anchorX, anchorY);
 		

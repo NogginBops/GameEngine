@@ -273,36 +273,6 @@ public class Game {
 			System.exit(1);
 		}
 	}
-<<<<<<< HEAD
-
-	private void basicSetup() {
-		Game.game = this;
-		
-		physicsEngine = new PhysicsEngine();
-		
-		//TODO: A settings for target fps
-		screen = new Screen(800, 600, Screen.Mode.NORMAL, "Game", 60);
-		camera = new Camera(0, 0, screen.getWidth(), screen.getHeight());
-		
-		camera.setBackgroundColor(new Color(0.15f, 0.15f, 0.15f, 1f));
-		
-		MouseInputHandler mouseHandler = new MouseInputHandler(camera);
-		KeyInputHandler keyHandler = new KeyInputHandler();
-		Input inputHandler = new Input(mouseHandler, keyHandler);
-		
-		screen.addPainter(camera);
-		screen.addInputListener(inputHandler);
-
-		AudioEngine.init(camera);
-		
-		updater.addSystem(physicsEngine);
-		
-		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
-		
-		gameObjectHandler.addGameObject(camera, "Main camera");
-	}
-=======
->>>>>>> origin/TransformBranch
 	
 	//FIXME: This is a memory intensive solution, is there a better solution? 
 	//NOTE: Does this really have any performance hit?

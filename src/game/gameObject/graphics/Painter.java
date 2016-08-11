@@ -1,6 +1,5 @@
 package game.gameObject.graphics;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -50,13 +49,9 @@ public abstract class Painter extends BasicGameObject {
 	
 	protected Graphics2D translatedGraphics;
 	
-<<<<<<< HEAD
 	protected AffineTransform originalTransform;
 	
-	private boolean debug = true;
-=======
 	private boolean debug = false;
->>>>>>> origin/TransformBranch
 	
 	/**
 	 * 
@@ -160,12 +155,6 @@ public abstract class Painter extends BasicGameObject {
 						}
 						
 						if(debug){
-<<<<<<< HEAD
-							translatedGraphics.setStroke(new BasicStroke(1));
-							translatedGraphics.setColor(Color.magenta);
-							translatedGraphics.draw(paintable.getBounds());
-=======
->>>>>>> origin/TransformBranch
 							translatedGraphics.setColor(Color.green);
 							translatedGraphics.draw(paintable.getTranformedShape());
 							

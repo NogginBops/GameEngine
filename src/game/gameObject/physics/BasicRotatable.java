@@ -2,22 +2,28 @@ package game.gameObject.physics;
 
 import java.awt.Shape;
 
-<<<<<<< HEAD
+import game.gameObject.transform.Transform;
+
 /**
  * @author Julius Häger
  *
  */
-=======
-import game.gameObject.transform.Transform;
-
->>>>>>> origin/TransformBranch
 public abstract class BasicRotatable extends BasicMovable implements Rotatable {
 	
 	//JAVADOC: BasicRotatable
 	
 	protected float dr = 0;
 	
-<<<<<<< HEAD
+	/**
+	 * @param transform
+	 * @param shape
+	 * @param zOrder
+	 * @param rotation
+	 */
+	public BasicRotatable(Transform transform, Shape shape, int zOrder, float rotation) {
+		super(transform, shape, zOrder);
+	}
+	
 	/**
 	 * @param x
 	 * @param y
@@ -26,12 +32,6 @@ public abstract class BasicRotatable extends BasicMovable implements Rotatable {
 	 * @param zOrder
 	 * @param rotation
 	 */
-=======
-	public BasicRotatable(Transform transform, Shape shape, int zOrder, float rotation) {
-		super(transform, shape, zOrder);
-	}
-	
->>>>>>> origin/TransformBranch
 	public BasicRotatable(float x, float y, float width, float height, int zOrder, float rotation) {
 		super(x, y, width, height, zOrder);
 	}

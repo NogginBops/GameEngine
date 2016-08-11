@@ -23,6 +23,10 @@ public class RelativeTransform extends Transform {
 		this.transform = transform;
 	}
 	
+	/**
+	 * @param originalTransform
+	 * @param transform
+	 */
 	public RelativeTransform(Transform originalTransform, Transform transform) {
 		super();
 		

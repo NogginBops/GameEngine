@@ -24,8 +24,9 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	protected float dy;
 
 	/**
-	 * @param rect
-	 * @param zOrder
+	 * @param transform 
+	 * @param shape 
+	 * @param zOrder 
 	 */
 	public BasicMovable(Transform transform, Shape shape, int zOrder) {
 		super(transform, shape, zOrder);

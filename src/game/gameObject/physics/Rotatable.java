@@ -17,16 +17,16 @@ public interface Rotatable extends Movable {
 		return getTransform().getRotation();
 	}
 	
-<<<<<<< HEAD
 	/**
-	 * @param deg
+	 * @return
 	 */
-=======
 	default public float getRotationRad(){
 		return getTransform().getRotationRad();
 	}
 	
->>>>>>> origin/TransformBranch
+	/**
+	 * @param deg
+	 */
 	default public void setRotation(float deg){
 		getTransform().setRotation((float) Math.toRadians(MathUtils.wrap(deg, 0, 360)));
 	}

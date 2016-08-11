@@ -180,12 +180,16 @@ public class Particle {
 	
 	/**
 	 * 
-	 * @param accX
+	 * @param accY
 	 */
 	public void setAccY(float accY){
 		this.accY = accY;
 	}
 	
+	/**
+	 * @param accX
+	 * @param accY
+	 */
 	public void setAcceleration(float accX, float accY){
 		this.accX = accX;
 		this.accY = accY;
