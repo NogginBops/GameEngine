@@ -66,7 +66,7 @@ public final class ColorUtils {
 		
 		float m = value - C;
 		
-		if(0 < hue && hue < 60){
+		if(0 <= hue && hue < 60){
 			return new Color((C + m), (X + m), (0 + m));
 		}else if(60 <= hue && hue < 120){
 			return new Color((X + m), (C + m), (0 + m));
