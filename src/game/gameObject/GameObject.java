@@ -31,9 +31,14 @@ public interface GameObject extends Comparable<GameObject> {
 	 */
 	public Transform getTransform();
 	
+<<<<<<< HEAD
 	/**
 	 * @return
 	 */
+=======
+	public void setTransform(Transform transform);
+	
+>>>>>>> origin/TransformBranch
 	default public float getWidth(){
 		return (float) (getBounds().getWidth() * getTransform().getScaleX());
 	}

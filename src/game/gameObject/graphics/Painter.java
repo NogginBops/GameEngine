@@ -50,9 +50,13 @@ public abstract class Painter extends BasicGameObject {
 	
 	protected Graphics2D translatedGraphics;
 	
+<<<<<<< HEAD
 	protected AffineTransform originalTransform;
 	
 	private boolean debug = true;
+=======
+	private boolean debug = false;
+>>>>>>> origin/TransformBranch
 	
 	/**
 	 * 
@@ -156,11 +160,18 @@ public abstract class Painter extends BasicGameObject {
 						}
 						
 						if(debug){
+<<<<<<< HEAD
 							translatedGraphics.setStroke(new BasicStroke(1));
 							translatedGraphics.setColor(Color.magenta);
 							translatedGraphics.draw(paintable.getBounds());
+=======
+>>>>>>> origin/TransformBranch
 							translatedGraphics.setColor(Color.green);
 							translatedGraphics.draw(paintable.getTranformedShape());
+							
+							translatedGraphics.setColor(Color.magenta);
+							translatedGraphics.draw(paintable.getBounds());
+							
 							if(paintable instanceof Collidable){
 								translatedGraphics.setColor(Color.red);
 								translatedGraphics.draw(((Collidable)paintable).getCollitionShape());

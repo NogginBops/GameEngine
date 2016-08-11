@@ -72,10 +72,16 @@ public class Log {
 	}
 	
 	/**
-	 * Creates a empty log with a default logReader the prints out the log to System.out.
+	 * Creates a empty log with a default logReader the prints out the log to {@link System.out} and {@link System.err}.
 	 */
 	public Log() {
-		this.logReader = (message) -> { System.out.println(message); };
+		this.logReader = (message) -> { 
+			if(message.getImportance().ordinal() <= LogImportance.ERROR.ordinal()){
+				System.err.println(message);
+			}else{
+				System.out.println(message);
+			}
+		};
 		messages = new ConcurrentLinkedQueue<>();
 	}
 	

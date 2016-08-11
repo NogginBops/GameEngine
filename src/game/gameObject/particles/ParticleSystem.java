@@ -2,15 +2,18 @@ package game.gameObject.particles;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import game.Game;
 import game.gameObject.graphics.Paintable;
 import game.gameObject.physics.BasicRotatable;
 import game.gameObject.transform.BoxTransform;
+import game.gameObject.transform.Transform;
 import game.image.effects.ColorTintFilter;
 import game.util.image.ImageUtils;
 import game.util.math.MathUtils;
@@ -35,6 +38,8 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	 * 
 	 */
 	public static final ParticleCustomizer DESTROY = (particle) -> { particle.active = false; };
+	
+	public static final ParticleCustomizer DO_NOTHING = (particle) -> { };
 
 	//NOTE: When thread scheduling tasks are implemented, should this be it's own task?
 	
@@ -93,10 +98,11 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	 * @param maxParticles 
 	 * @param customizer 
 	 */
-	public ParticleSystem(float x, float y, Rectangle2D rect, int zOrder, int maxParticles, ParticleCustomizer customizer) {
-		super(x, y, rect, zOrder, 0);
+	public ParticleSystem(BoxTransform transform, int zOrder, int maxParticles, ParticleCustomizer customizer) {
+		super(transform, new Rectangle2D.Float(0, 0, transform.getWidth(), transform.getHeight()), zOrder, 0);
 		
-		transform = boxTransform = new BoxTransform(x, y, getWidth(), getHeight(), 0.7f, 0.5f);
+		setTransform(transform);
+		boxTransform = transform;
 		
 		particles = new Particle[maxParticles];
 		for (int i = 0; i < particles.length; i++) {
@@ -122,7 +128,9 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	BufferedImage image;
 	
 	@Override
-	public void paint(Graphics2D g2d) {		
+	public void paint(Graphics2D g2d) {
+		AffineTransform at = g2d.getTransform();
+		g2d.transform(transform.getAffineTransform());
 		for (int i = 0; i < particles.length; i++) {
 			if(particles[i].active == true){
 				//Paint
@@ -149,8 +157,6 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 		
 		//TODO: Remove? Make a better system for debugging bounding areas?
 		if(debug){
-			g2d.setColor(Color.magenta);
-			g2d.draw(shape);
 			g2d.setColor(Color.cyan);
 			for (ParticleEmitter particleEmitter : emitters) {
 				switch (particleEmitter.shape) {
@@ -180,8 +186,12 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 			}
 			
 			g2d.setColor(Color.PINK);
-			g2d.fillRect((int)(boxTransform.getWidth() * boxTransform.getAnchorX()), (int)(boxTransform.getHeight() * boxTransform.getAnchorY()), 1, 1);
+			g2d.fillRect((int)(0), (int)(0), 2, 2);
+			
+			g2d.setColor(Color.magenta);
+			g2d.draw(getShape());
 		}
+		g2d.setTransform(at);
 	}
 	
 	//TODO: roundColor is being called 3 times in succession, there is a better solution
@@ -270,9 +280,23 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 		return null;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * @return
 	 */
+=======
+	@Override
+	public void setTransform(Transform transform) {
+		if(transform instanceof BoxTransform){
+			super.setTransform(transform);
+			boxTransform = (BoxTransform) transform;
+		}else{
+			//NOTE: Is this needed?
+			Game.log.logError("Trying to assign a non BoxTransform to a particle system! This is not suported!", "ParticleSystem", "Transform", "Particle");
+		}
+	}
+	
+>>>>>>> origin/TransformBranch
 	public BoxTransform getBoxTransform(){
 		return boxTransform;
 	}
@@ -311,8 +335,11 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 					particleEffector.effect(particles[i], deltaTime);
 				}
 				
-				particles[i].x = particles[i].x + (particles[i].dx * deltaTime);
-				particles[i].y = particles[i].y + (particles[i].dy * deltaTime);
+				particles[i].dx += particles[i].accX * deltaTime;
+				particles[i].dy += particles[i].accY * deltaTime;
+				
+				particles[i].x += (particles[i].dx * deltaTime);
+				particles[i].y += (particles[i].dy * deltaTime);
 				
 				//NOTE: Should this be done here?
 				Color rColor = roundColor(particles[i].color);
@@ -321,8 +348,8 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 				}
 				
 				//NOTE: Should these be temporary variables or not
-				int isOutsideX = MathUtils.isOutside(particles[i].x, 0, getWidth());
-				int isOutsideY = MathUtils.isOutside(particles[i].y, 0, getHeight());
+				int isOutsideX = MathUtils.isOutside(particles[i].x, 0, boxTransform.getWidth());
+				int isOutsideY = MathUtils.isOutside(particles[i].y, 0, boxTransform.getHeight());
 				
 				//NOTE: Should both axis be stopped when colliding a edge or should just one be stopped?
 				//If that behavoiur is desired should that be implemented using the edgeAction;
@@ -381,6 +408,7 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 				//Set position
 				particles[i].setPosition(x, y);
 				particles[i].setVelocity(0, 0);
+				particles[i].setAcceleration(0, 0);
 				
 				//Reset lifetime
 				particles[i].currLifetime = particles[i].lifetime;

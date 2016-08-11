@@ -178,7 +178,7 @@ public class Transform {
 	 * @return
 	 */
 	public float getRotationRad(){
-		return (float) Math.toRadians(rotation);
+		return (float) Math.toRadians(getRotation());
 	}
 
 	/**

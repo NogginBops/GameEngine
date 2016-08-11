@@ -3,6 +3,7 @@ package game.gameObject.physics;
 import java.awt.Shape;
 
 import game.gameObject.BasicGameObject;
+import game.gameObject.transform.Transform;
 
 /**
  * @author Julius Häger
@@ -22,6 +23,14 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	 */
 	protected float dy;
 
+	/**
+	 * @param rect
+	 * @param zOrder
+	 */
+	public BasicMovable(Transform transform, Shape shape, int zOrder) {
+		super(transform, shape, zOrder);
+	}
+	
 	/**
 	 * @param x
 	 * @param y

@@ -2,7 +2,6 @@ package demos.tests;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +16,7 @@ import game.gameObject.graphics.Camera;
 import game.gameObject.particles.ParticleEffector;
 import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.particles.ParticleSystem;
+import game.gameObject.transform.BoxTransform;
 import game.util.math.ColorUtils;
 import game.util.math.MathUtils;
 
@@ -122,7 +122,7 @@ public class ParticleTest implements GameInitializer {
 			}
 		}*/
 		
-		ParticleSystem pSystem = new ParticleSystem(100, 100, new Rectangle2D.Float(0, 0, 400, 400), 5, 1000, null);
+		ParticleSystem pSystem = new ParticleSystem(new BoxTransform(100, 100, 400, 400), 5, 1000, null);
 		
 		pSystem.setDR(100);
 		
@@ -167,7 +167,7 @@ public class ParticleTest implements GameInitializer {
 		
 		Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
 		
-		ParticleSystem pSys2 = new ParticleSystem(100, 100, new Rectangle2D.Float(0, 0, 500, 500), 5, 2000, null);
+		ParticleSystem pSys2 = new ParticleSystem(new BoxTransform(100, 100, 500, 500), 5, 2000, null);
 		
 		pSys2.addImage(0, particleImage);
 		

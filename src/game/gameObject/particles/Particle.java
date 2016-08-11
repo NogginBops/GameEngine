@@ -42,6 +42,16 @@ public class Particle {
 	/**
 	 * 
 	 */
+	public float accX;
+	
+	/**
+	 * 
+	 */
+	public float accY;
+	
+	/**
+	 * 
+	 */
 	public float width;
 	
 	/**
@@ -158,6 +168,27 @@ public class Particle {
 	public void setVelocity(float dx , float dy){
 		this.dx = dx;
 		this.dy = dy;
+	}
+	
+	/**
+	 * 
+	 * @param accX
+	 */
+	public void setAccX(float accX){
+		this.accX = accX;
+	}
+	
+	/**
+	 * 
+	 * @param accX
+	 */
+	public void setAccY(float accY){
+		this.accY = accY;
+	}
+	
+	public void setAcceleration(float accX, float accY){
+		this.accX = accX;
+		this.accY = accY;
 	}
 	
 	/**

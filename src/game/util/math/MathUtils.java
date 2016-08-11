@@ -125,19 +125,7 @@ public final class MathUtils {
 			return min;
 		}
 		
-		if(value < min){
-			while(value < min){
-				value += (max - min);
-			}
-			return value;
-		}else if(value > max){
-			while(value > max){
-				value -= (max - min);
-			}
-			return min;
-		}else{
-			return value;
-		}
+		return min + ((value - min)%(max - min));
 	}
 	
 	/**
@@ -218,5 +206,55 @@ public final class MathUtils {
 	 */
 	public static int isOutside(float value, float min, float max){
 		return value < min ? -1 : value > max ? 1 : 0;
+	}
+	
+	/**
+	 * Maps value from the range [min, max] to a new range [newMin, newMax]. <br><br>
+	 * <b>NOTE:</b> If min == max then this method will return newMin!
+	 * 
+	 * @param value
+	 * @param min
+	 * @param max
+	 * @param newMin
+	 * @param newMax
+	 * @return
+	 */
+	public static int map(int value, int min, int max, int newMin, int newMax){
+		if(isOutside(value, min, max) != 0){
+			throw new IllegalArgumentException("Value can not be outside min and max!");
+		}
+		
+		if(min == max){
+			//A special case to avoid a division by zero exception
+			//NOTE: What value should this return?
+			return newMin;
+		}else{
+			return newMin + (((value - min)/(max - min)) * newMax);
+		}
+	}
+	
+	/**
+	 * Maps value from the range [min, max] to a new range [newMin, newMax]. <br><br>
+	 * <b>NOTE:</b> If min == max then this method will return newMin!
+	 * 
+	 * @param value
+	 * @param min
+	 * @param max
+	 * @param newMin
+	 * @param newMax
+	 * @return
+	 */
+	public static float map(float value, float min, float max, float newMin, float newMax){
+		if(isOutside(value, min, max) != 0){
+			throw new IllegalArgumentException("Value can not be outside min and max! Value: " + value);
+		}
+		
+		if(min == max){
+			//A special case to avoid a division by zero exception
+			//NOTE: What value should this return?
+			return newMin;
+		}else{
+			return newMin + (((value - min)/(max - min)) * newMax);
+		}
 	}
 }

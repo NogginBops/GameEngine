@@ -33,6 +33,7 @@ public class BoxTransform extends Transform {
 		anchorY = 0;
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * @param x
 	 * @param y
@@ -42,9 +43,25 @@ public class BoxTransform extends Transform {
 	 * @param anchorY
 	 */
 	public BoxTransform(float x, float y, float width, float height, float anchorX, float anchorY){
+=======
+	public BoxTransform(float x, float y, float width, float height){
+>>>>>>> origin/TransformBranch
 		super();
 		
 		translate(x, y);
+		
+		this.width = width; 
+		this.height = height;
+		
+		//NOTE: 0 or 0.5f?
+		this.anchorX = 0;
+		this.anchorY = 0;
+	}
+	
+	public BoxTransform(float x, float y, float width, float height, float anchorX, float anchorY){
+		super();
+		
+		translate(x - (width * anchorX), y - (height * anchorY));
 		
 		this.width = width; 
 		this.height = height;
@@ -57,9 +74,7 @@ public class BoxTransform extends Transform {
 	public AffineTransform getAffineTransform() {
 		AffineTransform affineTransform = new AffineTransform();
 		
-		affineTransform.translate(x - (width * anchorX), y - (height * anchorY));
-		
-		affineTransform.translate((width * anchorX), (height * anchorY));
+		affineTransform.translate(x + (width * anchorX), y + (height * anchorY));
 		
 		affineTransform.scale(scaleX, scaleY);
 		
@@ -68,6 +83,16 @@ public class BoxTransform extends Transform {
 		affineTransform.translate(-((width * anchorX)), -((height * anchorY)));
 		
 		return affineTransform;
+	}
+	
+	@Override
+	public float getX() {
+		return x + (width * anchorX);
+	}
+	
+	@Override
+	public float getY() {
+		return y + (height * anchorY);
 	}
 
 	/**

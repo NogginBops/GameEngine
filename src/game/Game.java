@@ -1,6 +1,5 @@
 package game;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.util.function.Consumer;
 
@@ -178,21 +177,6 @@ public class Game {
 		}
 	}
 	
-	
-	//TODO: Remove?
-	/**
-	 * 
-	 */
-	public Game() {
-		initTime = System.nanoTime();
-
-		basicSetup();
-		
-		basicDebug();
-		
-		addIDHandlerDebug();
-	}
-	
 	private void setup(GameSettings settings){
 		final GameSettings DEFAULT = GameSettings.createDefaultGameSettings();
 		
@@ -251,7 +235,9 @@ public class Game {
 			updater = new StandardUpdater();
 		}
 		
-		camera.setSize(res.width, res.height);
+		System.out.println("Game: " + screen.getSize());
+		
+		camera.setSize(screen.getWidth(), screen.getHeight());
 		
 		mouseHandler = new MouseInputHandler(camera);
 		keyHandler = new KeyInputHandler();
@@ -287,6 +273,7 @@ public class Game {
 			System.exit(1);
 		}
 	}
+<<<<<<< HEAD
 
 	private void basicSetup() {
 		Game.game = this;
@@ -314,6 +301,8 @@ public class Game {
 		
 		gameObjectHandler.addGameObject(camera, "Main camera");
 	}
+=======
+>>>>>>> origin/TransformBranch
 	
 	//FIXME: This is a memory intensive solution, is there a better solution? 
 	//NOTE: Does this really have any performance hit?

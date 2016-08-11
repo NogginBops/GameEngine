@@ -221,4 +221,9 @@ public class UIButton extends UIElement implements MouseListener {
 	public Transform getTransform() {
 		return null;
 	}
+	
+	@Override
+	public void setTransform(Transform transform) {
+		//TODO: UI!
+	}
 }
