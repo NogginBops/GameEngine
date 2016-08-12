@@ -28,8 +28,6 @@ public class Input extends BasicGameObject implements KeyListener, MouseInputLis
 
 	private KeyInputHandler keyHandler;
 	
-	//TODO: Key-binding system
-	
 	//TODO: This class should be update synced and the Mouse and Key handlers should do their own thing?
 
 	/**

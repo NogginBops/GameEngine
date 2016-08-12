@@ -132,8 +132,6 @@ public abstract class Painter extends BasicGameObject {
 				originalTransform = translatedGraphics.getTransform();
 			}
 			
-			transform.setRotation(20);
-			
 			AffineTransform at = transform.getAffineTransform();
 			//at.setToTranslation(-at.getTranslateX(), -at.getTranslateY());
 			try {
@@ -141,6 +139,7 @@ public abstract class Painter extends BasicGameObject {
 			} catch (NoninvertibleTransformException e) {
 				e.printStackTrace();
 			}
+			
 			translatedGraphics.transform(at);
 			
 			for (Paintable paintable : paintables) {

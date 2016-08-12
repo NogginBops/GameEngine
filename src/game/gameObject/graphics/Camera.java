@@ -177,6 +177,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	 * @param height
 	 */
 	public void setHeight(int height){
+		//TODO: Update the shape here! (or find a better solution)
 		this.height = height;
 		
 		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
@@ -193,6 +194,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	 * @param height
 	 */
 	public void setSize(int width, int height){
+		this.shape = new Rectangle2D.Float(0, 0, width, height);
 		this.width = width;
 		this.height = height;
 		

@@ -108,4 +108,19 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	public void update(float deltaTime) {
 		transform.translate(dx * deltaTime, dy * deltaTime);
 	}
+	
+	@Override
+	public String[] getDebugValues() {
+		String[] newValues = new String[]{
+				"<b>DX:</b> " + dx,
+				"<b>DY:</b> " + dy
+		};
+		String[] oldValues = super.getDebugValues();
+		
+		String[] mergedValues = new String[oldValues.length + newValues.length];
+		System.arraycopy(oldValues, 0, mergedValues, 0, oldValues.length);
+		System.arraycopy(newValues, 0, mergedValues, oldValues.length, newValues.length);
+		
+		return mergedValues;
+	}
 }

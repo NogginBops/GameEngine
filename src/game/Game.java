@@ -235,8 +235,6 @@ public class Game {
 			updater = new StandardUpdater();
 		}
 		
-		System.out.println("Game: " + screen.getSize());
-		
 		camera.setSize(screen.getWidth(), screen.getHeight());
 		
 		mouseHandler = new MouseInputHandler(camera);
