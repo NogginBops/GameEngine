@@ -3,15 +3,16 @@ package game.controller.event;
 /**
  * 
  * @author Julius Häger
+ * @param <T> 
  *
  */
-public interface EventListener {
+public interface EventListener<T extends GameEvent> {
 	
 	//JAVADOC: EventListener
 
 	/**
 	 * @param event
 	 */
-	public <T extends GameEvent<?>> void eventFired(T event);
+	public void eventFired(T event);
 
 }

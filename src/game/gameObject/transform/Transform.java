@@ -1,16 +1,27 @@
 package game.gameObject.transform;
 
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 
 import game.util.math.MathUtils;
+import game.util.math.vector.Vector2D;
 
 /**
  * @author Julius Häger
+ * @param <T> 
  *
  */
-public class Transform {
+public class Transform<T> {
 	
 	//JAVADOC: Transform
+	
+	//TODO: Root transform
+	
+	protected T object;
+	
+	protected Transform<T> parent;
+	
+	protected ArrayList<Transform<T>> children;
 	
 	protected float x;
 	
@@ -22,10 +33,13 @@ public class Transform {
 	
 	protected float rotation;
 	
+	protected AffineTransform affineTransform = new AffineTransform();
+	
 	/**
+	 * @param object 
 	 * 
 	 */
-	public Transform() {
+	public Transform(T object){
 		x = 0;
 		y = 0;
 		
@@ -33,26 +47,56 @@ public class Transform {
 		scaleY = 1;
 		
 		rotation = 0;
+		
+		children = new ArrayList<>();
+		
+		this.object = object;
 	}
 	
 	/**
-	 * @param transform
+	 * @param object 
+	 * @param parent
 	 */
-	public Transform(Transform transform){
-		x = transform.x;
-		y = transform.y;
+	public Transform(T object, Transform<T> parent) {
+		x = 0;
+		y = 0;
 		
-		scaleX = transform.scaleX;
-		scaleY = transform.scaleY;
+		scaleX = 1;
+		scaleY = 1;
 		
-		rotation = transform.rotation;
+		rotation = 0;
+		
+		this.parent = parent;
+		
+		children = new ArrayList<>();
+		
+		this.object = object;
+	}
+	
+	/**
+	 * @param object 
+	 * @param parent 
+	 * @param orig 
+	 */
+	public Transform(T object, Transform<T> parent, Transform<T> orig){
+		this(object, parent);
+		
+		this.x = orig.x;
+		this.y = orig.y;
+		
+		this.scaleX = orig.scaleX;
+		this.scaleY = orig.scaleY;
+		
+		this.rotation = orig.rotation;
+		
+		children = new ArrayList<>();
 	}
 	
 	/**
 	 * @return
 	 */
 	public AffineTransform getAffineTransform(){
-		AffineTransform affineTransform = new AffineTransform();
+		affineTransform.setToIdentity();
 		
 		affineTransform.translate(x, y);
 		
@@ -60,19 +104,74 @@ public class Transform {
 		
 		affineTransform.rotate(Math.toRadians(rotation));
 		
+		if(parent != null){
+			affineTransform.concatenate(parent.getAffineTransform());
+		}
+		
 		return affineTransform;
 	}
 	
 	/**
 	 * @return
 	 */
-	public AffineTransform getUntranslatedTransform(){
-		AffineTransform affineTransform = new AffineTransform();
-		affineTransform.scale(scaleX, scaleY);
+	public T getObject(){
+		return object;
+	}
+	
+	/**
+	 * @return
+	 */
+	public Transform<T> getParent(){
+		return parent;
+	}
+	
+	/**
+	 * @param parent
+	 */
+	public void setParent(Transform<T> parent){
+		if (this.parent == parent) return;
 		
-		affineTransform.rotate(Math.toRadians(rotation), x, y);
+		this.parent.removeChild(this);
+		this.parent = parent;
 		
-		return affineTransform;
+		if (parent != null) {
+			parent.addChild(this);	
+		}
+	}
+	
+	/**
+	 * @param child
+	 */
+	public void addChild(Transform<T> child){
+		children.add(child);
+		child.setParent(this);
+	}
+	
+	/**
+	 * @param child
+	 */
+	public void removeChild(Transform<T> child){
+		children.remove(child);
+		child.setParent(null);
+	}
+	
+	/**
+	 * @return
+	 */
+	public ArrayList<Transform<T>> getChildren(){
+		return new ArrayList<>(children);
+	}
+	
+	/**
+	 * @param i
+	 * @return
+	 */
+	public Transform<T> getChild(int i){
+		if(i < 0 || i >= children.size()){
+			return null;
+		}
+		
+		return children.get(i);
 	}
 
 	/**
@@ -101,6 +200,13 @@ public class Transform {
 	 */
 	public void setY(float y) {
 		this.y = y;
+	}
+	
+	/**
+	 * @return
+	 */
+	public Vector2D getPosition(){
+		return new Vector2D(getX(), getY());
 	}
 	
 	/**

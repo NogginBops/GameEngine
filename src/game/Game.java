@@ -102,7 +102,10 @@ public class Game {
 	 */
 	public static Screen screen; //FIXME: Support multiple screens.
 	
-	private static MouseInputHandler mouseHandler;
+	/**
+	 * 
+	 */
+	public static MouseInputHandler mouseHandler;
 	
 	/**
 	 * 
@@ -146,7 +149,6 @@ public class Game {
 			log.logWarning("No settings provided! Using the default settings!", "System", "Settings");
 			settings = GameSettings.createDefaultGameSettings();
 		}
-		//TODO: Use the GameSettings
 		
 		setup(settings);
 		
@@ -214,6 +216,7 @@ public class Game {
 		
 		screen = new Screen(res, mode, name, targetFPS);
 		
+		//NOTE: Should the camera be a part of the settings
 		camera = DEFAULT.getSettingAs("MainCamera", Camera.class);
 		if(settings.containsSetting("MainCamera")){
 			camera = settings.getSettingAs("MainCamera", Camera.class);
@@ -243,14 +246,19 @@ public class Game {
 		
 		updater.addSystem(mouseHandler);
 		
-		@SuppressWarnings("unchecked")
-		Consumer<KeyInputHandler> keyBindings = (Consumer<KeyInputHandler>) settings.getSettingAs("KeyBindings", Consumer.class);
-		if(keyBindings != null){
-			keyBindings.accept(keyHandler);
+		if(settings.containsSetting("KeyBindings")){
+			@SuppressWarnings("unchecked")
+			Consumer<KeyInputHandler> keyBindings =  settings.getSettingAs("KeyBindings", Consumer.class);
+			if(keyBindings != null){
+				keyBindings.accept(keyHandler);
+			}else{
+				log.logWarning("Keybinding key found in settigns but the value is null!");
+				//NOTE: Should there be a add default settings flag that adds the users keybindings onto of the standard ones.
+			}
 		}else{
-			log.logMessage("No keybinding setup found in settigns.");
-			//NOTE: Should there be a add default settings flag that adds the users keybindings onto of the standard ones.
+			log.logMessage("Didn't find any keybindings in the settigns.");
 		}
+		
 		
 		screen.addPainter(camera);
 		screen.addInputListener(inputHandler);
@@ -310,7 +318,7 @@ public class Game {
 			LogDebugFrame.stopDebug();
 		}
 		
-		eventMachine.fireEvent(new GameQuitEvent(this, name));
+		eventMachine.fireEvent(new GameQuitEvent(this));
 	}
 	
 	private void addDebugLog(){
@@ -328,8 +336,8 @@ public class Game {
 		Thread.currentThread().setName(name);
 		
 		log.logMessage("Starting...", "System");
-		//Maybe onStart method?
-		eventMachine.fireEvent(new GameStartEvent(this, name));
+		
+		eventMachine.fireEvent(new GameStartEvent(this));
 
 		new Thread(screen, "Graphics").start();
 		startTime = System.nanoTime();
@@ -369,7 +377,7 @@ public class Game {
 				continue;
 			}
 			
-			//TODO: UpdateListeners that are not GameObjects (Systems)
+			gameObjectHandler.clearChange();
 			
 			updater.propagateUpdate((elapsedTime / 1000000000f) * timeScale);
 			
@@ -381,8 +389,6 @@ public class Game {
 						((elapsedTime / 1000000f) - Game.deltaTimeWarningThreshold) + "ms",
 						"Game", "DeltaTime", "System");
 			}
-			
-			gameObjectHandler.clearChange();
 			
 			if(limitUPS){
 				targetTime = (1000000000L / targetUPS);

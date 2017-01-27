@@ -36,7 +36,7 @@ public class BasicCollidable extends BasicMovable implements Collidable{
 	public BasicCollidable(float x, float y, Shape shape, int zOrder) {
 		super(x, y, shape, zOrder);
 	}
-
+	
 	@Override
 	public void hasCollided(Collidable collisionObject) {
 		

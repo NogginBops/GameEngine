@@ -149,4 +149,12 @@ public class IDHandler<T> {
 	public int getLastID(){
 		return lastID;
 	}
+	
+	/**
+	 * 
+	 */
+	public void clear(){
+		IDs.clear();
+		lastID = 0;
+	}
 }

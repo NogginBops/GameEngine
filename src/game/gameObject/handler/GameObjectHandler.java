@@ -28,6 +28,10 @@ public class GameObjectHandler {
 	//Should this be done on the caller thread or should a worker thread be used? What would work best.
 	//Another way to do this is to register types of gameObject to pool for fast retrieval. But this still requires a whole new list to be passed.
 
+	//TODO: removeAllGameObjects() and removeAllGameObjectsExtending()
+	
+	//NOTE: Should getAllGameObejctsExtending be renamed to getAllGameObejctsAssignableFrom
+	
 	private ConcurrentSkipListMap<Integer, CopyOnWriteArrayList<GameObject>> gameObjectMap;
 	
 	/*
@@ -325,8 +329,16 @@ public class GameObjectHandler {
 	 * 
 	 */
 	public void clear() {
+		gameObjectMap.clear();
+		zLevels.clear();
+		idHandler.clear();
+				
 		for (GameObject gameObject : getAllGameObjects()) {
-			removeGameObject(gameObject);
+			Game.eventMachine.fireEvent(new GameObjectDestroyedEvent(this, gameObject));
 		}
+		
+		gameObjects.clear();
+		
+		objectsChanged = true;
 	}
 }

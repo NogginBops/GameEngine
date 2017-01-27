@@ -24,9 +24,9 @@ import javax.swing.table.DefaultTableModel;
 
 import game.Game;
 import game.controller.event.EventListener;
-import game.controller.event.GameEvent;
 import game.gameObject.GameObject;
-import game.gameObject.handler.event.GameObjectEvent;
+import game.gameObject.handler.event.GameObjectCreatedEvent;
+import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.util.ID;
 import game.util.IDHandler;
 
@@ -230,13 +230,11 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 		});
 	}
 	
-	EventListener listener = new EventListener() {
-		@Override
-		public <T2 extends GameEvent<?>> void eventFired(T2 event) {
-			updateIDs(handler.getAllIDs());
-		}
-	};
-
+	Runnable updateIDs = () -> updateIDs(handler.getAllIDs());
+	
+	EventListener<GameObjectCreatedEvent> createdListener = (event) -> updateIDs.run();
+	EventListener<GameObjectDestroyedEvent> destroyedListener = (event) -> updateIDs.run();
+	
 	@Override
 	public void run() {
 		this.setVisible(true);
@@ -246,16 +244,17 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 		//I'm not sure the abstraction away from gameObjects is a good one when all that is ever really going to be debugged with this is gameObjects.
 		//If this where changed to the gameObejct approach the debugOutputProvider might not be needed. Though there would have to be another solution.
 		//Maybe one like unitys serialization but not as advanced? It could/would take a lot of a unnecessary time though
-		//if(((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0] instanceof GameObject){
-			Game.eventMachine.addEventListener(GameObjectEvent.class, listener);
-		//}
+		
+		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, createdListener);
+		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, destroyedListener);
 	}
 	
 	/**
 	 * 
 	 */
 	public void stopDebug() {
-		Game.eventMachine.removeEventListener(GameObjectEvent.class, listener);
+		Game.eventMachine.removeEventListener(GameObjectCreatedEvent.class, createdListener);
+		Game.eventMachine.removeEventListener(GameObjectDestroyedEvent.class, destroyedListener);
 		
 		dispose();
 	}

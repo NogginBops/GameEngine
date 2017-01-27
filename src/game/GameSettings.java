@@ -98,7 +98,7 @@ public class GameSettings {
 				
 				outerContainer.setBorderSize(2);
 				
-				UI ui = new UI(new Rectangle2D.Float(0, 0, 800, 600), outerContainer);
+				UI ui = new UI(0, 0, 0, outerContainer);
 		
 				Game.gameObjectHandler.addGameObject(ui, "Demo UI");
 				
@@ -108,7 +108,7 @@ public class GameSettings {
 		
 		return defaultSettigns;
 	}
-	
+
 	private HashMap<String, Object> settings;
 	
 	/**

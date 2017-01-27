@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 
 import game.UI.elements.UIElement;
 
@@ -87,9 +88,14 @@ public class UILabel extends UIElement {
 		
 		g2d.setColor(color);
 		
-		g2d.drawString(text, (int)area.getX(), (int)area.getY() + fontMetrics.getHeight());
+		g2d.drawString(text, (int)transform.getX(), (int)transform.getY() + fontMetrics.getHeight());
 		
 		g2d.setFont(temp);
+	}
+	
+	@Override
+	public BufferedImage getImage() {
+		return null;
 	}
 	
 	/**

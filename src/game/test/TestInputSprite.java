@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author Julius Häger
@@ -146,5 +147,10 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
 		return false;
+	}
+
+	@Override
+	public Rectangle2D getBounds() {
+		return super.getBounds();
 	}
 }

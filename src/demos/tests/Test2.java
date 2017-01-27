@@ -40,7 +40,5 @@ public class Test2 implements GameInitializer {
 	public void initialize(Game game, GameSettings settings) {
 		GameObjectAdder adder = new GameObjectAdder();
 		Game.gameObjectHandler.addGameObject(adder);
-
 	}
-
 }

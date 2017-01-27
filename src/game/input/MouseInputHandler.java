@@ -9,22 +9,20 @@ import javax.swing.event.MouseInputListener;
 
 import game.Game;
 import game.GameSystem;
-import game.controller.event.EventListener;
-import game.controller.event.GameEvent;
 import game.gameObject.graphics.Camera;
-import game.gameObject.handler.event.GameObjectEvent;
+import game.gameObject.handler.event.GameObjectCreatedEvent;
+import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.input.mouse.MouseListener;
-import game.util.InverseGameObjectComparator;
 
 /**
  * @author Julius Häger
  *
  */
-public class MouseInputHandler extends GameSystem implements MouseInputListener, MouseWheelListener, EventListener {
+public class MouseInputHandler extends GameSystem implements MouseInputListener, MouseWheelListener {
 	
 	//TODO: Have separate lists for the entered listeners and the listeners that always receive updates
 
-	//FIXME: Add support for multiple cameras and 
+	//FIXME: Add support for multiple cameras
 	
 	private Camera camera;
 
@@ -34,8 +32,6 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 	
 	private MouseEvent lastEvent;
 	
-	private InverseGameObjectComparator invComparator = new InverseGameObjectComparator();
-	
 	/**
 	 * @param camera
 	 */
@@ -44,7 +40,17 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 		
 		this.camera = camera;
 		
-		Game.eventMachine.addEventListener(GameObjectEvent.class, this);
+		//FIXME: Add event for MouseListeners!
+		// or we could go back to an older system where the MouseListener needed to register to the handler.
+		
+		// The best way to implement this would be with a GameSystemListenerCreatedEvent<GameSystemListener> or something like that
+		// that can supply the listener with exactly what it's looking for. This would mean that you would have to use something like 
+		
+		// You could also just refactor this so that anyone can subscribe to the mouse input and other input with method references and lambdas.
+		
+		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, this::mouseListenerCreated);
+		
+		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, this::mouseListenerDestroyed);
 		
 		Game.screen.addDebugText(() -> {
 			return new String[]{
@@ -158,7 +164,7 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 					if(mouseListener.souldReceiveMouseInput() || mouseListener.getBounds().contains(lastEvent.getPoint())){
 						if(enteredListeners.contains(mouseListener) == false){
 							enteredListeners.add(mouseListener);
-							enteredListeners.sort(invComparator);
+							enteredListeners.sort((m, m2) -> m2.getZOrder() - m.getZOrder());
 							mouseListener.mouseEntered(lastEvent);
 						}
 					}else{
@@ -181,24 +187,36 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 	public void lateUpdate(float deltaTime) {
 		
 	}
-
-	//TODO: Add individual handlers for events instead of this where you have to figure out what event you are receiving
-	@Override
-	public <T extends GameEvent<?>> void eventFired(T event) {
-		if (event instanceof GameObjectEvent) {
-			if(((GameObjectEvent)event).object instanceof MouseListener){
-				switch (event.command) {
-				case "Created":
-					listeners.add((MouseListener)((GameObjectEvent)event).object);
-					break;
-				case "Destroyed":
-					listeners.remove(((GameObjectEvent)event).object);
-					enteredListeners.remove(((GameObjectEvent)event).object);
-					break;
-				default:
-					break;
-				}
-			}
+	
+	/**
+	 * @param listener
+	 */
+	public void addMouseListener(MouseListener listener){
+		listeners.add(listener);
+	}
+	
+	/**
+	 * @param listener
+	 */
+	public void removeMouseListener(MouseListener listener){
+		listeners.remove(listener);
+	}
+	
+	/**
+	 * @param event
+	 */
+	public void mouseListenerCreated(GameObjectCreatedEvent event){
+		if (event.object instanceof MouseListener) {
+			addMouseListener((MouseListener)event.object);
+		}
+	}
+	
+	/**
+	 * @param event
+	 */
+	public void mouseListenerDestroyed(GameObjectDestroyedEvent event){
+		if (event.object instanceof MouseListener) {
+			removeMouseListener((MouseListener)event.object);
 		}
 	}
 }

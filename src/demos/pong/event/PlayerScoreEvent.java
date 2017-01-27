@@ -8,7 +8,7 @@ import game.controller.event.GameEvent;
  * @author Julius Häger
  *
  */
-public class PlayerScoreEvent extends GameEvent<Ball> {
+public class PlayerScoreEvent extends GameEvent {
 
 	/**
 	 * 
@@ -21,7 +21,7 @@ public class PlayerScoreEvent extends GameEvent<Ball> {
 	 * @param command
 	 */
 	public PlayerScoreEvent(Ball origin, Side side) {
-		super(origin, "Scored");
+		super(origin);
 		this.side = side;
 	}
 

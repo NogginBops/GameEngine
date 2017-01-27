@@ -18,7 +18,7 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	/**
 	 * 
 	 */
-	protected Transform transform = new Transform();
+	protected Transform<GameObject> transform = new Transform<GameObject>(this);
 	
 	/**
 	 * 
@@ -37,7 +37,7 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	 * @param shape
 	 * @param zOrder
 	 */
-	public BasicGameObject(Transform transform, Shape shape, int zOrder) {
+	public BasicGameObject(Transform<GameObject> transform, Shape shape, int zOrder) {
 		this.transform = transform;
 		this.shape = shape;
 		this.zOrder = zOrder;
@@ -71,12 +71,12 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	}
 
 	@Override
-	public Transform getTransform() {
+	public Transform<GameObject> getTransform() {
 		return transform;
 	}
 	
 	@Override
-	public void setTransform(Transform transform) {
+	public void setTransform(Transform<GameObject> transform) {
 		this.transform = transform;
 	}
 	

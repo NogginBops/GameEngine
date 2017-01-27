@@ -16,7 +16,7 @@ public class GameObjectDestroyedEvent extends GameObjectEvent {
 	 * @param object
 	 */
 	public GameObjectDestroyedEvent(GameObjectHandler origin, GameObject object) {
-		super(origin, "Destroyed", object);
+		super(origin, object);
 	}
 
 }

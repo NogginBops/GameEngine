@@ -8,11 +8,10 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import game.Game;
-import game.controller.event.EventListener;
-import game.controller.event.GameEvent;
 import game.gameObject.GameObject;
 import game.gameObject.handler.GameObjectHandler;
-import game.gameObject.handler.event.GameObjectEvent;
+import game.gameObject.handler.event.GameObjectCreatedEvent;
+import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.gameObject.physics.Movable;
 import game.input.keys.KeyListener;
 import game.screen.ScreenRect;
@@ -25,7 +24,7 @@ import game.util.image.ImageUtils;
  * @version 1.0
  * @author Julius Häger
  */
-public class Camera extends Painter implements Movable, KeyListener, EventListener {
+public class Camera extends Painter implements Movable, KeyListener {
 
 	// TODO: Remove movement code
 	
@@ -72,7 +71,7 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 		this.width = width;
 		this.height = height;
 		
-		Game.eventMachine.addEventListener(GameObjectEvent.class, this);
+		addEventListeners();
 	}
 	
 	
@@ -84,11 +83,17 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	public Camera(Rectangle2D.Float rect, ScreenRect screenRect, Color bgColor) {
 		super(rect.x, rect.y, rect.width, rect.height, Integer.MAX_VALUE - 8);
 		
-		Game.eventMachine.addEventListener(GameObjectEvent.class, this);
-		
 		setScreenRectangle(screenRect);
 		
 		setBackgroundColor(bgColor);
+		
+		addEventListeners();
+	}
+	
+	private void addEventListeners(){
+		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, (event) -> { if (event.object instanceof Paintable) paintables.add((Paintable)event.object); paintables.sort(null); });
+		
+		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, (event) -> { if (event.object instanceof Paintable) paintables.remove((Paintable)event.object); paintables.sort(null); });
 	}
 
 	/**
@@ -358,27 +363,5 @@ public class Camera extends Painter implements Movable, KeyListener, EventListen
 	 */
 	public void setBackgroundColor(Color color) {
 		backgroundColor = color;
-	}
-
-
-	@Override
-	public <T extends GameEvent<?>> void eventFired(T event) {
-		if(event instanceof GameObjectEvent){
-			GameObjectEvent goEvent = (GameObjectEvent) event;
-			if(goEvent.object instanceof Paintable){
-				switch (event.command) {
-				case "Created":
-					paintables.add((Paintable) goEvent.object);
-					paintables.sort(null);
-					break;
-				case "Destroyed":
-					paintables.remove((Paintable) goEvent.object);
-					paintables.sort(null);
-					break;
-				default:
-					break;
-				}
-			}
-		}
 	}
 }

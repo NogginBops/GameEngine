@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import game.Game;
+import game.gameObject.GameObject;
 import game.gameObject.graphics.Paintable;
 import game.gameObject.physics.BasicRotatable;
 import game.gameObject.transform.BoxTransform;
@@ -59,7 +60,7 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	//NOTE: Does this need further optimization?
 	private HashMap<Integer, HashMap<Color, BufferedImage>> imageMap;
 	
-	private BoxTransform boxTransform;
+	private BoxTransform<GameObject> boxTransform;
 	
 	/**
 	 * 
@@ -99,7 +100,7 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	 * @param maxParticles 
 	 * @param customizer 
 	 */
-	public ParticleSystem(BoxTransform transform, int zOrder, int maxParticles, ParticleCustomizer customizer) {
+	public ParticleSystem(BoxTransform<GameObject> transform, int zOrder, int maxParticles, ParticleCustomizer customizer) {
 		super(transform, new Rectangle2D.Float(0, 0, transform.getWidth(), transform.getHeight()), zOrder, 0);
 		
 		setTransform(transform);
@@ -285,10 +286,10 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	 * @return
 	 */
 	@Override
-	public void setTransform(Transform transform) {
+	public void setTransform(Transform<GameObject> transform) {
 		if(transform instanceof BoxTransform){
 			super.setTransform(transform);
-			boxTransform = (BoxTransform) transform;
+			boxTransform = (BoxTransform<GameObject>) transform;
 		}else{
 			//NOTE: Is this needed?
 			Game.log.logError("Trying to assign a non BoxTransform to a particle system! This is not suported!", "ParticleSystem", "Transform", "Particle");
@@ -298,7 +299,7 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	/**
 	 * @return
 	 */
-	public BoxTransform getBoxTransform(){
+	public BoxTransform<GameObject> getBoxTransform(){
 		return boxTransform;
 	}
 	

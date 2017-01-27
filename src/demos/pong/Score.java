@@ -12,18 +12,17 @@ import demos.pong.event.PlayerScoreEvent;
 import game.Game;
 import game.IO.IOHandler;
 import game.IO.save.SaveRequest;
-import game.UI.UI;
+import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.image.UIRect;
 import game.UI.elements.text.UILabel;
 import game.controller.event.EventListener;
-import game.controller.event.GameEvent;
 import game.input.keys.KeyListener;
 
 /**
  * @author Julius Häger
  *
  */
-public class Score extends UI implements KeyListener {
+public class Score extends BasicUIContainer implements KeyListener {
 
 	private int left = 0;
 
@@ -45,6 +44,7 @@ public class Score extends UI implements KeyListener {
 	 */
 	public Score(Rectangle2D area) {
 		super(area);
+		
 		deviderRect = new Rectangle2D.Float(((float)area.getWidth() / 2 - deviderWidth / 2), (float)area.getY(), deviderWidth,
 				(float)area.getHeight());
 		
@@ -53,22 +53,21 @@ public class Score extends UI implements KeyListener {
 		setZOrder(0);
 		
 		player1Score = new UILabel("Player 1: 0");
-		player1Score.setPosition(devider.getX() - 55, 20);
+		player1Score.setPosition(devider.getTransform().getX() - 55, 20);
 		player2Score = new UILabel("Player 2: 0");
-		player2Score.setPosition(devider.getX() + 50, 20);
+		player2Score.setPosition(devider.getTransform().getX() + 50, 20);
 		
-		addUIElements(player1Score, player2Score, devider);
+		addChild(player1Score);
+		addChild(player2Score);
+		addChild(devider);
 		
-		Game.eventMachine.addEventListener(PlayerScoreEvent.class, new EventListener() {
-			
+		Game.eventMachine.addEventListener(PlayerScoreEvent.class, new EventListener<PlayerScoreEvent>() {
 			@Override
-			public <T extends GameEvent<?>> void eventFired(T event) {
-				if(event instanceof PlayerScoreEvent){
-					if(((PlayerScoreEvent)event).side == Side.RIGHT){
-						right++;
-					}else{
-						left++;
-					}
+			public void eventFired(PlayerScoreEvent event) {
+				if(event.side == Side.RIGHT){
+					right++;
+				}else{
+					left++;
 				}
 			}
 		});
@@ -118,6 +117,11 @@ public class Score extends UI implements KeyListener {
 
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
+		return true;
+	}
+
+	@Override
+	public boolean isActive() {
 		return true;
 	}
 }

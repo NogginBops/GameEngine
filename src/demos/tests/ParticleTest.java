@@ -122,7 +122,7 @@ public class ParticleTest implements GameInitializer {
 			}
 		}*/
 		
-		ParticleSystem pSystem = new ParticleSystem(new BoxTransform(100, 100, 400, 400), 5, 1000, null);
+		ParticleSystem pSystem = new ParticleSystem(new BoxTransform<>(null, 100, 100, 400, 400), 5, 1000, null);
 		
 		pSystem.setDR(100);
 		
@@ -167,7 +167,7 @@ public class ParticleTest implements GameInitializer {
 		
 		Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
 		
-		ParticleSystem pSys2 = new ParticleSystem(new BoxTransform(100, 100, 500, 500), 5, 2000, null);
+		ParticleSystem pSys2 = new ParticleSystem(new BoxTransform<>(null, 100, 100, 500, 500), 5, 2000, null);
 		
 		pSys2.addImage(0, particleImage);
 		

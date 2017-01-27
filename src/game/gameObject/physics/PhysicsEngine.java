@@ -33,13 +33,12 @@ public class PhysicsEngine extends GameSystem {
 	//be the solution?
 	
 	//TODO: Explore if this solution is better than the one currently in use
-	@SuppressWarnings("unused")
 	private HashMap<Integer, CopyOnWriteArrayList<Collidable>> collidablesMap = new HashMap<Integer, CopyOnWriteArrayList<Collidable>>();
 
 	//TODO: Explore the HashMap solution.
-	private CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>> collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
+	//private CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>> collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 
-	private boolean debug = true;
+	private boolean debug = false;
 	
 	/**
 	 * @param gameObjectHandeler
@@ -63,6 +62,26 @@ public class PhysicsEngine extends GameSystem {
 	@Override
 	public void lateUpdate(float deltaTime) {
 		if (Game.gameObjectHandler.shouldUpdateObjects()) {
+			
+			collidablesMap.clear();
+			
+			CopyOnWriteArrayList<Collidable> allCollidables = Game.gameObjectHandler.getAllActiveGameObjectsExtending(Collidable.class);
+			
+			if(allCollidables.size() <= 1){
+				return;
+			}
+			
+			for (Collidable collidable : allCollidables) {
+				int physicsLayer = collidable.getPhysicsLayer();
+				if(collidablesMap.containsKey(physicsLayer) == false){
+					collidablesMap.put(physicsLayer, new CopyOnWriteArrayList<>());
+				}
+				
+				collidablesMap.get(physicsLayer).add(collidable);
+			}
+			
+			/*
+			//FIXME: Order by physics layers instead!
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 			for (int z : Game.gameObjectHandler.getZLevels()) {
 				tempList = Game.gameObjectHandler.getAllGameObjectsAtZLevelExtending(z, Collidable.class);
@@ -72,13 +91,18 @@ public class PhysicsEngine extends GameSystem {
 			}
 			if(collidables.size() < 1){
 				return;
-			}
+			}*/
 		}
 		
-		for (CopyOnWriteArrayList<Collidable> collidablesInLayer : collidables) {
+		for (CopyOnWriteArrayList<Collidable> collidablesInLayer : collidablesMap.values()) {
+			if(collidablesInLayer.size() <= 1){
+				continue;
+			}
+			
 			for (int c1 = 0; c1 < collidablesInLayer.size(); c1++) {
 				for (int c2 = c1 + 1; c2 < collidablesInLayer.size(); c2++) {
 					loopCount++;
+					
 					if(collidablesInLayer.get(c1).isActive() && collidablesInLayer.get(c2).isActive()){
 						if(collidablesInLayer.get(c1).getBounds().intersects(collidablesInLayer.get(c2).getBounds())){
 							if(collides(collidablesInLayer.get(c1).getCollitionShape(), collidablesInLayer.get(c2).getCollitionShape())){
@@ -90,21 +114,38 @@ public class PhysicsEngine extends GameSystem {
 			}
 		}
 		
-		timer -= deltaTime;
-		if(timer <= 0){
-			timer = 2;
-			
-			int objects = 0;
-			for (CopyOnWriteArrayList<Collidable> copyOnWriteArrayList : collidables) {
-				objects += copyOnWriteArrayList.size();
-			}
-			
-			if(debug){
-				Game.log.logDebug("Loop count: " + loopCount + " for "  + collidables.size() + " layers and " + objects + " objects!");
+		/*
+		for (CopyOnWriteArrayList<Collidable> collidablesInLayer : collidables) {
+			for (int c1 = 0; c1 < collidablesInLayer.size(); c1++) {
+				for (int c2 = c1 + 1; c2 < collidablesInLayer.size(); c2++) {
+					loopCount++;
+					
+					if(collidablesInLayer.get(c1).isActive() && collidablesInLayer.get(c2).isActive()){
+						if(collidablesInLayer.get(c1).getBounds().intersects(collidablesInLayer.get(c2).getBounds())){
+							if(collides(collidablesInLayer.get(c1).getCollitionShape(), collidablesInLayer.get(c2).getCollitionShape())){
+								collide(collidablesInLayer.get(c1), collidablesInLayer.get(c2));
+							}
+						}
+					}
+				}
 			}
 		}
-		
-		loopCount = 0;
+		*/	
+		if(debug){
+			timer -= deltaTime;
+			if(timer <= 0){
+				timer = 2;
+				
+				int objects = 0;
+				for (CopyOnWriteArrayList<Collidable> copyOnWriteArrayList : collidablesMap.values()) {
+					objects += copyOnWriteArrayList.size();
+				}
+				
+				Game.log.logDebug("Loop count: " + loopCount + " for "  + collidablesMap.keySet().size() + " layers and " + objects + " objects!");
+			}
+			
+			loopCount = 0;
+		}
 	}
 	
 

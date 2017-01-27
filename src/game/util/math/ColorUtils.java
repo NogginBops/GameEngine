@@ -1,6 +1,7 @@
 package game.util.math;
 
 import java.awt.Color;
+import java.util.Random;
 
 import game.Game;
 
@@ -81,5 +82,32 @@ public final class ColorUtils {
 		}
 		Game.log.logError("Hue is not in range [0, 360]!? Value = " + hue);
 		return null;
+	}
+	
+	/**
+	 * @return
+	 */
+	public static Color random(){
+		Random rand = new Random();
+		
+		return new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+	}
+	
+	/**
+	 * @param seed
+	 * @return
+	 */
+	public static Color random(long seed){
+		Random rand = new Random(seed);
+		
+		return new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+	}
+	
+	/**
+	 * @param rand
+	 * @return
+	 */
+	public static Color random(Random rand){
+		return new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
 	}
 }

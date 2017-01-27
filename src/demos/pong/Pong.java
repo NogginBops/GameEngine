@@ -6,6 +6,7 @@ import demos.pong.Pad.Side;
 import game.Game;
 import game.GameInitializer;
 import game.GameSettings;
+import game.UI.UI;
 import game.gameObject.graphics.Camera;
 
 /**
@@ -60,7 +61,11 @@ public class Pong implements GameInitializer {
 
 		Score score = new Score(camera.getBounds());
 
-		Game.gameObjectHandler.addGameObject(score, "Score");
+		Game.keyHandler.addListener(score);
+		
+		UI ui = new UI(0, 0, 0, score);
+		
+		Game.gameObjectHandler.addGameObject(ui, "Score");
 	}
 
 }

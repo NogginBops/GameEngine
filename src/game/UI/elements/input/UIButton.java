@@ -2,17 +2,15 @@ package game.UI.elements.input;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import game.UI.elements.UIElement;
-import game.gameObject.GameObject;
-import game.gameObject.transform.Transform;
 import game.input.mouse.MouseListener;
 
 /**
@@ -77,7 +75,7 @@ public class UIButton extends UIElement implements MouseListener {
 	 * @param height
 	 */
 	public UIButton(float width, float height) {
-		super(width, height);
+		super(0, 0, width, height);
 	}
 	
 	/**
@@ -96,11 +94,6 @@ public class UIButton extends UIElement implements MouseListener {
 	}
 	
 	@Override
-	public Shape getShape() {
-		return area;
-	}
-	
-	@Override
 	public boolean isActive() {
 		return active;
 	}
@@ -108,16 +101,6 @@ public class UIButton extends UIElement implements MouseListener {
 	@Override
 	public void setActive(boolean active) {
 		this.active = active;
-	}
-	
-	@Override
-	public Rectangle2D getBounds() {
-		return super.getBounds();
-	}
-
-	@Override
-	public int compareTo(GameObject object) {
-		return 0;
 	}
 	
 	@Override
@@ -142,9 +125,11 @@ public class UIButton extends UIElement implements MouseListener {
 		}
 		
 		g2d.setColor(color);
-		
-		g2d.fill(getArea());
-		
+	}
+	
+	@Override
+	public BufferedImage getImage() {
+		return null;
 	}
 
 	@Override
@@ -218,12 +203,7 @@ public class UIButton extends UIElement implements MouseListener {
 	}
 
 	@Override
-	public Transform getTransform() {
-		return null;
-	}
-	
-	@Override
-	public void setTransform(Transform transform) {
-		//TODO: UI!
+	public Rectangle2D getBounds() {
+		return transform.getTransformedRect().getBounds2D();
 	}
 }

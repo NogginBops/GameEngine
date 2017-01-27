@@ -9,7 +9,6 @@ import demos.town.buildings.Building;
 import demos.town.buildings.houses.House;
 import game.Game;
 import game.gameObject.BasicGameObject;
-import game.gameObject.GameObject;
 import game.input.keys.KeyListener;
 import game.input.mouse.MouseListener;
 
@@ -41,10 +40,6 @@ public class GameObjectAdder extends BasicGameObject implements MouseListener, K
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// OtherPaintable p = new OtherPaintable(e.getX(), e.getY(),
-		// rand.nextInt(200), rand.nextInt(200), 0, new Color(rand.nextInt(255),
-		// rand.nextInt(255), rand.nextInt(255)));
-		// gameObjectHandler.addGameObject(p, "Square");
 		currentBuilding.placed();
 		currentBuilding = new House(e.getX(), e.getY(), 24, 30);
 		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
@@ -100,9 +95,8 @@ public class GameObjectAdder extends BasicGameObject implements MouseListener, K
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(Game.keyHandler.isBound("Clear", e.getKeyCode())){
-			for (GameObject gameObject : Game.gameObjectHandler.getAllActiveGameObjectsExtending(currentBuilding.getClass())) {
-				Game.gameObjectHandler.removeGameObject(gameObject);
-			}
+			Game.gameObjectHandler.clear();
+			Game.gameObjectHandler.addGameObject(this);
 		}
 	}
 
@@ -113,5 +107,10 @@ public class GameObjectAdder extends BasicGameObject implements MouseListener, K
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
 		return true;
+	}
+
+	@Override
+	public Rectangle2D getBounds() {
+		return super.getBounds();
 	}
 }

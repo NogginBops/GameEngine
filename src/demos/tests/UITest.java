@@ -1,8 +1,6 @@
 package demos.tests;
 
 import java.awt.Color;
-import java.awt.Image;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -55,23 +53,20 @@ public class UITest implements GameInitializer {
 	
 	@Override
 	public void initialize(Game game, GameSettings settings) {
-		UI hud = new UI(new Rectangle2D.Float(100, 100, 400, 400));
-		
 		BasicUIContainer container = new BasicUIContainer(200, 300);
 		Border border = new SolidBorder(20, Color.MAGENTA);
 		container.setBorder(border);
-		hud.addUIElement(container);
-
+		
 		BasicUIContainer container2 = new BasicUIContainer(100, 100);
 		Border border2 = new SolidBorder(10, Color.CYAN);
 		container2.setBorder(border2);
-		container.addUIElement(container2);
+		container.addChild(container2);
 
 		UILabel lable = new UILabel("Test label");
 		lable.setColor(Color.WHITE);
-		container2.addUIElement(lable);
+		container2.addChild(lable);
 		
-		Image image;
+		BufferedImage image;
 		try {
 			image = IOHandler.load(new LoadRequest<BufferedImage>("Image", new File("./res/Background.png"), BufferedImage.class, "DefaultPNGLoader")).result;
 		} catch (IOException e) {
@@ -81,17 +76,19 @@ public class UITest implements GameInitializer {
 		UIImage UIimg = new UIImage(0, 0, 40, 100, image);
 		UIimg.setNativeSize();
 		UIimg.setZOrder(2);
-		container.addUIElement(UIimg);
+		container.addChild(UIimg);
 		
 		UIButton button = new UIButton(20, 20, 100, 40);
-		Game.gameObjectHandler.addGameObject(button);
+		Game.mouseHandler.addMouseListener(button);
 		button.setZOrder(10);
-		container.addUIElement(button);
+		container.addChild(button);
 		
 		button.addActionListener((e) -> {
 			System.out.println("asdf");
 			System.out.println(e);
 		});
+		
+		UI hud = new UI(0, 0, 0, container);
 		
 		Game.gameObjectHandler.addGameObject(hud);
 		

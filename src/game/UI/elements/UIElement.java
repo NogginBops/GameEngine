@@ -2,185 +2,138 @@ package game.UI.elements;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 import game.UI.UI;
-import game.UI.elements.containers.UIContainer;
+import game.gameObject.transform.BoxTransform;
 
 /**
  * 
  * 
  * @author Julius Häger
  */
-public abstract class UIElement{
+public abstract class UIElement {
 	
 	// JAVADOC: UIElement
 	
-	//TODO: Should this actually be a GameObject
+	protected UI root = null;
 	
-	protected UI root;
+	protected BoxTransform<UIElement> transform;
 	
-	protected UIContainer parent;
-
-	protected Rectangle2D area;
-
-	protected int zOrder = 10;
-
+	protected int zOrder;
+	
+	private boolean enabled = true;
+	
 	/**
 	 * 
 	 */
-	public UIElement() {
-		area = new Rectangle2D.Float();
-	}
-
-	/**
-	 * @param area
-	 */
-	public UIElement(Rectangle2D area) {
-		this.area = area;
-	}
-
-	/**
-	 * @param width
-	 * @param height
-	 */
-	public UIElement(float width, float height) {
-		area = new Rectangle2D.Float(0, 0, width, height);
+	public UIElement(){
+		transform = new BoxTransform<>(this);
+		zOrder = 0;
 	}
 	
 	/**
+	 * 
+	 * @param rect
+	 */
+	public UIElement(Rectangle2D rect){
+		transform = new BoxTransform<>(this, (float)rect.getX(), (float)rect.getY(), (float)rect.getWidth(), (float)rect.getHeight());
+		zOrder = 0;
+	}
+	
+	/**
+	 * 
+	 * @param rect
+	 * @param zOrder
+	 */
+	public UIElement(Rectangle2D rect, int zOrder){
+		transform = new BoxTransform<>(this, (float)rect.getX(), (float)rect.getY(), (float)rect.getWidth(), (float)rect.getHeight());
+		this.zOrder = zOrder;
+	}
+	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param width 
+	 * @param height 
+	 */
+	public UIElement(float x, float y, float width, float height){
+		transform = new BoxTransform<>(this, x, y, width, height);
+		zOrder = 0;
+	}
+	
+	/**
+	 * @param parent 
 	 * @param x
 	 * @param y
 	 * @param width
 	 * @param height
+	 * @param zOrder
 	 */
-	public UIElement(float x, float y, float width, float height){
-		area = new Rectangle2D.Float(x, y, width, height);
+	public UIElement(float x, float y, float width, float height, int zOrder) {
+		transform = new BoxTransform<>(this, x, y, width, height);
+		this.zOrder = zOrder;
 	}
 	
 	/**
-	 * @param parent
+	 * @param g2d
 	 */
-	public void setParent(UIContainer parent){
-		if(this.parent != parent){
-			if(parent == null){
-				this.parent = null;
-				setRoot(null);
-			}else{
-				if(root != null && root.contains(parent)){
-					this.parent.parent = parent;
-				}else{
-					setRoot(parent.root);
-					this.parent = parent;
-				}
-			}
-		}
-		
-		/*
-		if(this.parent != null){
-			//This set root to null!
-			this.parent.removeUIElement(this);
-		}
-		
-		if(parent.root != this.root){
-			root = parent.getRoot();
-		}
-		
-		if(parent != root && !root.contains(parent)){
-			root = parent.getRoot();
-		}
-		*/
-	}
+	public abstract void paint(Graphics2D g2d);
 	
 	/**
 	 * @return
 	 */
-	public UIContainer getParent(){
-		return parent;
-	}
-	
-	/**
-	 * @param root
-	 */
-	public void setRoot(UI root){
-		
-		if(this.root != root){
-			if(root == null){
-				this.root = null;
-				if(this.parent != null){
-					this.parent = null;
-				}
-			}else{
-				this.root = root;
-				if(!root.contains(parent)){
-					setParent(root);
-				}
-			}
-		}
-	}
+	public abstract BufferedImage getImage();
 	
 	/**
 	 * @return
 	 */
-	public UI getRoot(){
+	public UI getRoot()
+	{
 		return root;
 	}
 	
 	/**
-	 * @param z
-	 */
-	public void setZOrder(int z){
-		zOrder = z;
-	}
-
-	/**
 	 * @return
 	 */
-	public int getZOrder() {
+	public int getZOrder(){
 		return zOrder;
 	}
 	
 	/**
-	 * @return
+	 * @param zOrder
 	 */
-	public Rectangle2D getArea(){
-		return area;
-	}
-	
-	/**
-	 * @return
-	 */
-	public Rectangle2D getBounds() {
-		//TODO: Pre compute?
-		Rectangle2D parentArea = parent.getBounds();
-		return new Rectangle2D.Float((float)area.getX() + (float)parentArea.getX(), (float)area.getY() + (float)parentArea.getY(), (float)area.getWidth(), (float)area.getHeight());
+	public void setZOrder(int zOrder){
+		this.zOrder = zOrder;
 	}
 	
 	/**
 	 * @return
 	 */
 	public float getX(){
-		return (float)area.getX();
-	}
-	
-	/**
-	 * @param x
-	 */
-	public void setX(float x){
-		area.setFrame(x, area.getY(), area.getWidth(), area.getHeight());
+		return transform.getX();
 	}
 	
 	/**
 	 * @return
 	 */
 	public float getY(){
-		return (float)area.getY();
+		return transform.getY();
+	}
+	
+	/**
+	 * @param x
+	 */
+	public void setX(float x){
+		transform.setX(x);
 	}
 	
 	/**
 	 * @param y
 	 */
 	public void setY(float y){
-		area.setFrame(area.getX(), y, area.getWidth(), area.getHeight());
+		transform.setY(y);
 	}
 	
 	/**
@@ -188,50 +141,83 @@ public abstract class UIElement{
 	 * @param y
 	 */
 	public void setPosition(float x, float y){
-		area.setFrame(x, y, area.getWidth(), area.getHeight());
-	}
-	
-	/**
-	 * 
-	 * @param width
-	 */
-	public void setWidth(float width){
-		area.setFrame(area.getX(), area.getY(), width, area.getHeight());
+		transform.setPosition(x, y);
 	}
 	
 	/**
 	 * @return
 	 */
 	public float getWidth(){
-		return (float)area.getWidth();
-	}
-	
-	/**
-	 * 
-	 * @param height
-	 */
-	public void setHeight(float height){
-		area.setFrame(area.getX(), area.getY(), area.getWidth(), height);
+		return transform.getWidth();
 	}
 	
 	/**
 	 * @return
 	 */
 	public float getHeight(){
-		return (float)area.getHeight();
+		return transform.getHeight();
 	}
 	
 	/**
 	 * @param width
-	 * @param height
 	 */
-	public void setSize(float width, float height){
-		area.setFrame(area.getX(), area.getY(), width, height);
+	public void setWidth(float width){
+		transform.setWidth(width);
 	}
 	
 	/**
-	 * @param g2d
+	 * @param height
 	 */
-	public abstract void paint(Graphics2D g2d);
-
+	public void setHeight(float height){
+		transform.setHeight(height);
+	}
+	
+	/**
+	 * 
+	 * @param width
+	 * @param height
+	 */
+	public void setSize(float width, float height){
+		transform.setSize(width, height);
+	}
+	
+	/**
+	 * @param rect
+	 */
+	public void setRect(Rectangle2D rect){
+		transform.setPosition((float)rect.getX(), (float)rect.getY());
+		transform.setSize((float)rect.getWidth(), (float)rect.getHeight());
+	}
+	
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 */
+	public void setRect(float x, float y, float width, float height){
+		transform.setPosition(x, y);
+		transform.setSize(width, height);
+	}
+	
+	/**
+	 * @return
+	 */
+	public boolean isEnabled(){
+		return enabled;
+	}
+	
+	/**
+	 * @param enabled
+	 */
+	public void setEnabled(boolean enabled){
+		this.enabled = enabled;
+	}
+	
+	/**
+	 * @return
+	 */
+	public BoxTransform<UIElement> getTransform(){
+		return transform;
+	}
 }

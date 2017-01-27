@@ -14,6 +14,8 @@ import game.gameObject.GameObject;
  */
 public interface Collidable extends Movable {
 
+	//JAVADOC: Collidable
+	
 	//TODO: Bounding box checking?
 	
 	/**
@@ -24,6 +26,13 @@ public interface Collidable extends Movable {
 	 */
 	default public Shape getCollitionShape(){
 		return getTranformedShape();
+	}
+	
+	/**
+	 * @return
+	 */
+	default public int getPhysicsLayer(){
+		return getZOrder();
 	}
 
 	/**

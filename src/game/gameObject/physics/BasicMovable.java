@@ -3,7 +3,9 @@ package game.gameObject.physics;
 import java.awt.Shape;
 
 import game.gameObject.BasicGameObject;
+import game.gameObject.GameObject;
 import game.gameObject.transform.Transform;
+import game.util.math.vector.Vector2D;
 
 /**
  * @author Julius Häger
@@ -28,7 +30,7 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	 * @param shape 
 	 * @param zOrder 
 	 */
-	public BasicMovable(Transform transform, Shape shape, int zOrder) {
+	public BasicMovable(Transform<GameObject> transform, Shape shape, int zOrder) {
 		super(transform, shape, zOrder);
 	}
 	
@@ -102,6 +104,14 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	public void setVelocity(float dx, float dy) {
 		this.dx = dx;
 		this.dy = dy;
+	}
+	
+	/**
+	 * @param vel
+	 */
+	public void setVelocity(Vector2D vel){
+		this.dx = vel.x;
+		this.dy = vel.y;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package game.UI.elements.image;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 import game.UI.elements.UIElement;
 
@@ -52,7 +53,7 @@ public class UIRect extends UIElement {
 	 * @param height
 	 */
 	public UIRect(float width, float height) {
-		super(width, height);
+		super(0, 0, width, height);
 	}
 	
 	/**
@@ -61,7 +62,7 @@ public class UIRect extends UIElement {
 	 * @param color
 	 */
 	public UIRect(float width, float height, Color color) {
-		super(width, height);
+		super(0, 0, width, height);
 		this.color = color;
 	}
 	
@@ -97,6 +98,12 @@ public class UIRect extends UIElement {
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(color);
-		g2d.fill(area);
+		
+		g2d.fill(transform.getTransformedRect());
+	}
+	
+	@Override
+	public BufferedImage getImage() {
+		return null;
 	}
 }

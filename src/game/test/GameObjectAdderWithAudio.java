@@ -11,7 +11,6 @@ import java.util.Random;
 
 import game.Game;
 import game.gameObject.BasicGameObject;
-import game.gameObject.GameObject;
 import game.gameObject.graphics.Paintable;
 import game.input.mouse.MouseListener;
 import game.sound.AudioEngine;
@@ -23,7 +22,7 @@ import kuusisto.tinysound.TinySound;
  * @author Julius Häger
  *
  */
-public class GameObjectAdderWithAudio extends BasicGameObject implements GameObject, Paintable, MouseListener {
+public class GameObjectAdderWithAudio extends BasicGameObject implements Paintable, MouseListener {
 	
 	//TODO: Remove/Relocate
 
@@ -106,5 +105,10 @@ public class GameObjectAdderWithAudio extends BasicGameObject implements GameObj
 	@Override
 	public BufferedImage getImage() {
 		return null;
+	}
+
+	@Override
+	public Rectangle2D getBounds() {
+		return super.getBounds();
 	}
 }

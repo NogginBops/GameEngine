@@ -2,7 +2,6 @@ package game.UI.elements.image;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import game.UI.elements.UIElement;
@@ -15,15 +14,15 @@ public class UIImage extends UIElement {
 	
 	//JAVADOC: UIImage
 	
-	protected Image image;
+	protected BufferedImage image;
 	
 	/**
 	 * @param image
 	 * @param x
 	 * @param y
 	 */
-	public UIImage(Image image, float x, float y) {
-		super(x, y, image.getWidth(null), image.getHeight(null));
+	public UIImage(BufferedImage image, float x, float y) {
+		super(x, y, image.getWidth(), image.getHeight());
 		this.image = image;
 	}
 	
@@ -34,7 +33,7 @@ public class UIImage extends UIElement {
 	 * @param height
 	 * @param image
 	 */
-	public UIImage(float x, float y, float width, float height, Image image){
+	public UIImage(float x, float y, float width, float height, BufferedImage image){
 		super(x, y, width, height);
 		this.image = image;
 	}
@@ -44,7 +43,7 @@ public class UIImage extends UIElement {
 	 */
 	public void setNativeSize(){
 		if(image != null){
-			setSize(image.getWidth(null), image.getHeight(null));
+			setSize(image.getWidth(), image.getHeight());
 		}
 	}
 	
@@ -59,10 +58,15 @@ public class UIImage extends UIElement {
 	@Override
 	public void paint(Graphics2D g2d) {
 		if(image != null){
-			g2d.drawImage(image, (int)area.getX(), (int)area.getY(), (int)area.getWidth(), (int)area.getHeight(), null);
+			g2d.drawImage(image, (int)transform.getX(), (int)transform.getY(), (int)transform.getWidth(), (int)transform.getHeight(), null);
 		}else{
 			g2d.setColor(Color.WHITE);
-			g2d.fill(area);
+			g2d.fill(transform.getTransformedRect());
 		}
+	}
+	
+	@Override
+	public BufferedImage getImage() {
+		return image;
 	}
 }

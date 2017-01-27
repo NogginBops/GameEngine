@@ -9,6 +9,7 @@ import game.gameObject.transform.Transform;
  * 
  * @version 1.0
  * @author Julius Häger
+ * @param <T> 
  */
 public interface GameObject extends Comparable<GameObject> {
 
@@ -25,16 +26,19 @@ public interface GameObject extends Comparable<GameObject> {
 	// Should all transforms have a width and height? (Effectively: Should all transforms be BoxTransforms?)
 	// 
 	
+	//NOTE: Move zOrder to transform? That would centralize all the position data in one place. 
+	// It would also work well with the UI as that also needs a zOrder.
+	
 	/**
 	 * 
 	 * @return
 	 */
-	public Transform getTransform();
+	public Transform<GameObject> getTransform();
 	
 	/**
 	 * @param transform
 	 */
-	public void setTransform(Transform transform);
+	public void setTransform(Transform<GameObject> transform);
 	
 	/**
 	 * @return
@@ -90,7 +94,7 @@ public interface GameObject extends Comparable<GameObject> {
 	 * @param active
 	 */
 	public void setActive(boolean active);
-
+	
 	/**
 	 * Returns the current Z-Order of the GameObject.
 	 * 

@@ -2,8 +2,12 @@ package game.UI.elements.containers;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 import game.UI.elements.UIElement;
+import game.gameObject.transform.Transform;
+import game.util.math.vector.Vector2D;
 
 /**
  * @author Julius Häger
@@ -16,39 +20,28 @@ public class BasicUIContainer extends UIContainer {
 	protected Color color = Color.GRAY;	
 
 	/**
-	 * @param container
+	 * @param parent 
 	 */
-	//FIXME: This constructor is broken!!
-	public BasicUIContainer(UIContainer container) {
-		super(container.getContainedArea());
-		//area = container.getContainerArea();
-		computeContainedArea();
+	public BasicUIContainer(Transform<UIElement> parent) {
+		super(parent, new Vector2D(), new Vector2D(), 0);
 		
-		setParent(container);
+		transform.setParent(parent);
 	}
 	
 	/**
-	 * @param container
-	 * @param insetLeft
-	 * @param insetTop
-	 * @param insetRight
-	 * @param insetBottom
+	 * @param area
+	 * @param elements
 	 */
-	//FIXME: This constructor is broken!!
-	public BasicUIContainer(UIContainer container, float insetLeft, float insetTop, float insetRight, float insetBottom) {
-		super();
-		area = container.getContainedArea();
-		area.setRect(area.getX() + insetLeft, area.getY() + insetTop, area.getWidth() - (insetLeft + insetRight), area.getHeight() - (insetTop - insetBottom));
-		computeContainedArea();
-		setParent(container);
+	public BasicUIContainer(Rectangle2D area){
+		super(area, null);
 	}
-
+	
 	/**
 	 * @param width
 	 * @param height
 	 */
 	public BasicUIContainer(float width, float height) {
-		super(width, height);
+		super(0, 0, width, height, null);
 	}
 
 	/**
@@ -58,7 +51,7 @@ public class BasicUIContainer extends UIContainer {
 	 * @param height
 	 */
 	public BasicUIContainer(float x, float y, float width, float height) {
-		super(x, y, width, height);
+		super(x, y, width, height, null);
 	}
 
 	/**
@@ -68,7 +61,7 @@ public class BasicUIContainer extends UIContainer {
 	 * @param height
 	 * @param elements
 	 */
-	public BasicUIContainer(float x, float y, float width, float height, UIElement... elements) {
+	public BasicUIContainer(float x, float y, float width, float height, UIElement...elements) {
 		super(x, y, width, height, elements);
 	}
 	
@@ -86,10 +79,16 @@ public class BasicUIContainer extends UIContainer {
 		return color;
 	}
 	
+	// TODO: Draw children!
+	
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(color);
-		g2d.fill(containedArea);
-		super.paint(g2d);
+		g2d.fill(transform.getTransformedRect());
+	}
+
+	@Override
+	public BufferedImage getImage() {
+		return null;
 	}
 }

@@ -198,6 +198,8 @@ public class Sprite extends BasicRotatable implements Paintable {
 		setSprite(null);
 	}
 
+	//NOTE: Should the paint() graphics object be rotated?
+	
 	@Override
 	public void paint(Graphics2D g2d) {
 		if (sprite == null) {
