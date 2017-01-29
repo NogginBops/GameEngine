@@ -51,7 +51,6 @@ public class Log {
 	}
 	
 	//TODO: Clean up the different method calls so that they make more sense (e.g. the calls logDebug() -> log() -> logMessage() does not make sense)
-	//While doing this one should look at optimizing the add so that you don't have to sort, because that can take a lot of CPU when dealing with a lot of messages
 	
 	/**
 	 * 

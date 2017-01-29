@@ -20,7 +20,7 @@ import kuusisto.tinysound.Sound;
  * @author Julius Häger
  *
  */
-public class Ball extends Sprite implements Collidable{
+public class Ball extends Sprite implements Collidable {
 
 	private int minDX = 150;
 
@@ -49,21 +49,21 @@ public class Ball extends Sprite implements Collidable{
 	@Override
 	public void update(float deltaTime) {
 		super.update(deltaTime);
-		if (!outershape.contains(shape.getBounds2D())) {
-			if (shape.getBounds2D().getMinY() < outershape.getMinY()) {
+		if (!outershape.contains(getBounds())) {
+			if (getBounds().getMinY() < outershape.getMinY()) {
 				setY((float)outershape.getY());
 				setDY(-getDY());
-			} else if (shape.getBounds2D().getMaxY() > outershape.getMaxY()) {
-				setY((float)outershape.getY() + (float)outershape.getHeight() - (float)shape.getBounds2D().getHeight());
+			} else if (getBounds().getMaxY() > outershape.getMaxY()) {
+				setY((float)outershape.getY() + (float)outershape.getHeight() - (float)getBounds().getHeight());
 				setDY(-getDY());
 			}
-			if (shape.getBounds2D().getMinX() < outershape.getMinX()) {
+			if (getBounds().getMinX() < outershape.getMinX()) {
 				
 				Game.eventMachine.fireEvent(new PlayerScoreEvent(this, Side.RIGHT));
 				
 				Game.log.logMessage("Right player scored", "Pong", "Score");
 				resetBall();
-			} else if (shape.getBounds2D().getMaxX() > outershape.getMaxX()) {
+			} else if (getBounds().getMaxX() > outershape.getMaxX()) {
 				
 				Game.eventMachine.fireEvent(new PlayerScoreEvent(this, Side.LEFT));
 				

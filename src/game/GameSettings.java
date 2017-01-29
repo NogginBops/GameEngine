@@ -68,6 +68,8 @@ public class GameSettings {
 		
 		defaultSettigns.putSetting("DebugID", false);
 		
+		defaultSettigns.putSetting("DebugGameSystem", false);
+		
 		//NOTE: Should this happen in settings or should there ba another way to handle it
 		defaultSettigns.putSetting("GameInit", new GameInitializer() {
 			

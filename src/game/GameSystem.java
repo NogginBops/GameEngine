@@ -1,5 +1,7 @@
 package game;
 
+import game.util.IDHandler;
+
 /**
  * @author Julius Häger
  *
@@ -8,6 +10,8 @@ public abstract class GameSystem {
 	
 	//TODO: Figure out what it means to be a GameSystem
 	
+	private static IDHandler<GameSystem> gameSystems = new IDHandler<>();
+	
 	private String name;
 	
 	/**
@@ -15,6 +19,8 @@ public abstract class GameSystem {
 	 */
 	public GameSystem(String name) {
 		this.name = name;
+		
+		gameSystems.addObject(this, name);
 	}
 	
 	/**
@@ -38,5 +44,20 @@ public abstract class GameSystem {
 	 */
 	public String getName(){
 		return name;
+	}
+	
+	/**
+	 * @return
+	 */
+	public static IDHandler<GameSystem> getIDHandler(){
+		return gameSystems;
+	}
+	
+	/**
+	 * @param name
+	 * @return
+	 */
+	public static GameSystem getGameSystem(String name){
+		return gameSystems.getObject(name);
 	}
 }

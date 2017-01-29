@@ -36,7 +36,7 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 	 * @param camera
 	 */
 	public MouseInputHandler(Camera camera) {
-		super("MouseInputHandler");
+		super("Mouse Input Handler");
 		
 		this.camera = camera;
 		

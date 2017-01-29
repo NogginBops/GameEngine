@@ -7,6 +7,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import game.Game;
 import game.gameObject.BasicGameObject;
 import game.gameObject.physics.Collidable;
 import game.gameObject.physics.PhysicsEngine;
@@ -64,8 +65,7 @@ public abstract class Painter extends BasicGameObject {
 	public Painter(float x, float y, float width, float height, int zOrder) {
 		super(x, y, width, height, zOrder);
 		
-		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
-		image = ImageUtils.toSystemOptimizedImage(image);
+		image = ImageUtils.createSystemOptimizedImage((int)width, (int)height, BufferedImage.TRANSLUCENT);
 	}
 	
 	/**
@@ -134,10 +134,13 @@ public abstract class Painter extends BasicGameObject {
 			
 			AffineTransform at = transform.getAffineTransform();
 			//at.setToTranslation(-at.getTranslateX(), -at.getTranslateY());
-			try {
-				at.invert();
-			} catch (NoninvertibleTransformException e) {
-				e.printStackTrace();
+			
+			if (at.getDeterminant() != 0) {
+				try {
+					at.invert();
+				} catch (NoninvertibleTransformException e) {
+					Game.log.logError("Could not invert Painter AffineTransform!", "Painter", "Graphics");
+				}
 			}
 			
 			translatedGraphics.transform(at);

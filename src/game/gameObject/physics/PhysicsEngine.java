@@ -8,12 +8,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.Game;
 import game.GameSystem;
+import game.debug.DebugOutputProvider;
 
 /**
  * 
  * @author Julius Häger
  */
-public class PhysicsEngine extends GameSystem {
+public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 
 	// JAVADOC: PhysicsEngine
 
@@ -38,7 +39,7 @@ public class PhysicsEngine extends GameSystem {
 	//TODO: Explore the HashMap solution.
 	//private CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>> collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 
-	private boolean debug = false;
+	private final boolean debug = true;
 	
 	/**
 	 * @param gameObjectHandeler
@@ -54,6 +55,8 @@ public class PhysicsEngine extends GameSystem {
 	
 	int loopCount = 0;
 	
+	int objects = 0;
+	
 	@Override
 	public void earlyUpdate(float deltaTime) {
 		
@@ -61,6 +64,7 @@ public class PhysicsEngine extends GameSystem {
 
 	@Override
 	public void lateUpdate(float deltaTime) {
+		//NOTE: Use events for Collidables?
 		if (Game.gameObjectHandler.shouldUpdateObjects()) {
 			
 			collidablesMap.clear();
@@ -136,12 +140,12 @@ public class PhysicsEngine extends GameSystem {
 			if(timer <= 0){
 				timer = 2;
 				
-				int objects = 0;
+				objects = 0;
 				for (CopyOnWriteArrayList<Collidable> copyOnWriteArrayList : collidablesMap.values()) {
 					objects += copyOnWriteArrayList.size();
 				}
 				
-				Game.log.logDebug("Loop count: " + loopCount + " for "  + collidablesMap.keySet().size() + " layers and " + objects + " objects!");
+				//Game.log.logDebug("Loop count: " + loopCount + " for "  + collidablesMap.keySet().size() + " layers and " + objects + " objects!");
 			}
 			
 			loopCount = 0;
@@ -191,4 +195,16 @@ public class PhysicsEngine extends GameSystem {
 		return false;
 	}
 
+	@Override
+	public String[] getDebugValues() {
+		if (debug) {
+			return new String[]{ 
+					"<b>Objects: </b>" + objects,
+					"<b>Layers: </b>" + collidablesMap.keySet().size(),
+					"<b>LoopCount: </b>" + loopCount 
+					};
+		}else{
+			return new String[0];
+		}
+	}
 }

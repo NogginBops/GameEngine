@@ -50,8 +50,7 @@ public class Pong implements GameInitializer {
 		Pad leftPad = new Pad(50, 40, 10, 50, KeyEvent.VK_W, KeyEvent.VK_S, camera.getBounds(), Side.LEFT);
 
 		Game.gameObjectHandler.addGameObject(leftPad, "LeftPad");
-
-		//TODO: Remove ScreenManager
+		
 		Ball ball = new Ball(Game.screen.getWidth() / 2 - 8, Game.screen.getHeight() / 2 - 8, 16, 16,
 				camera.getBounds());
 

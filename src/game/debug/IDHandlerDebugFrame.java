@@ -24,6 +24,7 @@ import javax.swing.table.DefaultTableModel;
 
 import game.Game;
 import game.controller.event.EventListener;
+import game.controller.event.engineEvents.GameQuitEvent;
 import game.gameObject.GameObject;
 import game.gameObject.handler.event.GameObjectCreatedEvent;
 import game.gameObject.handler.event.GameObjectDestroyedEvent;
@@ -222,6 +223,7 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
+			
 		};
 
 		SwingUtilities.invokeLater(() -> {
@@ -239,14 +241,14 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	public void run() {
 		this.setVisible(true);
 		
-		//TODO: Find a better way to solve this.
-		//NOTE: The solution should either work for any class T or otherwise should only work for gameObjects.
-		//I'm not sure the abstraction away from gameObjects is a good one when all that is ever really going to be debugged with this is gameObjects.
-		//If this where changed to the gameObejct approach the debugOutputProvider might not be needed. Though there would have to be another solution.
-		//Maybe one like unitys serialization but not as advanced? It could/would take a lot of a unnecessary time though
+		//TODO: Don't hardcode updates for GameObejcts being updated. 
+		// Find a more general approach where you can have any kind of trigger.
+		// This approach should also be implemented for the LogDebugFrame.
 		
 		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, createdListener);
 		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, destroyedListener);
+		
+		Game.eventMachine.addEventListener(GameQuitEvent.class, (event) -> { stopDebug(); });
 	}
 	
 	/**

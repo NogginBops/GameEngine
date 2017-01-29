@@ -13,6 +13,7 @@ import game.gameObject.handler.GameObjectHandler;
 import game.gameObject.handler.event.GameObjectCreatedEvent;
 import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.gameObject.physics.Movable;
+import game.gameObject.transform.BoxTransform;
 import game.input.keys.KeyListener;
 import game.screen.ScreenRect;
 import game.util.image.ImageUtils;
@@ -30,8 +31,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 	
 	//TODO: Implement a way to zoom
 	
-	private float width;
-	private float height;
+	private BoxTransform<GameObject> boxTransform;
 	
 	private float dx;
 	private float dy;
@@ -68,8 +68,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 	public Camera(float x, float y, float width, float height) {
 		super(x, y, width, height, Integer.MAX_VALUE - 8);
 		
-		this.width = width;
-		this.height = height;
+		transform = boxTransform = new BoxTransform<GameObject>(this, x, y, width, height);
 		
 		addEventListeners();
 	}
@@ -82,6 +81,8 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 */
 	public Camera(Rectangle2D.Float rect, ScreenRect screenRect, Color bgColor) {
 		super(rect.x, rect.y, rect.width, rect.height, Integer.MAX_VALUE - 8);
+		
+		transform = boxTransform = new BoxTransform<GameObject>(this, rect.x, rect.y, rect.width, rect.height);
 		
 		setScreenRectangle(screenRect);
 		
@@ -167,9 +168,9 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * @param width
 	 */
 	public void setWidth(int width){
-		this.width = width;
+		boxTransform.setWidth(width);
 		
-		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
+		image = new BufferedImage((int)boxTransform.getWidth(), (int)boxTransform.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		image = ImageUtils.toSystemOptimizedImage(image);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
@@ -182,10 +183,9 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * @param height
 	 */
 	public void setHeight(int height){
-		//TODO: Update the shape here! (or find a better solution)
-		this.height = height;
+		boxTransform.setHeight(height);
 		
-		image = new BufferedImage((int)width, (int)height, BufferedImage.TYPE_INT_ARGB);
+		image = new BufferedImage((int)boxTransform.getWidth(), (int)boxTransform.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		image = ImageUtils.toSystemOptimizedImage(image);
 		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
@@ -200,8 +200,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 */
 	public void setSize(int width, int height){
 		this.shape = new Rectangle2D.Float(0, 0, width, height);
-		this.width = width;
-		this.height = height;
+		boxTransform.setSize(width, height);
 		
 		//TODO: Synchronize?
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -211,16 +210,6 @@ public class Camera extends Painter implements Movable, KeyListener {
 			translatedGraphics = image.createGraphics();
 			originalTransform = translatedGraphics.getTransform();
 		}
-	}
-
-	@Override
-	public void update(float deltaTime) {
-		transform.translate(dx * deltaTime, dy * deltaTime);
-		
-		//This update is synced with the gameobjecthandler
-		//if (Game.gameObjectHandler.shouldUpdateObjects()) {
-		//	paintables = Game.gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
-		//}
 	}
 
 	/**
@@ -238,7 +227,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 		
 		g2d.setBackground(backgroundColor);
 		g2d.setColor(backgroundColor);
-		g2d.fillRect(0, 0, (int)width, (int)height);
+		g2d.fillRect(0, 0, (int)boxTransform.getWidth(), (int)boxTransform.getHeight());
 		
 		super.paint(g2d);
 	}
@@ -256,7 +245,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 		
 		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 		translatedGraphics.setColor(backgroundColor);
-		translatedGraphics.fillRect(0, 0, (int)width, (int)height);
+		translatedGraphics.fillRect(0, 0, (int)boxTransform.getWidth(), (int)boxTransform.getHeight());
 		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 		
 		return super.getImage();

@@ -20,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import game.Game;
+import game.controller.event.engineEvents.GameQuitEvent;
 import game.debug.log.Log;
 import game.debug.log.Log.LogImportance;
 import game.debug.log.LogMessage;
@@ -164,6 +166,8 @@ public class LogDebugFrame extends JFrame implements Runnable{
 	@Override
 	public void run() {
 		this.setVisible(true);
+		
+		Game.eventMachine.addEventListener(GameQuitEvent.class, (event) -> { stopDebug(); });
 		
 		//TODO: Make this event driven instead
 		while(!closeRequested){

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.Game;
+import game.gameObject.handler.event.GameObjectCreatedEvent;
+import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.input.keys.KeyListener;
 
 /**
@@ -28,6 +30,16 @@ public class KeyInputHandler {
 	 */
 	public KeyInputHandler() {
 		keyBindings = new HashMap<String, CopyOnWriteArrayList<Integer>>();
+		
+		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, (event) -> {
+			if(event.object instanceof game.input.keys.KeyListener){
+				addListener((game.input.keys.KeyListener) event.object);
+			}});
+		
+		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, (event) -> {
+			if(event.object instanceof game.input.keys.KeyListener){
+				removeListener((game.input.keys.KeyListener) event.object);
+			}});
 	}
 	
 	/**

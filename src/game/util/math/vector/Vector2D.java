@@ -73,13 +73,32 @@ public class Vector2D {
 	}
 	
 	/**
-	 * 
+	 * @param source
+	 * @param listener
+	 * @return
 	 */
-	public final float x;
+	public static float distance(Vector2D source, Vector2D listener) {
+		return (float)Math.sqrt(distanceSqr(source, listener));
+	}
+
+	/**
+	 * @param source
+	 * @param listener
+	 * @return
+	 */
+	public static float distanceSqr(Vector2D source, Vector2D listener) {
+		return (source.x - listener.x) * (source.x - listener.x)
+				+ (source.y - listener.y) * (source.y - listener.y);
+	}
+	
 	/**
 	 * 
 	 */
-	public final float y;
+	public float x;
+	/**
+	 * 
+	 */
+	public float y;
 	
 	/**
 	 * 
@@ -117,5 +136,4 @@ public class Vector2D {
 	public String toString() {
 		return super.toString() + " [X=" + x + ",Y=" + y + "]";
 	}
-	
 }

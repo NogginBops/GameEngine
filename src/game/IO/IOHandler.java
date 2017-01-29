@@ -27,7 +27,7 @@ import game.util.IDHandler;
  */
 public final class IOHandler {
 
-	// JAVADOC: IOHandeler¨
+	// JAVADOC: IOHandeler
 	
 	/* 
 	 * TODO: Virtual folders or some other system to make file management easier.

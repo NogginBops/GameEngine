@@ -33,6 +33,8 @@ public class Test1 implements GameInitializer {
 		
 		settings.putSetting("DebugID", true);
 		
+		settings.putSetting("DebugGameSystem", true);
+		
 		settings.putSetting("GameInit", new Test1());
 		
 		Game game = new Game(settings);
@@ -48,7 +50,7 @@ public class Test1 implements GameInitializer {
 		OtherPaintable z2 = new OtherPaintable(10, 10, 100, 100, 2, Color.RED);
 
 		OtherPaintable z3 = new OtherPaintable(20, 20, 100, 100, 3, Color.GREEN);
-
+		
 		Game.gameObjectHandler.addGameObject(z2, "OtherPaintable2");
 
 		Game.gameObjectHandler.addGameObject(z3, "OtherPaintable3");

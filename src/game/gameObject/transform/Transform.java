@@ -16,6 +16,11 @@ public class Transform<T> {
 	//JAVADOC: Transform
 	
 	//TODO: Root transform
+	// Recursive or pre-computed?
+	
+	//NOTE: Should position data move towards the Vector2 class?
+	// This could make sending position data much easier
+	// Would this affect performance?
 	
 	protected T object;
 	
@@ -26,6 +31,8 @@ public class Transform<T> {
 	protected float x;
 	
 	protected float y;
+	
+	protected Vector2D pos;
 	
 	protected float scaleX;
 	
@@ -131,7 +138,10 @@ public class Transform<T> {
 	public void setParent(Transform<T> parent){
 		if (this.parent == parent) return;
 		
-		this.parent.removeChild(this);
+		if (this.parent != null) {
+			this.parent.removeChild(this);
+		}
+		
 		this.parent = parent;
 		
 		if (parent != null) {

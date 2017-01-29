@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 
 import game.gameObject.GameObject;
 import game.util.math.MathUtils;
+import game.util.math.vector.Vector2D;
 import kuusisto.tinysound.TinySound;
 
 /**
@@ -19,7 +20,7 @@ public class AudioEngine {
 	
 	private static GameObject listener;
 
-	private static Point2D listenerLocation;
+	private static Vector2D listenerLocation;
 
 	private static double lowerThreshhold = 1;
 	
@@ -64,20 +65,24 @@ public class AudioEngine {
 			return;
 		}
 		
-		listenerLocation = new Point2D.Double(listener.getBounds().getCenterX(),
-				listener.getBounds().getCenterY());
-		Point2D vector = AudioUtil.getVector(source.getLocation(), listenerLocation);
-		Double dist = AudioUtil.distance(source.getLocation(), listenerLocation);
+		listenerLocation = new Vector2D((float)listener.getBounds().getCenterX(),
+				(float)listener.getBounds().getCenterY());
+		Vector2D vector = Vector2D.sub(pointToVector(source.getLocation()), listenerLocation);
+		float dist = Vector2D.distance(pointToVector(source.getLocation()), listenerLocation);
 
 		double volume = Math.log10(dist) < lowerThreshhold ? 1 / lowerThreshhold : 1 / Math.log10(dist);
 
-		double pan = dist < lowerPanThreshhold ? 0 : vector.getX() / dist;
+		double pan = dist < lowerPanThreshhold ? 0 : vector.x / dist;
 
 		source.getSound().play(volume * source.getVolume(), pan);
 		
 		// System.out.println("Volume: " + volume + " Pan: " + pan + " Distance:
 		// " + dist + " Distance log: " + Math.log10(dist) + " Vector: " +
 		// vector);
+	}
+	
+	private static Vector2D pointToVector(Point2D point){
+		return new Vector2D((float)point.getX(), (float)point.getY());
 	}
 	
 	//TODO: Add music support

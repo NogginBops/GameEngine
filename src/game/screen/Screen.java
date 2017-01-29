@@ -28,13 +28,17 @@ public class Screen implements Runnable{
 	//JAVADOC: Screen
 	
 	//FIXME: Full screen performance is really bad, find a way to fix this.
-	//With a full HD res the frame rate never goes above 50fps
-	//This might improve with the task system, but some other solution could need to be implemented.
+	// With a full HD res the frame rate never goes above 50fps
+	// This might improve with the task system, but some other solution could need to be implemented.
+	
+	//FIXME: Weird graphics artifacts when moving objects fast.
+	// Could be a due to multi-threading, but more likely its because of the new transforms.
+	// One idea is that affineTransforms dosn't handle a multi-threaded environment well.
 	
 	//TODO: Add lighting when the task system is implemented
 	
 	//NOTE: Should a multi-threaded rendering system be implemented before the task system is?
-	//It would be a lot easier and would increase performance a lot (I think)
+	// It would be a lot easier and would increase performance a lot (I think)
 	
 	//TODO: Add support for image effects and filters
 	

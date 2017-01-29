@@ -204,7 +204,7 @@ public class Sprite extends BasicRotatable implements Paintable {
 	public void paint(Graphics2D g2d) {
 		if (sprite == null) {
 			g2d.setColor(color);
-			g2d.fill(shape);
+			g2d.fill(getTranformedShape());
 		} else {
 			g2d.drawImage(graphicsReadySprite, (int) transform.getX(), (int) transform.getY(), (int) getBounds().getWidth(), (int) getBounds().getHeight(), null);
 		}
@@ -279,6 +279,10 @@ public class Sprite extends BasicRotatable implements Paintable {
 	 * @param sprite
 	 */
 	public void setSprite(BufferedImage sprite) {
+		if (this.sprite == sprite) {
+			return;
+		}
+		
 		if (sprite == null) {
 			this.sprite = null;
 		} else {
@@ -352,8 +356,7 @@ public class Sprite extends BasicRotatable implements Paintable {
 			return colorTinter.filter(ImageUtils.toSystemOptimizedImage(sprite), null);
 			
 		} else {
-			Game.log.logError("Tried to create a graphics ready image from a null image!",
-					new String[] { "Sprite", "Image", "Graphics ready" });
+			Game.log.logError("Tried to create a graphics ready image from a null image!", "Sprite", "Image", "Graphics ready");
 			
 			return null;
 		}

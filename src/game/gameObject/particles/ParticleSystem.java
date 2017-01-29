@@ -62,6 +62,8 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	
 	private BoxTransform<GameObject> boxTransform;
 	
+	//NOTE: Should these be public?
+	
 	/**
 	 * 
 	 */

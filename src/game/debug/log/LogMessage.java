@@ -11,6 +11,8 @@ import game.debug.log.Log.LogImportance;
  */
 public class LogMessage implements Comparable<LogMessage>{
 	
+	//NOTE: In Java 9 this system could probably be updated to be more efficient in how it get the stack trace
+	
 	private static int findStackTraceIndex(StackTraceElement[] stackTrace){
 		//Start at one to ignore the java.lang.Thread.getStackTrace(Thread.java:<line>) in the beginning.
 		for (int i = 1; i < stackTrace.length; i++) {

@@ -91,8 +91,6 @@ public class UITest implements GameInitializer {
 		UI hud = new UI(0, 0, 0, container);
 		
 		Game.gameObjectHandler.addGameObject(hud);
-		
-		System.out.println(button.getBounds());
 	}
 
 }

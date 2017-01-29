@@ -10,14 +10,11 @@ import game.controller.event.GameEvent;
  */
 public class GameQuitEvent extends GameEvent {
 	
-	//NOTE: This might be relocated as a nested class of game.
-	
 	//JAVADOC: GameQuitEvent
 	
 	/**
 	 * 
 	 * @param origin
-	 * @param command
 	 */
 	public GameQuitEvent(Game origin) {
 		super(origin);

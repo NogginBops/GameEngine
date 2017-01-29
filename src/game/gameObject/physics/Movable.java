@@ -110,6 +110,7 @@ public interface Movable extends UpdateListener {
 	 * time since last update (in seconds)
 	 */
 	@Override
-	public void update(float deltaTime);
-
+	default public void update(float deltaTime){
+		getTransform().translate(getDX() * deltaTime, getDY() * deltaTime);
+	}
 }

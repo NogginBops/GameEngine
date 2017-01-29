@@ -10,7 +10,6 @@ import game.debug.IDHandlerDebugFrame;
 import game.debug.log.Log;
 import game.debug.log.Log.LogImportance;
 import game.debug.log.frame.LogDebugFrame;
-import game.gameObject.GameObject;
 import game.gameObject.graphics.Camera;
 import game.gameObject.handler.GameObjectHandler;
 import game.gameObject.physics.PhysicsEngine;
@@ -78,7 +77,7 @@ public class Game {
 	/**
 	 * The debug log associated with the game.
 	 */
-	public static Log log = new Log(); //TODO: Figure out a way to not have any logReader
+	public static Log log = new Log();
 	
 	/**
 	 * The main EventMachine.
@@ -93,7 +92,7 @@ public class Game {
 	
 	private static GameSettings settings;
 
-	private static PhysicsEngine physicsEngine; //Make static?
+	private static PhysicsEngine physicsEngine;
 	
 	private static Camera camera; //TODO: This should support multiple cameras!
 
@@ -120,10 +119,6 @@ public class Game {
 	private static Input inputHandler;
 
 	private static long initTime;
-
-	private static LogDebugFrame LogDebugFrame;
-	
-	private static IDHandlerDebugFrame<GameObject> IDDebug;
 	
 	//FIXME: Giant GC freeze
 	//NOTE: The solution for now are the -XX:+UseG1GC -XX:MaxGCPauseMillis=50 VM flags that seem to have a satisfactory result.
@@ -159,24 +154,34 @@ public class Game {
 				basicDebug();
 			}
 		}else{
-			Game.log.logWarning("No OnScreenDebug property in game settings", "System", "Settings");
+			Game.log.logWarning("No OnScreenDebug property in game settings!", "System", "Settings", "Debug");
 		}
 		
 		if(settings.containsSetting("DebugLog")){
 			if(settings.getSettingAs("DebugLog", Boolean.class)){
-				addDebugLog();
+				new Thread(new LogDebugFrame(log), "Debug Log").start();
 			}
 		}else{
-			Game.log.logWarning("No DebugLog property in game settings", "System", "Settings");
+			Game.log.logWarning("No DebugLog property in game settings!", "System", "Settings", "Debug");
 		}
 		
 		if(settings.containsSetting("DebugID")){
 			if(settings.getSettingAs("DebugID", Boolean.class)){
-				addIDHandlerDebug();
+				new Thread(new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler()), "IDHandler Debug").start();
 			}
 		}else{
-			Game.log.logWarning("No DebugID property in game settings", "System", "Settings");
+			Game.log.logWarning("No DebugID property in game settings!", "System", "Settings", "Debug");
 		}
+		
+		if (settings.containsSetting("DebugGameSystem")) {
+			if(settings.getSettingAs("DebugGameSystem", Boolean.class)){
+				new Thread(new IDHandlerDebugFrame<>(GameSystem.getIDHandler()), "GameSystem Debug").start();
+			}
+		}else{
+			Game.log.logWarning("No DebugGameSystem property in game settings!", "System", "Settings", "Debug");
+		}
+		
+		
 	}
 	
 	private void setup(GameSettings settings){
@@ -216,7 +221,7 @@ public class Game {
 		
 		screen = new Screen(res, mode, name, targetFPS);
 		
-		//NOTE: Should the camera be a part of the settings
+		//NOTE: Should the camera be a part of the settings?
 		camera = DEFAULT.getSettingAs("MainCamera", Camera.class);
 		if(settings.containsSetting("MainCamera")){
 			camera = settings.getSettingAs("MainCamera", Camera.class);
@@ -259,15 +264,12 @@ public class Game {
 			log.logMessage("Didn't find any keybindings in the settigns.");
 		}
 		
-		
 		screen.addPainter(camera);
 		screen.addInputListener(inputHandler);
 
 		AudioEngine.init(camera);
 		
 		updater.addSystem(physicsEngine);
-		
-		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
 		
 		gameObjectHandler.addGameObject(camera, "Main camera");
 		
@@ -307,27 +309,6 @@ public class Game {
 	}
 	
 	// TODO: Fix proper onStart onExit and other similar methods. (USE EVENTS!!)
-	
-	private void onQuit() {
-		//TODO: These should be event driven
-		if(IDDebug != null){
-			IDDebug.stopDebug();
-		}
-		
-		if(LogDebugFrame != null){
-			LogDebugFrame.stopDebug();
-		}
-		
-		eventMachine.fireEvent(new GameQuitEvent(this));
-	}
-	
-	private void addDebugLog(){
-		new Thread(LogDebugFrame = new LogDebugFrame(log), "Debug log").start();
-	}
-	
-	private void addIDHandlerDebug() {
-		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler()), "ID Handler Debug").start();
-	}
 	
 	/**
 	 * Starts the main loop of the game
@@ -403,7 +384,9 @@ public class Game {
 				}
 			}
 		}
-		onQuit();
+
+		eventMachine.fireEvent(new GameQuitEvent(this));
+		
 		log.logMessage("Stopped.", "System");
 	}
 
@@ -462,18 +445,7 @@ public class Game {
 		
 		gameObjectHandler.clear();
 		
-		//TODO: Figure out a good way to solve adding standard gameObjects to the new GOH
-		//NOTE: A solution to this is to make the standard gameObjets into GameSystems and adding them to the updater
-		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
-		gameObjectHandler.addGameObject(camera, "Main camera");
-		
-		camera.receiveKeyboardInput(false);
-		
 		sceneInit.initialize(game, settings);
-		
-		if(IDDebug != null){
-			IDDebug.setHandler(gameObjectHandler.getIDHandler());
-		}
 		
 		log.logMessage("Loaded scene!");
 		

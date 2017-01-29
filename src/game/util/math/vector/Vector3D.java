@@ -80,7 +80,7 @@ public class Vector3D extends Vector2D {
 	/**
 	 * 
 	 */
-	public final float z;
+	public float z;
 	
 	/**
 	 * 
