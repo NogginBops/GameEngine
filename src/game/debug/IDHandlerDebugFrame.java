@@ -23,11 +23,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import game.Game;
-import game.controller.event.EventListener;
+import game.controller.event.GameEvent;
 import game.controller.event.engineEvents.GameQuitEvent;
 import game.gameObject.GameObject;
-import game.gameObject.handler.event.GameObjectCreatedEvent;
-import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.util.ID;
 import game.util.IDHandler;
 
@@ -70,14 +68,20 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	private ID<T>[] ids;
 
 	private ListSelectionListener selectionListener;
+	
 
 	/**
 	 * Create the frame.
 	 * 
 	 * @param handler
 	 */
-	public IDHandlerDebugFrame(IDHandler<T> handler) {
+	@SafeVarargs
+	public IDHandlerDebugFrame(IDHandler<T> handler, Class<? extends GameEvent> ... updateEvents) {
 		this.handler = handler;
+		
+		for (Class<? extends GameEvent> event : updateEvents) {
+			Game.eventMachine.addEventListener(event, (e) -> updateIDs.run());
+		}
 
 		setTitle("ID Handler Debug Window");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -227,26 +231,16 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 		};
 
 		SwingUtilities.invokeLater(() -> {
-			table.setModel(model);
+			if (table != null) table.setModel(model);
 			this.ids = ids;
 		});
 	}
 	
 	Runnable updateIDs = () -> updateIDs(handler.getAllIDs());
 	
-	EventListener<GameObjectCreatedEvent> createdListener = (event) -> updateIDs.run();
-	EventListener<GameObjectDestroyedEvent> destroyedListener = (event) -> updateIDs.run();
-	
 	@Override
 	public void run() {
 		this.setVisible(true);
-		
-		//TODO: Don't hardcode updates for GameObejcts being updated. 
-		// Find a more general approach where you can have any kind of trigger.
-		// This approach should also be implemented for the LogDebugFrame.
-		
-		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, createdListener);
-		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, destroyedListener);
 		
 		Game.eventMachine.addEventListener(GameQuitEvent.class, (event) -> { stopDebug(); });
 	}
@@ -255,9 +249,6 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	 * 
 	 */
 	public void stopDebug() {
-		Game.eventMachine.removeEventListener(GameObjectCreatedEvent.class, createdListener);
-		Game.eventMachine.removeEventListener(GameObjectDestroyedEvent.class, destroyedListener);
-		
 		dispose();
 	}
 
@@ -268,5 +259,4 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	public void setHandler(IDHandler<T> handler) {
 		this.handler = handler;
 	}
-
 }

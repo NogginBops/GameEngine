@@ -56,7 +56,8 @@ public class Screen implements Runnable{
 		/**
 		 * 
 		 */
-		FULL_SCREEN
+		FULL_SCREEN,
+		BORDERLESS
 	}
 	
 	/**
@@ -112,6 +113,9 @@ public class Screen implements Runnable{
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		GraphicsDevice device = frame.getGraphicsConfiguration().getDevice();
+		DisplayMode displayMode = device.getDisplayMode();
+		
 		switch (mode) {
 		case NORMAL:
 			frame.setUndecorated(false);
@@ -124,14 +128,21 @@ public class Screen implements Runnable{
 			
 			//TODO: Clean up the configuration of different screen modes
 			
-			GraphicsDevice device = frame.getGraphicsConfiguration().getDevice();
-			DisplayMode displayMode = device.getDisplayMode();
+			this.size = new Dimension(displayMode.getWidth(), displayMode.getHeight());
+			
+			frame.getContentPane().setPreferredSize(size);
+			
+			device.setFullScreenWindow(frame);
+			break;
+		case BORDERLESS:
+			frame.setUndecorated(true);
+			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			
 			this.size = new Dimension(displayMode.getWidth(), displayMode.getHeight());
 			
-			frame.getContentPane().setPreferredSize(new Dimension(displayMode.getWidth(), displayMode.getHeight()));
+			frame.getContentPane().setPreferredSize(size);
 			
-			device.setFullScreenWindow(frame);
+			frame.pack();
 			break;
 		default:
 			break;

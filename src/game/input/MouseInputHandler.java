@@ -9,6 +9,7 @@ import javax.swing.event.MouseInputListener;
 
 import game.Game;
 import game.GameSystem;
+import game.debug.DebugOutputProvider;
 import game.gameObject.graphics.Camera;
 import game.gameObject.handler.event.GameObjectCreatedEvent;
 import game.gameObject.handler.event.GameObjectDestroyedEvent;
@@ -18,7 +19,7 @@ import game.input.mouse.MouseListener;
  * @author Julius Häger
  *
  */
-public class MouseInputHandler extends GameSystem implements MouseInputListener, MouseWheelListener {
+public class MouseInputHandler extends GameSystem implements MouseInputListener, MouseWheelListener, DebugOutputProvider {
 	
 	//TODO: Have separate lists for the entered listeners and the listeners that always receive updates
 
@@ -138,8 +139,8 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 				(int) camera.getY() - Game.screen.getInsets().top);
 		*/
 		
-		e.translatePoint((int) camera.getX(),
-				(int) camera.getY());
+		e.translatePoint((int) -camera.getX(),
+				(int) -camera.getY());
 		
 		float rotation = camera.getTransform().getRotationRad();
 		
@@ -218,5 +219,15 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 		if (event.object instanceof MouseListener) {
 			removeMouseListener((MouseListener)event.object);
 		}
+	}
+
+	@Override
+	public String[] getDebugValues() {
+		return new String[]{ 
+				"<b>Listeners: </b>" + listeners.size(),
+				"<b>Entered Listeners: </b>" + enteredListeners.size(),
+				"<b>Mouse X: </b>" + (lastEvent == null ? null : lastEvent.getX()),
+				"<b>Mouse Y: </b>" + (lastEvent == null ? null : lastEvent.getY()),
+		};
 	}
 }

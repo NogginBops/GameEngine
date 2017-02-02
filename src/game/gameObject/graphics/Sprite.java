@@ -178,10 +178,6 @@ public class Sprite extends BasicRotatable implements Paintable {
 		setColor(color);
 		setSprite(animation.getCurrentImage());
 	}
-
-	// TODO: Add sorting layers for sprites and such
-	// The idea is more to separate the collision layer from the graphical layer
-	// than anything else.
 	
 	//NOTE: Should the param be named bounds? Shouldn't it be named something like 'shape'?
 

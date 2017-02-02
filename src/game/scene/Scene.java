@@ -11,11 +11,13 @@ import game.GameSettings;
  */
 public class Scene {
 
+	// JAVADOC: Scene
+	
 	// TODO: Scene
 	
 	// TODO: A Scene class is probably not needed
-	
-	// JAVADOC: Scene
+	// There could be metadata associated with a scene, but what data?
+	// If name is the only metadata a HashMap could be used instead.
 	
 	//NOTE: Scene initializer?
 	private GameInitializer sceneInit;
@@ -33,6 +35,5 @@ public class Scene {
 	 */
 	public void load(Game game, GameSettings settings){
 		sceneInit.initialize(game, settings);
-	}
-	
+	}	
 }

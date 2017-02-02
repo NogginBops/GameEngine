@@ -22,13 +22,13 @@ import game.util.image.ImageUtils;
  */
 public class Screen implements Runnable {
 
-	// JAVADOC: Screen
+	// OLD_JAVADOC: Screen
 	
-	//FIXME: Full screen performance is really bad, find a way to fix this.
+	//OLD_FIXME: Full screen performance is really bad, find a way to fix this.
 	//With a full HD res the frame rate never goes above 50fps
 	//This might improve with the task system, but some other solution could need to be implemented.
 	
-	//TODO: Add lighting when the task system is implemented
+	//OLD_TODO: Add lighting when the task system is implemented
 	
 	//NOTE: Should a multi-threaded rendering system be implemented before the task system is?
 	//It would be a lot easier and would increase performance a lot (I think)
@@ -39,9 +39,9 @@ public class Screen implements Runnable {
 
 	private Graphics2D g2d;
 	
-	//TODO: Add support for image effects and filters
+	//OLD_TODO: Add support for image effects and filters
 	
-	//TODO: Support image effects for individual painters
+	//OLD_TODO: Support image effects for individual painters
 	
 	private ArrayList<Painter> painters;
 	
@@ -103,10 +103,10 @@ public class Screen implements Runnable {
 	
 	Graphics2D imageGraphics;
 	
-	//TODO: Remove
+	//OLD_TODO: Remove
 	int i = 0;
 	
-	//NOTE: This method has no reason to be its own method
+	//OLD_NOTE: This method has no reason to be its own method
 	private void loop() {
 		long currentTime = System.nanoTime();
 		long elapsedTime = 0;
@@ -118,7 +118,7 @@ public class Screen implements Runnable {
 			
 			//g2d = ScreenManager.getGraphics();
 			
-			//FIXME: Figure out what should and shouldn't be done.
+			//OLD_FIXME: Figure out what should and shouldn't be done.
 			
 			//image = new BufferedImage(ScreenManager.getWidth(), ScreenManager.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			
@@ -185,7 +185,7 @@ public class Screen implements Runnable {
 						"Graphics", "DeltaTime", "System");
 			}
 			
-			//FIXME: THERE IS A BIG GC ISSUE WITH PARTICLE SYSTEMS, THIS IS A ADHOC SOLUTION!!
+			//OLD_FIXME: THERE IS A BIG GC ISSUE WITH PARTICLE SYSTEMS, THIS IS A ADHOC SOLUTION!!
 			i++;
 			
 			if(i % 100 == 0){
@@ -194,7 +194,7 @@ public class Screen implements Runnable {
 				//System.gc();
 			}
 			
-			//TODO: Dynamic sleep time
+			//OLD_TODO: Dynamic sleep time
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {

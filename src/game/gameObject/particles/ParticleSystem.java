@@ -33,7 +33,7 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	//Should these be a separate thing or should they just be implemented through a particleEffector
 	//Maybe the physics system could do this.
 		
-	//TODO: Rotation?
+	//TODO: Rotation on particles?
 	
 	/**
 	 * 

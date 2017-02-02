@@ -12,6 +12,8 @@ import game.debug.log.Log.LogImportance;
 import game.debug.log.frame.LogDebugFrame;
 import game.gameObject.graphics.Camera;
 import game.gameObject.handler.GameObjectHandler;
+import game.gameObject.handler.event.GameObjectCreatedEvent;
+import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.gameObject.physics.PhysicsEngine;
 import game.input.Input;
 import game.input.KeyInputHandler;
@@ -47,7 +49,7 @@ public class Game {
 	//The game loop, graphics loop and potentially other systems should use a thread pool system
 	//so that they can be more efficient. (The game update thread could be used for rendering if 
 	//the rendering system was built to support that).
-
+	
 	private static boolean running = false;
 	private static boolean closeRequested = false;
 	private static boolean paused = false;
@@ -167,7 +169,7 @@ public class Game {
 		
 		if(settings.containsSetting("DebugID")){
 			if(settings.getSettingAs("DebugID", Boolean.class)){
-				new Thread(new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler()), "IDHandler Debug").start();
+				new Thread(new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler(), GameObjectCreatedEvent.class, GameObjectDestroyedEvent.class), "IDHandler Debug").start();
 			}
 		}else{
 			Game.log.logWarning("No DebugID property in game settings!", "System", "Settings", "Debug");

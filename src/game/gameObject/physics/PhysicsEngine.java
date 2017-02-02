@@ -55,6 +55,8 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 	
 	int loopCount = 0;
 	
+	int oldLoopCount = 0;
+	
 	int objects = 0;
 	
 	@Override
@@ -85,7 +87,6 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 			}
 			
 			/*
-			//FIXME: Order by physics layers instead!
 			collidables = new CopyOnWriteArrayList<CopyOnWriteArrayList<Collidable>>();
 			for (int z : Game.gameObjectHandler.getZLevels()) {
 				tempList = Game.gameObjectHandler.getAllGameObjectsAtZLevelExtending(z, Collidable.class);
@@ -148,6 +149,8 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 				//Game.log.logDebug("Loop count: " + loopCount + " for "  + collidablesMap.keySet().size() + " layers and " + objects + " objects!");
 			}
 			
+			oldLoopCount = loopCount;
+			
 			loopCount = 0;
 		}
 	}
@@ -201,7 +204,7 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 			return new String[]{ 
 					"<b>Objects: </b>" + objects,
 					"<b>Layers: </b>" + collidablesMap.keySet().size(),
-					"<b>LoopCount: </b>" + loopCount 
+					"<b>LoopCount: </b>" + oldLoopCount 
 					};
 		}else{
 			return new String[0];
