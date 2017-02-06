@@ -69,6 +69,8 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 
 	private ListSelectionListener selectionListener;
 	
+	private ID<T> selectedProvider = null;
+	
 
 	/**
 	 * Create the frame.
@@ -138,10 +140,11 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				if(e.getValueIsAdjusting() == false && table.getSelectedRow() != -1){
-					if(ids[table.getSelectedRow()].object instanceof DebugOutputProvider){
+					selectedProvider = ids[table.getSelectedRow()];
+					if(selectedProvider.object instanceof DebugOutputProvider){
 						String text = "<html>";
-						text += "<b><u>" + ids[table.getSelectedRow()].name + "</u></b> - " + ids[table.getSelectedRow()].id + "<br>";
-						for (String line : ((DebugOutputProvider)ids[table.getSelectedRow()].object).getDebugValues()) {
+						text += "<b><u>" + selectedProvider.name + "</u></b> - " + selectedProvider.id + "<br>";
+						for (String line : ((DebugOutputProvider)selectedProvider.object).getDebugValues()) {
 							text += line + "<br>";
 						}
 						text += "</html>";
@@ -176,6 +179,20 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 			//TODO: This is duplicate code. Extract to variable.
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(selectedProvider != null){
+					if(selectedProvider.object instanceof DebugOutputProvider){
+						String text = "<html>";
+						text += "<b><u>" + selectedProvider.name + "</u></b> - " + selectedProvider.id + "<br>";
+						for (String line : ((DebugOutputProvider)selectedProvider.object).getDebugValues()) {
+							text += line + "<br>";
+						}
+						text += "</html>";
+						debugOutput.setText(text);
+					}else{
+						debugOutput.setText("<html>" + selectedProvider.object.getClass() + " does not support debug print outs.<br>For debug printouts to work the object needs to implement DebugOutputProvider!</html>");
+					}
+				}
+				/*
 				if(table.getSelectedRow() != -1){
 					if(ids[table.getSelectedRow()].object instanceof DebugOutputProvider){
 						String text = "<html>";
@@ -189,6 +206,7 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 						debugOutput.setText("<html>" + ids[table.getSelectedRow()].object.getClass() + " does not support debug print outs.<br>For debug printouts to work the object needs to implement DebugOutputProvider!</html>");
 					}
 				}
+				*/
 			}
 		});
 		

@@ -188,7 +188,7 @@ public class UniformSpriteSheet {
 		}
 	}
 	
-	//NOTE: Might change endXY to width/height
+	//NOTE: Might change endXY to be width/height inputs instead
 	/**
 	 * @param startX
 	 * @param startY
@@ -209,7 +209,6 @@ public class UniformSpriteSheet {
 		if(startX > endX || startY > endY){
 			throw new IllegalArgumentException("Start value must be less than end value! " + (startX > endX ? " startX: " + startX + " endX: " + endX : "") + (startY > endY ? " startY: " + startY + " endY: " + endY : ""));
 		}
-		
 		
 		//TODO: Remove endX and endY and replace them with width and height
 		int imgWidth = 1 + (endX - startX);
