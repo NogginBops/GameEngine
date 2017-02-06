@@ -247,19 +247,13 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 			return color;
 		}
 		
-		//TODO: Find a more efficient way to do this
+		int r = roundColorValue(color.getRed(), rGranularity);
 		
-		int r = color.getRed();
-		r = roundColorValue(r, rGranularity);
+		int g = roundColorValue(color.getGreen(), gGranularity);
 		
-		int g = color.getGreen();
-		g = roundColorValue(g, gGranularity);
+		int b = roundColorValue(color.getBlue(), bGranularity);
 		
-		int b = color.getBlue();
-		b = roundColorValue(b, bGranularity);
-		
-		int a = color.getAlpha();
-		a = roundColorValue(a, aGranularity);
+		int a = roundColorValue(color.getAlpha(), aGranularity);
 		
 		return new Color(r, g, b, a);
 	}
@@ -428,11 +422,13 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 		return null;
 	}
 	
-	//TODO: Get and set particles mess up the particle metrics and they do not really add any useful functionality.
+	//NOTE: Get and set particles mess up the particle metrics and they do not really add any useful functionality.
 	//Consider removing them.
+	//They are now deprecated to discourage usage
 	
 	/**
 	 * @return
+	 * @deprecated Changing the particles array will likely mess up the internal handling of particles.
 	 */
 	public Particle[] getParticles(){
 		return particles;
@@ -440,6 +436,7 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	
 	/**
 	 * @param particles
+	 * @deprecated Changing the particles array will likely mess up the internal handling of particles.
 	 */
 	public void setParticles(Particle[] particles){
 		this.particles = particles;
