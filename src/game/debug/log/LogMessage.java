@@ -137,6 +137,27 @@ public class LogMessage implements Comparable<LogMessage>{
 	}
 	
 	/**
+	 * @return
+	 */
+	public StackTraceElement getLogCallSite(){
+		return stackTrace[stackTraceIndex];
+	}
+	
+	/**
+	 * @return
+	 */
+	public StackTraceElement[] getStackTrace(){
+		return stackTrace;
+	}
+	
+	/**
+	 * @return
+	 */
+	public int getStackTraceIndex(){
+		return stackTraceIndex;
+	}
+	
+	/**
 	 * Gets a concatenated semicolon separated string of all the tags associated with this log message.
 	 * @return
 	 */

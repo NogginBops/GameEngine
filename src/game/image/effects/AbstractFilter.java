@@ -10,8 +10,6 @@ import java.awt.image.ColorModel;
 
 /**
  * 
- * 
- * 
  */
 public abstract class AbstractFilter implements BufferedImageOp {
 	

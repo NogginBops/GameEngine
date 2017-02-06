@@ -245,12 +245,14 @@ public class Game {
 			updater = new StandardUpdater();
 		}
 		
+		//NOTE: Should we do this? Seems kind of weird, maybe have this as a setting?
 		camera.setSize(screen.getWidth(), screen.getHeight());
 		
 		mouseHandler = new MouseInputHandler(camera);
 		keyHandler = new KeyInputHandler();
 		inputHandler = new Input(mouseHandler, keyHandler);
 		
+		//FIXME: Figure out if the separate lists of GameSystems in GameSystem and Updater is a problem.
 		updater.addSystem(mouseHandler);
 		
 		if(settings.containsSetting("KeyBindings")){

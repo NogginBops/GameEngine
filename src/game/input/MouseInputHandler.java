@@ -21,6 +21,8 @@ import game.input.mouse.MouseListener;
  */
 public class MouseInputHandler extends GameSystem implements MouseInputListener, MouseWheelListener, DebugOutputProvider {
 	
+	//JAVADOC: MouseInputHandler
+	
 	//TODO: Have separate lists for the entered listeners and the listeners that always receive updates
 
 	//FIXME: Add support for multiple cameras
@@ -48,6 +50,9 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 		// that can supply the listener with exactly what it's looking for. This would mean that you would have to use something like 
 		
 		// You could also just refactor this so that anyone can subscribe to the mouse input and other input with method references and lambdas.
+		// MouseInputHandler.onClick(Runnable)
+		// MouseInputHandler.onClick(Predicate<MouseEvent>, Runnable)
+		// or something similar*9/
 		
 		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, this::mouseListenerCreated);
 		
@@ -91,19 +96,11 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		processMouseEvent(e);
-		
-		/*for (MouseListener mouseListener : enteredListeners) {
-			mouseListener.mouseEntered(e);
-		}*/
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		processMouseEvent(e);
-		
-		/*for (MouseListener mouseListener : enteredListeners) {
-			mouseListener.mouseExited(e);
-		}*/
 	}
 
 	@Override
@@ -135,10 +132,6 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 	
 	private void processMouseEvent(MouseEvent e){
 		
-		/*e.translatePoint((int) camera.getX() - Game.screen.getInsets().right,
-				(int) camera.getY() - Game.screen.getInsets().top);
-		*/
-		
 		e.translatePoint((int) -camera.getX(),
 				(int) -camera.getY());
 		
@@ -157,8 +150,6 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 	}
 	
 	private void computeEnteredListeners(){
-		//System.out.println("Size: " + listeners.size());
-		//System.out.println("Size enterd: " + enteredListeners.size());
 		if(lastEvent != null){
 			for (MouseListener mouseListener : listeners) {
 				if(mouseListener.isActive()){

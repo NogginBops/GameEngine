@@ -10,7 +10,7 @@ import game.util.math.MathUtils;
  * @author Julius Häger
  *
  */
-public abstract class ParticleEffector{
+public abstract class ParticleEffector {
 	
 	//NOTE: Should the static methods be extracted to a separate class?
 	
@@ -18,6 +18,8 @@ public abstract class ParticleEffector{
 	 * 
 	 */
 	public static final BiPredicate<Particle, Float> ACCEPT_ALL = (particle, deltaTime) -> { return true; };
+	
+	//NOTE: MICROPERF: The predicate could be built in to the effector, could save a few cycles.
 	
 	/**
 	 * @param pred 
@@ -53,6 +55,8 @@ public abstract class ParticleEffector{
 			}
 		};
 	}
+	
+	//NOTE: Should this be public?
 	
 	/**
 	 * 

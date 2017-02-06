@@ -15,8 +15,13 @@ import javax.swing.event.MouseInputListener;
  */
 public class Input implements KeyListener, MouseInputListener, MouseWheelListener {
 	
-	//TODO: Merge Input, MouseInputHandler and KeyInputHandler
+	//JAVADOC: Input
+	
+	//TODO: Merge MouseInputHandler and KeyInputHandler
 
+	//TODO: Make Input a wrapper for raw input, probably by making it abstract.
+	// The MouseInputHandler and KeyInputHandler merge will then be the default implementation probably inheriting from this class
+	
 	private MouseInputHandler mouseHandler;
 
 	private KeyInputHandler keyHandler;

@@ -8,6 +8,7 @@ import java.awt.GraphicsDevice;
 import java.awt.Insets;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JFrame;
 
@@ -43,6 +44,7 @@ public class Screen implements Runnable{
 	//TODO: Add support for image effects and filters
 	
 	//TODO: Support image effects for individual painters
+	
 
 	/**
 	 * @author Julius Häger
@@ -78,13 +80,19 @@ public class Screen implements Runnable{
 	
 	private Mode mode;
 	
+	//TODO: Find a good way to handle different resolutions v.s window size
+	//Currently there is not any clarity to what changes the window size v.s the resolution.
+	
 	private Dimension size;
+	private Dimension originalSize;
 	
 	private boolean resizable = false;
 	
 	private boolean shouldRun = false;
 	
-	private ArrayList<Painter> painters;
+	private CopyOnWriteArrayList<Painter> painters;
+	
+	private CopyOnWriteArrayList<Input> inputListeners;
 	
 	private ArrayList<DebugOutputProvider> debugPrintOuts;
 	
@@ -93,6 +101,8 @@ public class Screen implements Runnable{
 	private int targetFPS;
 	
 	private boolean limitFPS = true;
+	
+	private boolean shouldApplyMode = false;
 	
 	/**
 	 * @param size 
@@ -103,14 +113,28 @@ public class Screen implements Runnable{
 	public Screen(Dimension size, Mode mode, String title, int targetFPS) {
 		
 		this.size = size;
+		originalSize = size;
 		this.mode = mode;
 		this.title = title;
 		
 		this.targetFPS = targetFPS;
 		
-		painters = new ArrayList<>();
+		painters = new CopyOnWriteArrayList<>();
+		
+		inputListeners = new CopyOnWriteArrayList<>();
 		
 		debugPrintOuts = new ArrayList<>();
+		
+		ApplyMode();
+	}
+	
+	//TODO: Does this break any callbacks?
+	private void ApplyMode(){
+		if(frame != null){
+			frame.dispose();
+		}
+		
+		size = originalSize;
 		
 		frame = new JFrame(title);
 		
@@ -129,8 +153,6 @@ public class Screen implements Runnable{
 			frame.setUndecorated(true);
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 			
-			//TODO: Clean up the configuration of different screen modes
-			
 			this.size = new Dimension(displayMode.getWidth(), displayMode.getHeight());
 			
 			frame.getContentPane().setPreferredSize(size);
@@ -140,8 +162,6 @@ public class Screen implements Runnable{
 		case BORDERLESS:
 			frame.setUndecorated(true);
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-			
-			this.size = new Dimension(displayMode.getWidth(), displayMode.getHeight());
 			
 			frame.getContentPane().setPreferredSize(size);
 			
@@ -160,6 +180,15 @@ public class Screen implements Runnable{
 		frame.createBufferStrategy(2);
 		
 		insets = frame.getInsets();
+		
+		for (Input input : inputListeners) {
+			frame.addKeyListener(input);
+			frame.addMouseListener(input);
+			frame.addMouseMotionListener(input);
+			frame.addMouseWheelListener(input);
+		}
+		
+		shouldApplyMode = false;
 	}
 	
 	@Override
@@ -176,6 +205,10 @@ public class Screen implements Runnable{
 			long time = System.nanoTime();
 			elapsedTime = time - currentTime;
 			currentTime = time;
+			
+			if (shouldApplyMode) {
+				ApplyMode();
+			}
 			
 			Graphics2D g2d = (Graphics2D) frame.getBufferStrategy().getDrawGraphics();
 			g2d.translate(insets.right, insets.top);
@@ -254,12 +287,15 @@ public class Screen implements Runnable{
 	 * @param inputListener
 	 */
 	public void addInputListener(Input inputListener) {
+		inputListeners.add(inputListener);
+		
 		frame.addKeyListener(inputListener);
 		frame.addMouseListener(inputListener);
 		frame.addMouseMotionListener(inputListener);
 		frame.addMouseWheelListener(inputListener);
 	}
 	
+	//NOTE: Is this method even useful?
 	/**
 	 * @return
 	 */
@@ -352,6 +388,7 @@ public class Screen implements Runnable{
 	 */
 	public void setWidth(int width) {
 		size.width = width;
+		originalSize = size;
 		frame.getContentPane().setPreferredSize(size);
 		frame.pack();
 	}
@@ -368,6 +405,7 @@ public class Screen implements Runnable{
 	 */
 	public void setHeight(int height) {
 		size.height = height;
+		originalSize = size;
 		frame.getContentPane().setPreferredSize(size);
 		frame.pack();
 	}
@@ -402,7 +440,7 @@ public class Screen implements Runnable{
 	 */
 	public void setMode(Mode mode) {
 		this.mode = mode;
-		//TODO: Actually change the mode
+		shouldApplyMode = true;
 	}
 	
 	/**

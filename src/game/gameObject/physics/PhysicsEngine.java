@@ -46,7 +46,7 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 	 */
 	public PhysicsEngine() {
 		super("Physics Engine");
-		Game.log.logMessage("PhysicsEngine created", "Physics"); //IS this really needed?
+		Game.log.logMessage("PhysicsEngine created", "Physics"); //Is this really needed?
 	}
 	
 	CopyOnWriteArrayList<Collidable> tempList;

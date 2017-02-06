@@ -85,6 +85,13 @@ public class Log {
 	}
 	
 	/**
+	 * @param logReader
+	 */
+	public void setLogConsumer(Consumer<LogMessage> logReader){
+		this.logReader = logReader;
+	}
+	
+	/**
 	 * @param importance
 	 */
 	public void setAcceptLevel(LogImportance importance){

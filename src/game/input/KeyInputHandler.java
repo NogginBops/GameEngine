@@ -31,6 +31,8 @@ public class KeyInputHandler {
 	public KeyInputHandler() {
 		keyBindings = new HashMap<String, CopyOnWriteArrayList<Integer>>();
 		
+		//FIXME: Due to KeyListener no longer extending GameObject it's no longer guaranteed that it will be registered.
+		
 		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, (event) -> {
 			if(event.object instanceof game.input.keys.KeyListener){
 				addListener((game.input.keys.KeyListener) event.object);
