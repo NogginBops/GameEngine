@@ -324,7 +324,11 @@ public class GameObjectHandler {
 	public IDHandler<GameObject> getIDHandler() {
 		return idHandler;
 	}
-
+	
+	//NOTE: Consider a GameObjectsClearedEvent?
+	//Another solution could be supporting destroying multiple GameObejcts in one event.
+	//But a Cleared event would allow for more efficient cleaning.
+	
 	/**
 	 * 
 	 */
