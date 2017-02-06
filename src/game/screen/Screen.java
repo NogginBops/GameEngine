@@ -57,6 +57,9 @@ public class Screen implements Runnable{
 		 * 
 		 */
 		FULL_SCREEN,
+		/**
+		 * 
+		 */
 		BORDERLESS
 	}
 	

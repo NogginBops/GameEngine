@@ -74,6 +74,7 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	 * Create the frame.
 	 * 
 	 * @param handler
+	 * @param updateEvents 
 	 */
 	@SafeVarargs
 	public IDHandlerDebugFrame(IDHandler<T> handler, Class<? extends GameEvent> ... updateEvents) {
