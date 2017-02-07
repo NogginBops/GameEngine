@@ -41,10 +41,13 @@ public final class IOHandler {
 	 * How would the load request need to change? Would it still use java.io.File?
 	*/
 	
+	//TODO: Should IO throw exceptions? It's kind of a inconvenience to require a try catch
+	
 	private static IDHandler<Loader<?>> loaderIDHandler;
 
 	private static IDHandler<Saver<?>> saverIDHandler;
 	
+	//TODO: Does this work?
 	//Using LoadRequest<?> as key for type safety
 	private static HashMap<LoadRequest<?>, LoadResult<?>> loadCache;
 

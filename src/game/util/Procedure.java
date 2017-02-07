@@ -5,6 +5,8 @@ package game.util;
  *
  */
 public interface Procedure {
+	
+	//JAVADOC: Procedure
 
 	/**
 	 * 
