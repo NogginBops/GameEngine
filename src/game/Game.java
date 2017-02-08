@@ -50,6 +50,9 @@ public class Game {
 	//so that they can be more efficient. (The game update thread could be used for rendering if 
 	//the rendering system was built to support that).
 	
+	//TODO: Find a good way to manage standard assets.
+	//e.g the standard particle asset
+	
 	private static boolean running = false;
 	private static boolean closeRequested = false;
 	private static boolean paused = false;

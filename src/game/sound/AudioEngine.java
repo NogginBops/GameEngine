@@ -18,6 +18,12 @@ public class AudioEngine {
 	
 	//TODO: Either replace TinySound with a custom written system or use another library
 	
+	//TODO: Different channels with different volume levels
+	
+	//TODO: Multiple listeners?
+	
+	//
+	
 	private static GameObject listener;
 
 	private static Vector2D listenerLocation;
@@ -67,8 +73,9 @@ public class AudioEngine {
 		
 		listenerLocation = new Vector2D((float)listener.getBounds().getCenterX(),
 				(float)listener.getBounds().getCenterY());
-		Vector2D vector = Vector2D.sub(pointToVector(source.getLocation()), listenerLocation);
-		float dist = Vector2D.distance(pointToVector(source.getLocation()), listenerLocation);
+		Vector2D pos = pointToVector(source.getLocation());
+		Vector2D vector = Vector2D.sub(pos, listenerLocation);
+		float dist = Vector2D.distance(pos, listenerLocation);
 
 		double volume = Math.log10(dist) < lowerThreshhold ? 1 / lowerThreshhold : 1 / Math.log10(dist);
 

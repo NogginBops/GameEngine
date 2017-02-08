@@ -7,16 +7,18 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
 import game.Game;
+import game.IO.IOHandler;
+import game.IO.load.LoadRequest;
 import game.gameObject.BasicGameObject;
 import game.gameObject.graphics.Paintable;
 import game.input.mouse.MouseListener;
 import game.sound.AudioEngine;
 import game.sound.AudioSource;
 import kuusisto.tinysound.Sound;
-import kuusisto.tinysound.TinySound;
 
 /**
  * @author Julius Häger
@@ -38,8 +40,12 @@ public class GameObjectAdderWithAudio extends BasicGameObject implements Paintab
 	public GameObjectAdderWithAudio(int x, int y) {
 		super(x, y, new Rectangle2D.Float(0, 0, 10, 10), Integer.MAX_VALUE - 10);
 		rand = new Random();
-		//TODO: Use IOHandler
-		sound = TinySound.loadSound(new File("./res/robot.mp3"));
+		
+		try {
+			sound = IOHandler.load(new LoadRequest<Sound>("Robot sound", new File("./res/robot.mp3"), Sound.class)).result;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

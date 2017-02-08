@@ -15,14 +15,15 @@ public class Transform<T> {
 	
 	//JAVADOC: Transform
 	
-	//TODO: Root transform
-	// Recursive or pre-computed?
+	//TODO: Transform debug view
 	
 	//NOTE: Should position data move towards the Vector2 class?
 	// This could make sending position data much easier
 	// Would this affect performance?
 	
 	protected T object;
+	
+	private Transform<T> root;
 	
 	protected Transform<T> parent;
 	
@@ -73,12 +74,16 @@ public class Transform<T> {
 		
 		rotation = 0;
 		
+		this.root = parent.getRoot();
+		
 		this.parent = parent;
 		
 		children = new ArrayList<>();
 		
 		this.object = object;
 	}
+	
+	//NOTE: Is this constructor usefull?
 	
 	/**
 	 * @param object 
@@ -103,6 +108,23 @@ public class Transform<T> {
 	 * @return
 	 */
 	public AffineTransform getAffineTransform(){
+		//FIXME: This is where the flickering graphics are originating from
+		//getAffineTransform is being called in both the graphics thread for rendering
+		//and in the game thread for transforming shapes.
+		
+		//The easiest solution would be to not cache the AffineTransform and just create a new one every time
+		//This would generate a lot of grabage and is not desirable
+		
+		//Thread specific AffineTransforms?
+		
+		//Another solution would be to not reset the transform
+		//Doing a more atomic change
+		//Is it possible to change the whole matrix at once?
+		
+		double rad = Math.toRadians(rotation);
+		
+		affineTransform.setTransform(scaleX + Math.cos(rad), -Math.sin(rad), Math.sin(rad), scaleY + Math.cos(rad), x, y);
+		
 		affineTransform.setToIdentity();
 		
 		affineTransform.translate(x, y);
@@ -125,6 +147,14 @@ public class Transform<T> {
 		return object;
 	}
 	
+	public Transform<T> getRoot(){
+		if (root == null) {
+			return this;
+		}else {
+			return root;
+		}
+	}
+	
 	/**
 	 * @return
 	 */
@@ -141,6 +171,8 @@ public class Transform<T> {
 		if (this.parent != null) {
 			this.parent.removeChild(this);
 		}
+		
+		this.root = parent.getRoot();
 		
 		this.parent = parent;
 		

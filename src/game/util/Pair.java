@@ -8,6 +8,8 @@ package game.util;
  */
 public class Pair<T, U>{
 	
+	//JAVADOC: Pair
+	
 	/**
 	 * 
 	 */

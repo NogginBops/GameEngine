@@ -12,6 +12,8 @@ import java.awt.image.WritableRaster;
  *
  */
 public final class ImageUtils {
+	
+	//JAVADOC: ImageUtils
 
 	// TODO: Remove
 	/**
