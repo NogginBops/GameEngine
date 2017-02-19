@@ -155,11 +155,14 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 		}
 	}
 	
-
+	
 	private void collide(Collidable c1, Collidable c2){
 		c1.hasCollided(c2);
 		c2.hasCollided(c1);
 	}
+	
+	//FIXME: collies has a lot of self time
+	// This method might not be needed when a better system is implemented.
 	
 	/**
 	 * @param s1

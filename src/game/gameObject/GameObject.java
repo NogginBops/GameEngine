@@ -15,7 +15,7 @@ public interface GameObject extends Comparable<GameObject> {
 
 	// JAVADOC: GameObject
 	
-	//FIXME: Find a way to optimize the default behaviour of the gameObject
+	//FIXME: Find a way to optimize the default behavior of the gameObject
 	
 	//NOTE: Should the whole gameEngine move to a component based design to make the implementation of standard behavior easier.
 	// Should this change how different components behave? One thing that could be done is make the Component constructor private (like Unity)
@@ -44,14 +44,14 @@ public interface GameObject extends Comparable<GameObject> {
 	 * @return
 	 */
 	default public float getWidth(){
-		return (float) (getBounds().getWidth() * getTransform().getScaleX());
+		return (float) (getShape().getBounds2D().getWidth() * getTransform().getScaleX());
 	}
 	
 	/**
 	 * @return
 	 */
 	default public float getHeight() {
-		return (float) (getBounds().getHeight() * getTransform().getScaleY());
+		return (float) (getShape().getBounds2D().getHeight() * getTransform().getScaleY());
 	}
 	
 	/**
@@ -60,6 +60,10 @@ public interface GameObject extends Comparable<GameObject> {
 	 */
 	public Shape getShape();
 	
+	
+	//FIXME: This is a big performance drain!
+	// Is there a way to cache this?
+	// There should be a better solution for all of the default behaviors because they are not preformant
 	/**
 	 * @return
 	 */
@@ -74,7 +78,7 @@ public interface GameObject extends Comparable<GameObject> {
 	 * @return the GameObject bounds
 	 */
 	default public Rectangle2D getBounds(){
-		return getTranformedShape().getBounds2D();//getTranformedShape().getBounds2D();
+		return getTranformedShape().getBounds2D();
 	}
 
 	/**
