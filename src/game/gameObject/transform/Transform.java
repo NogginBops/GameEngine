@@ -113,7 +113,7 @@ public class Transform<T> {
 		//and in the game thread for transforming shapes.
 		
 		//The easiest solution would be to not cache the AffineTransform and just create a new one every time
-		//This would generate a lot of grabage and is not desirable
+		//This would generate a lot of garbage and is not desirable
 		
 		//Thread specific AffineTransforms?
 		
