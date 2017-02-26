@@ -147,6 +147,9 @@ public class Transform<T> {
 		return object;
 	}
 	
+	/**
+	 * @return
+	 */
 	public Transform<T> getRoot(){
 		if (root == null) {
 			return this;
