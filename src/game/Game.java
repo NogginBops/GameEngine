@@ -96,8 +96,6 @@ public class Game {
 	public static GameObjectHandler gameObjectHandler = new GameObjectHandler();
 	
 	private static GameSettings settings;
-
-	private static PhysicsEngine physicsEngine;
 	
 	private static Camera camera; //TODO: This should support multiple cameras!
 
@@ -194,7 +192,7 @@ public class Game {
 		
 		Game.game = this;
 		
-		physicsEngine = new PhysicsEngine();
+		new PhysicsEngine();
 		
 		name = DEFAULT.getSettingAs("Name", String.class);
 		if(settings.containsSetting("Name")){
@@ -255,9 +253,6 @@ public class Game {
 		keyHandler = new KeyInputHandler();
 		inputHandler = new Input(mouseHandler, keyHandler);
 		
-		//FIXME: Figure out if the separate lists of GameSystems in GameSystem and Updater is a problem.
-		updater.addSystem(mouseHandler);
-		
 		if(settings.containsSetting("KeyBindings")){
 			@SuppressWarnings("unchecked")
 			Consumer<KeyInputHandler> keyBindings =  settings.getSettingAs("KeyBindings", Consumer.class);
@@ -275,8 +270,6 @@ public class Game {
 		screen.addInputListener(inputHandler);
 
 		AudioEngine.init(camera);
-		
-		updater.addSystem(physicsEngine);
 		
 		gameObjectHandler.addGameObject(camera, "Main camera");
 		

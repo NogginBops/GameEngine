@@ -41,8 +41,6 @@ public class Transform<T> {
 	
 	protected float rotation;
 	
-	protected AffineTransform affineTransform = new AffineTransform();
-	
 	/**
 	 * @param object 
 	 * 
@@ -115,16 +113,15 @@ public class Transform<T> {
 		//The easiest solution would be to not cache the AffineTransform and just create a new one every time
 		//This would generate a lot of garbage and is not desirable
 		
-		//Thread specific AffineTransforms?
+		AffineTransform affineTransform = new AffineTransform();
 		
-		//Another solution would be to not reset the transform
-		//Doing a more atomic change
-		//Is it possible to change the whole matrix at once?
+		setAffineTransform(affineTransform);
 		
-		double rad = Math.toRadians(rotation);
-		
-		affineTransform.setTransform(scaleX + Math.cos(rad), -Math.sin(rad), Math.sin(rad), scaleY + Math.cos(rad), x, y);
-		
+		return new AffineTransform(affineTransform);
+	}
+	
+	public AffineTransform setAffineTransform(AffineTransform affineTransform){
+
 		affineTransform.setToIdentity();
 		
 		affineTransform.translate(x, y);

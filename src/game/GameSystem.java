@@ -14,6 +14,8 @@ public abstract class GameSystem {
 	
 	private String name;
 	
+	private boolean enabled = true;
+	
 	/**
 	 * @param name The name of the GameSystem
 	 */
@@ -44,6 +46,29 @@ public abstract class GameSystem {
 	 */
 	public String getName(){
 		return name;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean getEnabled(){
+		return enabled;
+	}
+	/**
+	 * 
+	 * @param enabled
+	 */
+	protected void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}	
+	
+	/**
+	 * 
+	 */
+	protected void destroy(){
+		gameSystems.removeObject(this);
+		setEnabled(false);
 	}
 	
 	/**

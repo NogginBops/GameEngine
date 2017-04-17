@@ -208,7 +208,6 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 				return null;
 			}
 		}
-		
 		return imageMap.get(particle.image).get(rColor);
 	}
 	

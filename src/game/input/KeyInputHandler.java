@@ -34,13 +34,13 @@ public class KeyInputHandler {
 		//FIXME: Due to KeyListener no longer extending GameObject it's no longer guaranteed that it will be registered.
 		
 		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, (event) -> {
-			if(event.object instanceof game.input.keys.KeyListener){
-				addListener((game.input.keys.KeyListener) event.object);
+			if(event.object instanceof KeyListener){
+				addListener((KeyListener) event.object);
 			}});
 		
 		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, (event) -> {
-			if(event.object instanceof game.input.keys.KeyListener){
-				removeListener((game.input.keys.KeyListener) event.object);
+			if(event.object instanceof KeyListener){
+				removeListener((KeyListener) event.object);
 			}});
 	}
 	

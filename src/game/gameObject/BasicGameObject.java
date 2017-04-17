@@ -1,6 +1,7 @@
 package game.gameObject;
 
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 import game.debug.DebugOutputProvider;
@@ -89,7 +90,18 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	public boolean isActive() {
 		return active;
 	}
-
+	
+	@Override
+	public Shape getTranformedShape() {
+		return transform.getAffineTransform().createTransformedShape(shape);
+	}
+	
+	@Override
+	public Rectangle2D getBounds() {
+		// NOTE: There might be a faster way to do this by manually calculating the values. It might be hard.
+		return transform.getAffineTransform().createTransformedShape(shape).getBounds2D();
+	}
+	
 	@Override
 	public void setActive(boolean active) {
 		this.active = active;

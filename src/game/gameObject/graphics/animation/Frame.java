@@ -8,6 +8,9 @@ import java.awt.image.BufferedImage;
  */
 public class Frame {
 	
+	// TODO: Remove the frame object and use two different arrays
+	// for images and times in Animation. This is better for performance.
+	
 	/**
 	 * 
 	 */

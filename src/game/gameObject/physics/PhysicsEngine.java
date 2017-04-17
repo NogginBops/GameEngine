@@ -23,11 +23,6 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 	
 	// TODO: PhysicsEngine
 	
-	// FIXME: Physics layers
-	//This would allow gameobjects to collide with each other while not being on the same z layer
-	//NOTE: Should the z layer property be a part of the paintable interface? It is to note that
-	// the mouse input is also dependent on the z layer of a gameobject.
-	
 	// TODO: Implement a grid system for efficient collision checking.
 	//Could be hard as the Collidable itself does not know what position in the grid it has.
 	//Could a method getGrid() and some cache variable that might update depending on movement
@@ -171,6 +166,7 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 	 */
 	public static boolean collides(Shape s1, Shape s2){
 		//TODO: Is this even needed?
+		// Polymorphism should handle this?
 		
 		if(s1 instanceof Rectangle2D && s2 instanceof Rectangle2D){
 			if(((Rectangle2D)s1).intersects((Rectangle2D)s2)){
