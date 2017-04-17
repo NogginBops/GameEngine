@@ -3,6 +3,7 @@ package game.gameObject.physics;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -42,6 +43,27 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 	public PhysicsEngine() {
 		super("Physics Engine");
 		Game.log.logMessage("PhysicsEngine created", "Physics"); //Is this really needed?
+		/*
+		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, (event) -> {
+			if (event.object instanceof Collidable) {
+				int layer = ((Collidable)event.object).getPhysicsLayer();
+				if (collidablesMap.containsKey(layer) == false) {
+					collidablesMap.put(layer, new CopyOnWriteArrayList<>());
+				}
+				
+				collidablesMap.get(layer).add((Collidable) event.object);
+			}
+		});
+		
+		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, (event) -> {
+			if (event.object instanceof Collidable) {
+				int layer = ((Collidable)event.object).getPhysicsLayer();
+				if (collidablesMap.containsKey(layer)) {
+					collidablesMap.get(layer).remove(event.object);
+				}
+			}
+		});
+		*/
 	}
 	
 	CopyOnWriteArrayList<Collidable> tempList;
@@ -93,6 +115,8 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 				return;
 			}*/
 		}
+		
+		
 		
 		for (CopyOnWriteArrayList<Collidable> collidablesInLayer : collidablesMap.values()) {
 			if(collidablesInLayer.size() <= 1){
@@ -195,6 +219,23 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 			}
 		}
 		return false;
+	}
+	
+	public Collidable[] overlapShape(Shape shape, int ... layers){
+		
+		ArrayList<Collidable> collisions = new ArrayList<>();
+		
+		for (int layer : layers) {
+			if (collidablesMap.containsKey(layer)) {
+				for (Collidable collidable : collidablesMap.get(layer)) {
+					if (collides(shape, collidable.getCollitionShape())) {
+						collisions.add(collidable);
+					}
+				}
+			}
+		}
+		
+		return collisions.toArray(new Collidable[collisions.size()]);
 	}
 
 	@Override

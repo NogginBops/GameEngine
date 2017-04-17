@@ -8,6 +8,13 @@ public class Vector2D {
 	
 	//JAVADOC: Vector2D
 	
+	public static final Vector2D RIGHT = new Vector2D(1, 0);
+	public static final Vector2D LEFT = new Vector2D(-1, 0);
+	public static final Vector2D UP = new Vector2D(0, 1);
+	public static final Vector2D DOWN = new Vector2D(0, -1);
+	public static final Vector2D ZERO = new Vector2D(0, 0);
+	public static final Vector2D ONE = new Vector2D(1, 1);
+	
 	/**
 	 * @param rhs 
 	 * @param lhs 
@@ -77,18 +84,22 @@ public class Vector2D {
 	 * @param listener
 	 * @return
 	 */
-	public static float distance(Vector2D source, Vector2D listener) {
-		return (float)Math.sqrt(distanceSqr(source, listener));
+	public static float distance(Vector2D from, Vector2D to) {
+		return (float)Math.sqrt(distanceSqr(from, to));
 	}
 
 	/**
-	 * @param source
-	 * @param listener
+	 * @param from
+	 * @param to
 	 * @return
 	 */
-	public static float distanceSqr(Vector2D source, Vector2D listener) {
-		return (source.x - listener.x) * (source.x - listener.x)
-				+ (source.y - listener.y) * (source.y - listener.y);
+	public static float distanceSqr(Vector2D from, Vector2D to) {
+		return (from.x - to.x) * (from.x - to.x)
+				+ (from.y - to.y) * (from.y - to.y);
+	}
+	
+	public static float angle(Vector2D from, Vector2D to){
+		return (float) Math.toDegrees(Math.atan2((from.x * to.y) - (from.y * to.x), (from.x * to.x) + (from.y * to.y)));
 	}
 	
 	/**

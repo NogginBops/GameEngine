@@ -39,8 +39,8 @@ public abstract class Updater {
 	 */
 	public void propagateUpdate(float deltaTime) {
 		for (ID<GameSystem> gameSystem : systems) {
-			if (gameSystem.object.getEnabled()) {				
-				gameSystem.object.lateUpdate(deltaTime);
+			if (gameSystem.object.getEnabled()) {
+				gameSystem.object.earlyUpdate(deltaTime);
 			}
 		}
 		

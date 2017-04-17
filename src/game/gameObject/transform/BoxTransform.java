@@ -137,6 +137,16 @@ public class BoxTransform<T> extends Transform<T> {
 		this.anchorY = anchorY;
 	}
 	
+	@Override
+	public AffineTransform getAffineTransform() {
+		AffineTransform affineTransform = new AffineTransform();
+		
+		setAffineTransform(affineTransform);
+		
+		return affineTransform;
+	}
+	
+	@Override
 	public AffineTransform setAffineTransform(AffineTransform affineTransform){
 		
 		affineTransform.setToIdentity();

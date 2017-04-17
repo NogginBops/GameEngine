@@ -100,6 +100,10 @@ public class BasicMovable extends BasicGameObject implements Movable {
 		this.dy = dy;
 	}
 	
+	public Vector2D getVelocity(){
+		return new Vector2D(dx, dy);
+	}
+	
 	@Override
 	public void setVelocity(float dx, float dy) {
 		this.dx = dx;

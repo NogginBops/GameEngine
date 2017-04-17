@@ -1,12 +1,13 @@
 package game;
 
+import game.debug.DebugOutputProvider;
 import game.util.IDHandler;
 
 /**
  * @author Julius Häger
  *
  */
-public abstract class GameSystem {
+public abstract class GameSystem implements DebugOutputProvider {
 	
 	//TODO: Figure out what it means to be a GameSystem
 	
@@ -84,5 +85,13 @@ public abstract class GameSystem {
 	 */
 	public static GameSystem getGameSystem(String name){
 		return gameSystems.getObject(name);
+	}
+	
+	@Override
+	public String[] getDebugValues() {
+		return new String[]{
+				"<b>Name: </b> " + name,
+				"<b>Enabled: </b>" + enabled,
+		};
 	}
 }

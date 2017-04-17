@@ -331,9 +331,9 @@ public class Camera extends Painter implements Movable, KeyListener {
 		dy += moveUp ? -cameraMovementSpeed : 0;
 		dy += moveDown ? cameraMovementSpeed : 0;
 		
-		dx = (float) ((dx * Math.cos(transform.getRotationRad())) - (dy * Math.sin(transform.getRotationRad())));
+		//dx = (float) ((dx * Math.cos(transform.getRotationRad())) - (dy * Math.sin(transform.getRotationRad())));
 		
-		dy = (float) ((dy * Math.cos(transform.getRotationRad())) + (dx * Math.sin(transform.getRotationRad())));
+		//dy = (float) ((dy * Math.cos(transform.getRotationRad())) + (dx * Math.sin(transform.getRotationRad())));
 		
 		setDX(dx);
 		setDY(dy);

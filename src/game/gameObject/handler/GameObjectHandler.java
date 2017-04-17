@@ -325,7 +325,7 @@ public class GameObjectHandler {
 		return idHandler;
 	}
 	
-	//NOTE: Consider a GameObjectsClearedEvent?
+	//TODO: GameObjectsClearedEvent
 	//Another solution could be supporting destroying multiple GameObejcts in one event.
 	//But a Cleared event would allow for more efficient cleaning.
 	

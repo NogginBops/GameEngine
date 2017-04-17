@@ -8,6 +8,8 @@ import game.controller.event.GameEvent;
  */
 public class GamePausedEvent extends GameEvent {
 
+	//JAVADOC: GamePausedEvent
+	
 	/**
 	 * 
 	 */

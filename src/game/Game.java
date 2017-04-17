@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import game.controller.event.EventMachine;
 import game.controller.event.engineEvents.GameQuitEvent;
 import game.controller.event.engineEvents.GameStartEvent;
+import game.controller.event.engineEvents.SceneLoadEvent;
+import game.controller.event.engineEvents.SceneLoadedEvent;
 import game.debug.IDHandlerDebugFrame;
 import game.debug.log.Log;
 import game.debug.log.Log.LogImportance;
@@ -88,6 +90,8 @@ public class Game {
 	 * The main EventMachine.
 	 */
 	public static EventMachine eventMachine = new EventMachine();
+	
+	public static PhysicsEngine physicsEngine;
 	
 	//TODO: Some more elegant methods for using the GOH
 	/**
@@ -192,7 +196,7 @@ public class Game {
 		
 		Game.game = this;
 		
-		new PhysicsEngine();
+		physicsEngine = new PhysicsEngine();
 		
 		name = DEFAULT.getSettingAs("Name", String.class);
 		if(settings.containsSetting("Name")){
@@ -443,11 +447,18 @@ public class Game {
 		
 		log.logMessage("Loading scene..");
 		
+		eventMachine.fireEvent(new SceneLoadEvent(game));
+
 		gameObjectHandler.clear();
+		
+		// TODO: Clear GameSystems? 
+		// TODO: The ability to have persistent GameObjects
 		
 		sceneInit.initialize(game, settings);
 		
 		log.logMessage("Loaded scene!");
+		
+		eventMachine.fireEvent(new SceneLoadedEvent(game));
 		
 		resume();
 	}

@@ -135,7 +135,7 @@ public class GameSettings {
 	 */
 	public <T> T getSettingAs(String name, Class<T> clazz){
 		Object obj = settings.get(name);
-		if(clazz.isAssignableFrom(obj.getClass())){
+		if(obj != null && clazz.isAssignableFrom(obj.getClass())){
 			return clazz.cast(obj);
 		}
 		return null;

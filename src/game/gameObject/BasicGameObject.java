@@ -1,7 +1,6 @@
 package game.gameObject;
 
 import java.awt.Shape;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 import game.debug.DebugOutputProvider;

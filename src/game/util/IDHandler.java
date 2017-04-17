@@ -162,18 +162,16 @@ public class IDHandler<T> implements Iterable<ID<T>>{
 	@Override
 	public Iterator<ID<T>> iterator() {
 		return new Iterator<ID<T>>() {
-			@SuppressWarnings("unchecked")
-			ID<T>[] elements = (ID<T>[]) IDs.toArray();
-			int i = 0;
+			Iterator<ID<T>> itr = IDs.iterator();
 			
 			@Override
 			public boolean hasNext() {
-				return i < elements.length;
+				return itr.hasNext();
 			}
-
+			
 			@Override
 			public ID<T> next() {
-				return elements[i++];
+				return itr.next();
 			}
 		};
 	}

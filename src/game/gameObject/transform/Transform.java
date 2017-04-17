@@ -120,6 +120,11 @@ public class Transform<T> {
 		return new AffineTransform(affineTransform);
 	}
 	
+	/**
+	 * 
+	 * @param affineTransform
+	 * @return
+	 */
 	public AffineTransform setAffineTransform(AffineTransform affineTransform){
 
 		affineTransform.setToIdentity();
@@ -153,6 +158,13 @@ public class Transform<T> {
 		}else {
 			return root;
 		}
+	}
+	
+	/**
+	 * @return
+	 */
+	public boolean isRoot(){
+		return parent == null;
 	}
 	
 	/**
