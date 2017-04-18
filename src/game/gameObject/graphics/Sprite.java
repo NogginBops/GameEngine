@@ -10,7 +10,6 @@ import game.Game;
 import game.gameObject.graphics.animation.Animation;
 import game.gameObject.physics.BasicRotatable;
 import game.image.effects.ColorTintFilter;
-import game.util.image.ImageUtils;
 
 /**
  * 
@@ -348,9 +347,7 @@ public class Sprite extends BasicRotatable implements Paintable {
 
 	private BufferedImage createGraphicsReadySprite(BufferedImage sprite) {
 		if (sprite != null) {
-			
-			return colorTinter.filter(ImageUtils.toSystemOptimizedImage(sprite), null);
-			
+			return colorTinter.filter(sprite, null);
 		} else {
 			Game.log.logError("Tried to create a graphics ready image from a null image!", "Sprite", "Image", "Graphics ready");
 			

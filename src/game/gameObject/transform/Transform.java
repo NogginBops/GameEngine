@@ -106,18 +106,11 @@ public class Transform<T> {
 	 * @return
 	 */
 	public AffineTransform getAffineTransform(){
-		//FIXME: This is where the flickering graphics are originating from
-		//getAffineTransform is being called in both the graphics thread for rendering
-		//and in the game thread for transforming shapes.
-		
-		//The easiest solution would be to not cache the AffineTransform and just create a new one every time
-		//This would generate a lot of garbage and is not desirable
-		
 		AffineTransform affineTransform = new AffineTransform();
 		
 		setAffineTransform(affineTransform);
 		
-		return new AffineTransform(affineTransform);
+		return affineTransform;
 	}
 	
 	/**
@@ -126,9 +119,17 @@ public class Transform<T> {
 	 * @return
 	 */
 	public AffineTransform setAffineTransform(AffineTransform affineTransform){
-
 		affineTransform.setToIdentity();
 		
+		return transform(affineTransform);
+	}
+	
+	/**
+	 * 
+	 * @param affineTransform
+	 * @return
+	 */
+	public AffineTransform transform(AffineTransform affineTransform){
 		affineTransform.translate(x, y);
 		
 		affineTransform.scale(scaleX, scaleY);
@@ -136,7 +137,9 @@ public class Transform<T> {
 		affineTransform.rotate(Math.toRadians(rotation));
 		
 		if(parent != null){
+			// FIXME: Transform child transforms this in a way that actually works!
 			affineTransform.concatenate(parent.getAffineTransform());
+			//parent.transform(affineTransform);
 		}
 		
 		return affineTransform;

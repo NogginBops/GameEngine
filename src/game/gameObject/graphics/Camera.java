@@ -17,6 +17,7 @@ import game.gameObject.transform.BoxTransform;
 import game.input.keys.KeyListener;
 import game.screen.ScreenRect;
 import game.util.image.ImageUtils;
+import game.util.math.vector.Vector2D;
 
 /**
  * A Camera is the object responsible for looking into a {@link Game Games}
@@ -118,19 +119,21 @@ public class Camera extends Painter implements Movable, KeyListener {
 		return transform.getY();
 	}
 
+	@Override
+	public Vector2D getPosition() {
+		return transform.getPosition();
+	}
 
 	@Override
 	public void setX(float x) {
 		transform.setX(x);
 	}
-
-
+	
 	@Override
 	public void setY(float y) {
 		transform.setY(y);
 	}
-
-
+	
 	@Override
 	public void setPosition(float x, float y) {
 		transform.setPosition(x, y);
@@ -144,6 +147,11 @@ public class Camera extends Painter implements Movable, KeyListener {
 	@Override
 	public float getDY() {
 		return dy;
+	}
+	
+	@Override
+	public Vector2D getVelocity() {
+		return new Vector2D(dx, dy);
 	}
 
 	@Override
@@ -160,6 +168,12 @@ public class Camera extends Painter implements Movable, KeyListener {
 	public void setVelocity(float dx, float dy) {
 		this.dx = dx;
 		this.dy = dy;
+	}
+	
+	@Override
+	public void setVelocity(Vector2D vel) {
+		this.dx = vel.x;
+		this.dy = vel.y;
 	}
 	
 	/**

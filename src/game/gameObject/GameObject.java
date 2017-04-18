@@ -29,6 +29,8 @@ public interface GameObject extends Comparable<GameObject> {
 	//NOTE: Move zOrder to transform? That would centralize all the position data in one place. 
 	// It would also work well with the UI as that also needs a zOrder.
 	
+	//NOTE: Should GameObject support the Copyable<T> interface
+	
 	/**
 	 * 
 	 * @return

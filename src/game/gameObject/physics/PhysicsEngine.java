@@ -19,7 +19,6 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 
 	// JAVADOC: PhysicsEngine
 
-	//FIXME: Make the physics and collision into a GameSystem!
 	//NOTE: How should physics be implemented to facilitate good multi-threading?
 	
 	// TODO: PhysicsEngine

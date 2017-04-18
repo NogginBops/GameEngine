@@ -148,9 +148,13 @@ public class BoxTransform<T> extends Transform<T> {
 	
 	@Override
 	public AffineTransform setAffineTransform(AffineTransform affineTransform){
-		
 		affineTransform.setToIdentity();
 		
+		return transform(affineTransform);
+	}
+	
+	@Override
+	public AffineTransform transform(AffineTransform affineTransform) {
 		affineTransform.translate(x + (width * anchorX), y + (height * anchorY));
 		
 		affineTransform.scale(scaleX, scaleY);
@@ -160,7 +164,7 @@ public class BoxTransform<T> extends Transform<T> {
 		affineTransform.translate(-((width * anchorX)), -((height * anchorY)));
 		
 		if(parent != null){
-			affineTransform.concatenate(parent.getAffineTransform());
+			parent.transform(affineTransform);
 		}
 		
 		return affineTransform;
