@@ -280,4 +280,23 @@ public class BoxTransform<T> extends Transform<T> {
 	public float getOffsetY(){
 		return height * anchorY;
 	}
+	
+	@Override
+	public Transform<T> copy(T object) {
+		BoxTransform<T> transform = new BoxTransform<>(object);
+		copyParameters(transform);
+		return transform;
+	}
+	
+	/**
+	 * 
+	 * @param transform
+	 */
+	protected void copyParameters(BoxTransform<T> transform) {
+		super.copyParameters(transform);
+		transform.width = this.width;
+		transform.height = this.height;
+		transform.anchorX = this.anchorX;
+		transform.anchorY = this.anchorY;
+	}
 }

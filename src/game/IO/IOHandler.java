@@ -9,12 +9,14 @@ import game.IO.load.LoadRequest;
 import game.IO.load.LoadResult;
 import game.IO.load.Loader;
 import game.IO.load.defaultLoaders.BufferedImageLoader;
+import game.IO.load.defaultLoaders.ByteArrayLoader;
 import game.IO.load.defaultLoaders.FontLoader;
 import game.IO.load.defaultLoaders.MusicLoader;
 import game.IO.load.defaultLoaders.SoundLoader;
 import game.IO.load.defaultLoaders.StringLoader;
 import game.IO.save.SaveRequest;
 import game.IO.save.Saver;
+import game.IO.save.defaultSavers.ByteArraySaver;
 import game.IO.save.defaultSavers.ImageSaver;
 import game.IO.save.defaultSavers.StringSaver;
 import game.util.ID;
@@ -68,6 +70,7 @@ public final class IOHandler {
 		loaderIDHandler.addID(new ID<Loader<?>>("Default Sound Loader", 2, new SoundLoader()));
 		loaderIDHandler.addID(new ID<Loader<?>>("Default Music Loader", 3, new MusicLoader()));
 		loaderIDHandler.addID(new ID<Loader<?>>("Default Font Loader", 4, new FontLoader()));
+		loaderIDHandler.addID(new ID<Loader<?>>("Default Byte Loader", 5, new ByteArrayLoader()));
 		
 	}
 
@@ -80,6 +83,8 @@ public final class IOHandler {
 		saverIDHandler.addID(new ID<Saver<?>>("Default BMP Saver", 2, new ImageSaver(ImageSaver.Mode.BMP)));
 		saverIDHandler.addID(new ID<Saver<?>>("Default JPG Saver", 3, new ImageSaver(ImageSaver.Mode.JPG)));
 		saverIDHandler.addID(new ID<Saver<?>>("Default GIF Saver", 4, new ImageSaver(ImageSaver.Mode.GIF)));
+		saverIDHandler.addID(new ID<Saver<?>>("Default Byte Saver", 5, new ByteArraySaver()));
+		
 	}
 
 	/**

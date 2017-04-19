@@ -27,6 +27,7 @@ public class Transform<T> {
 	
 	protected Transform<T> parent;
 	
+	// Does this need to be Thread Safe?
 	protected ArrayList<Transform<T>> children;
 	
 	protected float x;
@@ -356,5 +357,33 @@ public class Transform<T> {
 	 */
 	public void rotate(float rotation){
 		this.rotation = MathUtils.wrap(this.rotation + rotation, 0, 360);
+	}
+
+	/**
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public Transform<T> copy(T object) {
+		//NOTE: Should there be a setObject method instead?
+		Transform<T> transform = new Transform<>(object);
+		copyParameters(transform);
+		return transform;
+	}
+	
+	/**
+	 * 
+	 * @param transform
+	 */
+	protected void copyParameters(Transform<T> transform){
+		transform.root = this.root;
+		transform.parent = this.parent;
+		transform.children = new ArrayList<>(this.children);
+		transform.x = this.x;
+		transform.y = this.y;
+		transform.pos = this.pos;
+		transform.scaleX = this.scaleX;
+		transform.scaleY = this.scaleY;
+		transform.rotation = this.rotation;
 	}
 }

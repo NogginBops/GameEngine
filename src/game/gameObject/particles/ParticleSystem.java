@@ -106,7 +106,6 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 		super(transform, new Rectangle2D.Float(0, 0, transform.getWidth(), transform.getHeight()), zOrder, 0);
 		
 		setTransform(transform);
-		boxTransform = transform;
 		
 		particles = new Particle[maxParticles];
 		for (int i = 0; i < particles.length; i++) {
@@ -277,14 +276,11 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 		return null;
 	}
 	
-	/**
-	 * @return
-	 */
 	@Override
 	public void setTransform(Transform<GameObject> transform) {
 		if(transform instanceof BoxTransform){
 			super.setTransform(transform);
-			boxTransform = (BoxTransform<GameObject>) transform;
+			boxTransform = (BoxTransform<GameObject>) getTransform();
 		}else{
 			//NOTE: Is this needed?
 			Game.log.logError("Trying to assign a non BoxTransform to a particle system! This is not suported!", "ParticleSystem", "Transform", "Particle");

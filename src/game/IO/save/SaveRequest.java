@@ -10,6 +10,9 @@ import java.io.File;
 public class SaveRequest<T> {
 
 	// JAVADOC: SaveRequest
+	
+	// TODO: File mode enum?
+	// Describes what to do when the requested save location does not exist
 
 	/**
 	 * 
