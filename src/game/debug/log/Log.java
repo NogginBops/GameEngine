@@ -4,6 +4,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
+import game.Game;
+import game.debug.log.events.MessageLoggedEvent;
+
 /**
  * @author Julius Häger
  *
@@ -128,6 +131,8 @@ public class Log {
 		LogMessage logMessage = new LogMessage(message, impotrance, tagFilter);
 		
 		messages.add(logMessage);
+		
+		Game.eventMachine.fireEvent(new MessageLoggedEvent(this, logMessage));
 		
 		if(logReader != null){
 			logReader.accept(logMessage);

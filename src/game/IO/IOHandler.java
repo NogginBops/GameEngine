@@ -130,7 +130,6 @@ public final class IOHandler {
 	public static <T> LoadResult<T> load(LoadRequest<T> request) throws IOException {
 		if(request.ID != null || request.cache == false){ //Not cached
 			if(loadCache.containsKey(request)){
-				//TODO: Can this be done without creating a new object?
 				T result = request.dataType.cast(loadCache.get(request).result);
 				
 				Game.log.logDebug("Found cahced result! ID: " + request.ID, "IO", "Load");
