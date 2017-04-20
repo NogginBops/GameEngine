@@ -52,7 +52,28 @@ public final class IOHandler {
 	//TODO: Does this work?
 	//Using LoadRequest<?> as key for type safety
 	private static HashMap<LoadRequest<?>, LoadResult<?>> loadCache;
-
+	
+	// Directory shortcuts? and nested directory shortcuts.
+	
+	// ".//graphics//entities//enemy//" could just be "enemy/"
+	// These will have to be registered somewhere
+	// And shortcut paths can be added to existing shortcuts.
+	
+	/*
+	 * addShortPath(".//graphics//entities//enemy//", "enemy");
+	 * 
+	 * addShortpath(".//graphics//entities//bosses//", "bosses");
+	 * 
+	 * extendShortPath("enemy", ".//graphics//entities//bosses//", "bosses");
+	 * 
+	 * getFile("enemy/bosses/boss_1.png");
+	 * 
+	 * This would load ".//graphics//entities//bosses//boss_1.png"
+	 */
+	
+	// Do we benefit anything from nested shortpaths?
+	// I can't think of any use at the top of my head.
+	
 	static {
 		loaderIDHandler = new IDHandler<Loader<?>>();
 		saverIDHandler = new IDHandler<Saver<?>>();

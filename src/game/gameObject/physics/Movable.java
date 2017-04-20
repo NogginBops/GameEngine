@@ -16,7 +16,7 @@ public interface Movable extends UpdateListener {
 	
 	//JAVADOC: Movable
 	
-	//TODO: Movable should ba able to rotate! and the Rotatable interface should be scrapped
+	//TODO: Movable should be able to rotate! and the Rotatable interface should be scrapped
 
 	/**
 	 * Returns the current x value of the Movable
