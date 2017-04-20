@@ -3,8 +3,6 @@ package game.gameObject.physics;
 import java.awt.Shape;
 
 import game.gameObject.BasicGameObject;
-import game.gameObject.GameObject;
-import game.gameObject.transform.Transform;
 import game.util.math.vector.Vector2D;
 
 /**
@@ -26,12 +24,11 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	protected float dy;
 
 	/**
-	 * @param transform 
 	 * @param shape 
 	 * @param zOrder 
 	 */
-	public BasicMovable(Transform<GameObject> transform, Shape shape, int zOrder) {
-		super(transform, shape, zOrder);
+	public BasicMovable(Shape shape, int zOrder) {
+		super(shape, zOrder);
 	}
 	
 	/**

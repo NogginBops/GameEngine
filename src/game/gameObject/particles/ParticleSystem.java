@@ -102,10 +102,10 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	 * @param maxParticles 
 	 * @param customizer 
 	 */
-	public ParticleSystem(BoxTransform<GameObject> transform, int zOrder, int maxParticles, ParticleCustomizer customizer) {
-		super(transform, new Rectangle2D.Float(0, 0, transform.getWidth(), transform.getHeight()), zOrder, 0);
+	public ParticleSystem(float x, float y, float width, float height, float anchorX, float anchorY, int zOrder, int maxParticles, ParticleCustomizer customizer) {
+		super(new Rectangle2D.Float(0, 0, width, height), zOrder, 0);
 		
-		setTransform(transform);
+		setTransform(new BoxTransform<GameObject>(this, x, y, width, height, anchorX, anchorY));
 		
 		particles = new Particle[maxParticles];
 		for (int i = 0; i < particles.length; i++) {
