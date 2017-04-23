@@ -156,7 +156,7 @@ public final class IOHandler {
 	 * 
 	 */
 	public static <T> LoadResult<T> load(LoadRequest<T> request) throws IOException {
-		if (request.ID != null || request.cache == false) { // Not cached
+		if (request.ID != null || request.cache != false) { // Not cached
 			if (loadCache.containsKey(request)) {
 				T result = request.dataType.cast(loadCache.get(request).result);
 
