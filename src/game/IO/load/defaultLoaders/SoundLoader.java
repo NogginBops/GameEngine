@@ -15,7 +15,7 @@ public class SoundLoader implements Loader<Sound> {
 
 	@Override
 	public Sound load(LoadRequest<?> request) {
-		return TinySound.loadSound(request.file);
+		return TinySound.loadSound(request.path.toFile());
 	}
 
 	@Override

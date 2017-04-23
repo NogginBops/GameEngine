@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import game.Game;
 import game.IO.load.LoadRequest;
 import game.IO.load.Loader;
 
@@ -21,12 +22,9 @@ public class BufferedImageLoader implements Loader<BufferedImage> {
 	@Override
 	public BufferedImage load(LoadRequest<?> request) {
 		try {
-			
-			return ImageIO.read(request.file);
-			
+			return ImageIO.read(request.path.toFile());
 		} catch (IOException e) {
-			System.err.println(request.file + " could not load!!");
-			e.printStackTrace();
+			Game.log.logError("Could not load \"" + request.path + "\"", "IO", "Loader", "BufferedImage", "BufferedImageLoader");
 			return null;
 		}
 	}

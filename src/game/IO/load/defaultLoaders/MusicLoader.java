@@ -15,7 +15,7 @@ public class MusicLoader implements Loader<Music> {
 
 	@Override
 	public Music load(LoadRequest<?> request) {
-		return TinySound.loadMusic(request.file);
+		return TinySound.loadMusic(request.path.toFile());
 	}
 
 	@Override

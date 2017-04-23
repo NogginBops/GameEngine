@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import game.Game;
 import game.IO.save.SaveRequest;
 import game.IO.save.Saver;
 
@@ -58,7 +59,7 @@ public class ImageSaver implements Saver<BufferedImage> {
 		switch (mode) {
 		case PNG:
 			try {
-				ImageIO.write((BufferedImage) request.object, "PNG", request.location);
+				ImageIO.write((BufferedImage) request.object, "PNG", request.location.toFile());
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -66,7 +67,7 @@ public class ImageSaver implements Saver<BufferedImage> {
 			break;
 		case BMP:
 			try {
-				ImageIO.write((BufferedImage) request.object, "BMP", request.location);
+				ImageIO.write((BufferedImage) request.object, "BMP", request.location.toFile());
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -74,7 +75,7 @@ public class ImageSaver implements Saver<BufferedImage> {
 			break;
 		case JPG:
 			try {
-				ImageIO.write((BufferedImage) request.object, "JPG", request.location);
+				ImageIO.write((BufferedImage) request.object, "JPG", request.location.toFile());
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -82,7 +83,7 @@ public class ImageSaver implements Saver<BufferedImage> {
 			break;
 		case GIF:
 			try {
-				ImageIO.write((BufferedImage) request.object, "GIF", request.location);
+				ImageIO.write((BufferedImage) request.object, "GIF", request.location.toFile());
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -91,6 +92,7 @@ public class ImageSaver implements Saver<BufferedImage> {
 		default:
 			break;
 		}
+		Game.log.logError("Could not save image: " + request, "IO", "Save", "BufferedImage");
 		return false;
 	}
 

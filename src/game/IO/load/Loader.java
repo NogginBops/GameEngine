@@ -16,6 +16,8 @@ public interface Loader<T> {
 	
 	//JAVADOC: Loader<T>
 
+	// TODO: More consistent error messages from default Loaders
+	
 	/**
 	 * When the IO system has found a suitable request for this loader this
 	 * method is called with that request.

@@ -9,6 +9,8 @@ public interface Saver<T> {
 	
 	//JAVADOC: Saver<T>
 
+	// TODO: More consistent error messages from default Savers
+	
 	/**
 	 * @param request
 	 * @return

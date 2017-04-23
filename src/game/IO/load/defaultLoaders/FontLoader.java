@@ -18,7 +18,7 @@ public class FontLoader implements Loader<Font> {
 	@Override
 	public Font load(LoadRequest<?> request) {
 		try {
-			return Font.createFont(Font.TRUETYPE_FONT, request.file);
+			return Font.createFont(Font.TRUETYPE_FONT, request.path.toFile());
 		} catch (FontFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

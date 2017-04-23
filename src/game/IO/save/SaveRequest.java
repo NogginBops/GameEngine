@@ -1,6 +1,6 @@
 package game.IO.save;
 
-import java.io.File;
+import java.nio.file.Path;
 
 /**
  * @author Julius Häger
@@ -27,7 +27,7 @@ public class SaveRequest<T> {
 	/**
 	 * 
 	 */
-	public final File location;
+	public final Path location;
 
 	/**
 	 * 
@@ -39,7 +39,7 @@ public class SaveRequest<T> {
 	 * @param dataType
 	 * @param location
 	 */
-	public SaveRequest(T object, Class<T> dataType, File location) {
+	public SaveRequest(T object, Class<T> dataType, Path location) {
 		this.object = object;
 		this.location = location;
 		this.dataType = dataType;
@@ -52,7 +52,7 @@ public class SaveRequest<T> {
 	 * @param location
 	 * @param preferredSaver
 	 */
-	public SaveRequest(T object, Class<T> dataType, File location, String preferredSaver) {
+	public SaveRequest(T object, Class<T> dataType, Path location, String preferredSaver) {
 		this.object = object;
 		this.location = location;
 		this.dataType = dataType;

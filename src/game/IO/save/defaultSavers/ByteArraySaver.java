@@ -1,12 +1,11 @@
 package game.IO.save.defaultSavers;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 
+import game.Game;
 import game.IO.save.SaveRequest;
 import game.IO.save.Saver;
-import game.IO.save.SaverUtil;
 
 /**
  * 
@@ -19,17 +18,13 @@ public class ByteArraySaver implements Saver<byte[]> {
 	
 	@Override
 	public boolean save(SaveRequest<?> request) {
-		if (SaverUtil.makeFileUsable(request.location)) {
-			try (FileOutputStream outStream = new FileOutputStream(request.location)) {
-				outStream.write((byte[]) request.object);
-				return true;
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
+		try {
+			Files.write(request.location, (byte[])request.object);
+			return true;
+		} catch (IOException e) {
+			Game.log.logError("Could not save request: " + request, "IO", "Save", "byte[]");
+			return false;
 		}
-		return false;
 	}
 
 	@Override

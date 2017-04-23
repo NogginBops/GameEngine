@@ -21,7 +21,7 @@ public class ByteArrayLoader implements Loader<byte[]> {
 	public byte[] load(LoadRequest<?> request) {
 		byte[] result = null;
 		try {
-			result = Files.readAllBytes(request.file.toPath());
+			result = Files.readAllBytes(request.path);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
