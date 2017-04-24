@@ -5,8 +5,8 @@ package game.IO.load.defaultLoaders;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
-import game.IO.load.LoadRequest;
 import game.IO.load.Loader;
 
 /**
@@ -18,10 +18,10 @@ public class ByteArrayLoader implements Loader<byte[]> {
 	//JAVADOC: ByteArrayLoader
 	
 	@Override
-	public byte[] load(LoadRequest<?> request) {
+	public byte[] load(Path path) {
 		byte[] result = null;
 		try {
-			result = Files.readAllBytes(request.path);
+			result = Files.readAllBytes(path);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

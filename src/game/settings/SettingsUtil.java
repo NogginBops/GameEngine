@@ -1,10 +1,10 @@
 package game.settings;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +21,8 @@ public class SettingsUtil {
 	
 	//JAVADOC: SettingsUtil
 	
+	//TODO: Make this a settings loader
+	
 	private static Pattern primitiveTypePattern = Pattern.compile("([a-zA-Z0-9]*):\\s*\\(([a-zA-Z0-9.$]*)\\)\\s*\\\"([a-zA-Z0-9.#_\\s]*)\\\"", Pattern.DOTALL);
 	
 	private static Pattern referenceTypePattern = Pattern.compile("([a-zA-Z0-9]*):\\s*\\(([a-zA-Z0-9.$]*)\\)\\s*\\{", Pattern.DOTALL);
@@ -36,13 +38,7 @@ public class SettingsUtil {
 	 * @return
 	 */
 	public static GameSettings load(String fileName){
-		String text = "";
-		
-		try {
-			text = IOHandler.load(new LoadRequest<String>("Settings", new File(fileName), String.class)).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String text = IOHandler.load(new LoadRequest<String>("Settings", Paths.get(fileName), String.class)).result;
 		
 		GameSettings settings = new GameSettings();
 		
@@ -188,7 +184,9 @@ public class SettingsUtil {
 		try {
 			//System.out.println((char)valueText.charAt(0) + "!!!");
 			//Special case for enums and static method calls
-			if(valueText.charAt(0) == '#'){
+			if(valueText.equalsIgnoreCase("null")){
+				value = null;
+			}else if(valueText.charAt(0) == '#'){
 				//Enum special case
 				
 				String name = valueText.substring(1);

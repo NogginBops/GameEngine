@@ -2,8 +2,7 @@ package demos.pong;
 
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
@@ -72,11 +71,7 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 		this.outerBounds = outerBounds;
 		this.side = side;
 		
-		try {
-			beep = IOHandler.load(new LoadRequest<Sound>("BeepSound", new File("./res/pongbeep.wav"), Sound.class, "DefaultSoundLoader")).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		beep = IOHandler.load(new LoadRequest<Sound>("BeepSound", Paths.get("./res/pongbeep.wav"), Sound.class, "DefaultSoundLoader")).result;
 	}
 
 	@Override
@@ -114,10 +109,11 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 	@Override
 	public void update(float deltaTime) {
 		super.update(deltaTime);
-		if (!outerBounds.contains(shape.getBounds2D())) {
-			if (shape.getBounds2D().getY() + shape.getBounds2D().getHeight() > outerBounds.getY() + outerBounds.getHeight()) {
-				setY((int) outerBounds.getMaxY() - (float)shape.getBounds2D().getHeight());
-			} else if (shape.getBounds2D().getY() < outerBounds.getY()) {
+		Rectangle2D bounds = getBounds();
+		if (!outerBounds.contains(bounds)) {
+			if (bounds.getMaxY() > outerBounds.getMaxY()) {
+				setY((int) outerBounds.getMaxY() - (float)bounds.getHeight());
+			} else if (bounds.getY() < outerBounds.getY()) {
 				setY((float)outerBounds.getY());
 			}
 		}

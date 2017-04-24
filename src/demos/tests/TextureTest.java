@@ -2,8 +2,7 @@ package demos.tests;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import game.Game;
 import game.GameInitializer;
@@ -46,13 +45,11 @@ public class TextureTest implements GameInitializer {
 		
 		BufferedImage sheetImage = null;
 		
-		try {
-			sheetImage = IOHandler.load(new LoadRequest<BufferedImage>("TextureSheet", new File("./res/verticalScroller/graphics/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		sheetImage = IOHandler.load(new LoadRequest<BufferedImage>("TextureSheet", Paths.get("./res/verticalScroller/graphics/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
 		
 		settings.getSettingAs("MainCamera", Camera.class).receiveKeyboardInput(true);;
+
+		settings.putSetting("UseDefaultKeyBindings", true);
 		
 		Sprite s = new Sprite(100, 100, 2f, sheetImage);
 		

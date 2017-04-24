@@ -1,6 +1,5 @@
 package game.IO;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -131,19 +130,24 @@ public final class IOHandler {
 		loaderIDHandler.addObject(loader, name);
 	}
 
+	public static <T> void cache(LoadRequest<T> request){
+		if (request.cache == true) {			
+			load(request);
+		}else {
+			Game.log.logWarning("Trying to cache a LoadRequest with the chache flag set to false!", "IO", "Cache");
+		}
+	}
+	
 	/**
+	 * @param <T>
 	 * @param requests
 	 * @param queue
 	 * @return
 	 */
-	public static ArrayList<LoadResult<?>> load(ArrayList<LoadRequest<?>> requests) {
-		ArrayList<LoadResult<?>> results = new ArrayList<>(requests.size());
-		for (LoadRequest<?> req : requests) {
-			try {
-				results.add(load(req));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	public static <T> ArrayList<LoadResult<T>> load(ArrayList<LoadRequest<T>> requests) {
+		ArrayList<LoadResult<T>> results = new ArrayList<>(requests.size());
+		for (LoadRequest<T> req : requests) {
+			results.add(load(req));
 		}
 		return results;
 	}
@@ -152,10 +156,9 @@ public final class IOHandler {
 	 * @param request
 	 * @param <T>
 	 * @return
-	 * @throws IOException
 	 * 
 	 */
-	public static <T> LoadResult<T> load(LoadRequest<T> request) throws IOException {
+	public static <T> LoadResult<T> load(LoadRequest<T> request) {
 		if (request.ID != null || request.cache != false) { // Not cached
 			if (loadCache.containsKey(request)) {
 				T result = request.dataType.cast(loadCache.get(request).result);
@@ -165,30 +168,29 @@ public final class IOHandler {
 				return new LoadResult<T>(request.ID, result);
 			}
 		}
+		Path fullPath = getFullPath(request.path);
 		if (request.preferredLoader != null) {
 			Loader<?> preferedLoader = loaderIDHandler.getObject(request.preferredLoader);
 			if (preferedLoader != null) {
 				if (request.dataType == preferedLoader.getSupportedDataType()) {
-					Object res = preferedLoader.load(request);
+					Object res = preferedLoader.load(fullPath);
 					LoadResult<T> result = new LoadResult<T>(request.ID, request.dataType.cast(res));
 					if (result.result == null) {
-						throw new IOException("Couldn't load request: " + request.ID);
-					} else {
-						if (request.cache) {
-							loadCache.put(request, result);
-						}
-						return result;
+						Game.log.logError("Couldn't load request: " + request.ID, "IO", "Load");
+					} else if (request.cache) {
+						loadCache.put(request, result);
 					}
+					return result;
 				}
 			}
 			Game.log.logWarning("Could not find prefered loader: '" + request.preferredLoader + "'!");
 		}
 		for (Loader<?> loader : loaderIDHandler.getAllObjects()) {
 			if (request.dataType == loader.getSupportedDataType()) {
-				Object res = loader.load(request);
+				Object res = loader.load(fullPath);
 				LoadResult<T> result = new LoadResult<T>(request.ID, request.dataType.cast(res));
 				if (result.result == null) {
-					throw new IOException("Couldn't load request: " + request.ID);
+					Game.log.logError("Couldn't load request: " + request.ID, "IO", "Load");
 				} else {
 					if (request.cache) {
 						loadCache.put(request, result);
@@ -197,7 +199,8 @@ public final class IOHandler {
 				}
 			}
 		}
-		throw new IOException("Couldn't load request: " + request.ID);
+		Game.log.logError("Couldn't load request: " + request.ID, "IO", "Load");
+		return new LoadResult<T>(request.ID, null);
 	}
 
 	/**
@@ -219,17 +222,18 @@ public final class IOHandler {
 	 * @return
 	 */
 	public static <T> boolean save(SaveRequest<T> request) {
+		Path fullPath = getFullPath(request.location);
 		if (request.preferredSaver != null) {
 			Saver<?> preferedSaver = saverIDHandler.getObject(request.preferredSaver);
 			if (preferedSaver != null) {
 				if (request.dataType == preferedSaver.getSupportedDataType()) {
-					return preferedSaver.save(request);
+					return preferedSaver.save(request.object, fullPath)	;
 				}
 			}
 		}
 		for (Saver<?> saver : saverIDHandler.getAllObjects()) {
 			if (request.dataType == saver.getSupportedDataType()) {
-				return saver.save(request);
+				return saver.save(request.object, fullPath);
 			}
 		}
 		return false;
@@ -270,7 +274,7 @@ public final class IOHandler {
 		}else{
 			if (directoryMappings.containsKey(path.getName(0).toString())) {
 				Path map = directoryMappings.get(path.getName(0).toString());
-				Path file = map.resolve(path);
+				Path file = map.resolve(path.subpath(1, path.getNameCount()));
 				if (Files.exists(file)) {
 					return file;
 				}

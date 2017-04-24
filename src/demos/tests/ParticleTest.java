@@ -3,8 +3,7 @@ package demos.tests;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Random;
 
 import game.Game;
@@ -34,6 +33,8 @@ public class ParticleTest implements GameInitializer {
 		GameSettings settings = GameSettings.createDefaultGameSettings();
 		
 		settings.putSetting("Name", "Particle Test");
+
+		settings.putSetting("UseDefaultKeyBindings", true);
 		
 		settings.putSetting("OnScreenDebug", true);
 		
@@ -55,12 +56,8 @@ public class ParticleTest implements GameInitializer {
 		
 		BufferedImage particleImage = null;
 		
-		try {
-			//TODO: The standard 10px particle needs to be more smooth
-			particleImage = IOHandler.load(new LoadRequest<BufferedImage>("StandardParticle", new File("./res/particles/StandardParticle_10.png"), BufferedImage.class)).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		//TODO: The standard 10px particle needs to be more smooth
+		particleImage = IOHandler.load(new LoadRequest<BufferedImage>("StandardParticle", Paths.get("./res/particles/StandardParticle_10.png"), BufferedImage.class)).result;
 		
 		/*
 		int width = 60;

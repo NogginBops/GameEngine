@@ -28,6 +28,8 @@ public class Test1 implements GameInitializer {
 		settings.putSetting("Name", "Test #1");
 		
 		settings.getSettingAs("MainCamera", Camera.class).receiveKeyboardInput(true);
+
+		settings.putSetting("UseDefaultKeyBindings", true);
 		
 		settings.putSetting("OnScreenDebug", true);
 		

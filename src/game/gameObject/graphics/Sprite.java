@@ -290,7 +290,7 @@ public class Sprite extends BasicRotatable implements Paintable {
 	 * @param sprites
 	 */
 	public void preloadSprites(BufferedImage... sprites) {
-		Game.log.logMessage("Preloading " + sprites.length + " sprites.", "Sprite", "Optimization");
+		Game.log.logDebug("Preloading " + sprites.length + " sprites.", "Sprite", "Optimization");
 		for (int i = 0; i < sprites.length; i++) {
 			if (!imageCache.containsKey(sprites[i])) {
 				imageCache.put(sprites[i], createGraphicsReadySprite(sprites[i]));

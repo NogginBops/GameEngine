@@ -2,10 +2,10 @@ package game.IO.load.defaultLoaders;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import game.Game;
-import game.IO.load.LoadRequest;
 import game.IO.load.Loader;
 
 /**
@@ -18,14 +18,14 @@ public class StringLoader implements Loader<String> {
 	// JAVADOC: StringLoader
 
 	@Override
-	public String load(LoadRequest<?> request) {
+	public String load(Path path) {
 		try {
-			List<String> lines = Files.readAllLines(request.path);
+			List<String> lines = Files.readAllLines(path);
 			StringBuilder sb = new StringBuilder(lines.stream().map(String::length).reduce(0, Integer::sum));
 			sb.append(lines.stream().reduce(String::concat).orElse(null));
 			return sb.toString();
 		} catch (IOException e) {
-			Game.log.logError("Could not read \"" + request.path + "\"! " + e.toString());
+			Game.log.logError("Could not read \"" + path + "\"! " + e.toString());
 			return null;
 		}
 	}

@@ -2,8 +2,7 @@ package demos.tests;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import game.Game;
 import game.GameInitializer;
@@ -36,6 +35,8 @@ public class UITest implements GameInitializer {
 		settings.putSetting("Name", "UITest #1");
 		
 		settings.getSettingAs("MainCamera", Camera.class).receiveKeyboardInput(true);
+
+		settings.putSetting("UseDefaultKeyBindings", true);
 		
 		settings.putSetting("OnScreenDebug", true);
 		
@@ -66,12 +67,7 @@ public class UITest implements GameInitializer {
 		lable.setColor(Color.WHITE);
 		container2.addChild(lable);
 		
-		BufferedImage image;
-		try {
-			image = IOHandler.load(new LoadRequest<BufferedImage>("Image", new File("./res/Background.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-		} catch (IOException e) {
-			image = null;
-		}
+		BufferedImage image = IOHandler.load(new LoadRequest<BufferedImage>("Image", Paths.get("./res/Background.png"), BufferedImage.class, "DefaultPNGLoader")).result;
 		
 		UIImage UIimg = new UIImage(0, 0, 40, 100, image);
 		UIimg.setNativeSize();

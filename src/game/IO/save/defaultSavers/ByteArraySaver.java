@@ -2,9 +2,9 @@ package game.IO.save.defaultSavers;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import game.Game;
-import game.IO.save.SaveRequest;
 import game.IO.save.Saver;
 
 /**
@@ -17,12 +17,12 @@ public class ByteArraySaver implements Saver<byte[]> {
 	//JAVADOC: ByteArraySaver
 	
 	@Override
-	public boolean save(SaveRequest<?> request) {
+	public boolean save(Object object, Path location) {
 		try {
-			Files.write(request.location, (byte[])request.object);
+			Files.write(location, (byte[])object);
 			return true;
 		} catch (IOException e) {
-			Game.log.logError("Could not save request: " + request, "IO", "Save", "byte[]");
+			Game.log.logError("Could not save request: " + location, "IO", "Save", "byte[]");
 			return false;
 		}
 	}

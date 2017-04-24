@@ -1,7 +1,7 @@
 package game;
 
 import java.awt.Dimension;
-import java.util.function.Consumer;
+import java.awt.event.KeyEvent;
 
 import game.controller.event.EventMachine;
 import game.controller.event.engineEvents.GameQuitEvent;
@@ -257,6 +257,11 @@ public class Game {
 		keyHandler = new KeyInputHandler();
 		inputHandler = new Input(mouseHandler, keyHandler);
 		
+		//TODO: Better system for KeyBindings!
+		// Maybe use an external file or something?
+		// Should support additive loading of KeyBindings
+		
+		/*
 		if(settings.containsSetting("KeyBindings")){
 			@SuppressWarnings("unchecked")
 			Consumer<KeyInputHandler> keyBindings =  settings.getSettingAs("KeyBindings", Consumer.class);
@@ -268,6 +273,18 @@ public class Game {
 			}
 		}else{
 			log.logMessage("Didn't find any keybindings in the settigns.");
+		}
+		*/
+		
+		if (settings.containsSetting("UseDefaultKeyBindings")) {
+			if (settings.getSettingAs("UseDefaultKeyBindings", Boolean.class)) {
+				keyHandler.addKeyBinding("Up", KeyEvent.VK_UP, KeyEvent.VK_W);
+				keyHandler.addKeyBinding("Down", KeyEvent.VK_DOWN, KeyEvent.VK_S);
+				keyHandler.addKeyBinding("Right", KeyEvent.VK_RIGHT, KeyEvent.VK_D);
+				keyHandler.addKeyBinding("Left", KeyEvent.VK_LEFT, KeyEvent.VK_A);
+			}
+		}else{
+			log.logWarning("Didn't find any UseDefaultKeyBindings in the settigns.", "System", "Settings", "Keybindings");
 		}
 		
 		screen.addPainter(camera);

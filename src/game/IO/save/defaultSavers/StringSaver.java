@@ -5,10 +5,10 @@ package game.IO.save.defaultSavers;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
 
 import game.Game;
-import game.IO.save.SaveRequest;
 import game.IO.save.Saver;
 
 /**
@@ -20,12 +20,12 @@ public class StringSaver implements Saver<String> {
 	//JAVADOC: StringSaver
 
 	@Override
-	public boolean save(SaveRequest<?> request) {
+	public boolean save(Object object, Path location) {
 		try {
-			Files.write(request.location, Collections.singleton((String)request.object));
+			Files.write(location, Collections.singleton((String)object));
 			return true;
 		} catch (IOException e) {
-			Game.log.logError("Could not save request: " + request, "IO", "StringSaver", "Save");
+			Game.log.logError("Could not save request: " + location, "IO", "StringSaver", "Save");
 			return false;
 		}		
 	}
