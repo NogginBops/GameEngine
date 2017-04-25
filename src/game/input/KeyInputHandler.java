@@ -54,7 +54,6 @@ public class KeyInputHandler {
 			List<String> lines = Files.readAllLines(path);
 			
 			for (String line : lines) {
-				
 				int bracketIndex = line.indexOf('[');
 				if (bracketIndex == -1) {
 					Game.log.logError("Could not parse line \"" + line + "\". No start bracket!", "KeyInputHandler", "KeyBinding");
@@ -66,7 +65,7 @@ public class KeyInputHandler {
 					Game.log.logError("Could not parse line \"" + line + "\". No close bracket!", "KeyInputHandler", "KeyBinding");
 					continue;
 				}
-
+				
 				String name = line.substring(0, bracketIndex);
 				String[] bindings = line.substring(bracketIndex + 1, endBracketIndex).split(",");
 				addKeyBinding(name, Arrays.asList(bindings).stream().map((binding) -> {
@@ -80,7 +79,7 @@ public class KeyInputHandler {
 				}).filter(kb -> kb != null).toArray((size) -> new Integer[size]));
 			}
 		} catch (IOException e) {
-			Game.log.logError("Could not read file!", "System", "KeyInputHandler", "KeyBinding");
+			Game.log.logError("Could not read KeyBinding file \"" + path + "\"!", "System", "KeyInputHandler", "KeyBinding");
 			return;
 		}
 	}
