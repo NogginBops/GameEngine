@@ -1,0 +1,4 @@
+Up[W,UP]
+Down[S,DOWN]
+Left[A,LEFT]
+Right[D,RIGHT]

@@ -1,7 +1,12 @@
 package game.input;
 
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.Game;
@@ -42,6 +47,42 @@ public class KeyInputHandler {
 			if(event.object instanceof KeyListener){
 				removeListener((KeyListener) event.object);
 			}});
+	}
+	
+	public void parseKeyBindings(Path path){
+		try {
+			List<String> lines = Files.readAllLines(path);
+			
+			for (String line : lines) {
+				
+				int bracketIndex = line.indexOf('[');
+				if (bracketIndex == -1) {
+					Game.log.logError("Could not parse line \"" + line + "\". No start bracket!", "KeyInputHandler", "KeyBinding");
+					continue;
+				}
+				
+				int endBracketIndex = line.indexOf(']');
+				if(endBracketIndex == -1){
+					Game.log.logError("Could not parse line \"" + line + "\". No close bracket!", "KeyInputHandler", "KeyBinding");
+					continue;
+				}
+
+				String name = line.substring(0, bracketIndex);
+				String[] bindings = line.substring(bracketIndex + 1, endBracketIndex).split(",");
+				addKeyBinding(name, Arrays.asList(bindings).stream().map((binding) -> {
+					try {
+						return KeyEvent.class.getField("VK_" + binding).getInt(null);
+					} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+							| SecurityException e) {
+						Game.log.logWarning("Could not parse " + binding + " as a virtual key!");
+						return null;
+					}
+				}).filter(kb -> kb != null).toArray((size) -> new Integer[size]));
+			}
+		} catch (IOException e) {
+			Game.log.logError("Could not read file!", "System", "KeyInputHandler", "KeyBinding");
+			return;
+		}
 	}
 	
 	/**
