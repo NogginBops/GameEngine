@@ -220,8 +220,12 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 		return false;
 	}
 	
+	/**
+	 * @param shape
+	 * @param layers
+	 * @return
+	 */
 	public Collidable[] overlapShape(Shape shape, int ... layers){
-		
 		ArrayList<Collidable> collisions = new ArrayList<>();
 		
 		for (int layer : layers) {
