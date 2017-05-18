@@ -6,8 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Random;
 
 import game.Game;
@@ -41,11 +40,7 @@ public class GameObjectAdderWithAudio extends BasicGameObject implements Paintab
 		super(x, y, new Rectangle2D.Float(0, 0, 10, 10), Integer.MAX_VALUE - 10);
 		rand = new Random();
 		
-		try {
-			sound = IOHandler.load(new LoadRequest<Sound>("Robot sound", new File("./res/robot.mp3"), Sound.class)).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		sound = IOHandler.load(new LoadRequest<Sound>("Robot sound", Paths.get("./res/robot.mp3"), Sound.class)).result;
 	}
 
 	@Override

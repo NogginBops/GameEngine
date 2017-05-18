@@ -1,6 +1,7 @@
 package game.gameObject.physics;
 
 import game.util.UpdateListener;
+import game.util.math.vector.Vector2D;
 
 /**
  * The movable interface is implemented to provide movement related functions.
@@ -13,7 +14,9 @@ import game.util.UpdateListener;
  */
 public interface Movable extends UpdateListener {
 	
-	//TODO: Movable should ba able to rotate! and the Rotatable interface should be scrapped
+	//JAVADOC: Movable
+	
+	//TODO: Movable should be able to rotate! and the Rotatable interface should be scrapped
 
 	/**
 	 * Returns the current x value of the Movable
@@ -29,6 +32,12 @@ public interface Movable extends UpdateListener {
 	 */
 	public float getY();
 
+	/**
+	 * 
+	 * @return
+	 */
+	public Vector2D getPosition();
+	
 	/**
 	 * Sets the current x value of the Movable
 	 * 
@@ -71,6 +80,12 @@ public interface Movable extends UpdateListener {
 	public float getDY();
 
 	/**
+	 * 
+	 * @return
+	 */
+	public Vector2D getVelocity();
+	
+	/**
 	 * Used to set the dynamic x (X-axis movement) of the movable. <br>
 	 * Dynamic x is measured in pixels per second.
 	 * 
@@ -94,6 +109,12 @@ public interface Movable extends UpdateListener {
 	 * @param dy
 	 */
 	public void setVelocity(float dx, float dy);
+	
+	/**
+	 * 
+	 * @param vel
+	 */
+	public void setVelocity(Vector2D vel);
 	
 	//TODO: Make movement be updated by the PhysicsEngine (RigidBody interface?)
 

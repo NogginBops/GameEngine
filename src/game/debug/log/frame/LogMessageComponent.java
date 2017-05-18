@@ -65,7 +65,7 @@ public class LogMessageComponent extends JPanel {
 		lblTags.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTags.setForeground(Color.LIGHT_GRAY);
 		if(message.getTagsString().isEmpty()){
-			lblTags = new JLabel("None...");
+			lblTags = new JLabel("[None]");
 		}else{
 			String tags = message.getTagsString();
 			tags = tags.replace(";", ", ");

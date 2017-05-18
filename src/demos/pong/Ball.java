@@ -1,8 +1,7 @@
 package demos.pong;
 
 import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Random;
 
 import demos.pong.Pad.Side;
@@ -39,11 +38,7 @@ public class Ball extends Sprite implements Collidable {
 		super(x, y, width, height);
 		this.outershape = outershape;
 		
-		try {
-			beep = IOHandler.load(new LoadRequest<Sound>("BeepSound", new File("./res/pongbeep.wav"), Sound.class, "DefaultSoundLoader")).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		beep = IOHandler.load(new LoadRequest<Sound>("BeepSound", Paths.get("./res/pongbeep.wav"), Sound.class, "DefaultSoundLoader")).result;
 	}
 
 	@Override

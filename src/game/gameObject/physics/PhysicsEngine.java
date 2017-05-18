@@ -3,6 +3,7 @@ package game.gameObject.physics;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -18,15 +19,9 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 
 	// JAVADOC: PhysicsEngine
 
-	//FIXME: Make the physics and collision into a GameSystem!
 	//NOTE: How should physics be implemented to facilitate good multi-threading?
 	
 	// TODO: PhysicsEngine
-	
-	// FIXME: Physics layers
-	//This would allow gameobjects to collide with each other while not being on the same z layer
-	//NOTE: Should the z layer property be a part of the paintable interface? It is to note that
-	// the mouse input is also dependent on the z layer of a gameobject.
 	
 	// TODO: Implement a grid system for efficient collision checking.
 	//Could be hard as the Collidable itself does not know what position in the grid it has.
@@ -47,6 +42,27 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 	public PhysicsEngine() {
 		super("Physics Engine");
 		Game.log.logMessage("PhysicsEngine created", "Physics"); //Is this really needed?
+		/*
+		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, (event) -> {
+			if (event.object instanceof Collidable) {
+				int layer = ((Collidable)event.object).getPhysicsLayer();
+				if (collidablesMap.containsKey(layer) == false) {
+					collidablesMap.put(layer, new CopyOnWriteArrayList<>());
+				}
+				
+				collidablesMap.get(layer).add((Collidable) event.object);
+			}
+		});
+		
+		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, (event) -> {
+			if (event.object instanceof Collidable) {
+				int layer = ((Collidable)event.object).getPhysicsLayer();
+				if (collidablesMap.containsKey(layer)) {
+					collidablesMap.get(layer).remove(event.object);
+				}
+			}
+		});
+		*/
 	}
 	
 	CopyOnWriteArrayList<Collidable> tempList;
@@ -98,6 +114,8 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 				return;
 			}*/
 		}
+		
+		
 		
 		for (CopyOnWriteArrayList<Collidable> collidablesInLayer : collidablesMap.values()) {
 			if(collidablesInLayer.size() <= 1){
@@ -171,6 +189,7 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 	 */
 	public static boolean collides(Shape s1, Shape s2){
 		//TODO: Is this even needed?
+		// Polymorphism should handle this?
 		
 		if(s1 instanceof Rectangle2D && s2 instanceof Rectangle2D){
 			if(((Rectangle2D)s1).intersects((Rectangle2D)s2)){
@@ -199,6 +218,23 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 			}
 		}
 		return false;
+	}
+	
+	public Collidable[] overlapShape(Shape shape, int ... layers){
+		
+		ArrayList<Collidable> collisions = new ArrayList<>();
+		
+		for (int layer : layers) {
+			if (collidablesMap.containsKey(layer)) {
+				for (Collidable collidable : collidablesMap.get(layer)) {
+					if (collides(shape, collidable.getCollitionShape())) {
+						collisions.add(collidable);
+					}
+				}
+			}
+		}
+		
+		return collisions.toArray(new Collidable[collisions.size()]);
 	}
 
 	@Override

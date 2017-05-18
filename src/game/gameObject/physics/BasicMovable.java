@@ -3,8 +3,6 @@ package game.gameObject.physics;
 import java.awt.Shape;
 
 import game.gameObject.BasicGameObject;
-import game.gameObject.GameObject;
-import game.gameObject.transform.Transform;
 import game.util.math.vector.Vector2D;
 
 /**
@@ -26,12 +24,11 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	protected float dy;
 
 	/**
-	 * @param transform 
 	 * @param shape 
 	 * @param zOrder 
 	 */
-	public BasicMovable(Transform<GameObject> transform, Shape shape, int zOrder) {
-		super(transform, shape, zOrder);
+	public BasicMovable(Shape shape, int zOrder) {
+		super(shape, zOrder);
 	}
 	
 	/**
@@ -66,6 +63,11 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	}
 
 	@Override
+	public Vector2D getPosition() {
+		return transform.getPosition();
+	}
+	
+	@Override
 	public void setX(float x) {
 		transform.setX(x);
 	}
@@ -86,15 +88,20 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	}
 
 	@Override
-	public void setDX(float dx) {
-		this.dx = dx;
-	}
-	
-	@Override
 	public float getDY() {
 		return dy;
 	}
 
+	@Override
+	public Vector2D getVelocity(){
+		return new Vector2D(dx, dy);
+	}
+	
+	@Override
+	public void setDX(float dx) {
+		this.dx = dx;
+	}
+	
 	@Override
 	public void setDY(float dy) {
 		this.dy = dy;
@@ -109,6 +116,7 @@ public class BasicMovable extends BasicGameObject implements Movable {
 	/**
 	 * @param vel
 	 */
+	@Override
 	public void setVelocity(Vector2D vel){
 		this.dx = vel.x;
 		this.dy = vel.y;

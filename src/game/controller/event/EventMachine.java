@@ -15,6 +15,8 @@ public class EventMachine {
 	
 	//JAVADOC: EventMachine
 	
+	//TODO: Event machine debug frame
+	
 	private ConcurrentSkipListMap<Class<? extends GameEvent>, CopyOnWriteArrayList<EventListener<? extends GameEvent>>> eventListenerMap = new ConcurrentSkipListMap<Class<? extends GameEvent>, CopyOnWriteArrayList<EventListener<? extends GameEvent>>>((o1, o2) -> o1.getName().compareTo(o2.getName()));
 		
 	//NOTE: Is 5 threads optimal? 

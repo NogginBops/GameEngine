@@ -25,6 +25,7 @@ import game.controller.event.engineEvents.GameQuitEvent;
 import game.debug.log.Log;
 import game.debug.log.Log.LogImportance;
 import game.debug.log.LogMessage;
+import game.debug.log.events.MessageLoggedEvent;
 
 /**
  * @author Julius Häger
@@ -135,7 +136,6 @@ public class LogDebugFrame extends JFrame implements Runnable{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				log.log("TestMessage" + i++, LogImportance.DEBUG, "test");
-				updateMessages();
 			}
 		});
 		
@@ -143,7 +143,6 @@ public class LogDebugFrame extends JFrame implements Runnable{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setCurrentFilter();
-				//updateMessages();
 				forceUpdate();
 			}
 		};
@@ -155,9 +154,9 @@ public class LogDebugFrame extends JFrame implements Runnable{
 		btnFilter.addActionListener(setFilterAndUpdate);
 		
 		setCurrentFilter();
-		updateMessages();
 	}
 	
+	//TODO: Use the list in Log instead
 	private CopyOnWriteArrayList<LogMessage> messages = new CopyOnWriteArrayList<>();
 	private JPanel logMessagePanel;
 	
@@ -169,10 +168,10 @@ public class LogDebugFrame extends JFrame implements Runnable{
 		
 		Game.eventMachine.addEventListener(GameQuitEvent.class, (event) -> { stopDebug(); });
 		
+		Game.eventMachine.addEventListener(MessageLoggedEvent.class, (event) -> { addMessage(event.message); });
+		
 		//TODO: Make this event driven instead
 		while(!closeRequested){
-			updateMessages();
-			
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -191,18 +190,30 @@ public class LogDebugFrame extends JFrame implements Runnable{
 		currentImpotrance = (LogImportance)importanceComboBox.getSelectedItem();
 	}
 	
-	private int oldMessages = 0;
-	private int newMessages = 0;
-	
 	private LogImportance currentImpotrance;
 	private String[] currentTagFilter;
 	private JScrollPane scrollPane;
 	
-	private LogMessageComponent lastMessage;
+	public void addMessage(LogMessage logMessage){
+		messages.add(logMessage);
+		
+		LogMessageComponent messageComp = new LogMessageComponent(logMessage);
+		logMessagePanel.add(messageComp);
+		
+		logMessagePanel.revalidate();
+		
+		JScrollBar scroll = scrollPane.getVerticalScrollBar();
+		
+		scroll.setValue(scroll.getMaximum() - scroll.getModel().getExtent());
+		
+		scrollPane.revalidate();
+		scrollPane.repaint();
+	}
 	
 	/**
 	 * Updates to see if any new messages has been added to the log.
 	 */
+	/*
 	public void updateMessages(){
 		if(currentTagFilter.length <= 0){
 			messages = log.getMessages(currentImpotrance);
@@ -214,8 +225,8 @@ public class LogDebugFrame extends JFrame implements Runnable{
 		
 		if(oldMessages < newMessages){
 			for (int i = oldMessages; i < messages.size(); i++) {
-				lastMessage = new LogMessageComponent(messages.get(i));
-				logMessagePanel.add(lastMessage);
+				LogMessageComponent message = new LogMessageComponent(messages.get(i));
+				logMessagePanel.add(message);
 			}
 			
 			logMessagePanel.revalidate();
@@ -233,8 +244,8 @@ public class LogDebugFrame extends JFrame implements Runnable{
 			logMessagePanel.removeAll();
 			
 			for (LogMessage logMessage : messages) {
-				lastMessage = new LogMessageComponent(logMessage);
-				logMessagePanel.add(lastMessage);
+				LogMessageComponent message = new LogMessageComponent(logMessage);
+				logMessagePanel.add(message);
 			}
 			
 			logMessagePanel.revalidate();
@@ -249,6 +260,7 @@ public class LogDebugFrame extends JFrame implements Runnable{
 			oldMessages = newMessages;
 		}
 	}
+	*/
 	
 	/**
 	 * Forces a update to all messages by removing all messages and recreating them.
@@ -260,13 +272,11 @@ public class LogDebugFrame extends JFrame implements Runnable{
 			messages = log.getMessages(currentImpotrance, currentTagFilter);
 		}
 		
-		newMessages = messages.size();
-		
 		logMessagePanel.removeAll();
 		
 		for (LogMessage logMessage : messages) {
-			lastMessage = new LogMessageComponent(logMessage);
-			logMessagePanel.add(lastMessage);
+			LogMessageComponent message = new LogMessageComponent(logMessage);
+			logMessagePanel.add(message);
 		}
 		
 		logMessagePanel.revalidate();
@@ -277,8 +287,6 @@ public class LogDebugFrame extends JFrame implements Runnable{
 		
 		scrollPane.revalidate();
 		scrollPane.repaint();
-		
-		oldMessages = newMessages;
 	}
 	
 	/**

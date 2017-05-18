@@ -1,7 +1,12 @@
 package game.input;
 
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.Game;
@@ -34,14 +39,49 @@ public class KeyInputHandler {
 		//FIXME: Due to KeyListener no longer extending GameObject it's no longer guaranteed that it will be registered.
 		
 		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, (event) -> {
-			if(event.object instanceof game.input.keys.KeyListener){
-				addListener((game.input.keys.KeyListener) event.object);
+			if(event.object instanceof KeyListener){
+				addListener((KeyListener) event.object);
 			}});
 		
 		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, (event) -> {
-			if(event.object instanceof game.input.keys.KeyListener){
-				removeListener((game.input.keys.KeyListener) event.object);
+			if(event.object instanceof KeyListener){
+				removeListener((KeyListener) event.object);
 			}});
+	}
+	
+	public void parseKeyBindings(Path path){
+		try {
+			List<String> lines = Files.readAllLines(path);
+			
+			for (String line : lines) {
+				int bracketIndex = line.indexOf('[');
+				if (bracketIndex == -1) {
+					Game.log.logError("Could not parse line \"" + line + "\". No start bracket!", "KeyInputHandler", "KeyBinding");
+					continue;
+				}
+				
+				int endBracketIndex = line.indexOf(']');
+				if(endBracketIndex == -1){
+					Game.log.logError("Could not parse line \"" + line + "\". No close bracket!", "KeyInputHandler", "KeyBinding");
+					continue;
+				}
+				
+				String name = line.substring(0, bracketIndex);
+				String[] bindings = line.substring(bracketIndex + 1, endBracketIndex).split(",");
+				addKeyBinding(name, Arrays.asList(bindings).stream().map((binding) -> {
+					try {
+						return KeyEvent.class.getField("VK_" + binding).getInt(null);
+					} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+							| SecurityException e) {
+						Game.log.logWarning("Could not parse " + binding + " as a virtual key!");
+						return null;
+					}
+				}).filter(kb -> kb != null).toArray((size) -> new Integer[size]));
+			}
+		} catch (IOException e) {
+			Game.log.logError("Could not read KeyBinding file \"" + path + "\"!", "System", "KeyInputHandler", "KeyBinding");
+			return;
+		}
 	}
 	
 	/**

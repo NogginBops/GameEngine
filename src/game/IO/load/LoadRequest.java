@@ -1,6 +1,6 @@
 package game.IO.load;
 
-import java.io.File;
+import java.nio.file.Path;
 
 /**
  * 
@@ -20,7 +20,7 @@ public class LoadRequest<T> {
 	/**
 	 * 
 	 */
-	public final File file;
+	public final Path path;
 
 	/**
 	 * 
@@ -44,9 +44,9 @@ public class LoadRequest<T> {
 	 * @param file
 	 * @param returnClassType
 	 */
-	public LoadRequest(String ID, File file, Class<T> returnClassType) {
+	public LoadRequest(String ID, Path path, Class<T> returnClassType) {
 		this.ID = ID;
-		this.file = file;
+		this.path = path;
 		this.dataType = returnClassType;
 		preferredLoader = null;
 		cache = true;
@@ -58,9 +58,9 @@ public class LoadRequest<T> {
 	 * @param returnClassType
 	 * @param preferredLoader
 	 */
-	public LoadRequest(String ID, File file, Class<T> returnClassType, String preferredLoader) {
+	public LoadRequest(String ID, Path path, Class<T> returnClassType, String preferredLoader) {
 		this.ID = ID;
-		this.file = file;
+		this.path = path;
 		this.dataType = returnClassType;
 		this.preferredLoader = preferredLoader;
 		cache = true;
@@ -72,9 +72,9 @@ public class LoadRequest<T> {
 	 * @param returnClassType
 	 * @param cache
 	 */
-	public LoadRequest(String ID, File file, Class<T> returnClassType, boolean cache) {
+	public LoadRequest(String ID, Path path, Class<T> returnClassType, boolean cache) {
 		this.ID = ID;
-		this.file = file;
+		this.path = path;
 		this.dataType = returnClassType;
 		this.preferredLoader = null;
 		this.cache = cache;
@@ -87,9 +87,9 @@ public class LoadRequest<T> {
 	 * @param preferredLoader
 	 * @param cache
 	 */
-	public LoadRequest(String ID, File file, Class<T> returnClassType, String preferredLoader, boolean cache) {
+	public LoadRequest(String ID, Path path, Class<T> returnClassType, String preferredLoader, boolean cache) {
 		this.ID = ID;
-		this.file = file;
+		this.path = path;
 		this.dataType = returnClassType;
 		this.preferredLoader = preferredLoader;
 		this.cache = cache;
@@ -102,7 +102,7 @@ public class LoadRequest<T> {
 		result = prime * result + ((ID == null) ? 0 : ID.hashCode());
 		result = prime * result + (cache ? 1231 : 1237);
 		result = prime * result + ((dataType == null) ? 0 : dataType.hashCode());
-		result = prime * result + ((file == null) ? 0 : file.hashCode());
+		result = prime * result + ((path == null) ? 0 : path.hashCode());
 		return result;
 	}
 
@@ -127,10 +127,10 @@ public class LoadRequest<T> {
 				return false;
 		} else if (!dataType.equals(other.dataType))
 			return false;
-		if (file == null) {
-			if (other.file != null)
+		if (path == null) {
+			if (other.path != null)
 				return false;
-		} else if (!file.equals(other.file))
+		} else if (!path.equals(other.path))
 			return false;
 		return true;
 	}

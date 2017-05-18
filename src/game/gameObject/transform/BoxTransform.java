@@ -139,8 +139,22 @@ public class BoxTransform<T> extends Transform<T> {
 	
 	@Override
 	public AffineTransform getAffineTransform() {
+		AffineTransform affineTransform = new AffineTransform();
+		
+		setAffineTransform(affineTransform);
+		
+		return affineTransform;
+	}
+	
+	@Override
+	public AffineTransform setAffineTransform(AffineTransform affineTransform){
 		affineTransform.setToIdentity();
 		
+		return transform(affineTransform);
+	}
+	
+	@Override
+	public AffineTransform transform(AffineTransform affineTransform) {
 		affineTransform.translate(x + (width * anchorX), y + (height * anchorY));
 		
 		affineTransform.scale(scaleX, scaleY);
@@ -150,7 +164,7 @@ public class BoxTransform<T> extends Transform<T> {
 		affineTransform.translate(-((width * anchorX)), -((height * anchorY)));
 		
 		if(parent != null){
-			affineTransform.concatenate(parent.getAffineTransform());
+			parent.transform(affineTransform);
 		}
 		
 		return affineTransform;
@@ -265,5 +279,24 @@ public class BoxTransform<T> extends Transform<T> {
 	 */
 	public float getOffsetY(){
 		return height * anchorY;
+	}
+	
+	@Override
+	public Transform<T> copy(T object) {
+		BoxTransform<T> transform = new BoxTransform<>(object);
+		copyParameters(transform);
+		return transform;
+	}
+	
+	/**
+	 * 
+	 * @param transform
+	 */
+	protected void copyParameters(BoxTransform<T> transform) {
+		super.copyParameters(transform);
+		transform.width = this.width;
+		transform.height = this.height;
+		transform.anchorX = this.anchorX;
+		transform.anchorY = this.anchorY;
 	}
 }

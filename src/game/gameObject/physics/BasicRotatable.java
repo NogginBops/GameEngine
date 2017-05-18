@@ -2,9 +2,6 @@ package game.gameObject.physics;
 
 import java.awt.Shape;
 
-import game.gameObject.GameObject;
-import game.gameObject.transform.Transform;
-
 /**
  * @author Julius Häger
  *
@@ -21,8 +18,8 @@ public abstract class BasicRotatable extends BasicMovable implements Rotatable {
 	 * @param zOrder
 	 * @param rotation
 	 */
-	public BasicRotatable(Transform<GameObject> transform, Shape shape, int zOrder, float rotation) {
-		super(transform, shape, zOrder);
+	public BasicRotatable(Shape shape, int zOrder, float rotation) {
+		super(shape, zOrder);
 	}
 	
 	/**

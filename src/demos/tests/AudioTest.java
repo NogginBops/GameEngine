@@ -23,7 +23,10 @@ public class AudioTest implements GameInitializer {
 		
 		settings.putSetting("Name", "AudioTest #1");
 		
+		// FIXME: This relies on default KeyBindings which do no longer exist
 		settings.getSettingAs("MainCamera", Camera.class).receiveKeyboardInput(true);
+		
+		settings.putSetting("UseDefaultKeyBindings", true);
 		
 		settings.putSetting("OnScreenDebug", true);
 		

@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import game.util.Copyable;
+
 /**
  * @author Julius Häger
  *
  */
-public class Animation {
+public class Animation implements Copyable<Animation> {
 	
 	//NOTE: Should a animation have a name to be invoked easily or is that handled by the animation manager?
 	
@@ -56,6 +58,15 @@ public class Animation {
 			frames.add(new Frame(bufferedImages[i], delay));
 			totalRunningTime += delay;
 		}
+	}
+	
+	private Animation(List<Frame> frames, boolean loop, boolean running, boolean paused, float time, float totalRunningTime){
+		this.frames = frames;
+		this.loop = loop;
+		this.running = running;
+		this.paused = paused;
+		this.time = time;
+		this.totalRunningTime = totalRunningTime;
 	}
 	
 	/**
@@ -213,5 +224,10 @@ public class Animation {
 	 */
 	public void setPaused(boolean paused) {
 		this.paused = paused;
+	}
+
+	@Override
+	public Animation copy() {
+		return new Animation(new ArrayList<>(frames), loop, running, paused, time, totalRunningTime);
 	}
 }

@@ -27,6 +27,7 @@ public class Transform<T> {
 	
 	protected Transform<T> parent;
 	
+	// Does this need to be Thread Safe?
 	protected ArrayList<Transform<T>> children;
 	
 	protected float x;
@@ -40,8 +41,6 @@ public class Transform<T> {
 	protected float scaleY;
 	
 	protected float rotation;
-	
-	protected AffineTransform affineTransform = new AffineTransform();
 	
 	/**
 	 * @param object 
@@ -108,25 +107,30 @@ public class Transform<T> {
 	 * @return
 	 */
 	public AffineTransform getAffineTransform(){
-		//FIXME: This is where the flickering graphics are originating from
-		//getAffineTransform is being called in both the graphics thread for rendering
-		//and in the game thread for transforming shapes.
+		AffineTransform affineTransform = new AffineTransform();
 		
-		//The easiest solution would be to not cache the AffineTransform and just create a new one every time
-		//This would generate a lot of garbage and is not desirable
+		setAffineTransform(affineTransform);
 		
-		//Thread specific AffineTransforms?
-		
-		//Another solution would be to not reset the transform
-		//Doing a more atomic change
-		//Is it possible to change the whole matrix at once?
-		
-		double rad = Math.toRadians(rotation);
-		
-		affineTransform.setTransform(scaleX + Math.cos(rad), -Math.sin(rad), Math.sin(rad), scaleY + Math.cos(rad), x, y);
-		
+		return affineTransform;
+	}
+	
+	/**
+	 * 
+	 * @param affineTransform
+	 * @return
+	 */
+	public AffineTransform setAffineTransform(AffineTransform affineTransform){
 		affineTransform.setToIdentity();
 		
+		return transform(affineTransform);
+	}
+	
+	/**
+	 * 
+	 * @param affineTransform
+	 * @return
+	 */
+	public AffineTransform transform(AffineTransform affineTransform){
 		affineTransform.translate(x, y);
 		
 		affineTransform.scale(scaleX, scaleY);
@@ -134,7 +138,9 @@ public class Transform<T> {
 		affineTransform.rotate(Math.toRadians(rotation));
 		
 		if(parent != null){
+			// FIXME: Transform child transforms this in a way that actually works!
 			affineTransform.concatenate(parent.getAffineTransform());
+			//parent.transform(affineTransform);
 		}
 		
 		return affineTransform;
@@ -156,6 +162,13 @@ public class Transform<T> {
 		}else {
 			return root;
 		}
+	}
+	
+	/**
+	 * @return
+	 */
+	public boolean isRoot(){
+		return parent == null;
 	}
 	
 	/**
@@ -344,5 +357,33 @@ public class Transform<T> {
 	 */
 	public void rotate(float rotation){
 		this.rotation = MathUtils.wrap(this.rotation + rotation, 0, 360);
+	}
+
+	/**
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public Transform<T> copy(T object) {
+		//NOTE: Should there be a setObject method instead?
+		Transform<T> transform = new Transform<>(object);
+		copyParameters(transform);
+		return transform;
+	}
+	
+	/**
+	 * 
+	 * @param transform
+	 */
+	protected void copyParameters(Transform<T> transform){
+		transform.root = this.root;
+		transform.parent = this.parent;
+		transform.children = new ArrayList<>(this.children);
+		transform.x = this.x;
+		transform.y = this.y;
+		transform.pos = this.pos;
+		transform.scaleX = this.scaleX;
+		transform.scaleY = this.scaleY;
+		transform.rotation = this.rotation;
 	}
 }

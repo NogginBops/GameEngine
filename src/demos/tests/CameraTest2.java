@@ -23,6 +23,8 @@ public class CameraTest2 implements GameInitializer {
 		GameSettings settings = GameSettings.createDefaultGameSettings();
 		
 		settings.putSetting("Name", "Camera Test #2");
+
+		settings.putSetting("UseDefaultKeyBindings", true);
 		
 		settings.putSetting("OnScreenDebug", true);
 		

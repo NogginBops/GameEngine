@@ -3,16 +3,13 @@ package game;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
-import java.util.function.Consumer;
 
 import game.UI.UI;
 import game.UI.elements.containers.BasicUIContainer;
 import game.UI.elements.text.UILabel;
 import game.gameObject.graphics.Camera;
-import game.input.KeyInputHandler;
 import game.screen.Screen;
 import game.screen.ScreenRect;
 
@@ -52,15 +49,7 @@ public class GameSettings {
 		//TODO: Should camera be a setting or should it be in game init? Probably game init so that it works when switching scenes
 		defaultSettigns.putSetting("MainCamera", new Camera(new Rectangle2D.Float(0, 0, res.width, res.height), ScreenRect.FULL, new Color(0.15f, 0.15f, 0.15f, 1f)));
 		
-		defaultSettigns.putSetting("KeyBindings", new Consumer<KeyInputHandler>() {
-			@Override
-			public void accept(KeyInputHandler t) {
-				t.addKeyBinding("Up", KeyEvent.VK_UP, KeyEvent.VK_W);
-				t.addKeyBinding("Down", KeyEvent.VK_DOWN, KeyEvent.VK_S);
-				t.addKeyBinding("Right", KeyEvent.VK_RIGHT, KeyEvent.VK_D);
-				t.addKeyBinding("Left", KeyEvent.VK_LEFT, KeyEvent.VK_A);
-			}
-		});
+		defaultSettigns.putSetting("UseDefaultKeyBindings", false);
 		
 		defaultSettigns.putSetting("OnScreenDebug", false);
 		
@@ -135,7 +124,7 @@ public class GameSettings {
 	 */
 	public <T> T getSettingAs(String name, Class<T> clazz){
 		Object obj = settings.get(name);
-		if(clazz.isAssignableFrom(obj.getClass())){
+		if(obj != null && clazz.isAssignableFrom(obj.getClass())){
 			return clazz.cast(obj);
 		}
 		return null;

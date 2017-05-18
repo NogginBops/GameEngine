@@ -3,8 +3,8 @@ package game.IO.load.defaultLoaders;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
+import java.nio.file.Path;
 
-import game.IO.load.LoadRequest;
 import game.IO.load.Loader;
 
 /**
@@ -16,9 +16,9 @@ public class FontLoader implements Loader<Font> {
 	//JAVADOC: FontLoader
 
 	@Override
-	public Font load(LoadRequest<?> request) {
+	public Font load(Path path) {
 		try {
-			return Font.createFont(Font.TRUETYPE_FONT, request.file);
+			return Font.createFont(Font.TRUETYPE_FONT, path.toFile());
 		} catch (FontFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

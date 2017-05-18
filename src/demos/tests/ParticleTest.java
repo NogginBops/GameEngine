@@ -3,8 +3,7 @@ package demos.tests;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Random;
 
 import game.Game;
@@ -16,7 +15,6 @@ import game.gameObject.graphics.Camera;
 import game.gameObject.particles.ParticleEffector;
 import game.gameObject.particles.ParticleEmitter;
 import game.gameObject.particles.ParticleSystem;
-import game.gameObject.transform.BoxTransform;
 import game.util.math.ColorUtils;
 import game.util.math.MathUtils;
 
@@ -35,6 +33,8 @@ public class ParticleTest implements GameInitializer {
 		GameSettings settings = GameSettings.createDefaultGameSettings();
 		
 		settings.putSetting("Name", "Particle Test");
+
+		settings.putSetting("UseDefaultKeyBindings", true);
 		
 		settings.putSetting("OnScreenDebug", true);
 		
@@ -56,12 +56,8 @@ public class ParticleTest implements GameInitializer {
 		
 		BufferedImage particleImage = null;
 		
-		try {
-			//TODO: The standard 10px particle needs to be more smooth
-			particleImage = IOHandler.load(new LoadRequest<BufferedImage>("StandardParticle", new File("./res/particles/StandardParticle_10.png"), BufferedImage.class)).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		//TODO: The standard 10px particle needs to be more smooth
+		particleImage = IOHandler.load(new LoadRequest<BufferedImage>("StandardParticle", Paths.get("./res/particles/StandardParticle_10.png"), BufferedImage.class)).result;
 		
 		/*
 		int width = 60;
@@ -122,7 +118,7 @@ public class ParticleTest implements GameInitializer {
 			}
 		}*/
 		
-		ParticleSystem pSystem = new ParticleSystem(new BoxTransform<>(null, 100, 100, 400, 400), 5, 1000, null);
+		ParticleSystem pSystem = new ParticleSystem(100, 100, 400, 400, 0, 0, 5, 1000, null);
 		
 		pSystem.setDR(100);
 		
@@ -167,7 +163,7 @@ public class ParticleTest implements GameInitializer {
 		
 		Game.gameObjectHandler.addGameObject(pSystem, "ParticleTest");
 		
-		ParticleSystem pSys2 = new ParticleSystem(new BoxTransform<>(null, 100, 100, 500, 500), 5, 2000, null);
+		ParticleSystem pSys2 = new ParticleSystem(100, 100, 500, 500, 0, 0, 5, 2000, null);
 		
 		pSys2.addImage(0, particleImage);
 		

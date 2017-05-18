@@ -33,12 +33,10 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	private boolean active = true;
 	
 	/**
-	 * @param transform
 	 * @param shape
 	 * @param zOrder
 	 */
-	public BasicGameObject(Transform<GameObject> transform, Shape shape, int zOrder) {
-		this.transform = transform;
+	public BasicGameObject(Shape shape, int zOrder) {
 		this.shape = shape;
 		this.zOrder = zOrder;
 	}
@@ -77,7 +75,7 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	
 	@Override
 	public void setTransform(Transform<GameObject> transform) {
-		this.transform = transform;
+		this.transform = transform.copy(this);
 	}
 	
 	@Override
@@ -89,7 +87,18 @@ public class BasicGameObject implements GameObject, DebugOutputProvider {
 	public boolean isActive() {
 		return active;
 	}
-
+	
+	@Override
+	public Shape getTranformedShape() {
+		return transform.getAffineTransform().createTransformedShape(shape);
+	}
+	
+	@Override
+	public Rectangle2D getBounds() {
+		// NOTE: There might be a faster way to do this by manually calculating the values. It might be hard.
+		return transform.getAffineTransform().createTransformedShape(shape).getBounds2D();
+	}
+	
 	@Override
 	public void setActive(boolean active) {
 		this.active = active;

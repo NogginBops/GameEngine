@@ -1,5 +1,7 @@
 package game.util.math;
 
+import game.util.math.vector.Vector2D;
+
 /**
  * @author Julius Häger
  *
@@ -256,5 +258,14 @@ public final class MathUtils {
 		}else{
 			return newMin + (((value - min)/(max - min)) * newMax);
 		}
+	}
+	
+	/**
+	 * 
+	 * @param dir
+	 * @return
+	 */
+	public static float toRotation(Vector2D dir){
+		return (float) Vector2D.angle(Vector2D.RIGHT, dir);
 	}
 }

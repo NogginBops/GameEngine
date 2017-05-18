@@ -32,10 +32,6 @@ public class Screen implements Runnable{
 	// With a full HD res the frame rate never goes above 50fps
 	// This might improve with the task system, but some other solution could need to be implemented.
 	
-	//FIXME: Weird graphics artifacts when moving objects fast.
-	// Could be a due to multi-threading, but more likely its because of the new transforms.
-	// One idea is that affineTransforms dosn't handle a multi-threaded environment well.
-	
 	//TODO: Add lighting when the task system is implemented
 	
 	//NOTE: Should a multi-threaded rendering system be implemented before the task system is?

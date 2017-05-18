@@ -2,10 +2,11 @@ package game.IO.load.defaultLoaders;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import javax.imageio.ImageIO;
 
-import game.IO.load.LoadRequest;
+import game.Game;
 import game.IO.load.Loader;
 
 /**
@@ -19,14 +20,11 @@ public class BufferedImageLoader implements Loader<BufferedImage> {
 	//TODO: Maybe some kind of system for loading a specific image type
 
 	@Override
-	public BufferedImage load(LoadRequest<?> request) {
+	public BufferedImage load(Path path) {
 		try {
-			
-			return ImageIO.read(request.file);
-			
+			return ImageIO.read(path.toFile());
 		} catch (IOException e) {
-			System.err.println(request.file + " could not load!!");
-			e.printStackTrace();
+			Game.log.logError("Could not load \"" + path + "\"", "IO", "Loader", "BufferedImage", "BufferedImageLoader");
 			return null;
 		}
 	}

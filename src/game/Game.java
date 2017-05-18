@@ -1,11 +1,13 @@
 package game;
 
 import java.awt.Dimension;
-import java.util.function.Consumer;
+import java.awt.event.KeyEvent;
 
 import game.controller.event.EventMachine;
 import game.controller.event.engineEvents.GameQuitEvent;
 import game.controller.event.engineEvents.GameStartEvent;
+import game.controller.event.engineEvents.SceneLoadEvent;
+import game.controller.event.engineEvents.SceneLoadedEvent;
 import game.debug.IDHandlerDebugFrame;
 import game.debug.log.Log;
 import game.debug.log.Log.LogImportance;
@@ -89,6 +91,8 @@ public class Game {
 	 */
 	public static EventMachine eventMachine = new EventMachine();
 	
+	public static PhysicsEngine physicsEngine;
+	
 	//TODO: Some more elegant methods for using the GOH
 	/**
 	 * The main gameObjectHandeler.
@@ -96,8 +100,6 @@ public class Game {
 	public static GameObjectHandler gameObjectHandler = new GameObjectHandler();
 	
 	private static GameSettings settings;
-
-	private static PhysicsEngine physicsEngine;
 	
 	private static Camera camera; //TODO: This should support multiple cameras!
 
@@ -255,9 +257,11 @@ public class Game {
 		keyHandler = new KeyInputHandler();
 		inputHandler = new Input(mouseHandler, keyHandler);
 		
-		//FIXME: Figure out if the separate lists of GameSystems in GameSystem and Updater is a problem.
-		updater.addSystem(mouseHandler);
+		//TODO: Better system for KeyBindings!
+		// Maybe use an external file or something?
+		// Should support additive loading of KeyBindings
 		
+		/*
 		if(settings.containsSetting("KeyBindings")){
 			@SuppressWarnings("unchecked")
 			Consumer<KeyInputHandler> keyBindings =  settings.getSettingAs("KeyBindings", Consumer.class);
@@ -270,13 +274,23 @@ public class Game {
 		}else{
 			log.logMessage("Didn't find any keybindings in the settigns.");
 		}
+		*/
+		
+		if (settings.containsSetting("UseDefaultKeyBindings")) {
+			if (settings.getSettingAs("UseDefaultKeyBindings", Boolean.class)) {
+				keyHandler.addKeyBinding("Up", KeyEvent.VK_UP, KeyEvent.VK_W);
+				keyHandler.addKeyBinding("Down", KeyEvent.VK_DOWN, KeyEvent.VK_S);
+				keyHandler.addKeyBinding("Right", KeyEvent.VK_RIGHT, KeyEvent.VK_D);
+				keyHandler.addKeyBinding("Left", KeyEvent.VK_LEFT, KeyEvent.VK_A);
+			}
+		}else{
+			log.logWarning("Didn't find any UseDefaultKeyBindings in the settigns.", "System", "Settings", "Keybindings");
+		}
 		
 		screen.addPainter(camera);
 		screen.addInputListener(inputHandler);
 
 		AudioEngine.init(camera);
-		
-		updater.addSystem(physicsEngine);
 		
 		gameObjectHandler.addGameObject(camera, "Main camera");
 		
@@ -451,11 +465,18 @@ public class Game {
 		
 		log.logMessage("Loading scene..");
 		
+		eventMachine.fireEvent(new SceneLoadEvent(game));
+
 		gameObjectHandler.clear();
+		
+		// TODO: Clear GameSystems? 
+		// TODO: The ability to have persistent GameObjects
 		
 		sceneInit.initialize(game, settings);
 		
 		log.logMessage("Loaded scene!");
+		
+		eventMachine.fireEvent(new SceneLoadedEvent(game));
 		
 		resume();
 	}

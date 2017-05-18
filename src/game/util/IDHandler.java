@@ -1,6 +1,7 @@
 package game.util;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -9,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Julius Häger
  * @param <T>
  */
-public class IDHandler<T> {
+public class IDHandler<T> implements Iterable<ID<T>>{
 
 	// JAVADOC: IDHandler
 
@@ -156,5 +157,22 @@ public class IDHandler<T> {
 	public void clear(){
 		IDs.clear();
 		lastID = 0;
+	}
+
+	@Override
+	public Iterator<ID<T>> iterator() {
+		return new Iterator<ID<T>>() {
+			Iterator<ID<T>> itr = IDs.iterator();
+			
+			@Override
+			public boolean hasNext() {
+				return itr.hasNext();
+			}
+			
+			@Override
+			public ID<T> next() {
+				return itr.next();
+			}
+		};
 	}
 }

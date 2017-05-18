@@ -1,18 +1,21 @@
 package game;
 
+import game.debug.DebugOutputProvider;
 import game.util.IDHandler;
 
 /**
  * @author Julius Häger
  *
  */
-public abstract class GameSystem {
+public abstract class GameSystem implements DebugOutputProvider {
 	
 	//TODO: Figure out what it means to be a GameSystem
 	
 	private static IDHandler<GameSystem> gameSystems = new IDHandler<>();
 	
 	private String name;
+	
+	private boolean enabled = true;
 	
 	/**
 	 * @param name The name of the GameSystem
@@ -47,6 +50,29 @@ public abstract class GameSystem {
 	}
 	
 	/**
+	 * 
+	 * @return
+	 */
+	public boolean getEnabled(){
+		return enabled;
+	}
+	/**
+	 * 
+	 * @param enabled
+	 */
+	protected void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}	
+	
+	/**
+	 * 
+	 */
+	protected void destroy(){
+		gameSystems.removeObject(this);
+		setEnabled(false);
+	}
+	
+	/**
 	 * @return
 	 */
 	public static IDHandler<GameSystem> getIDHandler(){
@@ -59,5 +85,13 @@ public abstract class GameSystem {
 	 */
 	public static GameSystem getGameSystem(String name){
 		return gameSystems.getObject(name);
+	}
+	
+	@Override
+	public String[] getDebugValues() {
+		return new String[]{
+				"<b>Name: </b> " + name,
+				"<b>Enabled: </b>" + enabled,
+		};
 	}
 }

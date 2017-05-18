@@ -1,37 +1,34 @@
-/**
- * 
- */
 package game.IO.save.defaultSavers;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 
 import game.Game;
 import game.IO.save.Saver;
 
 /**
+ * 
  * @author Julius Häger
  *
  */
-public class StringSaver implements Saver<String> {
-	
-	//JAVADOC: StringSaver
+public class ByteArraySaver implements Saver<byte[]> {
 
+	//JAVADOC: ByteArraySaver
+	
 	@Override
 	public boolean save(Object object, Path location) {
 		try {
-			Files.write(location, Collections.singleton((String)object));
+			Files.write(location, (byte[])object);
 			return true;
 		} catch (IOException e) {
-			Game.log.logError("Could not save request: " + location, "IO", "StringSaver", "Save");
+			Game.log.logError("Could not save request: " + location, "IO", "Save", "byte[]");
 			return false;
-		}		
+		}
 	}
 
 	@Override
-	public Class<String> getSupportedDataType() {
-		return String.class;
+	public Class<byte[]> getSupportedDataType() {
+		return byte[].class;
 	}
 }
