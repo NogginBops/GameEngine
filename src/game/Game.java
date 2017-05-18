@@ -327,6 +327,7 @@ public class Game {
 		
 		eventMachine.fireEvent(new GameStartEvent(this));
 
+		// TODO: Make a nicer system for creating start threads
 		new Thread(screen, "Graphics").start();
 		startTime = System.nanoTime();
 		currTime = startTime;

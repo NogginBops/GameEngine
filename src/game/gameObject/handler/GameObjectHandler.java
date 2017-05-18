@@ -28,7 +28,7 @@ public class GameObjectHandler {
 	//Should this be done on the caller thread or should a worker thread be used? What would work best.
 	//Another way to do this is to register types of gameObject to pool for fast retrieval. But this still requires a whole new list to be passed.
 
-	//TODO: removeAllGameObjects() and removeAllGameObjectsExtending()
+	//TODO: removeAllGameObjectsExtending()
 	
 	//NOTE: Should getAllGameObejctsExtending be renamed to getAllGameObejctsAssignableFrom
 	
@@ -78,6 +78,9 @@ public class GameObjectHandler {
 		addGameObject(new ID<GameObject>(nameID, idHandler.getLastID() + 1, gameObject));
 	}
 
+	//FIXME: On adding and removing objects the object is added and removed from two CopyOnWriteArrayLists and a ConcurrentSkipListMap
+	// This is a really big performance drain, find a way to reduce this down to ideally one list.
+	
 	/**
 	 * 
 	 * @param id
@@ -144,13 +147,14 @@ public class GameObjectHandler {
 		
 		Game.eventMachine.fireEvent(new GameObjectDestroyedEvent(this, id.object));
 	}
-
+	
 	/**
 	 * 
 	 * @return
 	 */
 	public CopyOnWriteArrayList<Integer> getZLevels() {
 		//TODO: Try make this not allocate memory
+		// Read only lists?
 		return new CopyOnWriteArrayList<>(gameObjectMap.keySet());
 	}
 
@@ -158,6 +162,7 @@ public class GameObjectHandler {
 	 * @return
 	 */
 	public CopyOnWriteArrayList<GameObject> getAllGameObjects() {
+		// TODO: Make read-only?
 		return gameObjects;
 	}
 	
