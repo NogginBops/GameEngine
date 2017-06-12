@@ -34,16 +34,16 @@ public class FloodIt extends BasicGameObject implements Paintable {
 		settings.putSetting("GameInit", new GameInitializer() {
 			
 			@Override
-			public void initialize(Game game, GameSettings settings) {
+			public void initialize(GameSettings settings) {
 				settings.getSettingAs("MainCamera", Camera.class).setBackgroundColor(new Color(10, 20, 30));
 				
 				Game.gameObjectHandler.addGameObject(new FloodIt(20, 20, new Vector2D(25, 25)), "FloodIt");
 			}
 		});
 		
-		Game game = new Game(settings);
+		Game.setup(settings);
 		
-		game.run();
+		Game.run();
 	}
 	
 	private int moves = 35;

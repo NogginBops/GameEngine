@@ -16,7 +16,7 @@ public class GameQuitEvent extends GameEvent {
 	 * 
 	 * @param origin
 	 */
-	public GameQuitEvent(Game origin) {
+	public GameQuitEvent(Class<Game> origin) {
 		super(origin);
 	}
 	

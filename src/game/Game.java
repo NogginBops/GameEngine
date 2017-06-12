@@ -1,7 +1,7 @@
 package game;
 
 import java.awt.Dimension;
-import java.awt.event.KeyEvent;
+import java.nio.file.Paths;
 
 import game.controller.event.EventMachine;
 import game.controller.event.engineEvents.GameQuitEvent;
@@ -63,9 +63,9 @@ public class Game {
 	private static long currTime;
 	private static long elapsedTime;
 	
-	private int targetUPS;
+	private static int targetUPS;
 	
-	private boolean limitUPS = true;
+	private static boolean limitUPS = true;
 	
 	/**
 	 * 
@@ -76,11 +76,6 @@ public class Game {
 	
 	private static String name = "Game";
 
-	/**
-	 * The current Game.
-	 */
-	public static Game game;
-	
 	/**
 	 * The debug log associated with the game.
 	 */
@@ -130,10 +125,9 @@ public class Game {
 	//FIXME: Giant GC freeze
 	//NOTE: The solution for now are the -XX:+UseG1GC -XX:MaxGCPauseMillis=50 VM flags that seem to have a satisfactory result.
 	
-	/**
-	 * @param settings
-	 */
-	public Game(GameSettings settings) {
+	private Game() { }
+	
+	public static void setup(GameSettings settings){
 		//TODO: Clean up and make more streamline. (Think about the order of initialization)
 		//Should things really be static?
 		
@@ -152,7 +146,7 @@ public class Game {
 			settings = GameSettings.createDefaultGameSettings();
 		}
 		
-		setup(settings);
+		loadSettings(settings);
 		
 		//NOTE: This should be done in setup
 		
@@ -187,14 +181,10 @@ public class Game {
 		}else{
 			Game.log.logWarning("No DebugGameSystem property in game settings!", "System", "Settings", "Debug");
 		}
-		
-		
 	}
 	
-	private void setup(GameSettings settings){
+	private static void loadSettings(GameSettings settings){
 		final GameSettings DEFAULT = GameSettings.createDefaultGameSettings();
-		
-		Game.game = this;
 		
 		physicsEngine = new PhysicsEngine();
 		
@@ -261,27 +251,20 @@ public class Game {
 		// Maybe use an external file or something?
 		// Should support additive loading of KeyBindings
 		
-		/*
 		if(settings.containsSetting("KeyBindings")){
-			@SuppressWarnings("unchecked")
-			Consumer<KeyInputHandler> keyBindings =  settings.getSettingAs("KeyBindings", Consumer.class);
-			if(keyBindings != null){
-				keyBindings.accept(keyHandler);
+			String path = settings.getSettingAs("KeyBindings", String.class);
+			if (path.length() > 0) {
+				keyHandler.parseKeyBindings(Paths.get(path));				
 			}else{
-				log.logWarning("Keybinding key found in settigns but the value is null!");
-				//NOTE: Should there be a add default settings flag that adds the users keybindings onto of the standard ones.
+				log.logWarning("KeyBindings specified, but has no value!");
 			}
 		}else{
 			log.logMessage("Didn't find any keybindings in the settigns.");
 		}
-		*/
 		
 		if (settings.containsSetting("UseDefaultKeyBindings")) {
 			if (settings.getSettingAs("UseDefaultKeyBindings", Boolean.class)) {
-				keyHandler.addKeyBinding("Up", KeyEvent.VK_UP, KeyEvent.VK_W);
-				keyHandler.addKeyBinding("Down", KeyEvent.VK_DOWN, KeyEvent.VK_S);
-				keyHandler.addKeyBinding("Right", KeyEvent.VK_RIGHT, KeyEvent.VK_D);
-				keyHandler.addKeyBinding("Left", KeyEvent.VK_LEFT, KeyEvent.VK_A);
+				keyHandler.parseKeyBindings(Paths.get("./res", "DefaultKeyBindings.txt"));
 			}
 		}else{
 			log.logWarning("Didn't find any UseDefaultKeyBindings in the settigns.", "System", "Settings", "Keybindings");
@@ -295,7 +278,7 @@ public class Game {
 		gameObjectHandler.addGameObject(camera, "Main camera");
 		
 		if(settings.containsSetting("GameInit")){
-			settings.getSettingAs("GameInit", GameInitializer.class).initialize(game, settings);
+			settings.getSettingAs("GameInit", GameInitializer.class).initialize(settings);
 		}else{
 			Game.log.log("No GameInit was found!! Exiting...", LogImportance.CRITICAL, "System", "Init", "Game");
 			stop();
@@ -305,7 +288,7 @@ public class Game {
 	
 	//FIXME: This is a memory intensive solution, is there a better solution? 
 	//NOTE: Does this really have any performance hit?
-	private void basicDebug(){
+	private static void basicDebug(){
 		screen.setDebugEnabled(true);
 		screen.addDebugText(() -> {
 			return new String[]{
@@ -334,12 +317,12 @@ public class Game {
 	/**
 	 * Starts the main loop of the game
 	 */
-	public void run() {
+	public static void run() {
 		Thread.currentThread().setName(name);
 		
 		log.logMessage("Starting...", "System");
 		
-		eventMachine.fireEvent(new GameStartEvent(this));
+		eventMachine.fireEvent(new GameStartEvent(Game.class));
 
 		// TODO: Make a nicer system for creating start threads
 		new Thread(screen, "Graphics").start();
@@ -407,7 +390,7 @@ public class Game {
 			}
 		}
 
-		eventMachine.fireEvent(new GameQuitEvent(this));
+		eventMachine.fireEvent(new GameQuitEvent(Game.class));
 		
 		log.logMessage("Stopped.", "System");
 	}
@@ -465,18 +448,18 @@ public class Game {
 		
 		log.logMessage("Loading scene..");
 		
-		eventMachine.fireEvent(new SceneLoadEvent(game));
+		eventMachine.fireEvent(new SceneLoadEvent(sceneInit));
 
 		gameObjectHandler.clear();
 		
 		// TODO: Clear GameSystems? 
 		// TODO: The ability to have persistent GameObjects
 		
-		sceneInit.initialize(game, settings);
+		sceneInit.initialize(settings);
 		
 		log.logMessage("Loaded scene!");
 		
-		eventMachine.fireEvent(new SceneLoadedEvent(game));
+		eventMachine.fireEvent(new SceneLoadedEvent(sceneInit));
 		
 		resume();
 	}
@@ -486,7 +469,7 @@ public class Game {
 	/**
 	 * @param name
 	 */
-	public void setName(String name){
+	public static void setName(String name){
 		Game.name = name;
 		screen.setTitle(name);
 	}
@@ -494,7 +477,7 @@ public class Game {
 	/**
 	 * @return
 	 */
-	public String getName(){
+	public static String getName(){
 		return name;
 	}
 	
@@ -515,14 +498,14 @@ public class Game {
 	/**
 	 * @param limit
 	 */
-	public void limitUPS(boolean limit){
-		this.limitUPS = limit;
+	public static void limitUPS(boolean limit){
+		limitUPS = limit;
 	}
 	
 	/**
 	 * @return
 	 */
-	public boolean isLimitingUPS(){
+	public static boolean isLimitingUPS(){
 		return limitUPS;
 	}
 }

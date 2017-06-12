@@ -16,7 +16,7 @@ public class GameStartEvent extends GameEvent {
 	 * 
 	 * @param origin
 	 */
-	public GameStartEvent(Game origin) {
+	public GameStartEvent(Class<Game> origin) {
 		super(origin);
 	}
 }

@@ -30,13 +30,13 @@ public class CameraTest2 implements GameInitializer {
 		
 		settings.putSetting("GameInit", new CameraTest2());
 		
-		Game game = new Game(settings);
+		Game.setup(settings);
 		
-		game.run();
+		Game.run();
 	}
 	
 	@Override
-	public void initialize(Game game, GameSettings settings) {
+	public void initialize(GameSettings settings) {
 		
 		Camera camera = settings.getSettingAs("MainCamera", Camera.class);
 		

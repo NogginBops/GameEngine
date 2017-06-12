@@ -44,16 +44,16 @@ public class UITest implements GameInitializer {
 		
 		settings.putSetting("GameInit", new UITest());
 		
-		Game game = new Game(settings);
+		Game.setup(settings);
 		
-		game.run();
+		Game.run();
 		
 	}
 	
 	//NOTE: Button seems to be broken
 	
 	@Override
-	public void initialize(Game game, GameSettings settings) {
+	public void initialize(GameSettings settings) {
 		BasicUIContainer container = new BasicUIContainer(200, 300);
 		Border border = new SolidBorder(20, Color.MAGENTA);
 		container.setBorder(border);

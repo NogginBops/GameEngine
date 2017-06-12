@@ -44,11 +44,13 @@ public class ParticleTest implements GameInitializer {
 		
 		settings.putSetting("GameInit", new ParticleTest());
 		
-		new Game(settings).run();
+		Game.setup(settings);
+		
+		Game.run();
 	}
 	
 	@Override
-	public void initialize(Game game, GameSettings settings) {
+	public void initialize(GameSettings settings) {
 		
 		settings.getSettingAs("MainCamera", Camera.class).receiveKeyboardInput(true);
 		

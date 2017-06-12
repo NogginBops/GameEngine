@@ -57,7 +57,7 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, this::mouseListenerCreated);
 		
 		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, this::mouseListenerDestroyed);
-		
+				
 		Game.screen.addDebugText(() -> {
 			return new String[]{
 					"Mouse X: " + (lastEvent == null ? 0 : lastEvent.getX()),
@@ -197,7 +197,7 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 	/**
 	 * @param event
 	 */
-	public void mouseListenerCreated(GameObjectCreatedEvent event){
+	private void mouseListenerCreated(GameObjectCreatedEvent event){
 		if (event.object instanceof MouseListener) {
 			addMouseListener((MouseListener)event.object);
 		}
@@ -206,7 +206,7 @@ public class MouseInputHandler extends GameSystem implements MouseInputListener,
 	/**
 	 * @param event
 	 */
-	public void mouseListenerDestroyed(GameObjectDestroyedEvent event){
+	private void mouseListenerDestroyed(GameObjectDestroyedEvent event){
 		if (event.object instanceof MouseListener) {
 			removeMouseListener((MouseListener)event.object);
 		}

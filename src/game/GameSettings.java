@@ -66,7 +66,7 @@ public class GameSettings {
 			//The way it is now it's unacceptably ugly and serves no purpose.
 			
 			@Override
-			public void initialize(Game game, GameSettings settings) {
+			public void initialize(GameSettings settings) {
 				
 				//TODO: Make it so that you can access things in Game better.
 				Game.log.logWarning("Default Game!");

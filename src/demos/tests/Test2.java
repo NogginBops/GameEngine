@@ -32,14 +32,14 @@ public class Test2 implements GameInitializer {
 		
 		settings.putSetting("GameInit", new Test2());
 		
-		Game game = new Game(settings);
+		Game.setup(settings);
 		
-		game.run();
+		Game.run();
 		
 	}
 	
 	@Override
-	public void initialize(Game game, GameSettings settings) {
+	public void initialize(GameSettings settings) {
 		GameObjectAdder adder = new GameObjectAdder();
 		Game.gameObjectHandler.addGameObject(adder);
 	}

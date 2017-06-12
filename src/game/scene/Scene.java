@@ -34,6 +34,6 @@ public class Scene {
 	 * @param settings
 	 */
 	public void load(Game game, GameSettings settings){
-		sceneInit.initialize(game, settings);
+		sceneInit.initialize(settings);
 	}	
 }

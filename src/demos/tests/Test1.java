@@ -39,14 +39,14 @@ public class Test1 implements GameInitializer {
 		
 		settings.putSetting("GameInit", new Test1());
 		
-		Game game = new Game(settings);
+		Game.setup(settings);
 		
-		game.run();
+		Game.run();
 		
 	}
 	
 	@Override
-	public void initialize(Game game, GameSettings settings) {
+	public void initialize(GameSettings settings) {
 		OtherPaintable z1 = new OtherPaintable(0, 0, 100, 100, 1, Color.BLUE);
 
 		OtherPaintable z2 = new OtherPaintable(10, 10, 100, 100, 2, Color.RED);

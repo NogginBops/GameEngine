@@ -32,14 +32,14 @@ public class AudioTest implements GameInitializer {
 		
 		settings.putSetting("GameInit", new AudioTest());
 		
-		Game game = new Game(settings);
+		Game.setup(settings);
 		
-		game.run();
+		Game.run();
 		
 	}
 	
 	@Override
-	public void initialize(Game game, GameSettings settings) {
+	public void initialize(GameSettings settings) {
 		GameObjectAdderWithAudio adder = new GameObjectAdderWithAudio(-5, -5);
 		Game.gameObjectHandler.addGameObject(adder);
 

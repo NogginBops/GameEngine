@@ -13,9 +13,8 @@ public interface GameInitializer {
 	//TODO: Game is most likely going to be completely static so it wont be needed as a param
 	
 	/**
-	 * @param game
 	 * @param settings
 	 */
-	public void initialize(Game game, GameSettings settings);
+	public void initialize(GameSettings settings);
 
 }

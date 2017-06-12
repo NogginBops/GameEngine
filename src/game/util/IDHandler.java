@@ -1,8 +1,11 @@
 package game.util;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Spliterator;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 
@@ -10,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Julius Häger
  * @param <T>
  */
-public class IDHandler<T> implements Iterable<ID<T>>{
+public class IDHandler<T> implements Iterable<ID<T>> {
 
 	// JAVADOC: IDHandler
 
@@ -121,12 +124,8 @@ public class IDHandler<T> implements Iterable<ID<T>>{
 	 * @param classT
 	 * @return
 	 */
-	public ArrayList<T> getAllObjects() {
-		ArrayList<T> list = new ArrayList<>();
-		for (ID<T> id : IDs) {
-			list.add(id.object);
-		}
-		return list;
+	public List<T> getAllObjects() {
+		return IDs.stream().map(id -> id.object).collect(Collectors.toList());
 	}
 
 	/**
@@ -174,5 +173,17 @@ public class IDHandler<T> implements Iterable<ID<T>>{
 				return itr.next();
 			}
 		};
+	}
+	
+	public Spliterator<ID<T>> splitterator(){
+		return IDs.spliterator();
+	}
+	
+	public Stream<ID<T>> stream(){
+		return IDs.stream();
+	}
+	
+	public int size(){
+		return IDs.size();
 	}
 }

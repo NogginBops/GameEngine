@@ -34,14 +34,14 @@ public class TextureTest implements GameInitializer {
 		
 		settings.putSetting("GameInit", new TextureTest());
 		
-		Game game = new Game(settings);
+		Game.setup(settings);
 		
-		game.run();
+		Game.run();
 		
 	}
 	
 	@Override
-	public void initialize(Game game, GameSettings settings) {
+	public void initialize(GameSettings settings) {
 		
 		BufferedImage sheetImage = null;
 		

@@ -33,14 +33,14 @@ public class Pong implements GameInitializer {
 		
 		settings.putSetting("GameInit", new Pong());
 		
-		Game game = new Game(settings);
+		Game.setup(settings);
 		
-		game.run();
+		Game.run();
 		
 	}
 
 	@Override
-	public void initialize(Game game, GameSettings settings) {
+	public void initialize(GameSettings settings) {
 
 		Pad rightPad = new Pad(camera.getWidth() - 60, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
 				camera.getBounds(), Side.RIGHT);

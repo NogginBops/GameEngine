@@ -15,7 +15,7 @@ public class KeyBindingTest {
 		
 		settings.putSetting("GameInit", new GameInitializer() {
 			@Override
-			public void initialize(Game game, GameSettings settings) {
+			public void initialize(GameSettings settings) {
 				Game.keyHandler.parseKeyBindings(Paths.get("./res/DefaultKeyBindings.txt"));
 				
 				Game.gameObjectHandler.addGameObject(new TestSprite(0, 0, 10, 10));
@@ -24,8 +24,8 @@ public class KeyBindingTest {
 		
 		settings.getSettingAs("MainCamera", Camera.class).receiveKeyboardInput(true);
 		
-		Game game = new Game(settings);
+		Game.setup(settings);
 		
-		game.run();
+		Game.run();
 	}
 }

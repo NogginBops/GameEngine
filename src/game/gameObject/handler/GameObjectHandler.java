@@ -40,7 +40,7 @@ public class GameObjectHandler {
 	 * as some methods can not use the SkipListMap effectively due to the
 	 * map not being able to quickly list all of the keys or values contained in it.
 	 */
-	private CopyOnWriteArrayList<GameObject> gameObjects;
+	//private CopyOnWriteArrayList<GameObject> gameObjects;
 
 	private CopyOnWriteArrayList<Integer> zLevels;
 
@@ -55,9 +55,13 @@ public class GameObjectHandler {
 	 */
 	public GameObjectHandler() {
 		gameObjectMap = new ConcurrentSkipListMap<Integer, CopyOnWriteArrayList<GameObject>>();
-		gameObjects = new CopyOnWriteArrayList<GameObject>();
+		//gameObjects = new CopyOnWriteArrayList<GameObject>();
 		zLevels = new CopyOnWriteArrayList<Integer>();
 		idHandler = new IDHandler<GameObject>();
+	}
+	
+	private Iterable<GameObject> gameObjects(){
+		return idHandler.stream().map(id -> id.object)::iterator;
 	}
 
 	/**
@@ -91,9 +95,7 @@ public class GameObjectHandler {
 			gameObjectMap.put(id.object.getZOrder(), objects = new CopyOnWriteArrayList<GameObject>());
 		}
 		objects.add(id.object);
-
-		gameObjects.add(id.object);
-		gameObjects.sort(null);
+		
 		if (!zLevels.contains(id.object.getZOrder())) {
 			zLevels.add(id.object.getZOrder());
 			zLevels.sort(null);
@@ -117,8 +119,6 @@ public class GameObjectHandler {
 			gameObjectMap.remove(gameObject.getZOrder());
 		}
 
-		// TODO: Remove?
-		gameObjects.remove(gameObject);
 		if (!zLevels.contains(gameObject.getZOrder())) {
 			zLevels.remove(gameObject.getZOrder());
 		}
@@ -138,7 +138,6 @@ public class GameObjectHandler {
 			gameObjectMap.remove(id.object.getZOrder());
 		}
 		
-		gameObjects.remove(id.object);
 		if (!zLevels.contains(id.object.getZOrder())) {
 			zLevels.remove(id.object.getZOrder());
 		}
@@ -162,8 +161,7 @@ public class GameObjectHandler {
 	 * @return
 	 */
 	public CopyOnWriteArrayList<GameObject> getAllGameObjects() {
-		// TODO: Make read-only?
-		return gameObjects;
+		return new CopyOnWriteArrayList<>(idHandler.getAllObjects());
 	}
 	
 	//TODO: Maybe implement updateListener to be able to figure out when the number of active GameObjects change.
@@ -174,7 +172,7 @@ public class GameObjectHandler {
 	 */
 	public CopyOnWriteArrayList<GameObject> getAllActiveGameObjects() {
 		CopyOnWriteArrayList<GameObject> returnList = new CopyOnWriteArrayList<>();
-		for (GameObject gameObject : gameObjects) {
+		for (GameObject gameObject : (Iterable<GameObject>) idHandler.stream().map(id -> id.object)::iterator) {
 			if(gameObject.isActive()){
 				returnList.add(gameObject);
 			}
@@ -193,7 +191,7 @@ public class GameObjectHandler {
 	 */
 	public <T extends GameObject> CopyOnWriteArrayList<T> getAllGameObjectsExtending(Class<T> classT) {
 		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
-		for (GameObject object : gameObjects) {
+		for (GameObject object : gameObjects()) {
 			if (classT.isAssignableFrom(object.getClass())) {
 				returnList.add(classT.cast(object));
 			}
@@ -213,7 +211,7 @@ public class GameObjectHandler {
 	 */
 	public <T extends GameObject> CopyOnWriteArrayList<T> getAllActiveGameObjectsExtending(Class<T> classT) {
 		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
-		for (GameObject object : gameObjects) {
+		for (GameObject object : gameObjects()) {
 			if(object.isActive()){
 				if (classT.isAssignableFrom(object.getClass())) {
 					returnList.add(classT.cast(object));
@@ -295,7 +293,7 @@ public class GameObjectHandler {
 	 * @return
 	 */
 	public int numberOfGameObjects() {
-		return gameObjects.size();
+		return idHandler.size();
 	}
 
 	/**
@@ -337,16 +335,14 @@ public class GameObjectHandler {
 	/**
 	 * 
 	 */
-	public void clear() {
-		gameObjectMap.clear();
-		zLevels.clear();
-		idHandler.clear();
-				
+	public void clear() {				
 		for (GameObject gameObject : getAllGameObjects()) {
 			Game.eventMachine.fireEvent(new GameObjectDestroyedEvent(this, gameObject));
 		}
 		
-		gameObjects.clear();
+		gameObjectMap.clear();
+		zLevels.clear();
+		idHandler.clear();
 		
 		objectsChanged = true;
 	}
