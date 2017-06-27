@@ -253,10 +253,12 @@ public class Game {
 		
 		if(settings.containsSetting("KeyBindings")){
 			String path = settings.getSettingAs("KeyBindings", String.class);
-			if (path.length() > 0) {
-				keyHandler.parseKeyBindings(Paths.get(path));				
-			}else{
-				log.logWarning("KeyBindings specified, but has no value!");
+			if (path != null) {
+				if (path.length() > 0) {
+					keyHandler.parseKeyBindings(Paths.get(path));				
+				}else{
+					log.logWarning("KeyBindings specified, but has no value!");
+				}				
 			}
 		}else{
 			log.logMessage("Didn't find any keybindings in the settigns.");

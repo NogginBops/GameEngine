@@ -50,7 +50,7 @@ public final class ImageUtils {
 		// Obtain the current system graphical settings
 		GraphicsConfiguration gfx_config = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice()
 				.getDefaultConfiguration();
-
+		
 		/*
 		 * If image is already compatible and optimized for current system
 		 * settings, simply return it
