@@ -208,6 +208,7 @@ public class SettingsUtil {
 			}else{
 				//This should be a class with a T T(String) constructor
 				
+				// FIXME: This does not work for escape characters!
 				//Special case for character because it does not have a constructor that takes a string
 				if(clazz.getName() == "java.lang.Character"){
 					if(valueText.length() > 1){
