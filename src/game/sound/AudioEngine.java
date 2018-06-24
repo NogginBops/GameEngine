@@ -41,7 +41,14 @@ public class AudioEngine {
 		AudioEngine.listener = listener;
 		TinySound.init();
 	}
-
+	
+	/**
+	 * 
+	 */
+	public static void shudown() {
+		TinySound.shutdown();
+	}
+	
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();

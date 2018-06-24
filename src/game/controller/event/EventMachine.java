@@ -2,9 +2,10 @@ package game.controller.event;
 
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 
@@ -22,7 +23,25 @@ public class EventMachine {
 	//NOTE: Is 5 threads optimal? 
 	//Should the executor be able to allocate threads? 
 	//What should happen if no threads are available?
-	private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(5, Executors.defaultThreadFactory());
+	private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(5, new ThreadFactory() {
+        private final ThreadGroup group;
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+        private final String namePrefix;
+        
+        {
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null) ? s.getThreadGroup() :
+                                  Thread.currentThread().getThreadGroup();
+            namePrefix = "eventMachine-thread-";
+        }
+        
+        @Override
+		public Thread newThread(Runnable r) {
+            Thread thread = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+            thread.setDaemon(true);
+            return thread;
+        }
+	});
 	
 	/**
 	 * 

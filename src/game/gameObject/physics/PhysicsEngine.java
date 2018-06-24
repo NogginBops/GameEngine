@@ -11,7 +11,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import game.Game;
 import game.GameSystem;
 import game.debug.DebugOutputProvider;
-import game.util.math.vector.Vector2D;
 
 /**
  * 
@@ -115,34 +114,6 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 			return r;
 		}
 		
-		private Rect toRect(Vector2D pos) {
-			Vector2D rectPos = Vector2D.mod(pos, rectSize);
-			
-			for (Rect rect : rects) {
-				if (rect.x == rectPos.x && rect.y == rectPos.y) {
-					return rect;
-				}
-			}
-			
-			Rect r = new Rect((int) rectPos.x, (int) rectPos.y);
-			
-			rects.add(r);
-			
-			return r;
-		}
-		
-		private Rect getRect(Vector2D pos) {
-			Vector2D rectPos = Vector2D.mod(pos, rectSize);
-			
-			for (Rect rect : rects) {
-				if (rect.x == rectPos.x && rect.y == rectPos.y) {
-					return rect;
-				}
-			}
-			
-			return null;
-		}
-
 		private Rect getRect(int x, int y) {
 			for (Rect rect : rects) {
 				if (rect.x == x && rect.y == y) {

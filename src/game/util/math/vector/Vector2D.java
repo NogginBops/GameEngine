@@ -76,7 +76,7 @@ public class Vector2D {
 	
 	/**
 	 * @param vec
-	 * @param scalar
+	 * @param mod 
 	 * @return
 	 */
 	public static Vector2D mod(Vector2D vec, float mod) {

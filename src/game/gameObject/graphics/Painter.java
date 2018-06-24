@@ -126,7 +126,7 @@ public abstract class Painter extends BasicGameObject {
 	/**
 	 * @return
 	 */
-	public BufferedImage getImage(){
+	public BufferedImage getImage() {
 		tempDrawnObjects = 0;
 		
 		if (paintables != null && paintables.size() > 0) {
@@ -149,24 +149,24 @@ public abstract class Painter extends BasicGameObject {
 			translatedGraphics.transform(at);
 			
 			for (Paintable paintable : paintables) {
-				if(paintable.isActive()){
-					if(PhysicsEngine.collides(paintable.getBounds(), getBounds())){
+				if(paintable.isActive()) {
+					if(PhysicsEngine.collides(paintable.getBounds(), getBounds())) {
 						paintableImage = paintable.getImage();
 						if(paintableImage != null){
 							//translatedGraphics.drawImage(paintableImage,(int)paintable.getBounds().getX(), (int)paintable.getBounds().getY(), (int)paintable.getBounds().getWidth(), (int)paintable.getBounds().getHeight(), null);
 							translatedGraphics.drawImage(paintableImage, paintable.getTransform().getAffineTransform(), null);
-						}else{
+						} else {
 							paintable.paint(translatedGraphics);
 						}
 						
-						if(debug){
+						if (debug) {
 							translatedGraphics.setColor(Color.green);
 							translatedGraphics.draw(paintable.getTranformedShape());
 							
 							translatedGraphics.setColor(Color.magenta);
 							translatedGraphics.draw(paintable.getBounds());
 							
-							if(paintable instanceof Collidable){
+							if (paintable instanceof Collidable) {
 								translatedGraphics.setColor(Color.red);
 								translatedGraphics.draw(((Collidable)paintable).getCollitionShape());
 							}

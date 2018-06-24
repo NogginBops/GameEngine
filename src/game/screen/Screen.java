@@ -6,6 +6,9 @@ import java.awt.DisplayMode;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -14,9 +17,13 @@ import javax.swing.JFrame;
 
 import game.Game;
 import game.debug.DebugOutputProvider;
+import game.debug.event.DebugObjectSelectedEvent;
+import game.gameObject.GameObject;
 import game.gameObject.graphics.Painter;
+import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.input.Input;
 import game.util.FPSCounter;
+import game.util.math.ColorUtils;
 
 /**
  * A screen object manages repainting of a window
@@ -24,7 +31,7 @@ import game.util.FPSCounter;
  * @version 2.0
  * @author Julius Häger
  */
-public class Screen implements Runnable{
+public class Screen implements Runnable {
 	
 	//JAVADOC: Screen
 	
@@ -84,7 +91,9 @@ public class Screen implements Runnable{
 	
 	private boolean resizable = false;
 	
-	private boolean shouldRun = false;
+	private volatile boolean shouldRun = false;
+	private volatile boolean stopped = false;
+	private Object closeObject = new Object();
 	
 	private CopyOnWriteArrayList<Painter> painters;
 	
@@ -93,6 +102,7 @@ public class Screen implements Runnable{
 	private ArrayList<DebugOutputProvider> debugPrintOuts;
 	
 	private boolean debug = false;
+	private GameObject selectedDebug = null;
 	
 	private int targetFPS;
 	
@@ -122,10 +132,15 @@ public class Screen implements Runnable{
 		debugPrintOuts = new ArrayList<>();
 		
 		ApplyMode();
+		
+ 		Game.eventMachine.addEventListener(DebugObjectSelectedEvent.class, (event) -> { if (event.object instanceof GameObject) selectedDebug = (GameObject) event.object; });
+ 		
+ 		// If the selected object is destroyed
+ 		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, (event) -> { if (selectedDebug == event.object) selectedDebug = null; });
 	}
 	
 	//TODO: Does this break any callbacks?
-	private void ApplyMode(){
+	private void ApplyMode() {
 		if(frame != null){
 			frame.dispose();
 		}
@@ -134,7 +149,7 @@ public class Screen implements Runnable{
 		
 		frame = new JFrame(title);
 		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		
 		GraphicsDevice device = frame.getGraphicsConfiguration().getDevice();
 		DisplayMode displayMode = device.getDisplayMode();
@@ -177,6 +192,13 @@ public class Screen implements Runnable{
 		
 		insets = frame.getInsets();
 		
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				Game.stop();
+			}
+		});
+		
 		for (Input input : inputListeners) {
 			frame.addKeyListener(input);
 			frame.addMouseListener(input);
@@ -208,6 +230,11 @@ public class Screen implements Runnable{
 			
 			Graphics2D g2d = (Graphics2D) frame.getBufferStrategy().getDrawGraphics();
 			g2d.translate(insets.right, insets.top);
+			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+			g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
+			g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
+			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+			//g2d.setRenderingHint(RenderingHints.KEY_TEXT_LCD_CONTRAST, Integer.valueOf(200));
 			
 			//Get all painter images
 			for (Painter painter : painters) {
@@ -221,7 +248,12 @@ public class Screen implements Runnable{
 						null);
 			}
 			
-			//g2d.drawImage(image, 0, 0, null);
+			if (selectedDebug != null && selectedDebug.isActive()) {
+				g2d.setColor(ColorUtils.createTransparent(Color.GREEN, 0.2f));
+				g2d.fill(selectedDebug.getBounds());
+				g2d.setColor(ColorUtils.createTransparent(Color.GREEN.brighter(), 1f));
+				g2d.draw(selectedDebug.getBounds());
+			}
 			
 			if (debug) {
 				g2d.setColor(Color.GREEN.brighter());
@@ -232,6 +264,7 @@ public class Screen implements Runnable{
 						g2d.drawString(debugOutput, 20, 20 * lines);
 					}
 				}
+				g2d.setColor(Color.WHITE);
 			}
 			
 			g2d.dispose();
@@ -268,14 +301,36 @@ public class Screen implements Runnable{
 			}
 		}
 		
+		Game.log.logMessage("Screen closing...", "System", "Graphics");
+		
 		frame.dispose();
+		
+		stopped = true;
+		synchronized (closeObject) {
+			closeObject.notifyAll();
+		}
+		
+		Game.log.logMessage("Screen closed!", "System", "Graphics");
 	}
 	
 	/**
 	 * 
 	 */
-	public void stop(){
+	public void stop() {
 		shouldRun = false;
+	}
+	
+	/**
+	 * @throws InterruptedException 
+	 * 
+	 */
+	public void waitForStop() throws InterruptedException {
+		while(stopped != true) {
+			shouldRun = false;
+			synchronized (closeObject) {
+				closeObject.wait();
+			}
+		}
 	}
 	
 	/**

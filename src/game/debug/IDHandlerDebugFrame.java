@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableModel;
 import game.Game;
 import game.controller.event.GameEvent;
 import game.controller.event.engineEvents.GameQuitEvent;
+import game.debug.event.DebugObjectSelectedEvent;
 import game.gameObject.GameObject;
 import game.util.ID;
 import game.util.IDHandler;
@@ -141,7 +142,8 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 			public void valueChanged(ListSelectionEvent e) {
 				if(e.getValueIsAdjusting() == false && table.getSelectedRow() != -1){
 					selectedProvider = ids[table.getSelectedRow()];
-					if(selectedProvider.object instanceof DebugOutputProvider){
+					Game.eventMachine.fireEvent(new DebugObjectSelectedEvent(this, selectedProvider.object));
+					if (selectedProvider.object instanceof DebugOutputProvider) {
 						String text = "<html>";
 						text += "<b><u>" + selectedProvider.name + "</u></b> - " + selectedProvider.id + "<br>";
 						for (String line : ((DebugOutputProvider)selectedProvider.object).getDebugValues()) {
@@ -151,13 +153,12 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 						debugOutput.setText(text);
 						
 						outputScrollPane.setPreferredSize(debugOutput.getPreferredSize());
-					}else{
+					} else {
 						debugOutput.setText("<html>" + ids[table.getSelectedRow()].object.getClass() + " does not support debug print outs.<br>For debug printouts to work the object needs to implement DebugOutputProvider!</html>");
 					}
 				}
 			}
 		};
-		
 		table.getSelectionModel().addListSelectionListener(selectionListener);
 		scrollPane.setViewportView(table);
 		btnRefresh = new JButton("Refresh");
@@ -220,12 +221,17 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 	private void updateIDs(ID<T>[] ids) {
 
 		Object[][] tableData = new Object[ids.length][3];
+		int selectedRow = -1;
 
 		for (int x = 0; x < tableData.length; x++) {
 			tableData[x][0] = ids[x].name + (ids[x].object instanceof GameObject
 					? ((GameObject) ids[x].object).isActive() ? " +" : " -" : "");
 			tableData[x][1] = Integer.valueOf(ids[x].id);
 			tableData[x][2] = ids[x].object.getClass().getName();
+			
+			if (selectedProvider == ids[x]) {
+				selectedRow = x;
+			}
 		}
 
 		DefaultTableModel model = new DefaultTableModel(tableData, new String[] { "Name", "ID", "Type" }) {
@@ -248,10 +254,15 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 			}
 			
 		};
-
+		
+		final int row = selectedRow;
 		SwingUtilities.invokeLater(() -> {
 			if (table != null) table.setModel(model);
 			this.ids = ids;
+			if (row >= 0) {
+				table.getSelectionModel().clearSelection();
+				table.getSelectionModel().addSelectionInterval(row, row);
+			}
 		});
 	}
 	

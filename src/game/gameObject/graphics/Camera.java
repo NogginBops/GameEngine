@@ -27,10 +27,10 @@ import game.util.math.vector.Vector2D;
  * @author Julius Häger
  */
 public class Camera extends Painter implements Movable, KeyListener {
-
+	
 	// TODO: Remove movement code
 	
-	//TODO: Implement a way to zoom
+	// TODO: Implement a way to zoom
 	
 	private BoxTransform<GameObject> boxTransform;
 	
@@ -83,6 +83,8 @@ public class Camera extends Painter implements Movable, KeyListener {
 	public Camera(Rectangle2D.Float rect, ScreenRect screenRect, Color bgColor) {
 		super(rect.x, rect.y, rect.width, rect.height, Integer.MAX_VALUE - 8);
 		
+		Game.log.logMessage("Created camera with height=" + rect.height + " and width=" + rect.width);
+		
 		transform = boxTransform = new BoxTransform<GameObject>(this, rect.x, rect.y, rect.width, rect.height);
 		
 		setScreenRectangle(screenRect);
@@ -93,9 +95,9 @@ public class Camera extends Painter implements Movable, KeyListener {
 	}
 	
 	private void addEventListeners(){
-		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, (event) -> { if (event.object instanceof Paintable) paintables.add((Paintable)event.object); paintables.sort(null); });
+		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, (event) -> { if (event.object instanceof Paintable) { paintables.add((Paintable)event.object); paintables.sort(null); } });
 		
-		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, (event) -> { if (event.object instanceof Paintable) paintables.remove((Paintable)event.object); paintables.sort(null); });
+		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, (event) -> { if (event.object instanceof Paintable) { paintables.remove((Paintable)event.object); paintables.sort(null); } });
 	}
 
 	/**
@@ -250,7 +252,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 	
 	@Override
 	public BufferedImage getImage() {
-		if(translatedGraphics == null){
+		if (translatedGraphics == null) {
 			translatedGraphics = image.createGraphics();
 			originalTransform = translatedGraphics.getTransform();
 		}
@@ -366,5 +368,10 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 */
 	public void setBackgroundColor(Color color) {
 		backgroundColor = color;
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + "[resolution=" + boxTransform.getRect() + "]";
 	}
 }

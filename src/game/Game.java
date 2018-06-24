@@ -1,6 +1,9 @@
 package game;
 
 import java.awt.Dimension;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.nio.file.Paths;
 
 import game.controller.event.EventMachine;
@@ -62,6 +65,7 @@ public class Game {
 	private static long startTime;
 	private static long currTime;
 	private static long elapsedTime;
+	private static long startQuitTime;
 	
 	private static int targetUPS;
 	
@@ -136,6 +140,11 @@ public class Game {
 	public static void setup(GameSettings settings){
 		//TODO: Clean up and make more streamline. (Think about the order of initialization)
 		//Should things really be static?
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			long quitTime = System.nanoTime() - startQuitTime;
+			Game.log.logMessage("Quit took: " + (quitTime / 1000000000f) + "s");
+		}, "Game shutdown hook"));
 		
 		//TODO: Is this really doing anything?
 		//The engine should be usable even though no hardware acceleration is present.
@@ -226,9 +235,9 @@ public class Game {
 		
 		//NOTE: Should the camera be a part of the settings?
 		camera = DEFAULT.getSettingAs("MainCamera", Camera.class);
-		if(settings.containsSetting("MainCamera")){
+		if (settings.containsSetting("MainCamera")) {
 			camera = settings.getSettingAs("MainCamera", Camera.class);
-		}else{
+		} else {
 			log.logWarning("No 'MainCamera' settigns in settigns! Using the default setting.", "System", "Settings");
 		}
 		
@@ -245,9 +254,6 @@ public class Game {
 		}else{
 			updater = new StandardUpdater();
 		}
-		
-		//NOTE: Should we do this? Seems kind of weird, maybe have this as a setting?
-		camera.setSize(screen.getWidth(), screen.getHeight());
 		
 		mouseHandler = new MouseInputHandler(camera);
 		keyHandler = new KeyInputHandler();
@@ -397,12 +403,24 @@ public class Game {
 				}
 			}
 		}
-
+		
+		startQuitTime = System.nanoTime();
+		
+		log.logMessage("Stopping...", "System");
+		
 		eventMachine.fireEvent(new GameQuitEvent(Game.class));
 		
-		log.logMessage("Stopped.", "System");
+		try {
+			screen.waitForStop();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+		
+		AudioEngine.shudown();
+		
+		Game.log.logMessage("Stopped!", "System");
 	}
-
+	
 	/**
 	 * Requests a close or a stop in the game loop effectively ending the game
 	 */

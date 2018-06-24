@@ -22,7 +22,7 @@ public class Sprite extends BasicRotatable implements Paintable {
 	// JAVADOC: Sprite
 	
 	//TODO: A flag to disable all of the sprites systems so that it basically behaves like a moving picture (no tint color, no graphicsReadySprite, no animation)
-	//Scale should still work
+	// Scale should still work
 	
 	/**
 	 * The sprite image of the sprite.
@@ -42,7 +42,7 @@ public class Sprite extends BasicRotatable implements Paintable {
 	/**
 	 * The animation of the sprite if any
 	 */
-	private Animation animation = null; //NOTE: This will change!
+	private Animation animation = null; // NOTE: This will change!
 
 	private BufferedImage graphicsReadySprite = null;
 
@@ -353,5 +353,21 @@ public class Sprite extends BasicRotatable implements Paintable {
 			
 			return null;
 		}
+	}
+	
+	@Override
+	public String[] getDebugValues() {
+		String[] superValues = super.getDebugValues();
+		String[] ownValues = new String[]{
+				"<b>Sprite:</b> " + sprite,
+				"<b>Color:</b> " + color,
+				"<b>Animation:</b> " + animation,
+				"<b>Scale:</b> " + scale,
+		};
+		
+		String[] mergedValues = new String[superValues.length + ownValues.length];
+		System.arraycopy(superValues, 0, mergedValues, 0, superValues.length);
+		System.arraycopy(ownValues, 0, mergedValues, superValues.length, ownValues.length);
+		return mergedValues;
 	}
 }
