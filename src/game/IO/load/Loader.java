@@ -21,9 +21,8 @@ public interface Loader<T> {
 	/**
 	 * When the IO system has found a suitable request for this loader this
 	 * method is called with that request.
-	 * 
-	 * @param request
-	 *            - The request to load.
+	 * @param path 
+	 * 			The path to load
 	 * 
 	 * @return The loaded and parsed class.
 	 */

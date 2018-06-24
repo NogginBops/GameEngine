@@ -30,7 +30,7 @@ import game.util.IDHandler;
  */
 public final class IOHandler {
 
-	// JAVADOC: IOHandeler
+	// JAVADOC: IOHandler
 
 	/*
 	 * TODO: Virtual folders or some other system to make file management
@@ -130,7 +130,11 @@ public final class IOHandler {
 		loaderIDHandler.addObject(loader, name);
 	}
 
-	public static <T> void cache(LoadRequest<T> request){
+	/**
+	 * @param <T>
+	 * @param request
+	 */
+	public static <T> void cache(LoadRequest<T> request) {
 		if (request.cache == true) {			
 			load(request);
 		}else {
@@ -218,6 +222,7 @@ public final class IOHandler {
 	}
 
 	/**
+	 * @param <T> 
 	 * @param request
 	 * @return
 	 */

@@ -86,6 +86,9 @@ public class Game {
 	 */
 	public static EventMachine eventMachine = new EventMachine();
 	
+	/**
+	 * The physics engine
+	 */
 	public static PhysicsEngine physicsEngine;
 	
 	//TODO: Some more elegant methods for using the GOH
@@ -127,6 +130,9 @@ public class Game {
 	
 	private Game() { }
 	
+	/**
+	 * @param settings
+	 */
 	public static void setup(GameSettings settings){
 		//TODO: Clean up and make more streamline. (Think about the order of initialization)
 		//Should things really be static?
@@ -151,7 +157,7 @@ public class Game {
 		//NOTE: This should be done in setup
 		
 		if(settings.containsSetting("OnScreenDebug")){
-			if(settings.getSettingAs("OnScreenDebug", Boolean.class)){
+			if (settings.getSettingAs("OnScreenDebug", Boolean.class).booleanValue()) {
 				basicDebug();
 			}
 		}else{
@@ -159,7 +165,7 @@ public class Game {
 		}
 		
 		if(settings.containsSetting("DebugLog")){
-			if(settings.getSettingAs("DebugLog", Boolean.class)){
+			if (settings.getSettingAs("DebugLog", Boolean.class).booleanValue()) {
 				new Thread(new LogDebugFrame(log), "Debug Log").start();
 			}
 		}else{
@@ -167,7 +173,7 @@ public class Game {
 		}
 		
 		if(settings.containsSetting("DebugID")){
-			if(settings.getSettingAs("DebugID", Boolean.class)){
+			if(settings.getSettingAs("DebugID", Boolean.class).booleanValue()){
 				new Thread(new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler(), GameObjectCreatedEvent.class, GameObjectDestroyedEvent.class), "IDHandler Debug").start();
 			}
 		}else{
@@ -175,7 +181,7 @@ public class Game {
 		}
 		
 		if (settings.containsSetting("DebugGameSystem")) {
-			if(settings.getSettingAs("DebugGameSystem", Boolean.class)){
+			if(settings.getSettingAs("DebugGameSystem", Boolean.class).booleanValue()){
 				new Thread(new IDHandlerDebugFrame<>(GameSystem.getIDHandler()), "GameSystem Debug").start();
 			}
 		}else{
@@ -265,7 +271,7 @@ public class Game {
 		}
 		
 		if (settings.containsSetting("UseDefaultKeyBindings")) {
-			if (settings.getSettingAs("UseDefaultKeyBindings", Boolean.class)) {
+			if (settings.getSettingAs("UseDefaultKeyBindings", Boolean.class).booleanValue()) {
 				keyHandler.parseKeyBindings(Paths.get("./res", "DefaultKeyBindings.txt"));
 			}
 		}else{

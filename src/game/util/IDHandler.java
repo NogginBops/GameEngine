@@ -175,15 +175,24 @@ public class IDHandler<T> implements Iterable<ID<T>> {
 		};
 	}
 	
-	public Spliterator<ID<T>> splitterator(){
+	/**
+	 * @return
+	 */
+	public Spliterator<ID<T>> splitterator() {
 		return IDs.spliterator();
 	}
-	
-	public Stream<ID<T>> stream(){
+
+	/**
+	 * @return
+	 */
+	public Stream<ID<T>> stream() {
 		return IDs.stream();
 	}
-	
-	public int size(){
+
+	/**
+	 * @return
+	 */
+	public int size() {
 		return IDs.size();
 	}
 }

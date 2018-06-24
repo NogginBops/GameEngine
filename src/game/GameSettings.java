@@ -118,6 +118,7 @@ public class GameSettings {
 	}
 	
 	/**
+	 * @param <T> 
 	 * @param name
 	 * @param clazz
 	 * @return

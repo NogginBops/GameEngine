@@ -224,7 +224,7 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 		for (int x = 0; x < tableData.length; x++) {
 			tableData[x][0] = ids[x].name + (ids[x].object instanceof GameObject
 					? ((GameObject) ids[x].object).isActive() ? " +" : " -" : "");
-			tableData[x][1] = ids[x].id;
+			tableData[x][1] = Integer.valueOf(ids[x].id);
 			tableData[x][2] = ids[x].object.getClass().getName();
 		}
 

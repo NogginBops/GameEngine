@@ -52,6 +52,9 @@ public abstract class Painter extends BasicGameObject {
 	
 	protected AffineTransform originalTransform;
 	
+	/**
+	 * 
+	 */
 	public boolean debug = false;
 	
 	/**

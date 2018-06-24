@@ -33,6 +33,7 @@ public class EventMachine {
 	
 	/**
 	 * 
+	 * @param <T> 
 	 * @param event
 	 * @param listener
 	 */
@@ -46,6 +47,7 @@ public class EventMachine {
 
 	/**
 	 * 
+	 * @param <T> 
 	 * @param event
 	 * @param listener
 	 */
@@ -62,6 +64,7 @@ public class EventMachine {
 	//NOTE: Should all events be executed on another thread? Should there be a flag to expose this option?
 	
 	/**
+	 * @param <T> 
 	 * @param event
 	 * @param eventClass 
 	 */
@@ -79,6 +82,7 @@ public class EventMachine {
 	//NOTE: Should the timeUnit parameter on executor.schedule(Runnable r, long delay, TimeUnit timeUnit) be exposed?
 	
 	/**
+	 * @param <T> 
 	 * @param event
 	 * @param eventClass 
 	 * @param delayMillis

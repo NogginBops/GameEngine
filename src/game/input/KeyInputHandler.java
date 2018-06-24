@@ -49,6 +49,9 @@ public class KeyInputHandler {
 			}});
 	}
 	
+	/**
+	 * @param path
+	 */
 	public void parseKeyBindings(Path path){
 		try {
 			List<String> lines = Files.readAllLines(path);

@@ -56,8 +56,8 @@ public class GameObjectHandler {
 	public GameObjectHandler() {
 		gameObjectMap = new ConcurrentSkipListMap<Integer, CopyOnWriteArrayList<GameObject>>();
 		//gameObjects = new CopyOnWriteArrayList<GameObject>();
-		zLevels = new CopyOnWriteArrayList<Integer>();
-		idHandler = new IDHandler<GameObject>();
+		zLevels = new CopyOnWriteArrayList<>();
+		idHandler = new IDHandler<>();
 	}
 	
 	private Iterable<GameObject> gameObjects(){
@@ -66,6 +66,7 @@ public class GameObjectHandler {
 
 	/**
 	 * 
+	 * @param <T> 
 	 * @param gameObject
 	 */
 	public <T extends GameObject> void addGameObject(T gameObject) {
@@ -74,6 +75,7 @@ public class GameObjectHandler {
 
 	/**
 	 * 
+	 * @param <T> 
 	 * @param gameObject
 	 * @param nameID
 	 */
@@ -87,6 +89,7 @@ public class GameObjectHandler {
 	
 	/**
 	 * 
+	 * @param <T> 
 	 * @param id
 	 */
 	public <T extends GameObject> void addGameObject(ID<GameObject> id) {
@@ -183,6 +186,7 @@ public class GameObjectHandler {
 	/**
 	 * This method finds all the registered {@link GameObject GameObjects}
 	 * extending a certain subclass T.
+	 * @param <T> 
 	 * 
 	 * @param classT
 	 *            The requested {@link Class}
@@ -203,6 +207,7 @@ public class GameObjectHandler {
 	 * This method finds all the registered {@link GameObject GameObjects} 
 	 * extending a certain subclass T 
 	 * whose {@link GameObject#isActive() isActive()} method returns true.
+	 * @param <T> 
 	 * 
 	 * @param classT
 	 *            The requested {@link Class}
@@ -247,6 +252,7 @@ public class GameObjectHandler {
 
 	/**
 	 * 
+	 * @param <T> 
 	 * @param zLevel
 	 * @param classT
 	 * @return
@@ -263,6 +269,7 @@ public class GameObjectHandler {
 	
 	/**
 	 * 
+	 * @param <T> 
 	 * @param zLevel
 	 * @param classT
 	 * @return

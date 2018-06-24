@@ -97,10 +97,15 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	
 	//NOTE: Should a particle system be any other shape than a rectangle?
 	/**
-	 * @param transform 
+	 * @param x 
+	 * @param y 
+	 * @param width 
+	 * @param height 
+	 * @param anchorX 
+	 * @param anchorY 
 	 * @param zOrder 
 	 * @param maxParticles 
-	 * @param customizer 
+	 * @param customizer
 	 */
 	public ParticleSystem(float x, float y, float width, float height, float anchorX, float anchorY, int zOrder, int maxParticles, ParticleCustomizer customizer) {
 		super(new Rectangle2D.Float(0, 0, width, height), zOrder, 0);
@@ -213,6 +218,7 @@ public class ParticleSystem extends BasicRotatable implements Paintable {
 	/**
 	 * 
 	 * @param particle
+	 * @param color 
 	 * @return
 	 */
 	private boolean hasImage(Particle particle, Color color){

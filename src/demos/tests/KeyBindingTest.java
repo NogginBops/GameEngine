@@ -8,8 +8,15 @@ import game.GameSettings;
 import game.gameObject.graphics.Camera;
 import game.test.TestSprite;
 
+/**
+ * @author Julius Häger
+ *
+ */
 public class KeyBindingTest {
-
+	
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		GameSettings settings = GameSettings.createDefaultGameSettings();
 		

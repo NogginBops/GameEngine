@@ -194,6 +194,9 @@ public class LogDebugFrame extends JFrame implements Runnable{
 	private String[] currentTagFilter;
 	private JScrollPane scrollPane;
 	
+	/**
+	 * @param logMessage
+	 */
 	public void addMessage(LogMessage logMessage){
 		messages.add(logMessage);
 		
