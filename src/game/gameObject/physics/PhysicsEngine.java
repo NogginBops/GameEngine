@@ -5,11 +5,13 @@ import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.Game;
 import game.GameSystem;
 import game.debug.DebugOutputProvider;
+import game.util.math.vector.Vector2D;
 
 /**
  * 
@@ -74,6 +76,155 @@ public class PhysicsEngine extends GameSystem implements DebugOutputProvider {
 	int oldLoopCount = 0;
 	
 	int objects = 0;
+	
+	static class Grid {
+		
+		static class Rect {
+			public final int x, y;
+			public final ArrayList<Collidable> colls = new ArrayList<>();
+			
+			public Rect(int x, int y) {
+				this.x = x;
+				this.y = y;
+			}
+			
+			public void addCollidable(Collidable col) {
+				colls.add(col);
+			}
+		}
+		
+		private ArrayList<Rect> rects = new ArrayList<>();
+		
+		private int rectSize;
+		
+		public Grid(int rectSize) {
+			this.rectSize = rectSize;
+		}
+		
+		private Rect toRect(int x, int y) {
+			for (Rect rect : rects) {
+				if (rect.x == x && rect.y == y) {
+					return rect;
+				}
+			}
+			
+			Rect r = new Rect(x, y);
+			
+			rects.add(r);
+			
+			return r;
+		}
+		
+		private Rect toRect(Vector2D pos) {
+			Vector2D rectPos = Vector2D.mod(pos, rectSize);
+			
+			for (Rect rect : rects) {
+				if (rect.x == rectPos.x && rect.y == rectPos.y) {
+					return rect;
+				}
+			}
+			
+			Rect r = new Rect((int) rectPos.x, (int) rectPos.y);
+			
+			rects.add(r);
+			
+			return r;
+		}
+		
+		private Rect getRect(Vector2D pos) {
+			Vector2D rectPos = Vector2D.mod(pos, rectSize);
+			
+			for (Rect rect : rects) {
+				if (rect.x == rectPos.x && rect.y == rectPos.y) {
+					return rect;
+				}
+			}
+			
+			return null;
+		}
+
+		private Rect getRect(int x, int y) {
+			for (Rect rect : rects) {
+				if (rect.x == x && rect.y == y) {
+					return rect;
+				}
+			}
+			
+			return null;
+		}
+		
+		public void addCollidable(Collidable col) {
+			Rectangle2D bounds = col.getBounds();
+			
+			int xMin = (int) bounds.getX() % rectSize;
+			int yMin = (int) bounds.getY() % rectSize;
+			
+			int xMax = (int) bounds.getMaxX() % rectSize;
+			int yMax = (int) bounds.getMaxY() % rectSize;
+			
+			for (int x = xMin; x <= xMax; x++) {
+				for (int y = yMin; y <= yMax; y++) {
+					Rect rect = toRect(x, y);
+					
+					rect.colls.add(col);
+				}
+			}
+		}
+		
+		public boolean removeCollidable(Collidable col) {
+			boolean removed = false;
+			
+			for (Rect rect : rects) {
+				removed |= rect.colls.remove(col);
+			}
+			
+			return removed;
+		}
+		
+		public void clear() {
+			for (Rect rect : rects) {
+				rect.colls.clear();
+			}
+		}
+		
+		public ArrayList<Collidable> getCollidablesNear(Collidable col) {
+			Rectangle2D bounds = col.getBounds();
+			
+			int xMin = (int) bounds.getX() % rectSize;
+			int yMin = (int) bounds.getY() % rectSize;
+			
+			int xMax = (int) bounds.getMaxX() % rectSize;
+			int yMax = (int) bounds.getMaxY() % rectSize;
+			
+			int minSum = 0;
+			
+			HashSet<Rect> rects = new HashSet<>(Math.max((3 + xMax - xMin) * (3 + yMax - yMin), 9));
+			
+			for (int xOffset = -1; xOffset <= 1; xOffset++) {
+				for (int yOffset = -1; yOffset <= 1; yOffset++) {
+					for (int x = xMin; x <= xMax; x++) {
+						for (int y = yMin; y <= yMax; y++) {
+							Rect r = getRect(x + xOffset, y + yOffset);
+							
+							if (r != null) {
+								if (rects.add(r) == false) {
+									minSum += r.colls.size();
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			ArrayList<Collidable> colls = new ArrayList<>(minSum);
+			
+			for (Rect rect : rects) {
+				colls.addAll(rect.colls);
+			}
+			
+			return colls;
+		}
+	}
 	
 	@Override
 	public void earlyUpdate(float deltaTime) {

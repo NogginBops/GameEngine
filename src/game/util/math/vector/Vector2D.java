@@ -73,6 +73,15 @@ public class Vector2D {
 	public static Vector2D div(Vector2D vec, float scalar) {
 		return new Vector2D(vec.x / scalar, vec.y / scalar);
 	}
+	
+	/**
+	 * @param vec
+	 * @param scalar
+	 * @return
+	 */
+	public static Vector2D mod(Vector2D vec, float mod) {
+		return new Vector2D(vec.x % mod, vec.y % mod);
+	}
 
 	/**
 	 * @param rhs
@@ -230,6 +239,17 @@ public class Vector2D {
 		return this;
 	}
 
+	/**
+	 * 
+	 * @param divisor
+	 * @return
+	 */
+	public Vector2D mod(float divisor) {
+		this.x %= divisor;
+		this.y %= divisor;
+		return this;
+	}
+	
 	/**
 	 * 
 	 * @return
