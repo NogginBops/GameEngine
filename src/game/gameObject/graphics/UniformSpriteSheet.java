@@ -1,8 +1,9 @@
 package game.gameObject.graphics;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
+import game.image.effects.ColorCutoutFilter;
 
 /**
  * @author Julius Häger
@@ -10,13 +11,17 @@ import java.awt.image.BufferedImage;
  */
 public class UniformSpriteSheet {
 	
+	//JAVADOC: UniformSpriteSheet
+	
+	//TODO: Put in a better package
+	
 	private BufferedImage sheet;
 	
 	private int width, height, margin = 0, padding = 0;
 	
 	private int horizontalTiles, verticalTiles;
 	
-	private Color transparentColor = null;
+	private ColorCutoutFilter cutoutFilter = null;
 	
 	/**
 	 * @param sheet
@@ -26,7 +31,6 @@ public class UniformSpriteSheet {
 		if(sheet == null){
 			throw new NullPointerException("Sheet can not be a null pointer");
 		}
-		this.sheet = sheet;
 		
 		if(size <= 0){
 			throw new IllegalArgumentException("Size can not be less than zero.\n Size: " + size);
@@ -35,6 +39,8 @@ public class UniformSpriteSheet {
 		if(sheet.getWidth() < size || sheet.getHeight() < size) {
 			throw new IllegalArgumentException("Size can not be bigger than the actual width of the sheet.\n Image width:" + sheet.getWidth() + ", Size:" + size);
 		}
+		
+		this.sheet = sheet;
 		
 		width = size;
 		height = size;
@@ -52,7 +58,6 @@ public class UniformSpriteSheet {
 		if(sheet == null){
 			throw new NullPointerException("Sheet can not be a null pointer");
 		}
-		this.sheet = sheet;
 		
 		if(width <= 0 || height <= 0){
 			throw new IllegalArgumentException("Size in any dimention can not be less than zero.\n Width: " + width + " Height: " + height);
@@ -61,6 +66,8 @@ public class UniformSpriteSheet {
 		if(sheet.getWidth() < width || sheet.getHeight() < height) {
 			throw new IllegalArgumentException("Size can not be bigger than the actual width of the sheet.\n Image width:" + sheet.getWidth() + ", Width: " + width + " Height: " + height);
 		}
+		
+		this.sheet = sheet;
 		
 		this.width = width;
 		this.height = height;
@@ -79,7 +86,6 @@ public class UniformSpriteSheet {
 		if(sheet == null){
 			throw new NullPointerException("Sheet can not be a null pointer");
 		}
-		this.sheet = sheet;
 		
 		if(width <= 0 || height <= 0){
 			throw new IllegalArgumentException("Size in any dimention can not be less than zero.\n Width: " + width + " Height: " + height);
@@ -89,13 +95,15 @@ public class UniformSpriteSheet {
 			throw new IllegalArgumentException("Size can not be bigger than the actual width of the sheet.\n Image width:" + sheet.getWidth() + ", Width: " + width + " Height: " + height);
 		}
 		
+		this.sheet = sheet;
+		
 		this.width = width;
 		this.height = height;
 		
 		calculateHorizontalTiles();
 		calcualteVerticalTiles();
 		
-		this.transparentColor = transparentColor;
+		cutoutFilter = new ColorCutoutFilter(transparentColor, new Color(0, 0, 0, 0), false);
 	}
 	
 	/**
@@ -168,12 +176,18 @@ public class UniformSpriteSheet {
 		if(x > horizontalTiles || y > verticalTiles){
 			throw new IllegalArgumentException("Index out of bounds! The arguments x: " + x + " and y: " + y + " are out of bounds, width: " + horizontalTiles + " height: " + verticalTiles);
 		}
+		
 		int xCoord = padding - margin + ((width + margin) * x);
 		int yCoord = padding - margin + ((height + margin) * y);
-		return copyImageAndRemoveColor(sheet.getSubimage(xCoord, yCoord, width, height), transparentColor);
+		
+		if(cutoutFilter != null){
+			return cutoutFilter.filter(sheet.getSubimage(xCoord, yCoord, width, height), null);
+		}else{
+			return sheet.getSubimage(xCoord, yCoord, width, height);
+		}
 	}
 	
-	//NOTE: Might change endXY to width/height
+	//NOTE: Might change endXY to be width/height inputs instead
 	/**
 	 * @param startX
 	 * @param startY
@@ -185,45 +199,23 @@ public class UniformSpriteSheet {
 		if(startX < 0 || startY < 0 || endX < 0 || endY < 0){
 			throw new IllegalArgumentException("Index out of bounds! Index can't be a negative value." + (startX < 0 ? " startX: " + startX : "") + (startY < 0 ? " startY: " + startY : "") + (endX < 0 ? " endX: " + endX : "") + (endY < 0 ? " endY: " + endY : ""));
 		}
+		
 		if(startX > horizontalTiles || startY > verticalTiles || endX > horizontalTiles || endY > verticalTiles){
 			throw new IllegalArgumentException("Index out of bounds! The arguments startX: " + startX + ", startY: " + startY + ", endX: " + endX + " and endY: " + endY + ". Bounds width: " + horizontalTiles + " height: " + verticalTiles);
 		}
+		
 		if(startX > endX || startY > endY){
 			throw new IllegalArgumentException("Start value must be less than end value! " + (startX > endX ? " startX: " + startX + " endX: " + endX : "") + (startY > endY ? " startY: " + startY + " endY: " + endY : ""));
 		}
-		int imgWidth = endX - startX;
-		int imgHeight = endY - startY;
-		BufferedImage image = new BufferedImage(imgWidth * width, imgHeight * height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2d = (Graphics2D) image.getGraphics();
-		for(int x = startX; x <= endX; x++){
-			for(int y = startY; y <= endY; y++){
-				g2d.drawImage(getSprite(x, y), (x - startX) * width, (y - startY) * height, null);
-			}
-		}
-		return image;
-	}
-	
-	private BufferedImage copyImageAndRemoveColor(BufferedImage image, Color color){
-		BufferedImage copyImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		if(color != null){
-			int rgb;
-			for (int x = 0; x < image.getWidth(); x++) {
-				for (int y = 0; y < image.getHeight(); y++) {
-					rgb = image.getRGB(x, y);
-					if(rgb == color.getRGB()){
-						copyImage.setRGB(x, y, new Color(0, 0, 0, 0).getRGB());
-					}else{
-						copyImage.setRGB(x, y, image.getRGB(x, y));
-					}
-				}
-			}
+		
+		//TODO: Remove endX and endY and replace them with width and height
+		int imgWidth = 1 + (endX - startX);
+		int imgHeight = 1 + (endY - startY);
+		
+		if(cutoutFilter != null){
+			return cutoutFilter.filter(sheet.getSubimage(startX * width, startY * height, imgWidth * width, imgHeight * height), null);
 		}else{
-			for (int x = 0; x < image.getWidth(); x++) {
-				for (int y = 0; y < image.getHeight(); y++) {
-					copyImage.setRGB(x, y, image.getRGB(x, y));
-				}
-			}
+			return sheet.getSubimage(startX * width, startY * height, imgWidth * width, imgHeight * height);
 		}
-		return copyImage;
 	}
 }

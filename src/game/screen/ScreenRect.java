@@ -6,6 +6,13 @@ package game.screen;
  */
 public class ScreenRect {
 	
+	//JAVADOC: ScreenRects
+	
+	/**
+	 * 
+	 */
+	public static ScreenRect FULL = new ScreenRect(0, 0, 1, 1);
+	
 	protected float x, y, x2, y2;
 	
 	/**
@@ -75,5 +82,10 @@ public class ScreenRect {
 	 */
 	public void setY2(float y2) {
 		this.y2 = y2;
+	}
+	
+	@Override
+	public String toString() {
+		return "ScreenRect[x: " + x + ", y: " + y + ", x2: " + x2 + ", y2: " + y2 + "]";
 	}
 }

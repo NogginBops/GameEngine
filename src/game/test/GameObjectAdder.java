@@ -1,62 +1,36 @@
 package game.test;
 
-import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Rectangle2D;
 
 import demos.town.buildings.Building;
 import demos.town.buildings.houses.House;
-import game.gameObject.GameObject;
-import game.gameObject.handler.GameObjectHandler;
+import game.Game;
+import game.gameObject.BasicGameObject;
+import game.input.keys.KeyListener;
 import game.input.mouse.MouseListener;
 
 /**
  * @author Julius Häger
  *
  */
-public class GameObjectAdder implements GameObject, MouseListener {
+public class GameObjectAdder extends BasicGameObject implements MouseListener, KeyListener {
 	
 	//Remove/Relocate
-
-	private int ZOrder = Integer.MAX_VALUE - 8;
-
-	private GameObjectHandler gameObjectHandler;
-
-	private Rectangle bounds = new Rectangle(10, 10);
 
 	private Building currentBuilding;
 
 	/**
 	 * @param objectHandler
 	 */
-	public GameObjectAdder(GameObjectHandler objectHandler) {
-		gameObjectHandler = objectHandler;
+	public GameObjectAdder() {
+		super(0, 0, new Rectangle2D.Float(0, 0, 10, 10), Integer.MAX_VALUE - 10);
 		currentBuilding = new House(0, 0, 24, 30);
-		gameObjectHandler.addGameObject(currentBuilding, "House");
-	}
-
-	@Override
-	public Rectangle getBounds() {
-		return bounds;
-	}
-
-	@Override
-	public void updateBounds() {
+		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
 		
-	}
-
-	@Override
-	public int getZOrder() {
-		return ZOrder;
-	}
-
-	@Override
-	public int compareTo(GameObject object) {
-		if (ZOrder == object.getZOrder()) {
-			return 0;
-		} else {
-			return ZOrder > object.getZOrder() ? 1 : -1;
-		}
+		Game.keyHandler.addKeyBinding("Clear", KeyEvent.VK_BACK_SPACE);
 	}
 
 	@Override
@@ -66,14 +40,9 @@ public class GameObjectAdder implements GameObject, MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// OtherPaintable p = new OtherPaintable(e.getX(), e.getY(),
-		// rand.nextInt(200), rand.nextInt(200), 0, new Color(rand.nextInt(255),
-		// rand.nextInt(255), rand.nextInt(255)));
-		// gameObjectHandler.addGameObject(p, "Square");
 		currentBuilding.placed();
-		currentBuilding.updateBounds();
 		currentBuilding = new House(e.getX(), e.getY(), 24, 30);
-		gameObjectHandler.addGameObject(currentBuilding, "House");
+		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
 	}
 
 	@Override
@@ -103,8 +72,10 @@ public class GameObjectAdder implements GameObject, MouseListener {
 	}
 
 	@Override
-	public void mouseWeelMoved(MouseWheelEvent e) {
-
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		currentBuilding.placed();
+		currentBuilding = new House(e.getX(), e.getY(), 24, 30);
+		Game.gameObjectHandler.addGameObject(currentBuilding, "House");
 	}
 
 	@Override
@@ -115,5 +86,31 @@ public class GameObjectAdder implements GameObject, MouseListener {
 	@Override
 	public boolean souldReceiveMouseInput() {
 		return true;
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if(Game.keyHandler.isBound("Clear", e.getKeyCode())){
+			Game.gameObjectHandler.clear();
+			Game.gameObjectHandler.addGameObject(this);
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+	}
+
+	@Override
+	public boolean shouldReceiveKeyboardInput() {
+		return true;
+	}
+
+	@Override
+	public Rectangle2D getBounds() {
+		return super.getBounds();
 	}
 }

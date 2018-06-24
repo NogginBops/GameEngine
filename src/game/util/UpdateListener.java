@@ -8,15 +8,15 @@ import game.gameObject.GameObject;
  * @version 1.0
  * @author Julius Häger
  */
-public interface UpdateListener extends GameObject{
+public interface UpdateListener extends GameObject {
 
 	/**
 	 * Called by a Updater to update a UpdateListener.
 	 * 
-	 * @param timeNano
+	 * @param deltaTime
 	 *            this time since the last update. <br>
-	 *            (in nanoseconds)
+	 *            (in seconds)
 	 */
-	public void update(long timeNano);
+	public void update(float deltaTime);
 
 }

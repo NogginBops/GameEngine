@@ -8,6 +8,8 @@ import game.util.UpdateListener;
  *
  */
 public abstract class Building extends Sprite implements UpdateListener {
+	
+	//TODO: Remove
 
 	protected BuildingMode mode;
 
@@ -46,14 +48,14 @@ public abstract class Building extends Sprite implements UpdateListener {
 	}
 
 	@Override
-	public void update(long timeNano) {
+	public void update(float deltaTime) {
 		switch (mode) {
 		case OUTLINE:
 
 			break;
 		case BUILDING:
 			if (timer < buildTime) {
-				timer += timeNano / 1000000000f;
+				timer += deltaTime;
 			} else {
 				mode = BuildingMode.BUILT;
 				timer = 0;
@@ -65,13 +67,6 @@ public abstract class Building extends Sprite implements UpdateListener {
 		default:
 			break;
 		}
-	}
-
-	@Override
-	public void updateBounds() {
-		super.updateBounds();
-		centerMarginX = width / 2;
-		centerMarginY = height / 2;
 	}
 
 	/**

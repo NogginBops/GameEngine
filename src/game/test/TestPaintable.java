@@ -1,6 +1,7 @@
 package game.test;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 import game.gameObject.BasicGameObject;
 import game.gameObject.graphics.Paintable;
@@ -24,6 +25,11 @@ public class TestPaintable extends BasicGameObject implements Paintable {
 
 	@Override
 	public void paint(Graphics2D g2d) {
-		g2d.fillRect((int)x, (int)y, width, height);
+		g2d.fillRect(0, 0, (int)getWidth(), (int)getHeight());
+	}
+
+	@Override
+	public BufferedImage getImage() {
+		return null;
 	}
 }

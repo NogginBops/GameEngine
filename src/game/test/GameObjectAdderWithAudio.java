@@ -1,37 +1,33 @@
 package game.test;
 
-import game.gameObject.GameObject;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.nio.file.Paths;
+import java.util.Random;
+
+import game.Game;
+import game.IO.IOHandler;
+import game.IO.load.LoadRequest;
+import game.gameObject.BasicGameObject;
 import game.gameObject.graphics.Paintable;
-import game.gameObject.handler.GameObjectHandler;
 import game.input.mouse.MouseListener;
 import game.sound.AudioEngine;
 import game.sound.AudioSource;
 import kuusisto.tinysound.Sound;
-import kuusisto.tinysound.TinySound;
-
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.io.File;
-import java.util.Random;
 
 /**
  * @author Julius Häger
  *
  */
-public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseListener {
+public class GameObjectAdderWithAudio extends BasicGameObject implements Paintable, MouseListener {
 	
 	//TODO: Remove/Relocate
 
-	private int ZOrder = Integer.MAX_VALUE - 8;
-
-	private GameObjectHandler gameObjectHandler;
-
 	private Random rand;
-
-	private Rectangle bounds = new Rectangle(10, 10);
 
 	private Sound sound;
 
@@ -40,35 +36,11 @@ public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseLis
 	 * @param y
 	 * @param objectHandler
 	 */
-	public GameObjectAdderWithAudio(int x, int y, GameObjectHandler objectHandler) {
-		gameObjectHandler = objectHandler;
+	public GameObjectAdderWithAudio(int x, int y) {
+		super(x, y, new Rectangle2D.Float(0, 0, 10, 10), Integer.MAX_VALUE - 10);
 		rand = new Random();
-		sound = TinySound.loadSound(new File("./res/robot.mp3"));
-		bounds = new Rectangle(x, y, 10, 10);
-	}
-
-	@Override
-	public Rectangle getBounds() {
-		return bounds;
-	}
-
-	@Override
-	public void updateBounds() {
-
-	}
-
-	@Override
-	public int getZOrder() {
-		return ZOrder;
-	}
-
-	@Override
-	public int compareTo(GameObject object) {
-		if (ZOrder == object.getZOrder()) {
-			return 0;
-		} else {
-			return ZOrder > object.getZOrder() ? 1 : -1;
-		}
+		
+		sound = IOHandler.load(new LoadRequest<Sound>("Robot sound", Paths.get("./res/robot.mp3"), Sound.class)).result;
 	}
 
 	@Override
@@ -80,7 +52,7 @@ public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseLis
 	public void mousePressed(MouseEvent e) {
 		OtherPaintable p = new OtherPaintable(e.getX(), e.getY(), rand.nextInt(200), rand.nextInt(200), 0,
 				new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)));
-		gameObjectHandler.addGameObject(p);
+		Game.gameObjectHandler.addGameObject(p);
 		AudioSource source = new AudioSource(e.getX(), e.getY(), sound);
 		AudioEngine.playSound(source);
 	}
@@ -111,7 +83,7 @@ public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseLis
 	}
 
 	@Override
-	public void mouseWeelMoved(MouseWheelEvent e) {
+	public void mouseWheelMoved(MouseWheelEvent e) {
 
 	}
 
@@ -128,6 +100,16 @@ public class GameObjectAdderWithAudio implements GameObject, Paintable, MouseLis
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.WHITE);
-		g2d.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+		g2d.drawRect(0, 0, (int)getWidth(), (int)getWidth());
+	}
+
+	@Override
+	public BufferedImage getImage() {
+		return null;
+	}
+
+	@Override
+	public Rectangle2D getBounds() {
+		return super.getBounds();
 	}
 }

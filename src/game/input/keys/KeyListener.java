@@ -2,14 +2,12 @@ package game.input.keys;
 
 import java.awt.event.KeyEvent;
 
-import game.gameObject.GameObject;
-
 /**
  * 
  * @version 1.0
  * @author Julius Häger
  */
-public interface KeyListener extends GameObject {
+public interface KeyListener {
 
 	// JAVADOC: KeyListener
 
@@ -36,5 +34,10 @@ public interface KeyListener extends GameObject {
 	 * @return
 	 */
 	public boolean shouldReceiveKeyboardInput();
+	
+	/**
+	 * @return
+	 */
+	public boolean isActive();
 
 }

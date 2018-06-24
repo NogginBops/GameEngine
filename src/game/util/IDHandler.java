@@ -1,7 +1,11 @@
 package game.util;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Spliterator;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 
@@ -9,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author Julius Häger
  * @param <T>
  */
-public class IDHandler<T> {
+public class IDHandler<T> implements Iterable<ID<T>> {
 
 	// JAVADOC: IDHandler
 
@@ -97,9 +101,9 @@ public class IDHandler<T> {
 	 * @param classT
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
-	public ID[] getAllIDs() {
-		return IDs.toArray(new ID[] {});
+	@SuppressWarnings("unchecked") 	//NOTE: This is needed because java hates generics. (when dealing with arrays anyways)
+	public ID<T>[] getAllIDs() {
+		return IDs.toArray(new ID[]{});
 	}
 
 	/**
@@ -120,12 +124,8 @@ public class IDHandler<T> {
 	 * @param classT
 	 * @return
 	 */
-	public ArrayList<T> getAllObjects() {
-		ArrayList<T> list = new ArrayList<>();
-		for (ID<T> id : IDs) {
-			list.add(id.object);
-		}
-		return list;
+	public List<T> getAllObjects() {
+		return IDs.stream().map(id -> id.object).collect(Collectors.toList());
 	}
 
 	/**
@@ -148,5 +148,51 @@ public class IDHandler<T> {
 	 */
 	public int getLastID(){
 		return lastID;
+	}
+	
+	/**
+	 * 
+	 */
+	public void clear(){
+		IDs.clear();
+		lastID = 0;
+	}
+
+	@Override
+	public Iterator<ID<T>> iterator() {
+		return new Iterator<ID<T>>() {
+			Iterator<ID<T>> itr = IDs.iterator();
+			
+			@Override
+			public boolean hasNext() {
+				return itr.hasNext();
+			}
+			
+			@Override
+			public ID<T> next() {
+				return itr.next();
+			}
+		};
+	}
+	
+	/**
+	 * @return
+	 */
+	public Spliterator<ID<T>> splitterator() {
+		return IDs.spliterator();
+	}
+
+	/**
+	 * @return
+	 */
+	public Stream<ID<T>> stream() {
+		return IDs.stream();
+	}
+
+	/**
+	 * @return
+	 */
+	public int size() {
+		return IDs.size();
 	}
 }

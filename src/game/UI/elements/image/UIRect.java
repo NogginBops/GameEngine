@@ -2,7 +2,8 @@ package game.UI.elements.image;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 import game.UI.elements.UIElement;
 
@@ -34,7 +35,7 @@ public class UIRect extends UIElement {
 	/**
 	 * @param rect
 	 */
-	public UIRect(Rectangle rect) {
+	public UIRect(Rectangle2D rect) {
 		super(rect);
 	}
 	
@@ -42,7 +43,7 @@ public class UIRect extends UIElement {
 	 * @param rect
 	 * @param color
 	 */
-	public UIRect(Rectangle rect, Color color) {
+	public UIRect(Rectangle2D rect, Color color) {
 		super(rect);
 		this.color = color;
 	}
@@ -51,8 +52,8 @@ public class UIRect extends UIElement {
 	 * @param width
 	 * @param height
 	 */
-	public UIRect(int width, int height) {
-		super(width, height);
+	public UIRect(float width, float height) {
+		super(0, 0, width, height);
 	}
 	
 	/**
@@ -60,8 +61,8 @@ public class UIRect extends UIElement {
 	 * @param height
 	 * @param color
 	 */
-	public UIRect(int width, int height, Color color) {
-		super(width, height);
+	public UIRect(float width, float height, Color color) {
+		super(0, 0, width, height);
 		this.color = color;
 	}
 	
@@ -71,7 +72,7 @@ public class UIRect extends UIElement {
 	 * @param width
 	 * @param height
 	 */
-	public UIRect(int x, int y, int width, int height) {
+	public UIRect(float x, float y, float width, float height) {
 		super(x, y, width, height);
 	}
 	
@@ -82,7 +83,7 @@ public class UIRect extends UIElement {
 	 * @param height
 	 * @param color
 	 */
-	public UIRect(int x, int y, int width, int height, Color color) {
+	public UIRect(float x, float y, float width, float height, Color color) {
 		super(x, y, width, height);
 		this.color = color;
 	}
@@ -97,6 +98,12 @@ public class UIRect extends UIElement {
 	@Override
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(color);
-		g2d.fill(area);
+		
+		g2d.fill(transform.getTransformedRect());
+	}
+	
+	@Override
+	public BufferedImage getImage() {
+		return null;
 	}
 }

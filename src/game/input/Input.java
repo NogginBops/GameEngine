@@ -1,9 +1,5 @@
 package game.input;
 
-import game.Game;
-import game.gameObject.BasicGameObject;
-import game.util.UpdateListener;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -17,20 +13,26 @@ import javax.swing.event.MouseInputListener;
  * @version 1.0
  * @author Julius Häger
  */
-public class Input extends BasicGameObject implements KeyListener, MouseInputListener, MouseWheelListener, UpdateListener {
+public class Input implements KeyListener, MouseInputListener, MouseWheelListener {
+	
+	//JAVADOC: Input
+	
+	//TODO: Merge MouseInputHandler and KeyInputHandler
 
+	//TODO: Make Input a wrapper for raw input, probably by making it abstract.
+	// The MouseInputHandler and KeyInputHandler merge will then be the default implementation probably inheriting from this class
+	
 	private MouseInputHandler mouseHandler;
 
 	private KeyInputHandler keyHandler;
 	
-	//TODO: Key-binding system
+	//TODO: This class should be update synced and the Mouse and Key handlers should do their own thing?
 
 	/**
 	 * @param mouseHandeler
 	 * @param keyHandeler
 	 */
 	public Input(MouseInputHandler mouseHandeler, KeyInputHandler keyHandeler) {
-		super(0, 0, 0, 0, 0);
 		this.mouseHandler = mouseHandeler;
 		this.keyHandler = keyHandeler;
 	}
@@ -88,14 +90,5 @@ public class Input extends BasicGameObject implements KeyListener, MouseInputLis
 	@Override
 	public void keyReleased(KeyEvent e) {
 		keyHandler.keyReleased(e);
-	}
-
-	@Override
-	public void update(long timeMillis) {
-		mouseHandler.computeEnteredListeners();
-		
-		if(Game.getGameObjectHandler().shouldUpdateObjects()){
-			keyHandler.updateListeners();
-		}
 	}
 }

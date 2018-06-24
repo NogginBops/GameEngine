@@ -1,24 +1,32 @@
 package game.debug;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import game.Game;
-import game.controller.event.EventListener;
 import game.controller.event.GameEvent;
-import game.gameObject.handler.event.GameObjectCreatedEvent;
-import game.gameObject.handler.event.GameObjectDestryoedEvent;
-import game.gameObject.handler.event.GameObjectEvent;
+import game.controller.event.engineEvents.GameQuitEvent;
+import game.debug.event.DebugObjectSelectedEvent;
+import game.gameObject.GameObject;
 import game.util.ID;
 import game.util.IDHandler;
 
@@ -29,63 +37,87 @@ import game.util.IDHandler;
  */
 public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 
+	// TODO: Clean up
+	
+	//TODO: Either find a way to not replace the model but only add and remove the objects directly through the table or
+	// find a way to retain the selection when updating the table model.
+
+	// JAVADOC: IDHandlerDebugFrame<T>
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6735343486517710772L;
-	
+
 	private IDHandler<T> handler;
+	
+	private int width = 500;
+	private int height = 500;
+	
+	private int refreshDelay = 200;
 
 	private JPanel contentPane;
-	private JPanel panel;
+	private JSplitPane splitPane;
+	private JPanel lowerPanel;
+	private JLabel debugOutput;
 	private JScrollPane scrollPane;
+	private JScrollPane outputScrollPane;
 	private JTable table;
 	private JButton btnRefresh;
+	private Timer debugOutputRefreshTimer;
 	
-	private boolean closeRequested = false;
+	private ID<T>[] ids;
 
-	/**
-	 * Launch the application.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					@SuppressWarnings({ "unchecked", "rawtypes" })
-					IDHandlerDebugFrame frame = new IDHandlerDebugFrame(new IDHandler<>());
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private ListSelectionListener selectionListener;
+	
+	private ID<T> selectedProvider = null;
+	
 
 	/**
 	 * Create the frame.
 	 * 
 	 * @param handler
+	 * @param updateEvents 
 	 */
-	public IDHandlerDebugFrame(IDHandler<T> handler) {
+	@SafeVarargs
+	public IDHandlerDebugFrame(IDHandler<T> handler, Class<? extends GameEvent> ... updateEvents) {
 		this.handler = handler;
+		
+		for (Class<? extends GameEvent> event : updateEvents) {
+			Game.eventMachine.addEventListener(event, (e) -> updateIDs.run());
+		}
 
 		setTitle("ID Handler Debug Window");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, width, height);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 
-		panel = new JPanel();
-		contentPane.add(panel, BorderLayout.CENTER);
-		panel.setLayout(new BorderLayout(0, 0));
-
 		scrollPane = new JScrollPane();
-		panel.add(scrollPane, BorderLayout.CENTER);
+		
+		outputScrollPane = new JScrollPane();
+		//outputScrollPane.setLayout(new BorderLayout(0, 0));
+		
+		debugOutput = new JLabel("Select a gameobject to see debug info");
+		debugOutput.setFont(Font.getFont("Sanserif"));
+
+		lowerPanel = new JPanel();
+		lowerPanel.setBorder(new LineBorder(Color.lightGray));
+		lowerPanel.setLayout(new BorderLayout(0, 0));
+		lowerPanel.add(outputScrollPane, BorderLayout.CENTER);
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		outputScrollPane.setViewportView(panel);
+		
+		panel.add(debugOutput, BorderLayout.NORTH);
+		
+		splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, scrollPane, lowerPanel);
+		contentPane.add(splitPane, BorderLayout.CENTER);
+		splitPane.setDividerLocation((height/10) * 5);
 
 		table = new JTable();
 		table.setModel(
@@ -104,40 +136,104 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 					}
 				});
 		table.setAutoCreateRowSorter(true);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		selectionListener = new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if(e.getValueIsAdjusting() == false && table.getSelectedRow() != -1){
+					selectedProvider = ids[table.getSelectedRow()];
+					Game.eventMachine.fireEvent(new DebugObjectSelectedEvent(this, selectedProvider.object));
+					if (selectedProvider.object instanceof DebugOutputProvider) {
+						String text = "<html>";
+						text += "<b><u>" + selectedProvider.name + "</u></b> - " + selectedProvider.id + "<br>";
+						for (String line : ((DebugOutputProvider)selectedProvider.object).getDebugValues()) {
+							text += line + "<br>";
+						}
+						text += "</html>";
+						debugOutput.setText(text);
+						
+						outputScrollPane.setPreferredSize(debugOutput.getPreferredSize());
+					} else {
+						debugOutput.setText("<html>" + ids[table.getSelectedRow()].object.getClass() + " does not support debug print outs.<br>For debug printouts to work the object needs to implement DebugOutputProvider!</html>");
+					}
+				}
+			}
+		};
+		table.getSelectionModel().addListSelectionListener(selectionListener);
 		scrollPane.setViewportView(table);
-
 		btnRefresh = new JButton("Refresh");
 		btnRefresh.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				updateIDs(handler.getAllIDs());
+				SwingUtilities.invokeLater(() -> {
+					updateIDs(handler.getAllIDs());
+				});
 			}
 		});
-		panel.add(btnRefresh, BorderLayout.NORTH);
+		contentPane.add(btnRefresh, BorderLayout.NORTH);
+
+		SwingUtilities.invokeLater(() -> {
+			updateIDs(handler.getAllIDs());
+		});
 		
-		updateIDs(handler.getAllIDs());
+		debugOutputRefreshTimer = new Timer(refreshDelay, new ActionListener() {
+			//TODO: This is duplicate code. Extract to variable.
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(selectedProvider != null){
+					if(selectedProvider.object instanceof DebugOutputProvider){
+						String text = "<html>";
+						text += "<b><u>" + selectedProvider.name + "</u></b> - " + selectedProvider.id + "<br>";
+						for (String line : ((DebugOutputProvider)selectedProvider.object).getDebugValues()) {
+							text += line + "<br>";
+						}
+						text += "</html>";
+						debugOutput.setText(text);
+					}else{
+						debugOutput.setText("<html>" + selectedProvider.object.getClass() + " does not support debug print outs.<br>For debug printouts to work the object needs to implement DebugOutputProvider!</html>");
+					}
+				}
+				/*
+				if(table.getSelectedRow() != -1){
+					if(ids[table.getSelectedRow()].object instanceof DebugOutputProvider){
+						String text = "<html>";
+						text += "<b><u>" + ids[table.getSelectedRow()].name + "</u></b> - " + ids[table.getSelectedRow()].id + "<br>";
+						for (String line : ((DebugOutputProvider)ids[table.getSelectedRow()].object).getDebugValues()) {
+							text += line + "<br>";
+						}
+						text += "</html>";
+						debugOutput.setText(text);
+					}else{
+						debugOutput.setText("<html>" + ids[table.getSelectedRow()].object.getClass() + " does not support debug print outs.<br>For debug printouts to work the object needs to implement DebugOutputProvider!</html>");
+					}
+				}
+				*/
+			}
+		});
+		
+		debugOutputRefreshTimer.start();
 	}
-
-	/**
-	 * 
-	 */
-	public void stopDebug() {
-		closeRequested = true;
-		dispose();
-	}
-
+	
 	/**
 	 * @param ids
 	 * 
 	 */
-	
-	private void updateIDs(ID<?>[] ids) {
+	private void updateIDs(ID<T>[] ids) {
+
 		Object[][] tableData = new Object[ids.length][3];
+		int selectedRow = -1;
+
 		for (int x = 0; x < tableData.length; x++) {
-			tableData[x][0] = ids[x].name;
-			tableData[x][1] = ids[x].id;
+			tableData[x][0] = ids[x].name + (ids[x].object instanceof GameObject
+					? ((GameObject) ids[x].object).isActive() ? " +" : " -" : "");
+			tableData[x][1] = Integer.valueOf(ids[x].id);
 			tableData[x][2] = ids[x].object.getClass().getName();
+			
+			if (selectedProvider == ids[x]) {
+				selectedRow = x;
+			}
 		}
+
 		DefaultTableModel model = new DefaultTableModel(tableData, new String[] { "Name", "ID", "Type" }) {
 
 			/**
@@ -156,36 +252,41 @@ public class IDHandlerDebugFrame<T> extends JFrame implements Runnable {
 			public boolean isCellEditable(int row, int column) {
 				return false;
 			}
+			
 		};
-		table.setModel(model);
+		
+		final int row = selectedRow;
+		SwingUtilities.invokeLater(() -> {
+			if (table != null) table.setModel(model);
+			this.ids = ids;
+			if (row >= 0) {
+				table.getSelectionModel().clearSelection();
+				table.getSelectionModel().addSelectionInterval(row, row);
+			}
+		});
 	}
-
+	
+	Runnable updateIDs = () -> updateIDs(handler.getAllIDs());
+	
 	@Override
 	public void run() {
 		this.setVisible(true);
 		
-		EventListener listener = new EventListener() {
-			@Override
-			public <T2 extends GameEvent<?>> void eventFired(T2 event) {
-				updateIDs(handler.getAllIDs());
-			}
-		};
-		//FIXME: Event Hierarchies
-		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, listener);
-		
-		Game.eventMachine.addEventListener(GameObjectDestryoedEvent.class, listener);
-		
-		Game.eventMachine.addEventListener(GameObjectEvent.class, listener);
-		
-		while(!closeRequested){
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		Game.eventMachine.addEventListener(GameQuitEvent.class, (event) -> { stopDebug(); });
 	}
 	
-	
-	
+	/**
+	 * 
+	 */
+	public void stopDebug() {
+		dispose();
+	}
+
+	// TODO: Fix this in a more elegant way
+	/**
+	 * @param handler
+	 */
+	public void setHandler(IDHandler<T> handler) {
+		this.handler = handler;
+	}
 }

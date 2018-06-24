@@ -1,5 +1,7 @@
 package game.IO.load;
 
+import java.nio.file.Path;
+
 /**
  * <p>
  * The loader class is used by the IO system to construct objects from files.
@@ -13,17 +15,18 @@ package game.IO.load;
  *            - The output data type of the loader.
  */
 public interface Loader<T> {
-
+	
+	// TODO: More consistent error messages from default Loaders
+	
 	/**
 	 * When the IO system has found a suitable request for this loader this
 	 * method is called with that request.
-	 * 
-	 * @param request
-	 *            - The request to load.
+	 * @param path 
+	 * 			The path to load
 	 * 
 	 * @return The loaded and parsed class.
 	 */
-	public T load(LoadRequest<?> request);
+	public T load(Path path);
 
 	/**
 	 * Used to figure out if this loader should be used or not for a specific

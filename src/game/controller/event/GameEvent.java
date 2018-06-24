@@ -8,33 +8,26 @@ package game.controller.event;
  * @param <T> 
  *
  */
-public abstract class GameEvent<T>{
+public abstract class GameEvent{
 	
 	//JAVADOC: GameEvent
 	
 	/**
 	 * 
 	 */
-	public final T origin;
+	public final Object origin;
 	
-	//TODO: Explore a safer solution
-	/**
-	 * <b>NOTE:</b> The class should specify which commands are valid through public static final strings
-	 */
-	public final String command;
-
 	/**
 	 * 
 	 * @param origin
 	 * @param command
 	 */
-	public GameEvent(T origin, String command) {
+	public GameEvent(Object origin) {
 		this.origin = origin;
-		this.command = command;
 	}
 
 	@Override
 	public String toString() {
-		return "GameEvent[Origin=" + origin + ", Command: " + command + "]";
+		return "GameEvent[Origin=" + origin + "]";
 	}
 }

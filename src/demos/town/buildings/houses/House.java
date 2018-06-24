@@ -1,9 +1,7 @@
 package demos.town.buildings.houses;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import demos.town.buildings.Building;
 import game.IO.IOHandler;
@@ -28,35 +26,40 @@ public class House extends Building {
 	public House(float x, float y, int width, int height) {
 		super(x, y, width, height);
 		load();
+		
+		setSprite(outline);
 	}
 
 	private void load() {
-		try {
-			built = IOHandler.load(new LoadRequest<BufferedImage>("Built", new File("res/town/House_Built.png"),
-					BufferedImage.class, "Default Image Loader")).result;
-			building = IOHandler.load(new LoadRequest<BufferedImage>("Building",
-					new File("res/town/House_Building.png"), BufferedImage.class, "Default Image Loader")).result;
-			outline = IOHandler.load(new LoadRequest<BufferedImage>("Outline", new File("res/town/House_outline.png"),
-					BufferedImage.class, "Default Image Loader")).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		built = IOHandler.load(new LoadRequest<BufferedImage>("Built", Paths.get("res/town/House_Built.png"),
+				BufferedImage.class, "Default Image Loader")).result;
+		building = IOHandler.load(new LoadRequest<BufferedImage>("Building", Paths.get("res/town/House_Building.png"),
+				BufferedImage.class, "Default Image Loader")).result;
+		outline = IOHandler.load(new LoadRequest<BufferedImage>("Outline", Paths.get("res/town/House_outline.png"),
+				BufferedImage.class, "Default Image Loader")).result;
 	}
-
+	
+	BuildingMode last = null;
+	
 	@Override
-	public void paint(Graphics2D g2d) {
-		switch (mode) {
-		case OUTLINE:
-			g2d.drawImage(outline, (int) x, (int) y, null);
-			break;
-		case BUILDING:
-			g2d.drawImage(building, (int) x, (int) y, null);
-			break;
-		case BUILT:
-			g2d.drawImage(built, (int) x, (int) y, null);
-			break;
-		default:
-			break;
+	public void update(float deltaTime) {
+		super.update(deltaTime);
+		
+		if(last != mode){
+			switch (mode) {
+			case OUTLINE:
+				setSprite(outline);
+				break;
+			case BUILDING:
+				setSprite(building);
+				break;
+			case BUILT:
+				setSprite(built);
+				break;
+			default:
+				break;
+			}
+			last = mode;
 		}
 	}
 }

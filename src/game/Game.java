@@ -1,64 +1,36 @@
 package game;
 
-import java.awt.Color;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.awt.Dimension;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
+import java.nio.file.Paths;
 
-import javax.xml.stream.XMLStreamException;
-
-import demos.pong.Ball;
-import demos.pong.Pad;
-import demos.pong.Pad.Side;
-import demos.pong.Score;
-import demos.verticalScroller.Ship;
-import demos.verticalScroller.ShipFactory;
-import demos.verticalScroller.map.Map;
-import game.IO.IOHandler;
-import game.IO.load.LoadRequest;
-import game.UI.UI;
-import game.UI.border.Border;
-import game.UI.border.SolidBorder;
-import game.UI.elements.containers.BasicUIContainer;
-import game.UI.elements.image.UIImage;
-import game.UI.elements.input.UIButton;
-import game.UI.elements.text.UILabel;
 import game.controller.event.EventMachine;
 import game.controller.event.engineEvents.GameQuitEvent;
 import game.controller.event.engineEvents.GameStartEvent;
+import game.controller.event.engineEvents.SceneLoadEvent;
+import game.controller.event.engineEvents.SceneLoadedEvent;
 import game.debug.IDHandlerDebugFrame;
 import game.debug.log.Log;
-import game.debug.log.frame.LogFrame;
-import game.gameObject.GameObject;
+import game.debug.log.Log.LogImportance;
+import game.debug.log.frame.LogDebugFrame;
 import game.gameObject.graphics.Camera;
-import game.gameObject.graphics.Paintable;
-import game.gameObject.graphics.UniformSpriteSheet;
 import game.gameObject.handler.GameObjectHandler;
+import game.gameObject.handler.event.GameObjectCreatedEvent;
+import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.gameObject.physics.PhysicsEngine;
 import game.input.Input;
 import game.input.KeyInputHandler;
 import game.input.MouseInputHandler;
 import game.screen.Screen;
-import game.screen.ScreenManager;
-import game.screen.ScreenRect;
 import game.sound.AudioEngine;
-import game.test.GameObjectAdder;
-import game.test.GameObjectAdderWithAudio;
-import game.test.OtherPaintable;
-import game.test.TestInputSprite;
-import game.test.TestSprite;
 import game.util.FPSCounter;
-import game.util.IDHandler;
+import game.util.StandardUpdater;
 import game.util.UpdateCounter;
-import game.util.UpdateListener;
 import game.util.Updater;
-import kuusisto.tinysound.Music;
+import game.util.image.ImageUtils;
+import game.util.math.MathUtils;
 
 /**
  * 
@@ -66,536 +38,336 @@ import kuusisto.tinysound.Music;
  * @version 1.0
  * @author Julius Häger
  */
-public class Game extends Updater {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		Game game = new Game();
-		game.run();
-	}
-
-	// TODO: Clean up
-
-	// JAVADOC: Game
-
-	/**
-	 * 
-	 */
-	public static Game game;
+public class Game {
 	
-	/**
-	 * The debug log associated with the game
-	 */
-	public static Log log;
+	//JAVADOC: Game
 	
-	/**
-	 * The main EventMachine
-	 */
-	public static EventMachine eventMachine;
+	//TODO: Restructure project packages to make more sense
+	
+	//NOTE: Should everything be static? There is only ever going to be one game... (or?)
+	
+	//TODO: Clean up
+	
+	//TODO: Clean up getters and setters, and maybe add shorthand methods for common uses (e.g logging and getting gameObjects)
 
+	//TODO: Tasks and thread pooling for game and painting threads. (Support for other tasks too)
+	//The game loop, graphics loop and potentially other systems should use a thread pool system
+	//so that they can be more efficient. (The game update thread could be used for rendering if 
+	//the rendering system was built to support that).
+	
+	//TODO: Find a good way to manage standard assets.
+	//e.g the standard particle asset
+	
 	private static boolean running = false;
 	private static boolean closeRequested = false;
 	private static boolean paused = false;
 	
-	private String name = "Game";
-
-	private GameObjectHandler gameObjectHandler;
-
-	private PhysicsEngine physicsEngine;
+	private static long startTime;
+	private static long currTime;
+	private static long elapsedTime;
+	private static long startQuitTime;
 	
-	private Camera camera;
-
-	private Screen screen;
-
-	private long initTime;
-
-	private LogFrame LogFrame;
+	private static int targetUPS;
 	
-	private IDHandlerDebugFrame<GameObject> IDDebug;
+	private static boolean limitUPS = true;
 	
-	//FIXME: Giant GC freeze
+	/**
+	 * 
+	 */
+	public static long deltaTimeWarningThreshold = 100;
+	
+	private static float timeScale = 1;
+	
+	private static String name = "Game";
+
+	/**
+	 * The debug log associated with the game.
+	 */
+	public static Log log = new Log();
+	
+	/**
+	 * The main EventMachine.
+	 */
+	public static EventMachine eventMachine = new EventMachine();
+	
+	/**
+	 * The physics engine
+	 */
+	public static PhysicsEngine physicsEngine;
+	
+	//TODO: Some more elegant methods for using the GOH
+	/**
+	 * The main gameObjectHandeler.
+	 */
+	public static GameObjectHandler gameObjectHandler = new GameObjectHandler();
+	
+	private static GameSettings settings;
+	
+	private static Camera camera; //TODO: This should support multiple cameras!
 
 	/**
 	 * 
 	 */
-	public Game() {
+	public static Screen screen; //FIXME: Support multiple screens.
+	
+	/**
+	 * 
+	 */
+	public static MouseInputHandler mouseHandler;
+	
+	/**
+	 * 
+	 */
+	public static KeyInputHandler keyHandler;
+	
+	/**
+	 * 
+	 */
+	public static Updater updater;
+	
+	private static Input inputHandler;
+
+	private static long initTime;
+	
+	//FIXME: Giant GC freeze
+	//NOTE: The solution for now are the -XX:+UseG1GC -XX:MaxGCPauseMillis=50 VM flags that seem to have a satisfactory result.
+	
+	private Game() { }
+	
+	/**
+	 * @param settings
+	 */
+	public static void setup(GameSettings settings){
+		//TODO: Clean up and make more streamline. (Think about the order of initialization)
+		//Should things really be static?
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			long quitTime = System.nanoTime() - startQuitTime;
+			Game.log.logMessage("Quit took: " + (quitTime / 1000000000f) + "s");
+		}, "Game shutdown hook"));
+		
+		//TODO: Is this really doing anything?
+		//The engine should be usable even though no hardware acceleration is present.
+		System.setProperty("sun.java2d.opengl", "true");
+		
 		initTime = System.nanoTime();
-
-		basicSetup();
 		
-		basicDebug();
-
-		test();
-		//test2();
-		// test2WithAudio();
-		// pong();
-		// pong44();
-		// breakout();
-		//UITest();
+		log.logMessage("Initializing the game!", "System", "Game");
 		
-		//verticalScroller();
+		Game.settings = settings;
 		
-		cameraTest();
-		//cameraTest2();
-		
-		completeSetup();
-		
-		//addDebug();
-	}
-	
-	private void cameraTest(){
-		setName("Camera Test");
-		
-		Camera newCamera = new Camera(0, 0, camera.getWidth(), camera.getHeight());
-		
-		newCamera.setScreenRectangle(new ScreenRect(0.59f, 0.59f, 0.4f, 0.4f));
-		
-		newCamera.setBackgroundColor(new Color(20, 200, 100, 100));
-		
-		screen.addPainter(newCamera);
-		
-		gameObjectHandler.addGameObject(newCamera, "Secondary camera");
-	}
-	
-	@SuppressWarnings("unused")
-	private void cameraTest2(){
-		setName("Camera Test 2");
-		
-		Camera Q1 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
-		
-		Q1.setScreenRectangle(new ScreenRect(0, 0, 0.5f, 0.5f));
-		
-		Q1.setBackgroundColor(Color.CYAN);
-		
-		Q1.receiveKeyboardInput(true);
-		
-		screen.addPainter(Q1);
-		
-		gameObjectHandler.addGameObject(Q1, "Q1 camera");
-		
-		Camera Q2 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
-		
-		Q2.setScreenRectangle(new ScreenRect(0.5f, 0, 0.5f, 0.5f));
-		
-		Q2.setBackgroundColor(Color.MAGENTA);
-		
-		Q2.receiveKeyboardInput(true);
-		
-		screen.addPainter(Q2);
-		
-		gameObjectHandler.addGameObject(Q2, "Q2 camera");
-		
-		Camera Q3 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
-		
-		Q3.setScreenRectangle(new ScreenRect(0, 0.5f, 0.5f, 0.5f));
-		
-		Q3.setBackgroundColor(Color.YELLOW);
-		
-		Q3.receiveKeyboardInput(true);
-		
-		screen.addPainter(Q3);
-		
-		gameObjectHandler.addGameObject(Q3, "Q3 camera");
-		
-		Camera Q4 = new Camera(0, 0, camera.getWidth(), camera.getHeight());
-		
-		Q4.setScreenRectangle(new ScreenRect(0.5f, 0.5f, 0.5f, 0.5f));
-		
-		Q4.setBackgroundColor(Color.BLACK);
-		
-		Q4.receiveKeyboardInput(true);
-		
-		screen.addPainter(Q4);
-		
-		gameObjectHandler.addGameObject(Q4, "Q4 camera");
-	}
-	
-	@SuppressWarnings("unused")
-	private void verticalScroller(){
-		setName("VerticalScroller");
-		
-		screen.setResolution(400, 600);
-		
-		camera.setSize(400, 600);
-		
-		screen.setDebugEnabled(true);
-		camera.receiveKeyboardInput(false);
-		
-		camera.setBackgroundColor(new Color(80, 111, 140));
-		
-		BufferedImage shipSheetImage = null;
-		
-		BufferedImage projectileSheetImage = null;
-		
-		try {
-			shipSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ShipSheet", new File("./res/verticalScroller/graphics/ShipsSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-			projectileSheetImage = IOHandler.load(new LoadRequest<BufferedImage>("ProjectileSheet", new File("./res/verticalScroller/graphics/ProjectileSheet.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(settings == null){
+			log.logWarning("No settings provided! Using the default settings!", "System", "Settings");
+			settings = GameSettings.createDefaultGameSettings();
 		}
 		
-		UniformSpriteSheet shipSheet = new UniformSpriteSheet(shipSheetImage, 12, 14, new Color(191, 220, 191));
+		loadSettings(settings);
 		
-		UniformSpriteSheet projectileSheet = new UniformSpriteSheet(projectileSheetImage, 12, 14, new Color(191, 220, 191));
+		//NOTE: This should be done in setup
 		
-		log.logMessage("Horizontal tiles: " + shipSheet.getHorizontalTiles() + " Vertical tiles: " + shipSheet.getVerticalTiles(), "VerticalScroller");
-		
-		ShipFactory.createShip("Standard", 
-				shipSheet.getSprite(0, 6, 2, 8),
-				shipSheet.getSprite(2, 6, 4, 8),
-				shipSheet.getSprite(4, 6, 6, 8),
-				shipSheet.getSprite(6, 6, 8, 8),
-				shipSheet.getSprite(8, 6, 10, 8),
-				projectileSheet.getSprite(3, 4));
-		
-		Ship ship = ShipFactory.getShip("Standard");
-		
-		ship.setMovmentBounds(camera.getBounds());
-		
-		ship.setLocation((camera.getWidth() - ship.getBounds().width)/2, camera.getHeight() - 150);
-		
-		gameObjectHandler.addGameObject(ship, "PlayerShip");
-		
-		AudioEngine.setAudioListener(ship);
-		
-		try {
-			Map map = Map.parseMap(new File(".\\res\\verticalScroller\\maps\\map1.xml"));
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (XMLStreamException e1) {
-			e1.printStackTrace();
+		if(settings.containsSetting("OnScreenDebug")){
+			if (settings.getSettingAs("OnScreenDebug", Boolean.class).booleanValue()) {
+				basicDebug();
+			}
+		}else{
+			Game.log.logWarning("No OnScreenDebug property in game settings!", "System", "Settings", "Debug");
 		}
 		
-		//TODO: Fix adhoc solution
-		try {
-			Music music = IOHandler.load(new LoadRequest<Music>("MainMusic", new File(".\\res\\verticalScroller\\sounds\\music\\fight_looped.wav"), Music.class, "DefaultMusicLoader")).result;
-			music.play(true, 0.4f);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(settings.containsSetting("DebugLog")){
+			if (settings.getSettingAs("DebugLog", Boolean.class).booleanValue()) {
+				new Thread(new LogDebugFrame(log), "Debug Log").start();
+			}
+		}else{
+			Game.log.logWarning("No DebugLog property in game settings!", "System", "Settings", "Debug");
 		}
 		
-		AudioEngine.setMasterVolume(0.01f);
+		if(settings.containsSetting("DebugID")){
+			if(settings.getSettingAs("DebugID", Boolean.class).booleanValue()){
+				new Thread(new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler(), GameObjectCreatedEvent.class, GameObjectDestroyedEvent.class), "IDHandler Debug").start();
+			}
+		}else{
+			Game.log.logWarning("No DebugID property in game settings!", "System", "Settings", "Debug");
+		}
+		
+		if (settings.containsSetting("DebugGameSystem")) {
+			if(settings.getSettingAs("DebugGameSystem", Boolean.class).booleanValue()){
+				new Thread(new IDHandlerDebugFrame<>(GameSystem.getIDHandler()), "GameSystem Debug").start();
+			}
+		}else{
+			Game.log.logWarning("No DebugGameSystem property in game settings!", "System", "Settings", "Debug");
+		}
 	}
-
-	private void basicSetup() {
-		Game.game = this;
+	
+	private static void loadSettings(GameSettings settings){
+		final GameSettings DEFAULT = GameSettings.createDefaultGameSettings();
 		
-		eventMachine = new EventMachine();
+		physicsEngine = new PhysicsEngine();
 		
-		log = new Log();
+		name = DEFAULT.getSettingAs("Name", String.class);
+		if(settings.containsSetting("Name")){
+			name = settings.getSettingAs("Name", String.class);
+		}else{
+			log.logWarning("No 'Name' settigns in settigns! Using the default setting.", "System", "Settings");
+		}
 		
-		gameObjectHandler = new GameObjectHandler();
+		Dimension res = DEFAULT.getSettingAs("Resolution", Dimension.class);
+		if(settings.containsSetting("Resolution")){
+			res = settings.getSettingAs("Resolution", Dimension.class);
+		}else{
+			log.logWarning("No 'Resolution' settigns in settigns! Using the default setting.", "System", "Settings");
+		}
 		
-		physicsEngine = new PhysicsEngine(gameObjectHandler);
+		Screen.Mode mode = DEFAULT.getSettingAs("ScreenMode", Screen.Mode.class);
+		if(settings.containsSetting("ScreenMode")){
+			mode = settings.getSettingAs("ScreenMode", Screen.Mode.class);
+		}else{
+			log.logWarning("No 'ScreenMode' settigns in settigns! Using the default setting.", "System", "Settings");
+		}
 		
-		screen = new Screen(600, 400, ScreenManager.NORMAL, "Game");
-		camera = new Camera(0, 0, ScreenManager.getWidth(), ScreenManager.getHeight());
+		int targetFPS = DEFAULT.getSettingAs("TargetFPS", Integer.class);
+		if(settings.containsSetting("TargetFPS")){
+			targetFPS = settings.getSettingAs("TargetFPS", Integer.class);
+		}else{
+			log.logWarning("No 'TargetFPS' settigns in settigns! Using the default setting.", "System", "Settings");
+		}
 		
-		camera.setBackgroundColor(new Color(0.15f, 0.15f, 0.15f, 1f));
+		screen = new Screen(res, mode, name, targetFPS);
 		
-		MouseInputHandler mouseHandler = new MouseInputHandler(gameObjectHandler, camera);
-		KeyInputHandler keyHandler = new KeyInputHandler(gameObjectHandler);
-		Input inputHandler = new Input(mouseHandler, keyHandler);
+		//NOTE: Should the camera be a part of the settings?
+		camera = DEFAULT.getSettingAs("MainCamera", Camera.class);
+		if (settings.containsSetting("MainCamera")) {
+			camera = settings.getSettingAs("MainCamera", Camera.class);
+		} else {
+			log.logWarning("No 'MainCamera' settigns in settigns! Using the default setting.", "System", "Settings");
+		}
+		
+		targetUPS = DEFAULT.getSettingAs("TargetUPS", Integer.class);
+		if(settings.containsSetting("TargetFPS")){
+			targetUPS = settings.getSettingAs("TargetUPS", Integer.class);
+		}else{
+			log.logWarning("No 'TargetUPS' settigns in settigns! Using the default setting.", "System", "Settings");
+		}
+		
+		if(settings.containsSetting("Updater")){
+			updater = settings.getSettingAs("Updater", Updater.class);
+			log.logMessage("Found a custom updater!");
+		}else{
+			updater = new StandardUpdater();
+		}
+		
+		mouseHandler = new MouseInputHandler(camera);
+		keyHandler = new KeyInputHandler();
+		inputHandler = new Input(mouseHandler, keyHandler);
+		
+		//TODO: Better system for KeyBindings!
+		// Maybe use an external file or something?
+		// Should support additive loading of KeyBindings
+		
+		if(settings.containsSetting("KeyBindings")){
+			String path = settings.getSettingAs("KeyBindings", String.class);
+			if (path != null) {
+				if (path.length() > 0) {
+					keyHandler.parseKeyBindings(Paths.get(path));				
+				}else{
+					log.logWarning("KeyBindings specified, but has no value!");
+				}				
+			}
+		}else{
+			log.logMessage("Didn't find any keybindings in the settigns.");
+		}
+		
+		if (settings.containsSetting("UseDefaultKeyBindings")) {
+			if (settings.getSettingAs("UseDefaultKeyBindings", Boolean.class).booleanValue()) {
+				keyHandler.parseKeyBindings(Paths.get("./res", "DefaultKeyBindings.txt"));
+			}
+		}else{
+			log.logWarning("Didn't find any UseDefaultKeyBindings in the settigns.", "System", "Settings", "Keybindings");
+		}
 		
 		screen.addPainter(camera);
 		screen.addInputListener(inputHandler);
 
 		AudioEngine.init(camera);
 		
-		gameObjectHandler.addGameObject(physicsEngine, "Physics Engine");
-		
-		gameObjectHandler.addGameObject(inputHandler, "Input Handler");
-		
 		gameObjectHandler.addGameObject(camera, "Main camera");
+		
+		if(settings.containsSetting("GameInit")){
+			settings.getSettingAs("GameInit", GameInitializer.class).initialize(settings);
+		}else{
+			Game.log.log("No GameInit was found!! Exiting...", LogImportance.CRITICAL, "System", "Init", "Game");
+			stop();
+			System.exit(1);
+		}
 	}
 	
-	//FIXME: This is a memory intensive solution and has to go
-	private void basicDebug(){
-		screen.addDebugText(() -> { return new String[]{
+	//FIXME: This is a memory intensive solution, is there a better solution? 
+	//NOTE: Does this really have any performance hit?
+	private static void basicDebug(){
+		screen.setDebugEnabled(true);
+		screen.addDebugText(() -> {
+			return new String[]{
 				"Frames: " + FPSCounter.framesTot,
 				"Updates: " + UpdateCounter.updatesTot,
-				"ElapsedTime: " + 0,
+				"ElapsedTime (ns): " + elapsedTime,
 				"Time: " + FPSCounter.timeTot,
 				"FPS: " + FPSCounter.fps,
 				"Average FPS: " + FPSCounter.averageFPS,
-				"Frames dropped: " + ScreenManager.framesDropped,
+				"Frames dropped: " + Screen.framesDropped,
 				"UPS: " + UpdateCounter.ups,
 				"Average UPS: " + UpdateCounter.averageUPS,
-				"Camera X: " + camera.getBounds().x,
-				"Camera Y: " + camera.getBounds().y,
-				"Objects: " + gameObjectHandler.numberOfGameObjects()
-		};});
-	}
-
-	private void completeSetup() {
-		//TODO: Is this needed/should it be a event?
-	}
-	
-	@SuppressWarnings("unused")
-	private void addDebug(){
-		addDebugLog();
-		addIDHandlerDebug();
+				"Camera X: " + camera.getBounds().getX(),
+				"Camera Y: " + camera.getBounds().getY(),
+				"Objects: " + gameObjectHandler.numberOfGameObjects(),
+				"Time scale: " + timeScale,
+				"Image optimization calls: " + ImageUtils.calls,
+				"Usefull image optimization calls: " + ImageUtils.usefullCalls,
+				"Objects drawn: " + camera.drawnObjects
+			};
+		});
 	}
 	
 	// TODO: Fix proper onStart onExit and other similar methods. (USE EVENTS!!)
 	
-	private void onQuit() {
-		if(IDDebug != null){
-			IDDebug.stopDebug();
-		}
-		
-		if(LogFrame != null){
-			LogFrame.stopDebug();
-		}
-		
-		eventMachine.fireEvent(new GameQuitEvent(this, name));
-	}
-	
-	@SuppressWarnings("unused")
-	private void UITest() {
-		screen.setTitle("UI Test");
-		screen.setDebugEnabled(true);
-
-		camera.receiveKeyboardInput(true);
-		
-		UI hud = new UI(new Rectangle(200, 100, 400, 400));
-
-		BasicUIContainer container = new BasicUIContainer(200, 300);
-		Border border = new SolidBorder(20, Color.MAGENTA);
-		container.setBorder(border);
-		hud.addUIElement(container);
-
-		BasicUIContainer container2 = new BasicUIContainer(100, 100);
-		Border border2 = new SolidBorder(10, Color.CYAN);
-		container2.setBorder(border2);
-		container.addUIElement(container2);
-
-		UILabel lable = new UILabel("Test label");
-		lable.setColor(Color.WHITE);
-		container2.addUIElement(lable);
-		
-		Image image;
-		try {
-			image = IOHandler.load(new LoadRequest<BufferedImage>("Image", new File("./res/Background.png"), BufferedImage.class, "DefaultPNGLoader")).result;
-		} catch (IOException e) {
-			image = null;
-		}
-		
-		UIImage UIimg = new UIImage(0, 0, 40, 100, image);
-		UIimg.setNativeSize();
-		UIimg.setZOrder(2);
-		container.addUIElement(UIimg);
-		
-		UIButton button = new UIButton(40, 40, 100, 40);
-		gameObjectHandler.addGameObject(button);
-		button.setZOrder(10);
-		container.addUIElement(button);
-		
-		gameObjectHandler.addGameObject(hud);
-	}
-
-	@SuppressWarnings("unused")
-	private void pong() {
-		screen.setDebugEnabled(true);
-		
-		screen.setTitle("Pong");
-
-		Pad rightPad = new Pad(camera.getWidth() - 60, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
-				camera.getBounds(), Side.RIGHT);
-
-		gameObjectHandler.addGameObject(rightPad, "RightPad");
-
-		Pad leftPad = new Pad(50, 40, 10, 50, KeyEvent.VK_W, KeyEvent.VK_S, camera.getBounds(), Side.LEFT);
-
-		gameObjectHandler.addGameObject(leftPad, "LeftPad");
-
-		Ball ball = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
-				camera.getBounds());
-
-		gameObjectHandler.addGameObject(ball, "Ball");
-
-		ball.resetBall();
-
-		Score score = new Score(camera.getBounds());
-
-		gameObjectHandler.addGameObject(score, "Score");
-	}
-
-	@SuppressWarnings("unused")
-	private void pong44() {
-		screen.setDebugEnabled(true);
-		
-		screen.setTitle("Pong44");
-
-		Pad rightPad = new Pad(ScreenManager.getWidth() - 50, 40, 10, 50, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
-				camera.getBounds(), Side.RIGHT);
-
-		gameObjectHandler.addGameObject(rightPad, "RightPad");
-
-		Pad rightPad2 = new Pad(ScreenManager.getWidth() - 100, 40, 10, 50, KeyEvent.VK_O, KeyEvent.VK_L,
-				camera.getBounds(), Side.RIGHT);
-
-		gameObjectHandler.addGameObject(rightPad2, "RightPad2");
-
-		Pad leftPad = new Pad(50, 40, 10, 50, KeyEvent.VK_W, KeyEvent.VK_S, camera.getBounds(), Side.LEFT);
-
-		gameObjectHandler.addGameObject(leftPad, "LeftPad");
-
-		Pad leftPad2 = new Pad(100, 40, 10, 50, KeyEvent.VK_T, KeyEvent.VK_G, camera.getBounds(), Side.LEFT);
-
-		gameObjectHandler.addGameObject(leftPad2, "LeftPad2");
-
-		Ball ball = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
-				camera.getBounds());
-
-		gameObjectHandler.addGameObject(ball, "Ball");
-
-		Ball ball2 = new Ball(ScreenManager.getWidth() / 2 - 8, ScreenManager.getHeight() / 2 - 8, 16, 16,
-				camera.getBounds());
-
-		gameObjectHandler.addGameObject(ball2, "Ball2");
-
-		ball.resetBall();
-
-		ball2.resetBall();
-
-		Score score = new Score(camera.getBounds());
-
-		gameObjectHandler.addGameObject(score, "Score");
-	}
-
-	@SuppressWarnings("unused")
-	private void test() {
-		screen.setTitle("Test #1");
-
-		screen.setDebugEnabled(true);
-
-		camera.receiveKeyboardInput(true);
-
-		OtherPaintable z1 = new OtherPaintable(0, 0, 100, 100, 1, Color.BLUE);
-
-		OtherPaintable z2 = new OtherPaintable(10, 10, 100, 100, 2, Color.RED);
-
-		OtherPaintable z3 = new OtherPaintable(20, 20, 100, 100, 3, Color.GREEN);
-
-		gameObjectHandler.addGameObject(z2, "OtherPaintable2");
-
-		gameObjectHandler.addGameObject(z3, "OtherPaintable3");
-
-		gameObjectHandler.addGameObject(z1, "OtherPaintable1");
-
-		TestSprite t = new TestSprite(50, 50, 100, 70);
-
-		gameObjectHandler.addGameObject(t, "TestSprite1");
-
-		t.setDX(30);
-		t.setDY(3);
-
-		TestSprite t2 = new TestSprite(400, 50, 20, 20);
-
-		gameObjectHandler.addGameObject(t2, "TestSprite2");
-
-		t2.setDX(-60);
-		t2.setDY(-1);
-
-		TestInputSprite testInput = new TestInputSprite(100, 100, 100, 100, 10, false);
-
-		gameObjectHandler.addGameObject(testInput, "TestInputSprite1");
-
-		TestInputSprite testInput2 = new TestInputSprite(200, 150, 100, 100, 9, false);
-
-		gameObjectHandler.addGameObject(testInput2, "TestInuptSprite2");
-
-		Random rand = new Random();
-
-		for (int x = 0; x < 30; x++) {
-			for (int y = 0; y < 30; y++) {
-				TestSprite test = new TestSprite(x * 30, y * 30, 20, 20);
-				gameObjectHandler.addGameObject(test);
-				
-				test.setDX(rand.nextFloat() * 50);
-				test.setDY(rand.nextFloat() * 50);
-			}
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private void test2() {
-		screen.setTitle("Test #2");
-
-		screen.setDebugEnabled(true);
-
-		camera.receiveKeyboardInput(true);
-
-		GameObjectAdder adder = new GameObjectAdder(gameObjectHandler);
-		gameObjectHandler.addGameObject(adder);
-
-	}
-
-	@SuppressWarnings("unused")
-	private void test2WithAudio() {
-		screen.setTitle("Test #2");
-
-		screen.setDebugEnabled(true);
-
-		camera.receiveKeyboardInput(true);
-
-		GameObjectAdderWithAudio adder = new GameObjectAdderWithAudio(-5, -5, gameObjectHandler);
-		gameObjectHandler.addGameObject(adder);
-
-		AudioEngine.setAudioListener(adder);
-	}
-
-	private void addDebugLog(){
-		new Thread(LogFrame = new LogFrame(log), "Debug log").start();
-	}
-	
-	private void addIDHandlerDebug() {
-		new Thread(IDDebug = new IDHandlerDebugFrame<>(gameObjectHandler.getIDHandler()), "ID Handler Debug").start();
-	}
-
-	/**
-	 * Returns a list of all the currently registered {@link Paintable
-	 * Paintables}. (Used by {@link game.gameObject.graphics.Camera Camera})
-	 * 
-	 * @return a list of the currently registered {@link Paintable Paintables}.
-	 */
-	public CopyOnWriteArrayList<Paintable> getPaintables() {
-		return gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
-	}
-
 	/**
 	 * Starts the main loop of the game
 	 */
-	public void run() {
+	public static void run() {
 		Thread.currentThread().setName(name);
 		
 		log.logMessage("Starting...", "System");
-		//Maybe onStart method?
-		eventMachine.fireEvent(new GameStartEvent(this, name));
-
-		new Thread(screen, "Graphics").start();
-		long startTime = System.nanoTime();
-		long currTime = startTime;
-		long elapsedTime;
 		
-		log.logMessage("Pre run time: " + (startTime - initTime) / 1000000000f, "System");
+		eventMachine.fireEvent(new GameStartEvent(Game.class));
+
+		// TODO: Make a nicer system for creating start threads
+		new Thread(screen, "Graphics").start();
+		startTime = System.nanoTime();
+		currTime = startTime;
+		elapsedTime = 0;
+		
+		log.logMessage("Pre run time: " + (startTime - initTime) / 1000000000f + "s", "System");
+		
+		long sleepTime = 0;
+		long targetTime = 0;
 		
 		//FIXME: Allocating a lot of memory when updating many GameObjects
 
-		log.logMessage("Running!", "System");
+		log.logMessage("Running " + name + "!", "System");
 		running = true;
 		while (running) {
-			elapsedTime = System.nanoTime() - currTime;
-			currTime += elapsedTime;
+			long time = System.nanoTime();
+			elapsedTime = time - currTime;
+			currTime = time;
 
 			if (closeRequested) {
 				screen.stop();
 				running = false;
 			}
-
+			
+			//TODO: Some system for not rendering when paused. (Though some times that might be wanted behavior)
+			//Note that when the threaded task system is implemented that that might be a good time to do that as
+			//it will be a lot easier to do then. (Depends on implementation though)
+			//Then this might be generalized to "not running specific tasks when paused" and possibly having special
+			//behavior if needed.
 			if (paused){
 				try {
 					Thread.sleep(10);
@@ -605,26 +377,50 @@ public class Game extends Updater {
 				continue;
 			}
 			
-			if(gameObjectHandler.shouldUpdateObjects()){
-				listeners = gameObjectHandler.getAllGameObjectsExtending(UpdateListener.class);
-			}
+			gameObjectHandler.clearChange();
 			
-			propagateUpdate(elapsedTime);
+			updater.propagateUpdate((elapsedTime / 1000000000f) * timeScale);
 			
 			UpdateCounter.update(elapsedTime / 1000000000f);
 			
-			gameObjectHandler.clearChange();
+			if((elapsedTime / 1000000f) > deltaTimeWarningThreshold){
+				Game.log.logWarning("Game loop delta time exeeded " +
+						Game.deltaTimeWarningThreshold + "ms with " + 
+						((elapsedTime / 1000000f) - Game.deltaTimeWarningThreshold) + "ms",
+						"Game", "DeltaTime", "System");
+			}
 			
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if(limitUPS){
+				targetTime = (1000000000L / targetUPS);
+				sleepTime = targetTime - (elapsedTime - sleepTime);
+				
+				if(sleepTime > 0){
+					try {
+						Thread.sleep(sleepTime / 1000000, (int)(sleepTime % 1000000));
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
-		onQuit();
-		log.logMessage("Stopped.", "System");
+		
+		startQuitTime = System.nanoTime();
+		
+		log.logMessage("Stopping...", "System");
+		
+		eventMachine.fireEvent(new GameQuitEvent(Game.class));
+		
+		try {
+			screen.waitForStop();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+		
+		AudioEngine.shudown();
+		
+		Game.log.logMessage("Stopped!", "System");
 	}
-
+	
 	/**
 	 * Requests a close or a stop in the game loop effectively ending the game
 	 */
@@ -669,42 +465,73 @@ public class Game extends Updater {
 	public static boolean isRunning() {
 		return running;
 	}
-
+	
 	/**
-	 * 
-	 * @return
+	 * @param sceneInit
 	 */
-	private GameObjectHandler getObjectHandler() {
-		return gameObjectHandler;
-	}
+	public static void loadScene(GameInitializer sceneInit){
+		pause();
+		
+		log.logMessage("Loading scene..");
+		
+		eventMachine.fireEvent(new SceneLoadEvent(sceneInit));
 
-	/**
-	 * 
-	 * @return
-	 */
-	public static GameObjectHandler getGameObjectHandler() {
-		return game.getObjectHandler();
+		gameObjectHandler.clear();
+		
+		// TODO: Clear GameSystems? 
+		// TODO: The ability to have persistent GameObjects
+		
+		sceneInit.initialize(settings);
+		
+		log.logMessage("Loaded scene!");
+		
+		eventMachine.fireEvent(new SceneLoadedEvent(sceneInit));
+		
+		resume();
 	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static IDHandler<GameObject> getCurrentIDHandler() {
-		return game.getObjectHandler().getIDHandler();
-	}
+	
+	//TODO: Use either getters and setters or public variables to change variables in game
 	
 	/**
 	 * @param name
 	 */
-	public void setName(String name){
-		this.name = name;
+	public static void setName(String name){
+		Game.name = name;
+		screen.setTitle(name);
 	}
 	
 	/**
 	 * @return
 	 */
-	public String getName(){
+	public static String getName(){
 		return name;
+	}
+	
+	/**
+	 * @param timeScale
+	 */
+	public static void setTimeScale(float timeScale){
+		Game.timeScale = MathUtils.clamp(timeScale, 0, 1000000000f);
+	}
+	
+	/**
+	 * @return
+	 */
+	public static float getTimeScale(){
+		return timeScale;
+	}
+	
+	/**
+	 * @param limit
+	 */
+	public static void limitUPS(boolean limit){
+		limitUPS = limit;
+	}
+	
+	/**
+	 * @return
+	 */
+	public static boolean isLimitingUPS(){
+		return limitUPS;
 	}
 }

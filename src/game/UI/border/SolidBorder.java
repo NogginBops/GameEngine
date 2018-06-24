@@ -2,7 +2,7 @@ package game.UI.border;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author Julius Häger
@@ -30,11 +30,11 @@ public class SolidBorder extends Border {
 	}
 
 	@Override
-	public void paint(Graphics2D g2d, Rectangle area) {
+	public void paint(Graphics2D g2d, Rectangle2D area) {
 		g2d.setColor(color);
-		g2d.fillRect(area.x, area.y, area.width, top);
-		g2d.fillRect(area.x, area.height - bottom, area.width, bottom);
-		g2d.fillRect(area.x, area.y, left, area.height);
-		g2d.fillRect(area.width - right, area.y, right, area.height);
+		g2d.fillRect((int)area.getX(), (int)area.getY(), (int)area.getWidth(), top);
+		g2d.fillRect((int)area.getX(), (int)(area.getY() + area.getHeight() - bottom), (int)area.getWidth(), bottom);
+		g2d.fillRect((int)area.getX(), (int)area.getY(), left, (int)area.getHeight());
+		g2d.fillRect((int)(area.getX() + area.getWidth() - right), (int)area.getY(), right, (int)area.getHeight());
 	}
 }

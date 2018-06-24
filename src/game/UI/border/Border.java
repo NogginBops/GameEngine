@@ -2,7 +2,7 @@ package game.UI.border;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author Julius Häger
@@ -11,6 +11,8 @@ import java.awt.Rectangle;
 public abstract class Border {
 	
 	//JAVADOC: Border
+	
+	//NOTE: Use float instead of int?
 
 	/**
 	 * The width of the border in that direction
@@ -53,16 +55,16 @@ public abstract class Border {
 	 * @param g2d
 	 * @param area
 	 */
-	public abstract void paint(Graphics2D g2d, Rectangle area);
+	public abstract void paint(Graphics2D g2d, Rectangle2D area);
 
 	/**
 	 * Returns a Rectangle that has had the border area removed
 	 * @param rect
 	 * @return
 	 */
-	public Rectangle getInnerArea(Rectangle rect) {
+	public Rectangle2D getInnerArea(Rectangle2D rect) {
 		//TODO: Pre compute?
-		return new Rectangle(rect.x + left, rect.y + top, rect.width - right - left, rect.height - bottom - top);
+		return new Rectangle2D.Float((float)rect.getX() + left, (float)rect.getY() + top, (float)rect.getWidth() - right - left, (float)rect.getHeight() - bottom - top);
 	}
 
 	/**

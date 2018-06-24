@@ -8,14 +8,15 @@ import game.controller.event.GameEvent;
  * @author Julius Häger
  *
  */
-public class GameStartEvent extends GameEvent<Game> {
+public class GameStartEvent extends GameEvent {
 
+	//JAVADOC: GameStartEvent
+	
 	/**
 	 * 
 	 * @param origin
-	 * @param command
 	 */
-	public GameStartEvent(Game origin, String command) {
-		super(origin, "Start: " + command);
+	public GameStartEvent(Class<Game> origin) {
+		super(origin);
 	}
 }

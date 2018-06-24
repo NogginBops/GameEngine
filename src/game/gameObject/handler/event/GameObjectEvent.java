@@ -10,7 +10,7 @@ import game.gameObject.handler.GameObjectHandler;
  * @author Julius Häger
  *
  */
-public class GameObjectEvent extends GameEvent<GameObjectHandler> {
+public class GameObjectEvent extends GameEvent {
 
 	
 	//JAVADOC: GameObjectEvent
@@ -25,8 +25,13 @@ public class GameObjectEvent extends GameEvent<GameObjectHandler> {
 	 * @param command
 	 * @param object
 	 */
-	public GameObjectEvent(GameObjectHandler origin, String command, GameObject object) {
-		super(origin, command);
+	public GameObjectEvent(GameObjectHandler origin, GameObject object) {
+		super(origin);
 		this.object = object;
+	}
+	
+	@Override
+	public String toString() {
+		return "GameObjectEvent[Origin: " + origin + ", Object: " + object + "]";
 	}
 }

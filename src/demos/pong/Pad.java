@@ -1,10 +1,8 @@
 package demos.pong;
 
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import game.IO.IOHandler;
 import game.IO.load.LoadRequest;
@@ -20,6 +18,8 @@ import kuusisto.tinysound.Sound;
  *
  */
 public class Pad extends Sprite implements KeyListener, Collidable {
+	
+	//TODO: Rewrite the pong demo to use the new keybinding system
 
 	/**
 	 * @author Julius Häger
@@ -38,7 +38,7 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 
 	private Side side;
 
-	private Rectangle outerBounds;
+	private Rectangle2D outerBounds;
 
 	private int upKeyCode;
 	private int downKeyCode;
@@ -64,18 +64,14 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 	 * @param outerBounds
 	 * @param side
 	 */
-	public Pad(int x, int y, int width, int height, int upKeyCode, int downKeyCode, Rectangle outerBounds, Side side) {
+	public Pad(float x, float y, float width, float height, int upKeyCode, int downKeyCode, Rectangle2D outerBounds, Side side) {
 		super(x, y, width, height);
 		this.upKeyCode = upKeyCode;
 		this.downKeyCode = downKeyCode;
 		this.outerBounds = outerBounds;
 		this.side = side;
 		
-		try {
-			beep = IOHandler.load(new LoadRequest<Sound>("BeepSound", new File("./res/pongbeep.wav"), Sound.class, "DefaultSoundLoader")).result;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		beep = IOHandler.load(new LoadRequest<Sound>("BeepSound", Paths.get("./res/pongbeep.wav"), Sound.class, "DefaultSoundLoader")).result;
 	}
 
 	@Override
@@ -111,17 +107,18 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 	}
 
 	@Override
-	public void update(long timeMillis) {
-		super.update(timeMillis);
+	public void update(float deltaTime) {
+		super.update(deltaTime);
+		Rectangle2D bounds = getBounds();
 		if (!outerBounds.contains(bounds)) {
-			if (bounds.y + bounds.height > outerBounds.y + outerBounds.height) {
-				setY((int) outerBounds.getMaxY() - bounds.height);
-			} else if (bounds.y < outerBounds.y) {
-				setY(outerBounds.y);
+			if (bounds.getMaxY() > outerBounds.getMaxY()) {
+				setY((int) outerBounds.getMaxY() - (float)bounds.getHeight());
+			} else if (bounds.getY() < outerBounds.getY()) {
+				setY((float)outerBounds.getY());
 			}
 		}
 	}
-
+	
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
 		return true;
@@ -133,7 +130,7 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 		//System.out.println("Collided: " + this);
 		
 		Rectangle2D ballBounds = collisionObject.getBounds();
-		float inclenation = (float) (ballBounds.getY() - bounds.y) / bounds.height;
+		float inclenation = (float) (ballBounds.getY() - (float)shape.getBounds2D().getY()) / (float)shape.getBounds2D().getHeight();
 		inclenation = inclenation < 0 ? 0 : inclenation;
 		float newDX = Math.abs(collisionObject.getDX()) + speedChange;
 		float newDY = maxInclenationChange * inclenation * 2 - maxInclenationChange;
@@ -143,6 +140,6 @@ public class Pad extends Sprite implements KeyListener, Collidable {
 			collisionObject.setDX(-newDX);
 		}
 		collisionObject.setDY(collisionObject.getDY() + newDY);
-		AudioEngine.playSound(new AudioSource(x, y, beep));
+		AudioEngine.playSound(new AudioSource(transform.getX(), transform.getY(), beep));
 	}
 }

@@ -7,6 +7,6 @@ package game.state;
  */
 public abstract class State {
 
-	// TODO: State
+	// TODO: State?
 
 }

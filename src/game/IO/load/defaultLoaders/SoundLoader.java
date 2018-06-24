@@ -1,6 +1,7 @@
 package game.IO.load.defaultLoaders;
 
-import game.IO.load.LoadRequest;
+import java.nio.file.Path;
+
 import game.IO.load.Loader;
 import kuusisto.tinysound.Sound;
 import kuusisto.tinysound.TinySound;
@@ -14,8 +15,8 @@ public class SoundLoader implements Loader<Sound> {
 	// JAVADOC: SoundLoader
 
 	@Override
-	public Sound load(LoadRequest<?> request) {
-		return TinySound.loadSound(request.file);
+	public Sound load(Path path) {
+		return TinySound.loadSound(path.toFile());
 	}
 
 	@Override

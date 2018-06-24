@@ -2,6 +2,8 @@ package game.util;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import game.GameSystem;
+
 /**
  * <p>
  * A class used to handle updates and propagate the updates to listening
@@ -17,11 +19,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class Updater {
 
 	// JAVADOC: Updater
-
-	//TODO: Merge with Game.java
 	
 	protected CopyOnWriteArrayList<UpdateListener> listeners;
-
+	
+	protected IDHandler<GameSystem> systems = GameSystem.getIDHandler();
+	
 	/**
 	 * 
 	 */
@@ -33,12 +35,25 @@ public abstract class Updater {
 	 * Called to propagate a update call to all {@link UpdateListener
 	 * UpdateListeners} in the protected {@link #listeners} list.
 	 * 
-	 * @param timeNano
-	 *            time since last update (in milliseconds)
+	 * @param deltaTime
 	 */
-	protected void propagateUpdate(long timeNano) {
+	public void propagateUpdate(float deltaTime) {
+		for (ID<GameSystem> gameSystem : systems) {
+			if (gameSystem.object.getEnabled()) {
+				gameSystem.object.earlyUpdate(deltaTime);
+			}
+		}
+		
 		for (UpdateListener listener : listeners) {
-			listener.update(timeNano);
+			if(listener.isActive()){
+				listener.update(deltaTime);
+			}
+		}
+		
+		for (ID<GameSystem> gameSystem : systems) {
+			if (gameSystem.object.getEnabled()) {				
+				gameSystem.object.lateUpdate(deltaTime);
+			}
 		}
 	}
 }

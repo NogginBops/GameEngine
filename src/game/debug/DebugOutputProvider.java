@@ -5,10 +5,12 @@ package game.debug;
  *
  */
 public interface DebugOutputProvider {
+	
+	//JAVADOC: DebugOutputProvider
 
 	/**
 	 * @return
 	 */
-	public String[] GetDebugValues();
+	public String[] getDebugValues();
 	
 }

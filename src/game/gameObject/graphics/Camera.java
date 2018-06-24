@@ -3,15 +3,21 @@ package game.gameObject.graphics;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import game.Game;
 import game.gameObject.GameObject;
 import game.gameObject.handler.GameObjectHandler;
+import game.gameObject.handler.event.GameObjectCreatedEvent;
+import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.gameObject.physics.Movable;
+import game.gameObject.transform.BoxTransform;
 import game.input.keys.KeyListener;
+import game.screen.ScreenRect;
+import game.util.image.ImageUtils;
+import game.util.math.vector.Vector2D;
 
 /**
  * A Camera is the object responsible for looking into a {@link Game Games}
@@ -21,10 +27,12 @@ import game.input.keys.KeyListener;
  * @author Julius Häger
  */
 public class Camera extends Painter implements Movable, KeyListener {
-
+	
 	// TODO: Remove movement code
-
-	private GameObjectHandler gameObjectHandler;
+	
+	// TODO: Implement a way to zoom
+	
+	private BoxTransform<GameObject> boxTransform;
 	
 	private float dx;
 	private float dy;
@@ -58,11 +66,38 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * @param height
 	 *            - The height of the Camera viewport (in pixels).
 	 */
-	public Camera(int x, int y, int width, int height) {
-		super((int)x, (int)y, width, height, Integer.MAX_VALUE - 8);
+	public Camera(float x, float y, float width, float height) {
+		super(x, y, width, height, Integer.MAX_VALUE - 8);
 		
-		this.gameObjectHandler = Game.getGameObjectHandler();
-		updateBounds();
+		transform = boxTransform = new BoxTransform<GameObject>(this, x, y, width, height);
+		
+		addEventListeners();
+	}
+	
+	
+	/**
+	 * @param rect
+	 * @param screenRect
+	 * @param bgColor
+	 */
+	public Camera(Rectangle2D.Float rect, ScreenRect screenRect, Color bgColor) {
+		super(rect.x, rect.y, rect.width, rect.height, Integer.MAX_VALUE - 8);
+		
+		Game.log.logMessage("Created camera with height=" + rect.height + " and width=" + rect.width);
+		
+		transform = boxTransform = new BoxTransform<GameObject>(this, rect.x, rect.y, rect.width, rect.height);
+		
+		setScreenRectangle(screenRect);
+		
+		setBackgroundColor(bgColor);
+		
+		addEventListeners();
+	}
+	
+	private void addEventListeners(){
+		Game.eventMachine.addEventListener(GameObjectCreatedEvent.class, (event) -> { if (event.object instanceof Paintable) { paintables.add((Paintable)event.object); paintables.sort(null); } });
+		
+		Game.eventMachine.addEventListener(GameObjectDestroyedEvent.class, (event) -> { if (event.object instanceof Paintable) { paintables.remove((Paintable)event.object); paintables.sort(null); } });
 	}
 
 	/**
@@ -74,29 +109,38 @@ public class Camera extends Painter implements Movable, KeyListener {
 	public void receiveKeyboardInput(boolean bool) {
 		shouldReceiveKeyboardInput = bool;
 	}
-
+	
 	@Override
 	public float getX() {
-		return x;
+		return transform.getX();
 	}
+
 
 	@Override
 	public float getY() {
-		return y;
+		return transform.getY();
+	}
+
+	@Override
+	public Vector2D getPosition() {
+		return transform.getPosition();
 	}
 
 	@Override
 	public void setX(float x) {
-		this.x = x;
-		updateBounds();
+		transform.setX(x);
 	}
-
+	
 	@Override
 	public void setY(float y) {
-		this.y = y;
-		updateBounds();
+		transform.setY(y);
 	}
-
+	
+	@Override
+	public void setPosition(float x, float y) {
+		transform.setPosition(x, y);
+	}
+	
 	@Override
 	public float getDX() {
 		return dx;
@@ -105,6 +149,11 @@ public class Camera extends Painter implements Movable, KeyListener {
 	@Override
 	public float getDY() {
 		return dy;
+	}
+	
+	@Override
+	public Vector2D getVelocity() {
+		return new Vector2D(dx, dy);
 	}
 
 	@Override
@@ -116,23 +165,17 @@ public class Camera extends Painter implements Movable, KeyListener {
 	public void setDY(float dy) {
 		this.dy = dy;
 	}
-
-	/**
-	 * Returns the current width of the camera viewport.
-	 * 
-	 * @return The width of the camera viewport.
-	 */
-	public int getWidth() {
-		return width;
+	
+	@Override
+	public void setVelocity(float dx, float dy) {
+		this.dx = dx;
+		this.dy = dy;
 	}
-
-	/**
-	 * Returns the current height of the camera viewport.
-	 * 
-	 * @return The height of the camera viewport.
-	 */
-	public int getHeight() {
-		return height;
+	
+	@Override
+	public void setVelocity(Vector2D vel) {
+		this.dx = vel.x;
+		this.dy = vel.y;
 	}
 	
 	/**
@@ -141,10 +184,11 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * @param width
 	 */
 	public void setWidth(int width){
-		this.width = width;
-		updateBounds();
+		boxTransform.setWidth(width);
 		
-		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		image = new BufferedImage((int)boxTransform.getWidth(), (int)boxTransform.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		image = ImageUtils.toSystemOptimizedImage(image);
+		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
 		originalTransform = translatedGraphics.getTransform();
 	}
@@ -155,10 +199,11 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * @param height
 	 */
 	public void setHeight(int height){
-		this.height = height;
-		updateBounds();
+		boxTransform.setHeight(height);
 		
-		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		image = new BufferedImage((int)boxTransform.getWidth(), (int)boxTransform.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		image = ImageUtils.toSystemOptimizedImage(image);
+		translatedGraphics.dispose();
 		translatedGraphics = image.createGraphics();
 		originalTransform = translatedGraphics.getTransform();
 	}
@@ -170,26 +215,16 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 * @param height
 	 */
 	public void setSize(int width, int height){
-		this.width = width;
-		this.height = height;
-		updateBounds();
-		
+		this.shape = new Rectangle2D.Float(0, 0, width, height);
+		boxTransform.setSize(width, height);
 		
 		//TODO: Synchronize?
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		translatedGraphics = image.createGraphics();
-		originalTransform = translatedGraphics.getTransform();
-	}
-
-	@Override
-	public void update(long timeNano) {
-		x += (dx * timeNano) / 1000000000;
-		y += (dy * timeNano) / 1000000000;
-		updateBounds();
-		
-		//This update is synced with the gameobjecthandler
-		if (gameObjectHandler.shouldUpdateObjects()) {
-			paintables = gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
+		image = ImageUtils.toSystemOptimizedImage(image);
+		if(translatedGraphics != null){
+			translatedGraphics.dispose();
+			translatedGraphics = image.createGraphics();
+			originalTransform = translatedGraphics.getTransform();
 		}
 	}
 
@@ -208,15 +243,7 @@ public class Camera extends Painter implements Movable, KeyListener {
 		
 		g2d.setBackground(backgroundColor);
 		g2d.setColor(backgroundColor);
-		g2d.fillRect(0, 0, width, height);
-		
-		//This thread is not synced with gameobjecthandler and such should not update them here
-		
-		/*if (gameObjectHandler.shouldUpdateObjects()) {
-			paintables = gameObjectHandler.getAllGameObjectsExtending(Paintable.class);
-			
-			System.out.println("Updated paintables");
-		}*/
+		g2d.fillRect(0, 0, (int)boxTransform.getWidth(), (int)boxTransform.getHeight());
 		
 		super.paint(g2d);
 	}
@@ -225,50 +252,19 @@ public class Camera extends Painter implements Movable, KeyListener {
 	
 	@Override
 	public BufferedImage getImage() {
-		if(translatedGraphics == null){
+		if (translatedGraphics == null) {
 			translatedGraphics = image.createGraphics();
 			originalTransform = translatedGraphics.getTransform();
 		}
 		
-		//g2d = image.createGraphics();
+		//NOTE: Should this be done in the painter?
 		
 		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 		translatedGraphics.setColor(backgroundColor);
-		translatedGraphics.fillRect(0, 0, width, height);
+		translatedGraphics.fillRect(0, 0, (int)boxTransform.getWidth(), (int)boxTransform.getHeight());
 		translatedGraphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 		
-		//g2d.dispose();
-		
 		return super.getImage();
-	}
-
-	/**
-	 * <p>
-	 * Updates the bounds of the camera.
-	 * </p>
-	 * 
-	 * <p>
-	 * The bounds are used to determine what objects to draw.
-	 * </p>
-	 */
-	@Override
-	public void updateBounds() {
-		bounds.x = (int) x;
-		bounds.y = (int) y;
-		bounds.width = width;
-		bounds.height = height;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * <p>
-	 * The cameras bounds are used to determine what objects to paint.
-	 * </p>
-	 */
-	@Override
-	public Rectangle getBounds() {
-		return bounds;
 	}
 
 	/**
@@ -301,40 +297,61 @@ public class Camera extends Painter implements Movable, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+		
+		if(Game.keyHandler.isBound("Left", e.getKeyCode())){
 			moveLeft = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+		}
+		
+		if(Game.keyHandler.isBound("Right", e.getKeyCode())){
 			moveRight = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
+		}
+		
+		if(Game.keyHandler.isBound("Up", e.getKeyCode())){
 			moveUp = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+		}
+		
+		if(Game.keyHandler.isBound("Down", e.getKeyCode())){
 			moveDown = true;
 		}
+		
 		updateMovement();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+		if(Game.keyHandler.isBound("Left", e.getKeyCode())){
 			moveLeft = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+		}
+		
+		if(Game.keyHandler.isBound("Right", e.getKeyCode())){
 			moveRight = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
+		}
+		
+		if(Game.keyHandler.isBound("Up", e.getKeyCode())){
 			moveUp = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+		}
+		
+		if(Game.keyHandler.isBound("Down", e.getKeyCode())){
 			moveDown = false;
 		}
+		
 		updateMovement();
 	}
 
 	private void updateMovement() {
-		int dx = 0;
+		float dx = 0;
 		dx += moveLeft ? -cameraMovementSpeed : 0;
 		dx += moveRight ? cameraMovementSpeed : 0;
-		setDX(dx);
-		int dy = 0;
+		
+		float dy = 0;
 		dy += moveUp ? -cameraMovementSpeed : 0;
 		dy += moveDown ? cameraMovementSpeed : 0;
+		
+		//dx = (float) ((dx * Math.cos(transform.getRotationRad())) - (dy * Math.sin(transform.getRotationRad())));
+		
+		//dy = (float) ((dy * Math.cos(transform.getRotationRad())) + (dx * Math.sin(transform.getRotationRad())));
+		
+		setDX(dx);
 		setDY(dy);
 	}
 
@@ -351,5 +368,10 @@ public class Camera extends Painter implements Movable, KeyListener {
 	 */
 	public void setBackgroundColor(Color color) {
 		backgroundColor = color;
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + "[resolution=" + boxTransform.getRect() + "]";
 	}
 }

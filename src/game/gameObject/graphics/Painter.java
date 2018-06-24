@@ -1,12 +1,18 @@
 package game.gameObject.graphics;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import game.Game;
 import game.gameObject.BasicGameObject;
+import game.gameObject.physics.Collidable;
+import game.gameObject.physics.PhysicsEngine;
 import game.screen.ScreenRect;
+import game.util.image.ImageUtils;
 
 /**
  * Extended to make a object that can be used to paint graphics using a
@@ -22,7 +28,7 @@ public abstract class Painter extends BasicGameObject {
 	 * The paintables the painter will paint when the {@link #paint(Graphics2D)}
 	 * method is called.
 	 */
-	protected CopyOnWriteArrayList<Paintable> paintables;
+	protected CopyOnWriteArrayList<Paintable> paintables = new CopyOnWriteArrayList<>();
 	
 	/*
 	/**
@@ -48,16 +54,21 @@ public abstract class Painter extends BasicGameObject {
 	
 	/**
 	 * 
+	 */
+	public boolean debug = false;
+	
+	/**
+	 * 
 	 * @param x
 	 * @param y
 	 * @param width
 	 * @param height
 	 * @param zOrder
 	 */
-	public Painter(float x, float y, int width, int height, int zOrder) {
+	public Painter(float x, float y, float width, float height, int zOrder) {
 		super(x, y, width, height, zOrder);
 		
-		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		image = ImageUtils.createSystemOptimizedImage((int)width, (int)height, BufferedImage.TRANSLUCENT);
 	}
 	
 	/**
@@ -77,9 +88,9 @@ public abstract class Painter extends BasicGameObject {
 	public void paint(Graphics2D g2d) {
 		if (paintables != null && paintables.size() > 0) {
 			translatedGraphics = (Graphics2D) g2d.create();
-			translatedGraphics.translate(-bounds.x, -bounds.y);
+			translatedGraphics.transform(transform.getAffineTransform());
 			for (Paintable paintable : paintables) {
-				if (paintable.getBounds().intersects(bounds)) {
+				if(PhysicsEngine.collides(paintable.getBounds(), getBounds())){
 					paintable.paint(translatedGraphics);
 				}
 			}
@@ -103,22 +114,112 @@ public abstract class Painter extends BasicGameObject {
 	}
 	
 	/**
+	 * 
+	 */
+	public int drawnObjects = 0;
+	int tempDrawnObjects = 0;
+	
+	BufferedImage paintableImage;
+	
+	//JAVADOC: Painter
+	
+	/**
 	 * @return
 	 */
-	public BufferedImage getImage(){
+	public BufferedImage getImage() {
+		tempDrawnObjects = 0;
+		
 		if (paintables != null && paintables.size() > 0) {
 			if(translatedGraphics == null){
 				translatedGraphics = image.createGraphics();
 				originalTransform = translatedGraphics.getTransform();
 			}
-			translatedGraphics.translate(-bounds.x, -bounds.y);
+			
+			AffineTransform at = transform.getAffineTransform();
+			//at.setToTranslation(-at.getTranslateX(), -at.getTranslateY());
+			
+			if (at.getDeterminant() != 0) {
+				try {
+					at.invert();
+				} catch (NoninvertibleTransformException e) {
+					Game.log.logError("Could not invert Painter AffineTransform!", "Painter", "Graphics");
+				}
+			}
+			
+			translatedGraphics.transform(at);
+			
 			for (Paintable paintable : paintables) {
-				if (paintable.getBounds().intersects(bounds)) {
-					paintable.paint(translatedGraphics);
+				if(paintable.isActive()) {
+					if(PhysicsEngine.collides(paintable.getBounds(), getBounds())) {
+						paintableImage = paintable.getImage();
+						if(paintableImage != null){
+							//translatedGraphics.drawImage(paintableImage,(int)paintable.getBounds().getX(), (int)paintable.getBounds().getY(), (int)paintable.getBounds().getWidth(), (int)paintable.getBounds().getHeight(), null);
+							translatedGraphics.drawImage(paintableImage, paintable.getTransform().getAffineTransform(), null);
+						} else {
+							paintable.paint(translatedGraphics);
+						}
+						
+						if (debug) {
+							translatedGraphics.setColor(Color.green);
+							translatedGraphics.draw(paintable.getTranformedShape());
+							
+							translatedGraphics.setColor(Color.magenta);
+							translatedGraphics.draw(paintable.getBounds());
+							
+							if (paintable instanceof Collidable) {
+								translatedGraphics.setColor(Color.red);
+								translatedGraphics.draw(((Collidable)paintable).getCollitionShape());
+							}
+						}
+						
+						tempDrawnObjects++;
+					}
 				}
 			}
 			translatedGraphics.setTransform(originalTransform);
 		}
+		
+
+		drawnObjects = tempDrawnObjects;
+		
 		return image;
+		
+		/*
+		if (paintables != null && paintables.size() > 0) {
+			
+			
+			//TODO: Find better way to handle this
+			//translatedGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			AffineTransform originalAT = transform.getAffineTransform();
+			originalAT.setToTranslation(-originalAT.getTranslateX(), -originalAT.getTranslateY());
+			translatedGraphics.transform(originalAT);
+			for (Paintable paintable : paintables) {
+				if(paintable.isActive()){
+					if(PhysicsEngine.collides(paintable.getBounds(), getBounds())){
+						Transform paintableTransform = paintable.getTransform();
+						translatedGraphics.transform(paintableTransform.getAffineTransform());
+						
+						paintableImage = paintable.getImage();
+						if(paintableImage != null){
+							translatedGraphics.drawImage(paintableImage,
+									0, 0, (int)paintable.getBounds().getWidth(),
+									(int)paintable.getBounds().getHeight(), null);
+						}else{
+							paintable.paint(translatedGraphics);
+						}
+						
+						translatedGraphics.setTransform(originalAT);
+						
+						tempDrawnObjects++;
+					}
+				}
+			}
+			translatedGraphics.setTransform(originalTransform);
+		}
+		
+		drawnObjects = tempDrawnObjects;
+		
+		return image;
+		*/
 	}
 }

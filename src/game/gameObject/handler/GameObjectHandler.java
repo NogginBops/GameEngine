@@ -6,7 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import game.Game;
 import game.gameObject.GameObject;
 import game.gameObject.handler.event.GameObjectCreatedEvent;
-import game.gameObject.handler.event.GameObjectDestryoedEvent;
+import game.gameObject.handler.event.GameObjectDestroyedEvent;
 import game.util.ID;
 import game.util.IDHandler;
 
@@ -23,7 +23,15 @@ import game.util.IDHandler;
 public class GameObjectHandler {
 
 	// JAVADOC: GameObjectHandeler
+	
+	//TODO: Add listeners to specific types of gameObjects so that they get notified when a object is added/removed so that they can optimize adding and removing objects.
+	//Should this be done on the caller thread or should a worker thread be used? What would work best.
+	//Another way to do this is to register types of gameObject to pool for fast retrieval. But this still requires a whole new list to be passed.
 
+	//TODO: removeAllGameObjectsExtending()
+	
+	//NOTE: Should getAllGameObejctsExtending be renamed to getAllGameObejctsAssignableFrom
+	
 	private ConcurrentSkipListMap<Integer, CopyOnWriteArrayList<GameObject>> gameObjectMap;
 	
 	/*
@@ -32,7 +40,7 @@ public class GameObjectHandler {
 	 * as some methods can not use the SkipListMap effectively due to the
 	 * map not being able to quickly list all of the keys or values contained in it.
 	 */
-	private CopyOnWriteArrayList<GameObject> gameObjects;
+	//private CopyOnWriteArrayList<GameObject> gameObjects;
 
 	private CopyOnWriteArrayList<Integer> zLevels;
 
@@ -47,13 +55,18 @@ public class GameObjectHandler {
 	 */
 	public GameObjectHandler() {
 		gameObjectMap = new ConcurrentSkipListMap<Integer, CopyOnWriteArrayList<GameObject>>();
-		gameObjects = new CopyOnWriteArrayList<GameObject>();
-		zLevels = new CopyOnWriteArrayList<Integer>();
-		idHandler = new IDHandler<GameObject>();
+		//gameObjects = new CopyOnWriteArrayList<GameObject>();
+		zLevels = new CopyOnWriteArrayList<>();
+		idHandler = new IDHandler<>();
+	}
+	
+	private Iterable<GameObject> gameObjects(){
+		return idHandler.stream().map(id -> id.object)::iterator;
 	}
 
 	/**
 	 * 
+	 * @param <T> 
 	 * @param gameObject
 	 */
 	public <T extends GameObject> void addGameObject(T gameObject) {
@@ -62,6 +75,7 @@ public class GameObjectHandler {
 
 	/**
 	 * 
+	 * @param <T> 
 	 * @param gameObject
 	 * @param nameID
 	 */
@@ -70,8 +84,12 @@ public class GameObjectHandler {
 		addGameObject(new ID<GameObject>(nameID, idHandler.getLastID() + 1, gameObject));
 	}
 
+	//FIXME: On adding and removing objects the object is added and removed from two CopyOnWriteArrayLists and a ConcurrentSkipListMap
+	// This is a really big performance drain, find a way to reduce this down to ideally one list.
+	
 	/**
 	 * 
+	 * @param <T> 
 	 * @param id
 	 */
 	public <T extends GameObject> void addGameObject(ID<GameObject> id) {
@@ -80,9 +98,7 @@ public class GameObjectHandler {
 			gameObjectMap.put(id.object.getZOrder(), objects = new CopyOnWriteArrayList<GameObject>());
 		}
 		objects.add(id.object);
-
-		gameObjects.add(id.object);
-		gameObjects.sort(null);
+		
 		if (!zLevels.contains(id.object.getZOrder())) {
 			zLevels.add(id.object.getZOrder());
 			zLevels.sort(null);
@@ -106,15 +122,13 @@ public class GameObjectHandler {
 			gameObjectMap.remove(gameObject.getZOrder());
 		}
 
-		// TODO: Remove
-		gameObjects.remove(gameObject);
 		if (!zLevels.contains(gameObject.getZOrder())) {
 			zLevels.remove(gameObject.getZOrder());
 		}
 		idHandler.removeObject(gameObject);
 		objectsChanged = true;
 		
-		Game.eventMachine.fireEvent(new GameObjectDestryoedEvent(this, gameObject));
+		Game.eventMachine.fireEvent(new GameObjectDestroyedEvent(this, gameObject));
 	}
 
 	/**
@@ -127,22 +141,22 @@ public class GameObjectHandler {
 			gameObjectMap.remove(id.object.getZOrder());
 		}
 		
-		gameObjects.remove(id.object);
 		if (!zLevels.contains(id.object.getZOrder())) {
 			zLevels.remove(id.object.getZOrder());
 		}
 		idHandler.removeID(id);
 		objectsChanged = true;
 		
-		Game.eventMachine.fireEvent(new GameObjectDestryoedEvent(this, id.object));
+		Game.eventMachine.fireEvent(new GameObjectDestroyedEvent(this, id.object));
 	}
-
+	
 	/**
 	 * 
 	 * @return
 	 */
 	public CopyOnWriteArrayList<Integer> getZLevels() {
 		//TODO: Try make this not allocate memory
+		// Read only lists?
 		return new CopyOnWriteArrayList<>(gameObjectMap.keySet());
 	}
 
@@ -150,12 +164,29 @@ public class GameObjectHandler {
 	 * @return
 	 */
 	public CopyOnWriteArrayList<GameObject> getAllGameObjects() {
-		return gameObjects;
+		return new CopyOnWriteArrayList<>(idHandler.getAllObjects());
+	}
+	
+	//TODO: Maybe implement updateListener to be able to figure out when the number of active GameObjects change.
+	//Is this a performance update or is it slower than the current system?
+	
+	/**
+	 * @return
+	 */
+	public CopyOnWriteArrayList<GameObject> getAllActiveGameObjects() {
+		CopyOnWriteArrayList<GameObject> returnList = new CopyOnWriteArrayList<>();
+		for (GameObject gameObject : (Iterable<GameObject>) idHandler.stream().map(id -> id.object)::iterator) {
+			if(gameObject.isActive()){
+				returnList.add(gameObject);
+			}
+		}
+		return returnList;
 	}
 
 	/**
 	 * This method finds all the registered {@link GameObject GameObjects}
 	 * extending a certain subclass T.
+	 * @param <T> 
 	 * 
 	 * @param classT
 	 *            The requested {@link Class}
@@ -164,9 +195,32 @@ public class GameObjectHandler {
 	 */
 	public <T extends GameObject> CopyOnWriteArrayList<T> getAllGameObjectsExtending(Class<T> classT) {
 		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
-		for (GameObject object : gameObjects) {
+		for (GameObject object : gameObjects()) {
 			if (classT.isAssignableFrom(object.getClass())) {
 				returnList.add(classT.cast(object));
+			}
+		}
+		return returnList;
+	}
+	
+	/**
+	 * This method finds all the registered {@link GameObject GameObjects} 
+	 * extending a certain subclass T 
+	 * whose {@link GameObject#isActive() isActive()} method returns true.
+	 * @param <T> 
+	 * 
+	 * @param classT
+	 *            The requested {@link Class}
+	 * @return A ArratList of all the {@link GameObject GameObjects} extending
+	 *         the class T.
+	 */
+	public <T extends GameObject> CopyOnWriteArrayList<T> getAllActiveGameObjectsExtending(Class<T> classT) {
+		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
+		for (GameObject object : gameObjects()) {
+			if(object.isActive()){
+				if (classT.isAssignableFrom(object.getClass())) {
+					returnList.add(classT.cast(object));
+				}
 			}
 		}
 		return returnList;
@@ -180,18 +234,53 @@ public class GameObjectHandler {
 	public CopyOnWriteArrayList<GameObject> getAllGameObjectsAtZLevel(int zLevel) {
 		return gameObjectMap.get(zLevel);
 	}
+	
+	/**
+	 * 
+	 * @param zLevel
+	 * @return
+	 */
+	public CopyOnWriteArrayList<GameObject> getAllActiveGameObjectsAtZLevel(int zLevel) {
+		CopyOnWriteArrayList<GameObject> returnList = new CopyOnWriteArrayList<>();
+		for (GameObject gameObject : gameObjectMap.get(zLevel)) {
+			if(gameObject.isActive()){
+				returnList.add(gameObject);
+			}
+		}
+		return returnList;
+	}
 
 	/**
 	 * 
+	 * @param <T> 
 	 * @param zLevel
 	 * @param classT
 	 * @return
 	 */
 	public <T extends GameObject> CopyOnWriteArrayList<T> getAllGameObjectsAtZLevelExtending(int zLevel, Class<T> classT) {
 		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
-		for (GameObject object : getAllGameObjectsAtZLevel(zLevel)) {
+		for (GameObject object : gameObjectMap.get(zLevel)) {
 			if (classT.isAssignableFrom(object.getClass())) {
 				returnList.add(classT.cast(object));
+			}
+		}
+		return returnList;
+	}
+	
+	/**
+	 * 
+	 * @param <T> 
+	 * @param zLevel
+	 * @param classT
+	 * @return
+	 */
+	public <T extends GameObject> CopyOnWriteArrayList<T> getAllActiveGameObjectsAtZLevelExtending(int zLevel, Class<T> classT) {
+		CopyOnWriteArrayList<T> returnList = new CopyOnWriteArrayList<T>();
+		for (GameObject object : gameObjectMap.get(zLevel)) {
+			if(object.isActive()){
+				if (classT.isAssignableFrom(object.getClass())) {
+					returnList.add(classT.cast(object));
+				}
 			}
 		}
 		return returnList;
@@ -211,7 +300,7 @@ public class GameObjectHandler {
 	 * @return
 	 */
 	public int numberOfGameObjects() {
-		return gameObjects.size();
+		return idHandler.size();
 	}
 
 	/**
@@ -244,5 +333,24 @@ public class GameObjectHandler {
 	 */
 	public IDHandler<GameObject> getIDHandler() {
 		return idHandler;
+	}
+	
+	//TODO: GameObjectsClearedEvent
+	//Another solution could be supporting destroying multiple GameObejcts in one event.
+	//But a Cleared event would allow for more efficient cleaning.
+	
+	/**
+	 * 
+	 */
+	public void clear() {				
+		for (GameObject gameObject : getAllGameObjects()) {
+			Game.eventMachine.fireEvent(new GameObjectDestroyedEvent(this, gameObject));
+		}
+		
+		gameObjectMap.clear();
+		zLevels.clear();
+		idHandler.clear();
+		
+		objectsChanged = true;
 	}
 }

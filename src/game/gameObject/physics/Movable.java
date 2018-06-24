@@ -1,6 +1,7 @@
 package game.gameObject.physics;
 
 import game.util.UpdateListener;
+import game.util.math.vector.Vector2D;
 
 /**
  * The movable interface is implemented to provide movement related functions.
@@ -12,6 +13,10 @@ import game.util.UpdateListener;
  * @author Julius Häger
  */
 public interface Movable extends UpdateListener {
+	
+	//JAVADOC: Movable
+	
+	//TODO: Movable should be able to rotate! and the Rotatable interface should be scrapped
 
 	/**
 	 * Returns the current x value of the Movable
@@ -28,6 +33,12 @@ public interface Movable extends UpdateListener {
 	public float getY();
 
 	/**
+	 * 
+	 * @return
+	 */
+	public Vector2D getPosition();
+	
+	/**
 	 * Sets the current x value of the Movable
 	 * 
 	 * @param x
@@ -42,6 +53,15 @@ public interface Movable extends UpdateListener {
 	 *            the new y value
 	 */
 	public void setY(float y);
+	
+	/**
+	 * Sets the current x and y value of the Movable
+	 * @param x	
+	 * 	the new x value
+	 * @param y
+	 * 	the new y value
+	 */
+	public void setPosition(float x, float y);
 
 	/**
 	 * Returns the current dynamic x (X-axis movement) of the movable. <br>
@@ -60,6 +80,12 @@ public interface Movable extends UpdateListener {
 	public float getDY();
 
 	/**
+	 * 
+	 * @return
+	 */
+	public Vector2D getVelocity();
+	
+	/**
 	 * Used to set the dynamic x (X-axis movement) of the movable. <br>
 	 * Dynamic x is measured in pixels per second.
 	 * 
@@ -75,6 +101,21 @@ public interface Movable extends UpdateListener {
 	 */
 	public void setDY(float dy);
 	
+	/**
+	 * Used to set the dynamic x and y (X- and Y-axis movement) of the movable. <br>
+	 * Dynamic x and y is measured in pixels per second.
+	 * 
+	 * @param dx
+	 * @param dy
+	 */
+	public void setVelocity(float dx, float dy);
+	
+	/**
+	 * 
+	 * @param vel
+	 */
+	public void setVelocity(Vector2D vel);
+	
 	//TODO: Make movement be updated by the PhysicsEngine (RigidBody interface?)
 
 	/**
@@ -82,15 +123,15 @@ public interface Movable extends UpdateListener {
 	 * Used to update the movement based on the time passed since the last
 	 * update.
 	 * </p>
-	 * <p>Divide by 1000000000 for seconds.</p>
 	 * <p>
 	 * <b>Note:</b> <br>
 	 * Should be implemented so that the Dynamic x and y equal to pixels per
 	 * second.
-	 * @param timeNano 
-	 * time since last update (in nanoseconds)
+	 * @param deltaTime 
+	 * time since last update (in seconds)
 	 */
 	@Override
-	public void update(long timeNano);
-
+	default public void update(float deltaTime){
+		getTransform().translate(getDX() * deltaTime, getDY() * deltaTime);
+	}
 }

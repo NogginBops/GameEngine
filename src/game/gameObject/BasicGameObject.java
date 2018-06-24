@@ -1,44 +1,45 @@
 package game.gameObject;
 
-import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
+
+import game.debug.DebugOutputProvider;
+import game.gameObject.transform.Transform;
 
 /**
  * 
  * @version 1.0
  * @author Julius Häger
  */
-public class BasicGameObject implements GameObject {
+public class BasicGameObject implements GameObject, DebugOutputProvider {
 	
 	//JAVADOC: BasicGameObject
-
-	/**
-	 * 
-	 */
-	protected float x;
-	/**
-	 * 
-	 */
-	protected float y;
-
-	/**
-	 * 
-	 */
-	protected int width;
-	/**
-	 * 
-	 */
-	protected int height;
 	
 	/**
 	 * 
 	 */
-	protected Rectangle bounds;
+	protected Transform<GameObject> transform = new Transform<GameObject>(this);
+	
+	/**
+	 * 
+	 */
+	protected Shape shape;
 	
 	/**
 	 * The current Z-order of the GameObject
 	 */
 	protected int zOrder;
-
+	
+	private boolean active = true;
+	
+	/**
+	 * @param shape
+	 * @param zOrder
+	 */
+	public BasicGameObject(Shape shape, int zOrder) {
+		this.shape = shape;
+		this.zOrder = zOrder;
+	}
 	
 	//NOTE: Should maybe not take the zOrder as a param
 	/**
@@ -49,39 +50,58 @@ public class BasicGameObject implements GameObject {
 	 * @param height
 	 * @param zOrder
 	 */
-	public BasicGameObject(float x, float y, int width, int height, int zOrder) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		bounds = new Rectangle((int)x, (int)y, width, height);
+	public BasicGameObject(float x, float y, float width, float height, int zOrder) {
+		transform.setPosition(x, y);
+		shape = new Rectangle2D.Float(0, 0, width, height);
 		this.zOrder = zOrder;
 	}
 	
 	/**
-	 * @param bounds
-	 * @param zOrder
+	 * @param x 
+	 * @param y 
+	 * @param shape 
+	 * @param zOrder 
 	 */
-	public BasicGameObject(Rectangle bounds, int zOrder) {
-		this.x = bounds.x;
-		this.y = bounds.y;
-		this.width = bounds.width;
-		this.height = bounds.height;
-		this.bounds = bounds;
+	public BasicGameObject(float x, float y, Shape shape, int zOrder) {
+		transform.setPosition(x, y);
+		this.shape = shape;
 		this.zOrder = zOrder;
 	}
 
 	@Override
-	public Rectangle getBounds() {
-		return bounds;
+	public Transform<GameObject> getTransform() {
+		return transform;
 	}
-
+	
 	@Override
-	public void updateBounds() {
-		bounds.x = (int) x;
-		bounds.y = (int) y;
-		bounds.width = width;
-		bounds.height = height;
+	public void setTransform(Transform<GameObject> transform) {
+		this.transform = transform.copy(this);
+	}
+	
+	@Override
+	public Shape getShape() {
+		return shape;
+	}
+	
+	@Override
+	public boolean isActive() {
+		return active;
+	}
+	
+	@Override
+	public Shape getTranformedShape() {
+		return transform.getAffineTransform().createTransformedShape(shape);
+	}
+	
+	@Override
+	public Rectangle2D getBounds() {
+		// NOTE: There might be a faster way to do this by manually calculating the values. It might be hard.
+		return transform.getAffineTransform().createTransformedShape(shape).getBounds2D();
+	}
+	
+	@Override
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	@Override
@@ -90,11 +110,14 @@ public class BasicGameObject implements GameObject {
 	}
 
 	@Override
-	public int compareTo(GameObject object) {
-		if (zOrder == object.getZOrder()) {
-			return 0;
-		} else {
-			return zOrder > object.getZOrder() ? 1 : -1;
-		}
+	public String[] getDebugValues() {
+		return new String[]{
+				"<b>Active: </b>" + active,
+				"<b>X: </b>" + transform.getX(),
+				"<b>Y:</b> " + transform.getY(),
+				"<b>Width: </b>" + getBounds().getWidth(),
+				"<b>Height: </b>" + getBounds().getHeight(),
+				"<b>ZOrder: </b>" + zOrder
+		};
 	}
 }

@@ -16,7 +16,7 @@ public class GameObjectCreatedEvent extends GameObjectEvent {
 	 * @param object
 	 */
 	public GameObjectCreatedEvent(GameObjectHandler origin, GameObject object) {
-		super(origin, "Created", object);
+		super(origin, object);
 	}
 	
 }

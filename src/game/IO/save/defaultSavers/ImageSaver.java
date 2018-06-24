@@ -1,12 +1,12 @@
 package game.IO.save.defaultSavers;
 
 import java.awt.image.BufferedImage;
-
 import java.io.IOException;
+import java.nio.file.Path;
 
 import javax.imageio.ImageIO;
 
-import game.IO.save.SaveRequest;
+import game.Game;
 import game.IO.save.Saver;
 
 /**
@@ -14,6 +14,8 @@ import game.IO.save.Saver;
  *
  */
 public class ImageSaver implements Saver<BufferedImage> {
+	
+	//JAVADOC: ImageSaver
 
 	/**
 	 * @author Julius Häger
@@ -52,11 +54,11 @@ public class ImageSaver implements Saver<BufferedImage> {
 	}
 
 	@Override
-	public boolean save(SaveRequest<?> request) {
+	public boolean save(Object object, Path location) {
 		switch (mode) {
 		case PNG:
 			try {
-				ImageIO.write((BufferedImage) request.object, "PNG", request.location);
+				ImageIO.write((BufferedImage) object, "PNG", location.toFile());
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -64,7 +66,7 @@ public class ImageSaver implements Saver<BufferedImage> {
 			break;
 		case BMP:
 			try {
-				ImageIO.write((BufferedImage) request.object, "BMP", request.location);
+				ImageIO.write((BufferedImage) object, "BMP", location.toFile());
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -72,7 +74,7 @@ public class ImageSaver implements Saver<BufferedImage> {
 			break;
 		case JPG:
 			try {
-				ImageIO.write((BufferedImage) request.object, "JPG", request.location);
+				ImageIO.write((BufferedImage) object, "JPG", location.toFile());
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -80,7 +82,7 @@ public class ImageSaver implements Saver<BufferedImage> {
 			break;
 		case GIF:
 			try {
-				ImageIO.write((BufferedImage) request.object, "GIF", request.location);
+				ImageIO.write((BufferedImage) object, "GIF", location.toFile());
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -89,6 +91,7 @@ public class ImageSaver implements Saver<BufferedImage> {
 		default:
 			break;
 		}
+		Game.log.logError("Could not save image: " + location, "IO", "Save", "BufferedImage");
 		return false;
 	}
 

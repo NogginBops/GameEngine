@@ -3,12 +3,14 @@ package game.test;
 import game.gameObject.graphics.Sprite;
 import game.input.keys.KeyListener;
 import game.input.mouse.MouseListener;
+import game.util.math.ColorUtils;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author Julius Häger
@@ -36,8 +38,8 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 		super(x, y, width, height);
 		zOrder = z;
 		this.absorb = absorb;
-		color = Color.GREEN;
-		secColor = Color.RED;
+		color = ColorUtils.createTransparent(Color.GREEN, 150);
+		secColor = ColorUtils.createTransparent(Color.YELLOW, 150);
 		lastXInSpriteBounds = x;
 		lastYInSpriteBounds = y;
 	}
@@ -48,21 +50,21 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 		//This is custom paint behavior that should not inherit Sprites paint behavior.
 		
 		g2d.setColor(color);
-		g2d.fillRect((int) x, (int) y, (int) width, (int) height);
+		g2d.fillRect(0, 0, (int) getWidth(), (int) getHeight());
 		g2d.setColor(color.darker());
-		g2d.fillOval((int) x, (int) y, (int) width, (int) height);
+		g2d.fillOval(0, 0, (int) getWidth(), (int) getHeight());
 		g2d.setColor(Color.YELLOW);
-		if (lastXInSpriteBounds < x) {
-			lastXInSpriteBounds = (int) x;
+		if (lastXInSpriteBounds < 0) {
+			lastXInSpriteBounds = (int) 0;
 		}
-		if (lastYInSpriteBounds < y) {
-			lastYInSpriteBounds = (int) y;
+		if (lastYInSpriteBounds < 0) {
+			lastYInSpriteBounds = (int) 0;
 		}
-		if (lastXInSpriteBounds > x + width) {
-			lastXInSpriteBounds = (int) (x + width);
+		if (lastXInSpriteBounds > getWidth()) {
+			lastXInSpriteBounds = (int) (getWidth());
 		}
-		if (lastYInSpriteBounds > y + height) {
-			lastYInSpriteBounds = (int) (y + height);
+		if (lastYInSpriteBounds > getHeight()) {
+			lastYInSpriteBounds = (int) (getHeight());
 		}
 		g2d.fillRect(lastXInSpriteBounds - 5, lastYInSpriteBounds - 5, 10, 10);
 	}
@@ -74,7 +76,7 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (bounds.contains(e.getPoint())) {
+		if (shape.contains(e.getPoint())) {
 			Color tempColor = color;
 			color = secColor;
 			secColor = tempColor;
@@ -98,7 +100,7 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if (bounds.contains(e.getX(), e.getY())) {
+		if (shape.contains(e.getX(), e.getY())) {
 			lastXInSpriteBounds = e.getX();
 			lastYInSpriteBounds = e.getY();
 		}
@@ -106,14 +108,14 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		if (bounds.contains(e.getX(), e.getY())) {
+		if (shape.contains(e.getX(), e.getY())) {
 			lastXInSpriteBounds = e.getX();
 			lastYInSpriteBounds = e.getY();
 		}
 	}
 
 	@Override
-	public void mouseWeelMoved(MouseWheelEvent e) {
+	public void mouseWheelMoved(MouseWheelEvent e) {
 
 	}
 
@@ -145,5 +147,10 @@ public class TestInputSprite extends Sprite implements MouseListener, KeyListene
 	@Override
 	public boolean shouldReceiveKeyboardInput() {
 		return false;
+	}
+
+	@Override
+	public Rectangle2D getBounds() {
+		return super.getBounds();
 	}
 }
